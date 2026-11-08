@@ -344,4 +344,48 @@ async function loadGameData(manual=false){if(manual){syncStatus='loading';showTo
 function render(){applyTheme();renderNav();renderMenu();document.getElementById('stage').innerHTML=resolveAssets(page==='home'?home():page==='library'?library():page==='profile'?profile():page==='endgame'?endgame():page==='farm'?farm():page==='radar'?radar():page==='tier'?tier():page==='themes'?themes():page==='nexia'?nexia():settings());document.getElementById('nexFab').innerHTML=resolveAssets(`<img src="assets/nexia.webp" alt="Conversar com Nexia"><span class="dot"></span>`);enhanceEidoImages(document.getElementById('stage'))}
 window.addEventListener('DOMContentLoaded',()=>{render();loadGameData(false)});
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+/* Nexia: optional true model integration via a user's own Cloudflare Worker. */
+state.aiEndpoint ||= '';
+const nexiaLocalRender=nexia;
+nexia=function(){
+ let s=nexiaLocalRender();
+ s=s.replace('Regras locais • sem custo • sem IA externa',state.aiEndpoint?'IA conversacional configurada • Cloudflare AI':'Modo local • IA ainda não conectada');
+ s=s.replace('A Nexia ainda não está conectada ao ChatGPT ou a um modelo online. Ela consulta o inventário que você registrou e explica as informações disponíveis; não simula raciocínio de IA real.',state.aiEndpoint?'As mensagens e um resumo dos personagens cadastrados serão enviados ao Worker que você configurou. A IA pode cometer erros: confirme números importantes.':'Sem modelo conectado, a Nexia usa explicações pré-definidas. Em Configurações você pode cadastrar um Cloudflare Worker gratuito para conversar com um modelo real de IA, sem expor chaves no GitHub.');
+ return s;
+};
+const nexiaLocalSettings=settings;
+settings=function(){
+ const s=nexiaLocalSettings(),anchor='<div class="card card-body mt14"><div class="eyebrow">ORIGEM DO CATÁLOGO</div>';
+ const panel='<div class="card card-body mt14"><div class="eyebrow">NEXIA · INTELIGÊNCIA ARTIFICIAL</div><h3 style="font:400 24px var(--heading)">Conectar uma IA de verdade</h3><p class="small muted">Sem chave exposta e sem cobrança automática. O plano grátis do Cloudflare Workers AI tem limites diários. A assinatura ChatGPT é independente da API.</p><div class="note mt14"><b>Status:</b> '+(state.aiEndpoint?'Worker informado · conexão não testada':'Modelo não conectado · Nexia em modo local')+'</div><label class="small" style="display:block;margin:14px 0 8px">Seu endereço Cloudflare Workers (HTTPS)</label><input class="input" id="nexiaEndpoint" type="url" autocomplete="off" spellcheck="false" placeholder="https://nexia.usuario.workers.dev" value="'+esc(state.aiEndpoint)+'"><button class="button full mt14" onclick="saveNexiaWorker()">Salvar conexão</button><p class="small muted mt14">O backend de exemplo está na pasta <code>worker/</code> do seu GitHub. Crie primeiro um Worker gratuito no Cloudflare, configure o binding Workers AI com o nome AI e só então cole seu endereço. Não cole tokens nem chaves de API.</p></div>';
+ return s.replace(anchor,panel+anchor);
+};
+function saveNexiaWorker(){
+ const inp=document.getElementById('nexiaEndpoint');if(!inp)return;let v=inp.value.trim();
+ if(v&&!/^https:\/\/[a-z0-9._-]+\.workers\.dev\/?$/i.test(v)){showToast('Informe uma URL HTTPS válida do Cloudflare Workers');return}
+ state.aiEndpoint=v;save();showToast(v?'Endereço do Worker salvo':'Nexia voltou ao modo local');route('settings');
+}
+quickAsk=async function(question){
+ let q=String(question||'').trim().slice(0,900);if(!q)return;
+ const endpoint=state.aiEndpoint;
+ state.chat.push({role:'user',msg:q});
+ if(!endpoint){
+  state.chat.push({role:'bot',msg:botAnswer(q)});state.chat=state.chat.slice(-50);save();refresh();return;
+ }
+ state.chat.push({role:'bot',msg:'✦ Consultando modelo de IA...'});state.chat=state.chat.slice(-50);save();refresh();
+ try{
+  if(!/^https:\/\/[a-z0-9._-]+\.workers\.dev\/?$/i.test(endpoint))throw Error('endereço inválido');
+  const account=owned().slice(0,70).map(([id,v])=>({name:lookup(id).name,level:v.level,eidolon:v.e,superimposition:v.s,stats:{spd:v.spd,def:v.def,crit:v.crit,cdmg:v.cdmg}}));
+  const timerCtrl=new AbortController();const cancel=setTimeout(()=>timerCtrl.abort(),20000);
+  let response;
+  try{response=await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({question:q,account,history:state.chat.slice(-8,-2)}),signal:timerCtrl.signal})}finally{clearTimeout(cancel)}
+  let payload=await response.json();
+  if(!response.ok)throw Error(payload.error||'Falha no serviço');
+  if(!payload.answer)throw Error('Resposta vazia');
+  state.chat[state.chat.length-1]={role:'bot',msg:String(payload.answer).slice(0,5500)};
+ }catch(err){
+  state.chat[state.chat.length-1]={role:'bot',msg:'Não foi possível obter a resposta de IA ('+String(err.message||err)+').\n\nLeitura local:\n'+botAnswer(q)}
+ }
+ save();refresh();const chat=document.getElementById('chatList');if(chat)chat.scrollTop=chat.scrollHeight;
+};
 </script></body></html>
