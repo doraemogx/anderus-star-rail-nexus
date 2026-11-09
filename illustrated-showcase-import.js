@@ -32,12 +32,14 @@ export function matchCharacter(title,entries){
    const n=clean(row.name),alias=clean(row.alias||'');
    let score=0;
    if(n===name||alias===name)score=1;
-   else if(n && name.startsWith(n+' '))score=.90;
-   else if(alias && name.startsWith(alias+' '))score=.90;
+   else if(n && name.startsWith(n+' '))score=.84+Math.min(.12,n.length/200);
+   else if(alias && name.startsWith(alias+' '))score=.84+Math.min(.12,alias.length/200);
    else if(n && n.startsWith(name+' ')&&name.length>=8)score=.78;
    return {id:String(row.id),name:row.name,score};
  }).filter(x=>x.score>=.78).sort((a,b)=>b.score-a.score||b.name.length-a.name.length);
- return matches[0]&&(!matches[1]||matches[0].score-matches[1].score>=.08)?matches[0]:null;
+ if(!matches[0])return null;
+ if(matches[1]&&matches[0].score===matches[1].score)return null;
+ return matches[0].score>=.88||matches[0].score-(matches[1]?.score||0)>=.03?matches[0]:null;
 }
 export function inferStat(label,raw){
  const n=clean(label),v=String(raw||''),percent=/%/.test(v)||/\d[.,]\d/.test(v);
@@ -62,7 +64,8 @@ export function inferStat(label,raw){
  return '';
 }
 export function parseNumber(text,integer=false){
- const candidate=String(text||'').replace(/[Oo]/g,'0').replace(/[lI|]/g,'1').replace(/[Ss]/g,'5').trim();
+ let candidate=String(text||'').replace(/[Oo]/g,'0').replace(/[lI|]/g,'1').replace(/[Ss]/g,'5').trim();
+ if(integer)candidate=candidate.replace(/(\d{1,2})\.(\d{3})(?!\d)/g,'$1$2');
  let match=candidate.match(/\d{1,5}(?:[.,]\d{1,2})?/);
  if(!match)return null;
  let value=match[0];
