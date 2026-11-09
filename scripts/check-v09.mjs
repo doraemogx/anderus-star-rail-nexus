@@ -138,6 +138,18 @@ assert.equal(relicCheck.relicValueFromText('19,4%','Regeneração de Energia',5,
 assert.ok(read('illustrated-showcase-import.js').includes('value:[x+305,y-24,76,49]'),
  'Numeric crop must exclude the upgrade badge');
 console.log('PASS 6/6 relic icon set decisions, fail-closed missing sets and numeric sanity bounds');
+const mainAt15=new Function(illustrated+';return {verifiedMainAt15,inferStat};')();
+assert.equal(mainAt15.verifiedMainAt15('Dano CRIT',2,15),64.8);
+assert.equal(mainAt15.verifiedMainAt15('PV %',4,15),43.2);
+assert.equal(mainAt15.verifiedMainAt15('Regeneração de Energia',5,15),19.4);
+assert.equal(mainAt15.verifiedMainAt15('PV',0,15),705);
+assert.equal(mainAt15.verifiedMainAt15('ATQ',1,15),352);
+assert.equal(mainAt15.verifiedMainAt15('Dano CRIT',2,null),null);
+assert.equal(mainAt15.inferStat('ATG','3.4%'),'ATQ %');
+assert.equal(mainAt15.inferStat('Pw','10.8%'),'PV %');
+assert.ok(read('illustrated-showcase-import.js').includes('relicLevels=extraction.levels'),
+ 'OCR must require observed relic level before applying deterministic main stats');
+console.log('PASS +15 fixed main stats are corrected only for verified relic levels');
 
 
 console.log('PASS assets, all four endgames, variant isolation, lazy theme, PWA');
