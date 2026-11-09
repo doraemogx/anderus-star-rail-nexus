@@ -39,6 +39,23 @@ try{
     console.error('BROWSER_STAGE_DEBUG',JSON.stringify(dom));
     throw error;
   });
+  // Verify the Warp calculator is functional, not merely a static panel.
+  await page.waitForFunction(()=>typeof window.NexusWarpAdvisor?.open==='function',null,{timeout:15000});
+  await page.evaluate(()=>window.NexusWarpAdvisor.open());
+  await page.locator('#nexus-warp-dialog[open]').waitFor({timeout:10000});
+  await page.evaluate(()=>{
+    const set=(key,value)=>{
+      const input=document.querySelector('[data-warp-key="'+key+'"]');
+      input.value=String(value);
+      input.dispatchEvent(new Event('change',{bubbles:true}));
+    };
+    set('passes',100);set('charPulls',90);set('coneCopies',0);
+  });
+  assert.match(await page.locator('#nexus-warp-result').innerText(),/100/,'Warp resources did not recalculate');
+  const storedWarp=await page.evaluate(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}').v06WarpPlan);
+  assert.equal(storedWarp?.passes,100,'Warp plan must survive in account backup state');
+  await page.screenshot({path:'artifacts/warp-'+device.width+'.png'});
+  await page.locator('#nexus-warp-dialog [data-warp-close]').click();
   // Full-screen dialogs must inherit theme changes from the application shell.
   await page.waitForFunction(()=>typeof window.NexusThemeBridge?.apply==='function',null,{timeout:15000});
   const themeState=await page.evaluate(()=>{
