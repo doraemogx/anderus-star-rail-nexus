@@ -333,3 +333,22 @@
 @media(prefers-reduced-motion:reduce){
  .v06-app .v06-hero-art,.v06-app .v06-celestial,.v06-app .v06-char-hero-art{animation:none!important;transform:none!important}
 }
+
+/* Theme Studio 2.0: an explicit preview, comparison, and undo workflow. */
+.v06-theme-preview{max-width:760px;margin:auto}
+.v06-theme-preview>p{font:14px/1.7 'DM Sans',system-ui;color:#d3dfeb}
+.v06-theme-preview .v06-theme-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.v06-theme-preview .v06-theme-compare article{min-width:0;background:#15263c;border:1px solid #71829a;border-radius:12px;padding:13px;overflow:hidden}
+.v06-theme-preview .v06-theme-compare article:nth-child(2){border-color:#e8c390}
+.v06-theme-preview .v06-theme-compare small{display:block;color:#eccb96;letter-spacing:1px;font-size:10px;margin:0 0 10px}
+.v06-theme-preview .v06-theme-compare img{display:block;width:100%;height:clamp(120px,24vw,240px);object-fit:contain;background:radial-gradient(circle,#4c516b33,#111d36);border-radius:8px}
+.v06-theme-preview .v06-theme-compare h3{font:500 clamp(17px,3vw,24px)/1.2 Georgia,serif;color:#f8e9d2;margin:12px 0}
+.v06-theme-preview .v06-preview-colors{display:flex;gap:8px}
+.v06-theme-preview .v06-preview-colors i{width:32px;height:32px;border:1px solid #f5deb64d;border-radius:50%;box-shadow:inset 0 0 0 2px #070b1799}
+.v06-theme-preview .v06-theme-preview-notice{font-size:12px;color:#d8c3b2}
+.v06-theme-preview .v06-theme-preview-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin:20px 0 0}
+.v06-theme-preview .v06-theme-preview-actions button{min-height:44px;cursor:pointer}
+.v06-theme-restore{display:flex;flex-wrap:wrap;gap:8px}
+.v06-theme-restore button{min-height:44px}
+.v06-theme-grid button small{display:block;font-size:10px;color:#c8d4e7}
+@media(max-width:390px){.v06-theme-preview .v06-theme-compare{gap:7px}.v06-theme-preview .v06-theme-compare article{padding:7px}.v06-theme-preview .v06-theme-compare img{height:135px}.v06-theme-preview .v06-preview-colors i{width:23px;height:23px}}
