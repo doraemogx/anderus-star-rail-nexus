@@ -290,6 +290,16 @@
     roster:()=>Object.entries(state.characters||{}).filter(([id,c])=>c&&gameData.chars?.[id])
       .map(([id,c])=>({id,name:lookup(id)?.name||gameData.chars[id].name,level:Number(c.level||1)})),
     inventory:()=>JSON.parse(JSON.stringify(state.v06MaterialInventory||{})),
+    ascensionRead:(id)=>JSON.parse(JSON.stringify(state.v06AscensionPlans?.[id]||{})),
+    ascensionWrite:(id,plan)=>{
+      state.v06AscensionPlans||={};
+      state.v06AscensionPlans[id]=JSON.parse(JSON.stringify(plan));
+      save();return true;
+    },
+    allPlans:()=>({
+      ascension:JSON.parse(JSON.stringify(state.v06AscensionPlans||{})),
+      traces:JSON.parse(JSON.stringify(state.v06TracePlans||{}))
+    }),
     traceRead:(id)=>JSON.parse(JSON.stringify(state.v06TracePlans?.[id]||{})),
     traceWrite:(id,plan)=>{
       state.v06TracePlans||={};
