@@ -259,7 +259,8 @@ function start(){
   const js=document.createElement('script');js.id='nexus-diagnostics-script';js.src='./nexus-diagnostics.js';js.defer=true;document.head.appendChild(js);
  }
  enhancePage();observer.observe(document.querySelector('.app')||document.documentElement,{childList:true,subtree:true});
- if('serviceWorker' in navigator&&location.protocol==='https:'){
+ const trustedHost=location.protocol==='https:'||['127.0.0.1','localhost'].includes(location.hostname);
+ if('serviceWorker' in navigator&&trustedHost){
   navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>console.warn('Anderus offline',e));
  }
 }
