@@ -55,7 +55,7 @@ function cardSkill(s,i){
   (effect.missing?'<p class="kit-warning">Parte dos multiplicadores não está disponível nesse nível. Nenhum número foi estimado.</p>':'')+
   '<small>Fonte: catálogo estruturado PT-BR · ID '+esc(s.id)+'</small></article>';
 }
-function summary(c,g){
+function summary(c,g,advice){
  const skills=getSkills(c,g),descs=skills.map(x=>clean(x.desc)).join(' ');
  const resource=descs.match(/memoesp[ií]rito|euforia|quebra|ataque extra|dano cont[ií]nuo|escudo|cura|vibra[cç][oõ]es|piada/gi)||[];
  const unique=[...new Set(resource.map(x=>x.toLowerCase()))].slice(0,5);
@@ -64,10 +64,14 @@ function summary(c,g){
   '<p>Essa personagem pertence ao Caminho da <b>'+esc(paths[c.path]||c.path||'não informado')+'</b> e utiliza o elemento <b>'+esc(elements[c.element]||c.element||'não informado')+'</b>.</p>'+
   '<p>'+esc(mechanic)+'</p>'+
   '<p><b>Minha dica:</b> confira primeiro o Talento, depois a Perícia e a Suprema para identificar a ordem dos efeitos. Os Eidolons podem mudar essa leitura — examine cada um antes de investir.</p>'+
-  '<p class="kit-warning">Este é um resumo determinístico do catálogo, não uma análise personalizada da sua conta. Sem dados completos de build e cálculos validados, não vou inventar rotação, metas de atributos nem a melhor equipe.</p>'+
+  (advice?.owned?
+    '<div class="kit-account-context"><h3>O Pom-Pom analisou a sua build</h3><p>Nível '+esc(advice.level)+' · E'+esc(advice.e)+'S'+esc(advice.s)+' · '+esc(advice.registered)+'/6 relíquias com dados registrados.</p>'+
+     advice.notes.map(item=>'<article><b>'+esc(item.title)+'</b><p>'+esc(item.body)+'</p></article>').join('')+'</div>':
+    '<p class="kit-warning">Esta personagem não está registrada no inventário deste navegador. Adicione-a à sua conta para obter alertas baseados nos seus atributos, cone e relíquias.</p>')+
+  '<p class="kit-warning">As recomendações são calculadas por regras verificáveis, não simulam dano nem afirmam que uma composição é ótima sem validação.</p>'+
   '<button type="button" data-kit-full>Ver habilidades completas</button></section>';
 }
-function compose(c,g){
+function compose(c,g,advice){
  const skills=getSkills(c,g),ranks=getEidolons(c,g),sourceDate=g.checkedAt||'data não registrada';
  const left='<header class="kit-hero">'+
   (c.portrait?'<img class="kit-portrait" src="'+esc(image(c.portrait))+'" alt="" loading="lazy">':'')+
@@ -77,7 +81,7 @@ function compose(c,g){
   '<button type="button" data-kit-tab="ranks" '+(activeTab==='ranks'?'aria-pressed="true"':'')+'>Eidolons E1–E6</button>'+
   '<button type="button" data-kit-summary '+(showSummary?'aria-pressed="true"':'')+'>Pom-Pom, me explica!</button></div>';
  let body='';
- if(showSummary)body=summary(c,g);
+ if(showSummary)body=summary(c,g,advice);
  else if(activeTab==='ranks')body='<div class="kit-ranks">'+ranks.map(e=>{
   const effect=resolveEffect(e,e.params,1);
   const art=g.eidolonArt?.[c.id]?.[e.n-1]||'';
@@ -128,7 +132,25 @@ async function render(){
   if(!c){target.innerHTML='<p class="kit-warning">Selecione um personagem válido.</p>';return;}
   const levelCache={};
   target.querySelectorAll('[data-skill-level]').forEach(x=>levelCache[x.dataset.skillLevel]=x.value);
-  target.innerHTML=compose(c,g);
+  let advice=null;
+  if(showSummary){
+   try{
+    const persisted=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}');
+    const build=persisted?.characters?.[selected]||null;
+    if(build){
+     const engine=await import('./nexus-account-engine.js');
+     const records=engine.normalizeRelics(persisted?.v06RelicDetails?.[selected],build.relics,g.relicSets||{});
+     const cone=engine.matchCone(build.cone,g.cones||{});
+     const notes=engine.buildCoach({character:c,build,records,sets:g.relicSets||{},cone,
+      coneRank:cone?g.coneRanks?.[cone.id]:null,skills:getSkills(c,g)});
+     advice={owned:true,level:build.level||'?',e:build.e||0,s:build.s||1,
+       registered:engine.examineRelics(records).registered,
+       notes:notes.filter(item=>item.kind==='warning'||item.kind==='action').slice(0,3)};
+     if(!advice.notes.length)advice.notes=notes.slice(0,3);
+    }else advice={owned:false};
+   }catch(error){advice={owned:false};console.warn('Kit Lab: conta local indisponível para análise',error);}
+  }
+  target.innerHTML=compose(c,g,advice);
   for(const [i,lvl] of Object.entries(levelCache)){
    const slider=target.querySelector('#nexus-kit-level-'+i);
    if(slider && Number(lvl)<=Number(slider.max))slider.value=lvl;
