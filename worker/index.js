@@ -1,3 +1,4 @@
+// Cloudflare Builds verification: no functional change (2026-11-08).
 // Nexia v2 — Honkai: Star Rail factual retrieval before LLM answers.
 // All runtime resources remain on Cloudflare's free quota; no API key in frontend.
 // Updating this GitHub file does not automatically redeploy your Cloudflare Worker.
