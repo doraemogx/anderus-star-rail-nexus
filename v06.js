@@ -63,7 +63,7 @@
     return {group,text,font,shape,color,art:id==='future-aha'?ahaOfficial:imgSrc(id,'portrait')||heroOfficial,name:c.name,id};
   };
   state.v06Art||={};state.v06AccountNotes||={};state.v06Goal||={id:'future-aha',target:'E0S1'};
-  let uploader={file:null,preview:'',relImages:[],identifiedId:'1503',ocrText:'',eidolon:0,busy:false};
+  let uploader={file:null,preview:'',relImages:[],identifiedId:'',ocrText:'',eidolon:null,superimposition:null,cone:'',busy:false,sourceValid:false};
   const pathImage=(id)=>{const c=gameData.chars[id];const path=c?.path||'';return path?'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/'+path+'.png':'';};
   const genCard=(label,value,icon)=>'<div class="v06-metric"><span class="v06-metric-icon">'+icon+'</span><strong>'+safe(value)+'</strong><small>'+safe(label)+'</small></div>';
   const pomCard=(title,body,meta='CONSELHO DO EXPRESSO')=>'<aside class="v06-pom-tip"><img loading="lazy" src="'+v06Asset('pompom')+'" alt="Pom-Pom" onerror="this.src=\'assets/nexia.webp\'"><div><div class="v06-kicker">✦ '+safe(meta)+'</div><b>'+safe(title)+'</b><p>'+safe(body)+'</p></div></aside>';
@@ -267,8 +267,8 @@
   }
   window.v06StartImport=function(id){
     if(id)uploader.identifiedId=id;
-    else uploader.identifiedId=state.profile&&state.characters[state.profile]?state.profile:'1503';
-    uploader.preview='';uploader.file=null;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=0;
+    else uploader.identifiedId='';
+    uploader.preview='';uploader.file=null;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.sourceValid=false;
     showModal('Importar build pelo print',uploadPanel());
   };
   window.v06ReadPrint=async function(file){
@@ -291,20 +291,23 @@
     reader.readAsDataURL(file);
   };
   function showImportReview(){
-    const names=CATALOG.filter(c=>c.id!=='future-aha' && !/^800[24680]$/.test(c.id));
-    const choice=names.map(c=>'<option value="'+c.id+'" '+(c.id===uploader.identifiedId?'selected':'')+'>'+safe(c.name)+'</option>').join('');
+    if(!CATALOG.some(c=>c.id==='8009') && gameData.chars?.['8009']) CATALOG.push({...gameData.chars['8009'],name:'Desbravador · Euforia (Caelus)'});
+    const names=CATALOG.filter(c=>c.id!=='future-aha' && !/^80(?:02|04|06|08|10)$/.test(c.id));
+    const choice='<option value="">Selecione o personagem correto</option>'+names.map(c=>'<option value="'+c.id+'" '+(c.id===uploader.identifiedId?'selected':'')+'>'+safe(c.id==='8009'?'Caelus · Desbravador da Euforia':c.name)+'</option>').join('');
     return '<div class="v06-import-form"><div class="v06-import-image"><img src="'+uploader.preview+'" alt="Print enviado"></div>'+
       '<div class="v06-action-row"><button class="v06-primary" onclick="v06AutoRead()">✧ Reconhecer dados do print</button><button class="v06-secondary" onclick="document.getElementById(\'v06-file\').click()">Trocar imagem</button></div>'+
       '<div class="v06-fieldgroup"><label>Personagem<select id="v06-id">'+choice+'</select></label>'+
       '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="80"></label>'+
-      '<label>Eidolons (confirme os cadeados)<select id="v06-e">'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
-      '<label>Sobreposição do cone<select id="v06-s">'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'">S'+(i+1)+'</option>').join('')+'</select></label>'+
+      '<label>Eidolons (confirme os seis ícones)<select id="v06-e"><option value="">Selecione E0–E6</option>'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
+      '<label>Sobreposição do cone<select id="v06-s"><option value="">Selecione S1–S5</option>'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===uploader.superimposition?'selected':'')+'>S'+(i+1)+'</option>').join('')+'</select></label>'+
       '<label>PV<input type="number" id="v06-pv" placeholder="PV total"></label><label>ATQ<input type="number" id="v06-atk" placeholder="ATQ total"></label>'+
       '<label>DEF<input type="number" id="v06-def" placeholder="DEF total"></label><label>VEL<input type="number" id="v06-spd" placeholder="VEL"></label>'+
       '<label>Chance CRIT %<input type="number" step=".1" id="v06-crit"></label><label>Dano CRIT %<input type="number" step=".1" id="v06-cdmg"></label>'+
       '<label>Quebra %<input type="number" step=".1" id="v06-break"></label><label>Recuperação de Energia %<input type="number" step=".1" id="v06-energy"></label></div>'+
       '<div class="v06-kicker">AS SEIS RELÍQUIAS DO PRINT</div><div class="v06-piece-grid">'+uploader.relImages.map((src,i)=>'<figure><img src="'+src+'" alt="Relíquia '+(i+1)+'"><figcaption>'+['Cabeça','Mãos','Corpo','Pés','Esfera','Corda'][i]+'</figcaption></figure>').join('')+'</div>'+
-      '<div id="v06-import-status" class="v06-import-status">OCR ainda não executado. Você pode cadastrar manualmente.</div><button class="v06-primary v06-save-import" onclick="v06SaveImport()">Salvar personagem e print ✓</button></div>';
+      '<div id="v06-import-status" class="v06-import-status" role="status">OCR ainda não executado. Preencha ou confira os atributos totais, nunca os valores das relíquias.</div>'+
+      '<label style="display:flex;align-items:flex-start;gap:12px;padding:16px 4px;font-size:13px;line-height:1.45"><input type="checkbox" id="v06-confirm" style="width:22px;height:22px;flex-shrink:0"> Eu conferi personagem, Eidolons, cone e atributos totais no print. Sei que a leitura automática pode errar.</label>'+
+      '<button class="v06-primary v06-save-import" onclick="v06SaveImport()">Confirmar e salvar build ✓</button></div>';
   }
   window.v06ShowImportReview=function(){
     const content=uploadPanel()+showImportReview();
@@ -333,54 +336,176 @@
       const tag=document.createElement('script');tag.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';tag.onload=()=>resolve(window.Tesseract);tag.onerror=()=>reject(Error('A biblioteca OCR não carregou'));document.head.appendChild(tag);
     });
   }
+
+  // Importação v0.6.8: lê apenas regiões conhecidas do layout do registro de batalha.
+  // Abaixo dessas regiões ficam as seis relíquias, que NUNCA entram no OCR de atributos totais.
+  function importNumber(raw){
+    const parts=String(raw||'').replace(/[^0-9.,]/g,'').replace(',', '.');
+    const m=parts.match(/\d+(?:\.\d+)?/);
+    return m ? Number(m[0]) : null;
+  }
+  function imageRegion(bitmap,x,y,w,h,mul=2){
+    const c=document.createElement('canvas');
+    c.width=Math.max(1,Math.round(bitmap.width*w*mul));
+    c.height=Math.max(1,Math.round(bitmap.height*h*mul));
+    c.getContext('2d').drawImage(bitmap,x*bitmap.width,y*bitmap.height,w*bitmap.width,h*bitmap.height,0,0,c.width,c.height);
+    return c;
+  }
+  function makeTotalStatStrip(bitmap) {
+    const rows=[['PV','pv',0,'L'],['ATQ','atk',1,'L'],['DEF','def',2,'L'],
+      ['VEL','spd',3,'L'],['CRIT','crit',4,'L'],['DCRIT','cdmg',5,'L'],
+      ['QUEBRA','break',0,'R'],['ENERGIA','energy',3,'R']];
+    const out=document.createElement('canvas');out.width=475;out.height=rows.length*95;
+    const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);
+    ctx.textBaseline='middle';ctx.fillStyle='#000';ctx.font='bold 23px Arial, sans-serif';
+    for(let i=0;i<rows.length;i++){
+      const [label,key,index,col]=rows[i],cy=.151+index*.03055;
+      ctx.fillText(label,8,i*95+48);
+      const x0=col==='L'?.618:.909,x1=col==='L'?.672:.976;
+      const tile=document.createElement('canvas');
+      tile.width=Math.max(1,Math.round(bitmap.width*(x1-x0)));
+      tile.height=Math.max(1,Math.round(bitmap.height*.025));
+      const t=tile.getContext('2d',{willReadFrequently:true});
+      t.drawImage(bitmap,bitmap.width*x0,bitmap.height*(cy-.0125),bitmap.width*(x1-x0),bitmap.height*.025,0,0,tile.width,tile.height);
+      const pix=t.getImageData(0,0,tile.width,tile.height);
+      for(let p=0;p<pix.data.length;p+=4){
+        const rgb=(pix.data[p]+pix.data[p+1]+pix.data[p+2])/3;
+        const bw=rgb>123?0:255;
+        pix.data[p]=bw;pix.data[p+1]=bw;pix.data[p+2]=bw;pix.data[p+3]=255;
+      }
+      t.putImageData(pix,0,0);ctx.imageSmoothingEnabled=false;
+      ctx.drawImage(tile,160,i*95+14,295,68);
+    }
+    return {canvas:out,rows};
+  }
+  function parseTotalStatLines(text,rows){
+    const result={};
+    const aliases={'PV':'pv','ATQ':'atk','DEF':'def','VEL':'spd','CRIT':'crit',
+                   'DCRIT':'cdmg','QUEBRA':'break','ENERGIA':'energy'};
+    const lines=String(text||'').split(/\n+/);
+    for(const line of lines){
+      const cleaned=line.trim().replace(/\s+/g,' ');
+      const label=Object.keys(aliases).sort((a,b)=>b.length-a.length).find(a=>new RegExp('^'+a+'\\b','i').test(cleaned));
+      if(!label)continue;
+      const k=aliases[label];
+      let value=importNumber(cleaned.slice(label.length));
+      if(value===null)continue;
+      // In the source: PV 3209, ATQ 2597, DEF 1357, VEL 137, 72.7% / 91.1%.
+      const range={pv:[250,20000],atk:[100,10000],def:[100,10000],spd:[55,400],
+        crit:[0,100],cdmg:[0,700],break:[0,600],energy:[50,300]}[k];
+      if(value>=range[0]&&value<=range[1])result[k]=value;
+    }
+    return result;
+  }
   window.v06AutoRead=async function(){
-    const status=document.getElementById('v06-import-status');if(status)status.textContent='Lendo texto no dispositivo… pode levar alguns instantes.';
+    const status=document.getElementById('v06-import-status');
+    const update=s=>{if(status)status.textContent=s;};
+    if(!uploader.file)return update('Escolha primeiro um print para analisar.');
+    let worker=null, bitmap=null;
     try{
+      update('Preparando a leitura isolada do personagem e dos atributos totais...');
       const ocr=await getLang();
-      const result=await ocr.recognize(uploader.file,'eng',{logger:msg=>{if(status&&msg.status==='recognizing text')status.textContent='Lendo imagem: '+Math.round(msg.progress*100)+'%';}});
-      uploader.ocrText=result.data.text||'';
-      const text=uploader.ocrText,lower=norm(text);
-      const found=CATALOG.filter(c=>c.id!=='future-aha').sort((a,b)=>b.name.length-a.name.length).find(c=>norm(c.name).length>4&&lower.includes(norm(c.name)));
-      if(found){uploader.identifiedId=found.id;document.getElementById('v06-id').value=found.id;}
-      const pull=(pat)=>{let m=text.match(pat);return m?Number(m[1].replace(',','.')):null;};
-      const regex={
-        pv:/(?:PV|HP)\s*(?:\d+\s*\+\s*\d+\s*)?(\d{3,5})/i,
-        atk:/(?:ATQ|ATK)\s*(?:\d+\s*\+\s*\d+\s*)?(\d{3,5})/i,
-        def:/(?:DEF)\s*(?:\d+\s*\+\s*\d+\s*)?(\d{3,5})/i,
-        spd:/(?:VEL|SPD)\s*(?:\d+\s*\+\s*\d+\s*)?(\d{2,3})/i,
-        crit:/(?:Chance\s+de\s+CRIT|CRIT\s+Rate)\s*(\d{1,3}[.,]\d)/i,
-        cdmg:/(?:Dano\s+CRIT|CRIT\s+DMG)\s*(\d{1,3}[.,]\d)/i,
-        break:/(?:Efeito\s+de\s+Quebra|Break\s+Effect)\s*(\d{1,3}[.,]\d)/i,
-        energy:/(?:Regenera.{0,15}Energia|Energy\s+Regeneration)\s*(\d{1,3}[.,]\d)/i
-      };
-      let fields=0;
-      for(const [key,pattern] of Object.entries(regex)){let value=pull(pattern);const el=document.getElementById('v06-'+key);if(el&&Number.isFinite(value)){el.value=value;fields++;}}
-      let level=pull(/(?:Nv\.?|Lv\.?)\s*(\d{1,2})/i);if(level){document.getElementById('v06-level').value=level;fields++;}
-      const eSuggested=await suggestEidolons();
-      if(eSuggested!=null){document.getElementById('v06-e').value=eSuggested;uploader.eidolon=eSuggested;}
-      if(status)status.textContent='Leitura concluída: '+fields+' campos detectados. '+(eSuggested!==null?'Eidolons sugeridos: E'+eSuggested+'. ':'')+'Revise os números antes de salvar.';
-    }catch(err){if(status)status.textContent='Não foi possível reconhecer automaticamente: '+err.message+'. Você pode preencher os campos manualmente.';}
+      bitmap=await createImageBitmap(uploader.file);
+      const ratio=bitmap.width/bitmap.height;
+      if(ratio<.94||ratio>1.26)throw Error('Formato diferente do registro de batalha conhecido. Preencha os campos manualmente, sem confiar em OCR de outra tela.');
+      worker=await ocr.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text')update('Reconhecendo campos: '+Math.round(m.progress*100)+'%');}});
+      await worker.setParameters({tessedit_pageseg_mode:'6'});
+      const header=(await worker.recognize(imageRegion(bitmap,.018,.024,.34,.084,2.5))).data.text||'';
+      const fullPanel=(await worker.recognize(imageRegion(bitmap,.367,.122,.61,.24,1.6))).data.text||'';
+      const cone=(await worker.recognize(imageRegion(bitmap,.045,.602,.315,.146,2.2))).data.text||'';
+      const valueStrip=makeTotalStatStrip(bitmap);
+      const numeric=(await worker.recognize(valueStrip.canvas)).data.text||'';
+      uploader.ocrText=['PERSONAGEM',header,'ATRIBUTOS',fullPanel,'CONE',cone,'NÚMEROS',numeric].join('\n');
+      const h=norm(header), panel=norm(fullPanel);
+      let identifiedId='';
+      if(h.includes('desbrav')||h.includes('trailblaz')){
+        if(panel.includes('raio')||panel.includes('lightning')||panel.includes('thunder'))identifiedId='8009';
+      }else{
+        const found=CATALOG.filter(c=>c.id!=='future-aha'&&c.name&&norm(c.name).length>=4)
+          .sort((a,b)=>b.name.length-a.name.length).find(c=>h.includes(norm(c.name)));
+        if(found)identifiedId=found.id;
+      }
+      if(identifiedId && !CATALOG.find(c=>c.id===identifiedId) && identifiedId==='8009' && gameData.chars?.['8009']){
+        CATALOG.push({...gameData.chars['8009'],name:'Desbravador · Euforia (Caelus)'});
+        const select=document.getElementById('v06-id');
+        if(select)select.add(new Option('Caelus · Desbravador da Euforia','8009'));
+      }
+      if(identifiedId&&document.getElementById('v06-id')){
+        uploader.identifiedId=identifiedId;document.getElementById('v06-id').value=identifiedId;
+      }
+      const totals=parseTotalStatLines(numeric,valueStrip.rows);
+      for(const [key,value] of Object.entries(totals)){
+        const field=document.getElementById('v06-'+key);
+        if(field)field.value=String(value);
+      }
+      const levelMatch=header.match(/(?:Nv|Lv)\W{0,3}(\d{1,2})/i);
+      if(levelMatch){const el=document.getElementById('v06-level');if(el)el.value=levelMatch[1];}
+      const supMatch=cone.match(/(?:Nv|Lv)\W*([1-5])\s+de\s+(?:sobreposi|superimposi)/i)
+                  || cone.match(/(?:sobreposi|superimposi)[^\n]{0,12}([1-5])/i);
+      if(supMatch){uploader.superimposition=Number(supMatch[1]);const el=document.getElementById('v06-s');if(el)el.value=supMatch[1];}
+      if(/euforia\s+repleta/i.test(cone))uploader.cone='Euforia Repleta de Bênçãos';
+      const e=await suggestEidolons();
+      if(e!==null){uploader.eidolon=e;const el=document.getElementById('v06-e');if(el)el.value=String(e);}
+      const found=Object.keys(totals).length;
+      const missing=['pv','atk','def','spd','crit','cdmg','break','energy'].filter(k=>!Object.hasOwn(totals,k));
+      update('Identificação: '+(identifiedId==='8009'?'Caelus · Euforia':identifiedId?lookup(identifiedId).name:'não confirmada')+
+        ' · '+found+'/8 atributos totais detectados.'+
+        (e!==null?' Eidolons sugeridos: E'+e+'.':' Verifique manualmente os Eidolons.')+
+        (supMatch?' Cone S'+supMatch[1]+'.':' Confira a sobreposição do cone.')+
+        (missing.length?' Confira/preencha: '+missing.join(', ')+'.':'')+
+        ' Confira todos os dados antes de salvar.');
+    }catch(err){
+      update('Reconhecimento indisponível: '+String(err.message||err)+'. Não preenchi valores de relíquias como atributos totais; confira os campos manualmente.');
+    }finally{
+      try{await worker?.terminate()}catch(_){}
+      try{bitmap?.close()}catch(_){}
+    }
   };
   async function suggestEidolons(){
-    const img=new Image();await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=uploader.preview});
+    if(!uploader.preview)return null;
+    const img=new Image();
+    await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=uploader.preview;});
     if(!img.naturalWidth)return null;
-    const canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+    const canvas=document.createElement('canvas');
+    canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
     const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
-    let unlocked=0;
+    const ratios=[];
     for(let i=0;i<6;i++){
-      const cx=img.naturalWidth*(0.085+0.041*i),cy=img.naturalHeight*.572,r=Math.max(3,Math.round(img.naturalWidth*.006));
-      const pix=ctx.getImageData(Math.max(0,Math.floor(cx-r)),Math.max(0,Math.floor(cy-r)),r*2,r*2).data;let bright=0;
-      for(let j=0;j<pix.length;j+=4){const v=(pix[j]+pix[j+1]+pix[j+2])/3;if(v>175)bright++;}
-      if(bright/(pix.length/4)>.18)unlocked++;else break;
+      const cx=img.width*(.084+.0405*i),cy=img.height*.572,r=Math.max(7,Math.round(img.width*.012));
+      const pix=ctx.getImageData(Math.max(0,Math.floor(cx-r)),Math.max(0,Math.floor(cy-r)),Math.round(r*2),Math.round(r*2)).data;
+      let bright=0;
+      for(let j=0;j<pix.length;j+=4)if((pix[j]+pix[j+1]+pix[j+2])/3>175)bright++;
+      ratios.push(bright/(pix.length/4));
     }
-    return unlocked;
+    // Só sugere valores quando há seis símbolos claramente iluminados ou contraste forte.
+    // Um E0 sugerido incorretamente é pior do que pedir confirmação manual.
+    if(ratios.every(v=>v>.19))return 6;
+    for(let n=1;n<=5;n++){
+      const lit=ratios.slice(0,n),unlit=ratios.slice(n);
+      if(Math.min(...lit)>.18 && Math.max(...unlit)<.095)return n;
+    }
+    return null;
   }
+
   window.v06SaveImport=function(){
-    const id=document.getElementById('v06-id')?.value;if(!id)return;
+    const id=document.getElementById('v06-id')?.value;
+    if(!id){showToast('Escolha o personagem correto antes de salvar');return;}
+    if(!document.getElementById('v06-confirm')?.checked){
+      showToast('Confira os números e marque a confirmação antes de salvar');return;
+    }
+    const important=['pv','atk','def','spd','crit','cdmg'];
+    if(important.some(k=>document.getElementById('v06-'+k)?.value==='')){
+      showToast('Complete os seis atributos principais antes de salvar');return;
+    }
+    if(!document.getElementById('v06-e')?.value||!document.getElementById('v06-s')?.value){
+      // E0 equivale à string '0', que é truthy.
+      showToast('Selecione os Eidolons e a sobreposição do cone');return;
+    }
     const prior=state.characters[id]||{level:1,e:0,s:1,cone:''};
     const read=k=>{const v=document.getElementById('v06-'+k)?.value;return v===''||v==null?null:Number(v);};
     const keys=['level','e','s','pv','atk','def','spd','crit','cdmg','break','energy'];
     for(const k of keys){const n=read(k);if(Number.isFinite(n))prior[k]=n;}
+    if(uploader.cone)prior.cone=uploader.cone;
     state.characters[id]=prior;state.v06Screens||={};state.v06Relics||={};
     if(uploader.preview){const image=new Image();image.src=uploader.preview;state.v06Screens[id]=uploader.preview;}
     if(uploader.relImages.length)state.v06Relics[id]=uploader.relImages;
