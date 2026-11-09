@@ -1,0 +1,29 @@
+name: Imagens oficiais do Nexus
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/sync_art.py','.github/workflows/official-art.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  art:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/sync_art.py
+      - name: Salvar imagens
+        run: |
+          git config user.name "Anderus Art Bot"
+          git config user.email "anderus-bot@users.noreply.github.com"
+          git add assets/official/ || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Salva artes reais do jogo para o Nexus [bot]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
