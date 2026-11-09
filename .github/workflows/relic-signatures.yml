@@ -1,0 +1,32 @@
+name: Indice visual de reliquias
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/generate_relic_signatures.py'
+      - '.github/workflows/relic-signatures.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  signatures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install Pillow==11.3.0
+      - run: python scripts/generate_relic_signatures.py
+      - name: Salvar comparador
+        run: |
+          git config user.name "Anderus Catalog Bot"
+          git config user.email "anderus-bot@users.noreply.github.com"
+          git add data/relic-icon-signatures.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Atualiza imagens-referência das relíquias [bot]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
