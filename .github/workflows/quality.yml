@@ -1,0 +1,17 @@
+name: Validar Nexus v0.9
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  static-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Sintaxe, temas, OCR e cobertura de modos
+        run: node scripts/check-v09.mjs

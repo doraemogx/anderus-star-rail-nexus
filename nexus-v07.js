@@ -35,38 +35,62 @@ function specialText(root){
  return changes;
 }
 
-// Dynamic optional theme: download only when Aeon Aha / future-aha is selected.
-let ahaModuleLoading=false;
-let ahaThemeUnavailable=false;
-function enhanceAhaTheme(){
- const app=document.querySelector('.app');if(!app)return;
- const selected=typeof state!=='undefined'&&state.theme==='future-aha';
- const existing=document.getElementById('aha-theme-css');
- if(!selected){
-  window.AnderusAha?.cleanup?.();
-  if(existing)existing.remove();
-  return;
- }
- if(ahaThemeUnavailable)return; // graceful fallback to the original character theme
- if(!existing){
-  const link=document.createElement('link');link.id='aha-theme-css';link.rel='stylesheet';
-  link.href='./themes/aha.css?v=1';
-  link.onerror=()=>{ahaThemeUnavailable=true;link.remove();window.AnderusAha?.cleanup?.();};
+// Nexus 0.9 enhancements for endgame, screenshot review, and visual variants.
+let v09Loading=false;
+function enhanceNexusV09(){
+ if(!document.getElementById('nexus-v09-css')){
+  const link=document.createElement('link');link.id='nexus-v09-css';link.rel='stylesheet';link.href='./nexus-v09.css?v=2';
   document.head.appendChild(link);
  }
- if(window.AnderusAha){window.AnderusAha.paint();return;}
+ if(window.NexusV09){window.NexusV09.enhance();return;}
+ if(v09Loading)return;
+ v09Loading=true;
+ const script=document.createElement('script');script.src='./nexus-v09.js?v=2';script.async=true;
+ script.onload=()=>{v09Loading=false;window.NexusV09?.enhance?.();};
+ script.onerror=()=>{v09Loading=false;console.warn('Guia v0.9 indisponível; interface anterior preservada.');};
+ document.head.appendChild(script);
+}
+// Exclusive optional Aha theme; the Original/ChatGPT setting is separate from account data.
+let ahaModuleLoading=false,ahaDetailLoading=false;
+function isAhaVisual(){
+ if(typeof state==='undefined'||state.theme!=='future-aha')return false;
+ try{return localStorage.getItem('anderus-aeon-aha-visual-mode')!=='original';}catch(_){return true;}
+}
+function ensureAhaDetail(){
+ if(!document.getElementById('aha-detail-css')){
+  const link=document.createElement('link');link.id='aha-detail-css';link.rel='stylesheet';
+  link.href='./themes/aha-detail.css?v=2';link.onerror=()=>link.remove();
+  document.head.appendChild(link);
+ }
+ if(window.AnderusAhaDetail){window.AnderusAhaDetail.paint();return;}
+ if(ahaDetailLoading)return;ahaDetailLoading=true;
+ const script=document.createElement('script');script.src='./themes/aha-detail.js?v=2';script.async=true;
+ script.onload=()=>{ahaDetailLoading=false;if(isAhaVisual())window.AnderusAhaDetail?.paint?.();};
+ script.onerror=()=>{ahaDetailLoading=false;console.warn('Ornamentos de Aha indisponíveis');};
+ document.head.appendChild(script);
+}
+function enhanceAhaTheme(){
+ const app=document.querySelector('.app');if(!app)return;
+ const selected=isAhaVisual(),existing=document.getElementById('aha-theme-css');
+ if(!selected){
+  window.AnderusAhaDetail?.cleanup?.();
+  window.AnderusAha?.cleanup?.();
+  if(existing)existing.remove();
+  document.getElementById('aha-detail-css')?.remove();
+  return;
+ }
+ if(!existing){
+  const link=document.createElement('link');link.id='aha-theme-css';link.rel='stylesheet';
+  link.href='./themes/aha.css?v=2';
+  link.onerror=()=>{link.remove();window.AnderusAha?.cleanup?.();};
+  document.head.appendChild(link);
+ }
+ if(window.AnderusAha){window.AnderusAha.paint();ensureAhaDetail();return;}
  if(ahaModuleLoading)return;
  ahaModuleLoading=true;
- const script=document.createElement('script');script.src='./themes/aha.js?v=1';script.async=true;
- script.onload=()=>{
-  ahaModuleLoading=false;
-  if(!ahaThemeUnavailable&&typeof state!=='undefined'&&state.theme==='future-aha')window.AnderusAha?.paint?.();
- };
- script.onerror=()=>{
-  ahaModuleLoading=false;ahaThemeUnavailable=true;
-  document.getElementById('aha-theme-css')?.remove();
-  window.AnderusAha?.cleanup?.();
- };
+ const script=document.createElement('script');script.src='./themes/aha.js?v=2';script.async=true;
+ script.onload=()=>{ahaModuleLoading=false;if(isAhaVisual()){window.AnderusAha?.paint?.();ensureAhaDetail();}};
+ script.onerror=()=>{ahaModuleLoading=false;document.getElementById('aha-theme-css')?.remove();app.classList.remove('aha-theatre');};
  document.head.appendChild(script);
 }
 
@@ -123,6 +147,7 @@ function enhancePage(){
  const app=document.querySelector('.app');
  if(app)app.classList.add('v07-shell');
  enhanceAhaTheme();
+ enhanceNexusV09();
 }
 let lastPending=false;
 const observer=new MutationObserver(()=>{
@@ -137,14 +162,24 @@ function start(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 function buildThemePrompt(){
- const selected=typeof state!=='undefined' ? state.theme : '8001';
- let char='Caelus';
- try{if(typeof lookup==='function')char=lookup(selected)?.name||char;}catch(e){}
- return 'Você vai transformar VISUALMENTE o meu site ANDERUS STAR RAIL NEXUS, hospedado em https://doraemogx.github.io/anderus-star-rail-nexus/ e mantido no GitHub em doraemogx/anderus-star-rail-nexus. Personagem do tema escolhido: '+char+' (ID '+selected+').\n\n'+
- 'FUNÇÃO: aja como diretor de arte de Honkai: Star Rail e desenvolvedor frontend sênior. Pesquise antes de implementar: personagem, história visual, oficiais de splash art e Eidolons, paleta, ícones, símbolos do elemento/caminho, ambientes, roupas, materiais promocionais e fontes verificáveis. Priorize imagens OFICIAIS do jogo; nunca gere uma imagem alegando ser oficial. Não use fanart sem atribuição/licença e não invente imagens de Eidolons.\n\n'+
- 'DIREÇÃO CRIATIVA: transformação estrutural real, não recolor. Crie identidade de '+char+' com novo hero cinematográfico, molduras, ícones, fundo, partículas, texturas, tipografia, ilustrações e animações, mantendo legibilidade de dados e UX. Faça versões mobile-first (390 px) e desktop 1440 px. Preserve navegação funcional, importação de prints, Pom-Pom editorial, farm, kits, beta, Endgame e a possibilidade de voltar ao tema Caelus.\n\n'+
- 'TECNOLOGIA: inspecione o código existente primeiro. Crie tema isolado em arquivo próprio com fallback e carregamento sob demanda, sem modificar dados locais nem pedir API paga. Use assets externos com atribuição e fallback visual, prefira hospedar os assets autorizados no repositório. Evite imagens achatadas e fontes quebradas. Respeite acessibilidade, animação reduzida, performance de celular, caching da PWA e layouts responsivos. Faça commits no GitHub apenas após revisar o que será alterado e testar sintaxe, navegação e preview. Confirme o status do GitHub Pages. Se não tiver permissão de escrita, peça para conectar o GitHub, não finja publicar.\n\n'+
- 'ENTREGA: pesquisa visual fundamentada, conceito específico do personagem, mudanças reais no código, testes, commit e link da versão publicada. Não substitua a conta do usuário, nem descarte os outros temas.';
+ const selected=typeof state!=='undefined'?state.theme:'8001';
+ let name='Caelus';
+ try{if(typeof lookup==='function')name=lookup(selected)?.name||name;}catch(_){}
+ const intro='Você é diretor de arte especializado em Honkai: Star Rail, UX mobile-first, frontend sênior, acessibilidade e QA. Trabalhe diretamente no repositório GitHub doraemogx/anderus-star-rail-nexus (site: https://doraemogx.github.io/anderus-star-rail-nexus/). Tema selecionado: '+name+' (ID '+selected+').';
+ return [
+ intro,
+ '1. AUDITORIA OBRIGATÓRIA: consulte README, index.html, v06.js/css, nexus-v07.js/css, scripts de OCR, dados, PWA, módulos e Theme Studio. Mapeie a navegação real e descubra como o estado da conta fica salvo. Nenhuma sobrescrita destrutiva.',
+ '2. PESQUISA VISUAL: use splash art, retratos, Eidolons, ícones de caminho/elemento, figurino, arma, cenários, texturas, regiões e trailer OFICIAIS e verificáveis. Separe materiais confirmados, data-mining e fanart; respeite licença/atribuição e nunca apresente arte gerada como oficial.',
+ '3. DIREÇÃO DE ARTE ESPECÍFICA: extraia 6-10 códigos visuais realmente reconhecíveis do personagem. Construa um sistema completo de design — componentes, títulos, serifas/sans, geometria, iconografia vetorial, fundos por tela, molduras, transições, microinterações, botões, tabelas, formulários, menus e modais. Não se limite a trocar paleta. Evite dashboard genérico.',
+ '4. TODAS AS TELAS: início/hero, Minha Conta, importação de prints, cards e ficha de personagens, Relíquias, Build Lab, Farm Planner, Endgame (MoC, PF, AS, AA), Radar, Beta & Kits, diário Pom-Pom, Theme Studio e configurações. Cada tela deve ter identidade própria porém coerente; mantenha legibilidade de atributos e dados.',
+ '5. THEME STUDIO: mantenha opções reversíveis Original do Nexus versus Criação ChatGPT; outros personagens e Caelus não devem perder seu tema. Prefira arquivo CSS/JS isolado carregado apenas quando o personagem/variante correspondente estiver ativo.',
+ '6. IMPORTAÇÃO: preserve o OCR local e a confirmação humana. Identifique os 6 equipamentos, conjunto, atributo principal e até 4 subatributos com valor; preencha apenas o que OCR consegue ler de modo plausível e marque dúvida com campo editável. Não fabrique números ou peças. Teste exemplos realistas.',
+ '7. ENDGAME: documente a rotação vigente e sua validade, a regra específica de cada modo, bônus, todos os nós/chefes conhecidos, fraquezas, fases, imagens de referência verificadas e mecânicas. Construa equipes somente dos personagens registrados; não repita membros entre Cavaleiros; destaque times parciais e jamais prometa ciclos sem simulação.',
+ '8. UX: projetar e verificar 390px (Android com barra inferior, recortes e safe-area) e 1440px; hierarquia visual, layout sem horizontal overflow, targets de toque >=44px, teclado, labels, contraste, fallback de fonte, loading, erro offline e preferências de animação reduzida. Imagens object-fit:contain, sem distorção.',
+ '9. ENGENHARIA: sem API paga, tokens secretos, trackers novos, rotinas que zerem localStorage, alteração do inventário ou assets de procedência obscura. Prefira SVG/CSS próprios para ornamentos; créditos nas artes HoYoverse; fallbacks reais de imagens. Invalide o cache PWA quando necessário.',
+ '10. QA E PUBLICAÇÃO: antes do commit faça diff revisado, sintaxe JS/CSS, smoke test da navegação e troca de temas, OCR e modais. Se possível faça screenshots de 390px e 1440px e confira visualmente. Com permissão, faça commit atômico e acompanhe o GitHub Pages até sucesso. Caso não possa testar algum item, diga explicitamente.',
+ '11. ENTREGA: liste arquivos modificados, origem dos assets, diferenças de design por aba, limites técnicos, testes executados, SHA do commit, status do deploy e endereço publicado. NÃO substitua dados locais nem afirme publicação sem verificar.'
+ ].join('\n\n');
 }
 window.v07ThemeDeepDive=function(){const p=buildThemePrompt();window.open('https://chatgpt.com/?q='+encodeURIComponent(p),'_blank','noopener,noreferrer');};
 window.v07CopyThemePrompt=async function(){

@@ -22,7 +22,7 @@ function renderHome(){
     '<div class="aha-intro">'+
       '<div class="aha-overline"><span class="aha-diamond" aria-hidden="true">◆</span> QUÂNTICO <span class="aha-sep"></span>'+
        '<img src="'+PATH_ICON+'" alt="" loading="lazy"> CAMINHO DA EUFORIA</div>'+
-      '<p class="aha-chapter">A DEUSA DO LOTTO APRESENTA</p>'+
+      '<p class="aha-chapter">O ÚLTIMO ATO DE PLANARCADIA</p>'+
       '<h1><span>O universo</span><em>é o palco.</em></h1>'+
       '<p class="aha-leading">Nihilux. Rá. Aeon ★ Aha.<br>O espetáculo pode mudar. Sua jornada continua sendo sua.</p>'+
       '<div class="aha-hero-actions">'+
@@ -33,6 +33,8 @@ function renderHome(){
     '<div class="aha-side-mark" aria-hidden="true">THE SHOW MUST GO ON ✦ 11.11.2026</div>'+
    '</div>');
   hero.appendChild(art);
+  const pathIcon=art.querySelector('.aha-overline img');
+  if(pathIcon)pathIcon.addEventListener('error',function(){this.replaceWith(document.createTextNode('✧'));});
   const img=art.querySelector('.aha-portrait img');
   img.addEventListener('error',function(){if(this.dataset.tried)return;this.dataset.tried='1';this.src=FALLBACK;});
  }
@@ -87,6 +89,6 @@ function cleanup(){
  document.querySelector('.app')?.classList.remove('aha-theatre');
  document.querySelectorAll('.aha-show,.aha-marquee,.aha-actline,.aha-gallery,.aha-credit').forEach(function(node){node.remove();});
 }
-window.AnderusAha={paint:paint,cleanup:cleanup,version:'1.0'};
+window.AnderusAha={paint:paint,cleanup:cleanup,version:'2.0'};
 paint();
 })();

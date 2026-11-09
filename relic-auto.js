@@ -51,11 +51,12 @@ function compareIcon(bitmap,refs,index){
 }
 function normalized(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
 function inferStat(label,amount){
- const name=normalized(label);const isPct=/%/.test(amount);
+ const name=normalized(label).replace(/[^a-z0-9% ]/g,' ').replace(/\s+/g,' ').trim();
+ const isPct=/%/.test(String(amount||'')+' '+String(label||''));
  if(/energia|regenera/.test(name))return 'Regeneração de Energia';
  if(/cura|healing/.test(name))return 'Bônus de Cura Realizada';
- if(/chance|taxa.*crit|crit.*rate/.test(name))return 'Chance de CRIT';
- if(/dano.*crit|crit.*dmg/.test(name))return 'Dano CRIT';
+ if(/chance|taxa.*crit|crit.*rate|crit chance|critico.*chance/.test(name))return 'Chance de CRIT';
+ if(/dano.*crit|crit.*dmg|crit.*dano|dano critico/.test(name))return 'Dano CRIT';
  if(/quebra|break/.test(name))return 'Efeito de Quebra';
  if(/acerto.*efeito|effect.*hit/.test(name))return 'Taxa de Acerto de Efeito';
  if(/res.*efeito|effect.*res/.test(name))return 'RES a Efeito';
@@ -95,31 +96,96 @@ function makeRelicStrip(bitmap){
  }
  return output;
 }
+function cleanRow(text){
+ let clean=String(text||'').replace(/^\s*\d{1,2}[\s.:)\-]*/,'').replace(/\s+/g,' ').trim();
+ // Some OCR engines merge label and last numeric token. Split from the right.
+ const match=clean.match(/^(.*?\D)\s*([+\-]?\d{1,5}(?:[.,]\d{1,2})?\s*%?)\s*$/);
+ if(match)return {name:match[1].trim(),value:match[2].trim()};
+ return {name:clean,value:''};
+}
 function extractRows(ocr){
  const rows=Array.from({length:30},()=>({name:'',value:''}));
  const words=ocr.data?.words||[];
- if(words.length){
-  for(const w of words){
-    const box=w.bbox||{},idx=Math.floor((box.y0+box.y1)/2/60);
-    if(idx<0||idx>=30||!w.text)continue;
-    if(box.x0<650)rows[idx].name+=' '+w.text;
-    else rows[idx].value+=' '+w.text;
+ for(const w of words){
+  const box=w.bbox||{},at=(Number(box.y0)+Number(box.y1))/2;
+  if(!Number.isFinite(at))continue;
+  const i=Math.floor(at/60);
+  if(i<0||i>=30||!w.text)continue;
+  if(Number(box.x0)<650)rows[i].name+=' '+w.text;
+  else rows[i].value+=' '+w.text;
+ }
+ const textLines=String(ocr.data?.text||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+ // Only trust line order when the OCR returned an exact row-per-line image.
+ if(textLines.length===30){
+  textLines.forEach((line,i)=>{
+   const split=cleanRow(line);
+   if(!rows[i].name.trim())rows[i].name=split.name;
+   if(!rows[i].value.trim())rows[i].value=split.value;
+  });
+ }
+ return rows.map(r=>{
+  const both=cleanRow(r.name+' '+r.value);
+  const separate=cleanRow(r.name);
+  const value=r.value.trim()||both.value||separate.value;
+  const name=(both.value?both.name:separate.value?separate.name:r.name).replace(/^\s*\d{1,2}\s*/, '').trim();
+  return {name,value};
+ });
+}
+function makeNumberStrip(bitmap){
+ const canvas=document.createElement('canvas');canvas.width=560;canvas.height=30*60;
+ const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,560,1800);
+ const sx=bitmap.width/2000,sy=bitmap.height/1826;
+ for(let i=0;i<6;i++){
+  const col=LEFTS[i],base=i<3?0:5;
+  for(let j=0;j<5;j++){
+   const y=ROW_Y[base+j],idx=i*5+j;
+   // Digit-only rectangular crop, aligned to the corresponding fixed stat row.
+   ctx.drawImage(bitmap,(col+271)*sx,(y-23)*sy,127*sx,46*sy,7,idx*60+1,540,58);
   }
- }else{
-  const lines=(ocr.data?.text||'').split(/\n+/);
-  for(let i=0;i<Math.min(30,lines.length);i++){
-    const text=lines[i].replace(/^\s*\d{2}\s*/,'');
-    const parts=text.split(/\s{2,}/);
-    rows[i]={name:parts[0]||'',value:parts.slice(1).join(' ')};
-  }
+ }
+ return canvas;
+}
+function parseNumberRows(ocr){
+ const values=Array(30).fill(null);
+ const words=ocr.data?.words||[];
+ for(const word of words){
+  const bb=word.bbox||{},cy=(Number(bb.y0)+Number(bb.y1))/2;
+  const idx=Math.floor(cy/60);
+  if(idx<0||idx>29||!Number.isFinite(cy))continue;
+  const str=String(word.text||'').replace(/\s/g,'');
+  if(/\d/.test(str))values[idx]=(values[idx]||'')+str;
+ }
+ const lines=String(ocr.data?.text||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+ if(lines.length===30)lines.forEach((line,i)=>{if(!values[i])values[i]=line;});
+ return values;
+}
+async function recognizeStats(bitmap,worker){
+ await worker.setParameters({tessedit_pageseg_mode:'6',tessedit_char_whitelist:''});
+ const main=await worker.recognize(makeRelicStrip(bitmap));
+ const rows=extractRows(main);
+ // A second digit-focused pass rescues values lost by general OCR;
+ // aligned by actual word coordinates, never guessed sequentially.
+ const missing=rows.filter(x=>!/\d/.test(x.value)).length;
+ if(missing){
+  await worker.setParameters({tessedit_pageseg_mode:'6',tessedit_char_whitelist:'0123456789.,%+'});
+  const numeric=await worker.recognize(makeNumberStrip(bitmap));
+  const numbers=parseNumberRows(numeric);
+  for(let i=0;i<30;i++)if(!/\d/.test(rows[i].value)&&numbers[i])rows[i].value=numbers[i];
  }
  return rows;
 }
-async function recognizeStats(bitmap,worker){
- const strips=makeRelicStrip(bitmap);
- await worker.setParameters({tessedit_pageseg_mode:'6',tessedit_char_whitelist:''});
- const ocr=await worker.recognize(strips);
- return extractRows(ocr);
+function plausible(stat,value,main){
+ if(!Number.isFinite(value)||value<=0)return false;
+ const percent=/%/.test(stat)||/CRIT|Quebra|Energia|Cura|RES a|Acerto|Bônus de Dano/.test(stat);
+ if(main){
+  if(stat==='VEL')return value>=5&&value<=35;
+  if(stat==='PV'||stat==='ATQ'||stat==='DEF')return value>=50&&value<=10000;
+  if(percent)return value>=1&&value<=100;
+  return value<15000;
+ }
+ if(stat==='VEL')return value>=1&&value<=30;
+ if(stat==='PV'||stat==='ATQ'||stat==='DEF')return value>=1&&value<=200;
+ return value>=0.1&&value<=60;
 }
 export async function autoDetectRelics(bitmap,worker){
  const report={recognized:0,sets:0,uncertain:[],suggestions:[],status:'análise não concluída'};
@@ -159,9 +225,13 @@ export async function autoDetectRelics(bitmap,worker){
     const statId=j===0?'main':'k'+(j-1),valId=j===0?'mainval':'v'+(j-1);
     const field=document.getElementById('v06-r'+i+'-'+statId);
     const valField=document.getElementById('v06-r'+i+'-'+valId);
-    if(stat&&Number.isFinite(value)&&field&&[...field.options].some(o=>o.value===stat)){
+    if(stat&&plausible(stat,value,j===0)&&field&&valField&&[...field.options].some(o=>o.value===stat)){
       field.value=stat;valField.value=String(value);
-      field.style.borderColor='#78c5ac';valField.style.borderColor='#78c5ac';report.recognized++;
+      field.style.borderColor='#e7bd74';valField.style.borderColor='#e7bd74';
+      field.title='Sugerido por OCR — confirme no print antes de salvar';
+      valField.title='Número extraído automaticamente — confira separador e porcentagem';
+      field.dataset.ocrSuggestion='1';valField.dataset.ocrSuggestion='1';
+      report.recognized++;
     }else{
       report.uncertain.push(SLOT_NAMES[i]+': '+(j===0?'principal':('secundário '+j)));
     }
@@ -171,6 +241,6 @@ export async function autoDetectRelics(bitmap,worker){
   const i=btn.dataset.ridx;const el=document.getElementById('v06-r'+i+'-set');
   if(el){el.value=btn.dataset.setid;el.style.borderColor='#78c5ac';}
  }));
- report.status=report.sets+' / 6 conjuntos sugeridos; '+report.recognized+' / 30 atributos de relíquias extraídos. '+report.uncertain.length+' campos requerem revisão.';
+ report.status=report.sets+' / 6 conjuntos sugeridos; '+report.recognized+' / 30 atributos de relíquias preenchidos pelo OCR. '+report.uncertain.length+' campos requerem revisão.';
  return report;
 }
