@@ -1,0 +1,24 @@
+#nexus-farm-dialog{width:min(920px,calc(100vw - 20px));max-width:920px;max-height:90dvh;overflow:auto;padding:0;background:#101f32;color:#f4e8d7;border:1px solid #d7ba8f;border-radius:18px;box-shadow:0 20px 85px #000d}
+#nexus-farm-dialog::backdrop{background:#010710df}
+#nexus-farm-dialog .nexus-farm-body{padding:clamp(15px,3.5vw,30px);font:14px/1.6 system-ui}
+#nexus-farm-dialog header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+#nexus-farm-dialog header span{font-size:10px;letter-spacing:2px;color:#edc48b}
+#nexus-farm-dialog h2{font:500 clamp(28px,5vw,42px) Georgia,serif;margin:0 0 8px}
+#nexus-farm-dialog header p{margin:0 0 18px;color:#bfcddd}
+#nexus-farm-dialog button{height:44px;width:44px;border:1px solid #a6a099;background:#263954;border-radius:9px;color:#fff;font-size:24px;cursor:pointer}
+#nexus-farm-dialog input:focus-visible,#nexus-farm-dialog select:focus-visible,#nexus-farm-dialog button:focus-visible{outline:3px solid #f2d19b;outline-offset:3px}
+#nexus-farm-dialog label{display:block;font-size:12px;color:#e1cda9;min-width:0}
+#nexus-farm-dialog .nexus-farm-inputs{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:20px}
+#nexus-farm-dialog select,#nexus-farm-dialog input{display:block;width:100%;min-height:44px;padding:10px;border:1px solid #74849c;border-radius:9px;background:#1b2b45;color:#fff;font:13px system-ui}
+#nexus-farm-dialog .nexus-farm-total{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:0 0 13px;padding:13px;background:#28324c;border:1px solid #a9957b;border-radius:9px}
+#nexus-farm-dialog .nexus-farm-total strong{color:#f6d6a5}#nexus-farm-dialog .nexus-farm-total span{font-size:12px}
+#nexus-farm-dialog .nexus-farm-material{display:flex;align-items:center;gap:13px;padding:13px;margin-bottom:9px;border:1px solid #53657e;border-radius:11px;background:#17283e}
+#nexus-farm-dialog .nexus-farm-material>img{width:52px;height:52px;object-fit:contain;flex:0 0 52px}
+#nexus-farm-dialog .nexus-farm-material>div{flex:1;min-width:0}
+#nexus-farm-dialog .nexus-farm-material h3{font-size:15px;margin:0 0 3px;overflow-wrap:anywhere}
+#nexus-farm-dialog .nexus-farm-material p{margin:3px 0;color:#d3e0ed;font-size:12px;overflow-wrap:anywhere}
+#nexus-farm-dialog .nexus-farm-material strong{color:#f5ca90}
+#nexus-farm-dialog .nexus-farm-material label{width:104px;flex:0 0 104px}
+#nexus-farm-dialog .nexus-farm-material details summary{font-size:11px;color:#f1d4a5;cursor:pointer}
+#nexus-farm-dialog .nexus-farm-source,#nexus-farm-dialog .nexus-farm-caveat{margin:17px 0 0;color:#becad9;font-size:12px}
+@media(max-width:650px){#nexus-farm-dialog .nexus-farm-inputs{grid-template-columns:1fr}#nexus-farm-dialog .nexus-farm-material{gap:7px;padding:10px}#nexus-farm-dialog .nexus-farm-material>img{width:39px;height:39px;flex-basis:39px}#nexus-farm-dialog .nexus-farm-material label{width:75px;flex-basis:75px}}
