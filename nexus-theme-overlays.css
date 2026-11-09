@@ -6,7 +6,7 @@ html.nexus-theme-aeon{
  --nexus-overlay-foil:#f1ceac;
  --nexus-overlay-muted:#d6bec8;
 }
-html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-diagnostics-dialog,.nexus-search-detail){
+html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-relic-optimizer,#nexus-diagnostics-dialog,.nexus-search-detail){
  position:fixed;
  isolation:isolate;
  border-radius:5px;
@@ -15,7 +15,7 @@ html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dia
  border:1px solid var(--nexus-overlay-border);
  box-shadow:0 0 0 5px #e3b0b212,0 22px 80px #09030dcb;
 }
-html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-diagnostics-dialog,.nexus-search-detail)::before{
+html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-relic-optimizer,#nexus-diagnostics-dialog,.nexus-search-detail)::before{
  content:"";
  position:absolute;pointer-events:none;z-index:-1;
  top:0;right:0;width:min(48%,360px);height:270px;
@@ -24,17 +24,17 @@ html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dia
  -webkit-mask-image:linear-gradient(#000 0 65%,transparent 100%);
  mask-image:linear-gradient(#000 0 65%,transparent 100%);
 }
-html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-diagnostics-dialog,.nexus-search-detail)>:first-child{
+html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-relic-optimizer,#nexus-diagnostics-dialog,.nexus-search-detail)>:first-child{
  position:relative;z-index:1;
 }
-html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog) :is(.kit-eyebrow,.kit-type,.teamlab-eyebrow,.nexus-search-body>header span,.nexus-farm-body>header span,.nexus-backup-body>header span){
+html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog) :is(.kit-eyebrow,.kit-type,.teamlab-eyebrow,.nexus-search-body>header span,.nexus-farm-body>header span,.nexus-backup-body>header span){
  color:var(--nexus-overlay-foil);
  letter-spacing:.18em;
 }
-html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-diagnostics-dialog) :is(h2,h3){
+html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-relic-optimizer,#nexus-diagnostics-dialog) :is(h2,h3){
  font-family:'Cinzel','Marcellus',Georgia,serif!important;
 }
-html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-diagnostics-dialog) :is(input,select,textarea){
+html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-relic-optimizer,#nexus-diagnostics-dialog) :is(input,select,textarea){
  background:#261831;
  color:#fff1ed;
  border-color:#d0a4a386;
@@ -53,21 +53,21 @@ html.nexus-theme-aeon :is(#nexus-kit-dialog .kit-tabs button[aria-pressed=true],
  color:#351c32;
  border-color:#f1cfac;
 }
-html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-diagnostics-dialog) :is(button,input,select,textarea):focus-visible{
+html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-relic-optimizer,#nexus-diagnostics-dialog) :is(button,input,select,textarea):focus-visible{
  outline:3px solid #f7dbb3!important;
  outline-offset:3px;
 }
-html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-diagnostics-dialog) :is(small,.teamlab-disclaimer,.nexus-farm-source,.nexus-search-help){color:#e2cbda}
+html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-relic-optimizer,#nexus-diagnostics-dialog) :is(small,.teamlab-disclaimer,.nexus-farm-source,.nexus-search-help){color:#e2cbda}
 html.nexus-theme-aeon #nexus-update-banner{background:#27172d;border-color:#e6c8ac}
 html.nexus-theme-aeon #nexus-diagnostics-button{background:#2d1833;border-color:#e5baab}
 @media(max-width:600px){
- html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog)::before{
+ html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog)::before{
   width:230px;height:180px;opacity:.11
  }
 }
 @media(prefers-reduced-motion:reduce){
- html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog) *,
- html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-backup-dialog) *::before{animation:none!important;transition:none!important}
+ html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog) *,
+ html.nexus-theme-aeon :is(#nexus-kit-dialog,#nexus-team-dialog,#nexus-search-dialog,#nexus-farm-dialog,#nexus-warp-dialog,#nexus-traces-dialog,#nexus-relic-optimizer,#nexus-backup-dialog) *::before{animation:none!important;transition:none!important}
 }
 
 html.nexus-theme-aeon #nexus-warp-dialog .nexus-warp-body>header span{color:#f0d0b1}
@@ -77,3 +77,7 @@ html.nexus-theme-aeon #nexus-warp-dialog .nexus-warp-combined{background:#421e3b
 html.nexus-theme-aeon #nexus-traces-dialog .nexus-traces-shell>header span{color:#f1cead}
 html.nexus-theme-aeon #nexus-traces-dialog :is(.nexus-trace-node,.nexus-trace-material){background:#291830;border-color:#cf9aab67}
 html.nexus-theme-aeon #nexus-traces-dialog :is(input,select){background:#301c37;color:#fff0e8;border-color:#d7a8a6}
+
+html.nexus-theme-aeon #nexus-relic-optimizer .nexus-relic-opt-body>header span{color:#f4cfaf}
+html.nexus-theme-aeon #nexus-relic-optimizer :is(.nexus-relic-opt-row,.nexus-relic-opt-overview){background:#281a30;border-color:#c99e9d66}
+html.nexus-theme-aeon #nexus-relic-optimizer .nexus-relic-opt-overview{border-left-color:#ecc6aa}
