@@ -87,7 +87,7 @@ export function examineRelics(records){
  return {registered,complete,counts,flags,records:r};
 }
 export function buildCoach(options={}){
- const {character={},build={},records=[],sets={},cone=null,coneRank=null}=options;
+ const {character={},build={},records=[],sets={},cone=null,coneRank=null,skills=[]}=options;
  const review=examineRelics(records),notes=[];
  const add=(title,body,kind='note')=>notes.push({title,body,kind});
  if(!build||!Object.keys(build).length){
@@ -110,9 +110,42 @@ export function buildCoach(options={}){
     (coneRank?.desc?coneEffect(coneRank,build.s).slice(0,310):'Abra a ficha do cone para conferir o efeito.'),
     incompatible?'warning':'note');
  }else add('Cone por verificar','O cone equipado não foi encontrado no catálogo pelo nome salvo. Confirme a grafia para ver arte, Caminho e efeito.','warning');
+ const kit=(skills||[]).filter(s=>s?.desc&&(s.type_text==='ATQ Básico'||s.type_text==='Perícia'||s.type_text==='Perícia Suprema'||s.type_text==='Talento'));
+ const kitText=clean(kit.map(s=>s.desc).join(' '));
+ const memo=kit.some(s=>clean(s.desc).includes('memoespirito'));
+ const hpScale=kit.some(s=>/(?:dano|cura|restaura|igual).*?(?:dos |da |de seus )?pv maximos/i.test(clean(s.desc)));
+ const defScale=kit.some(s=>/(?:dano|cura|restaura|igual).*?da def/i.test(clean(s.desc)));
+ const atkScale=kit.some(s=>/(?:dano|cura|restaura|igual).*?do atq/i.test(clean(s.desc)));
+ if(memo){
+   const skill=kit.find(s=>clean(s.desc).includes('memoespirito'));
+   add('Mecânica do Memoespírito',
+     'Seu kit utiliza um Memoespírito'+(skill?.name?' — confira "'+skill.name+'".':'')+
+     ' Priorize a ativação e permanência dele no campo antes de avaliar bônus que exigem ataques ou habilidades da invocação.',
+     'note');
+   if(cone&&clean(coneRank?.desc).includes('memoespirito'))
+     add('Sinergia entre cone e kit','O efeito de '+cone.name+' menciona ataques do Memoespírito. O kit de '+
+       (character.name||'sua personagem')+' também usa essa mecânica. Confira se o ataque ocorre com a frequência necessária; o bônus não é permanente sem o gatilho.',
+       'good');
+ }
+ const scaling=defScale?'DEF':hpScale?'PV máximos':atkScale?'ATQ':null;
+ if(scaling){
+   const statValue=scaling==='DEF'?build.def:scaling==='PV máximos'?build.pv:build.atk;
+   add('Escalamento identificado no kit','As descrições de habilidades indicam '+scaling+
+     ' como referência para pelo menos um efeito. '+(statValue?'Seu registro atual é '+fmt(statValue)+'. ':'')+
+     'Confira os multiplicadores e condições específicos antes de trocar peças; esta leitura não substitui um cálculo de dano.',
+     'note');
+ }
+ if(/mandou bem|piada|vibracoes|arquetipo estetico/.test(kitText)){
+   const resources=[];
+   for(const [word,label] of [['mandou bem','Mandou Bem'],['piada','Piada'],['vibracoes','Vibrações'],['arquetipo estetico','Arquétipo Estético']])
+     if(kitText.includes(word))resources.push(label);
+   add('Recursos da rotação',resources.join(' · ')+
+      ' aparecem nas habilidades. Sincronize geração e gasto desses recursos com a equipe e verifique seus limites no Kit e rastros.',
+      'note');
+ }
  if(Number(build.spd)>0)add('Velocidade e rotação',fmt(build.spd)+' VEL fora de combate. '+
    (Number(build.spd)>=134?'Ultrapassa 134, mas ações por ciclo dependem dos buffs e da rotação.':'Ajuste a ordem de ações aos demais integrantes e às condições das habilidades.'),'note');
  if(build.crit!==undefined&&build.cdmg!==undefined)
    add('Atributos críticos',fmt(build.crit)+'% de Chance CRIT e '+fmt(build.cdmg)+'% de Dano CRIT registrados. A prioridade real depende do kit e dos efeitos ativos.','note');
- return notes.slice(0,8);
+ return notes.slice(0,11);
 }
