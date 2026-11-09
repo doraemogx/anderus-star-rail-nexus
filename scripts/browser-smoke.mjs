@@ -159,6 +159,11 @@ try{
   await page.locator('.nexus-traces-materials .nexus-trace-material').first().waitFor({timeout:15000});
   const tracePlan=await page.evaluate(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}').v06TracePlans?.['1512']?.['1512001']);
   assert.equal(tracePlan?.current,0,'Trace progress must persist');
+  await page.locator('#nexus-traces-dialog [data-material-budget]').click();
+  await page.locator('#nexus-material-budget[open]').waitFor({timeout:15000});
+  assert.match(await page.locator('#nexus-budget-results').innerText(),/Planejamentos incluídos/);
+  await page.screenshot({path:'artifacts/material-budget-'+device.width+'.png'});
+  await page.locator('#nexus-material-budget [data-budget-close]').click();
   await page.screenshot({path:'artifacts/trace-planner-'+device.width+'.png'});
   await page.locator('#nexus-traces-dialog [data-traces-close]').click();
   await tab('Equipes').click();
