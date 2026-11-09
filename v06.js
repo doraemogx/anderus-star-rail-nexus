@@ -789,6 +789,12 @@
         });
         await window.__nexusRelicInspectorPromise;
         const applied=module.applyShowcaseToForm(report);
+        let setCount=0;
+        if(report.relicSets){
+          const matcher=await import('./illustrated-relic-matcher.js?v=1');
+          const selected=matcher.fillRelicSetFields(report.relicSets);
+          setCount=selected.selected;
+        }
         if(!report.character&&uploader.hintId){
           const select=document.getElementById('v06-id');
           if(select&&[...select.options].some(o=>o.value===uploader.hintId))select.value=uploader.hintId;
@@ -800,7 +806,7 @@
         uploader.cone=report.cone;
         uploader.ocrText=JSON.stringify({title:report.title,totals:report.totals,diagnostics:report.diagnostics});
         const name=report.character?.name||'não identificado com segurança';
-        say('Cartão ilustrado: '+name+' · '+applied.main+'/8 atributos principais e '+applied.relicStats+'/30 atributos das relíquias preenchidos.'+
+        say('Cartão ilustrado: '+name+' · '+applied.main+'/8 atributos principais · '+setCount+'/6 conjuntos e '+applied.relicStats+'/30 atributos das relíquias preenchidos.'+
             (report.eidolon!==null?' E'+report.eidolon+' sugerido.':' Confirme E0–E6.')+
             (report.superimposition!==null?' Cone S'+report.superimposition+'.':' Confirme a sobreposição do cone.')+
             ' Confira os campos antes de salvar.');
