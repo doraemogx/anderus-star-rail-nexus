@@ -54,6 +54,33 @@ export function normalizeRelics(details,legacy,sets={}){
       level,main:{stat:mainStat,value:corrected},subs};
  });
 }
+/**
+ * Reconcile screenshot-import suggestions with the previously saved equipment.
+ * Empty OCR slots never erase verified records. Partial suggestions are merged
+ * only when the set identity is the same; a different/unknown new set must not
+ * inherit unrelated stats from the previous item.
+ */
+export function mergeRelicImport(incoming=[],previous=[]){
+ return SLOTS.map((slot,i)=>{
+   const next=incoming?.[i]||{},old=previous?.[i]||{};
+   const hasNext=Boolean(next.setId||next.main?.stat||
+     (next.subs||[]).some(x=>x?.stat&&x.value!==null&&x.value!==undefined));
+   if(!hasNext)return structuredClone(old);
+   const sameSet=Boolean(next.setId&&old.setId&&String(next.setId)===String(old.setId));
+   if(!sameSet)return structuredClone(next);
+   const merged=structuredClone(next);
+   if(merged.level==null)merged.level=old.level??null;
+   if(!merged.main?.stat)merged.main=structuredClone(old.main||{stat:'',value:null});
+   else if(merged.main.value==null&&old.main?.stat===merged.main.stat)
+     merged.main.value=old.main.value??null;
+   merged.subs=Array.from({length:4},(_,j)=>{
+     const value=merged.subs?.[j]||{};
+     const prior=old.subs?.[j]||{};
+     return value.stat&&value.value!=null?structuredClone(value):structuredClone(prior);
+   });
+   return merged;
+ });
+}
 export function toLegacy(records,sets={},existing={}){
  const out={...existing};
  records.forEach((r,i)=>{
