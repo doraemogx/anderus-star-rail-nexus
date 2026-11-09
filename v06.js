@@ -263,7 +263,7 @@
   function uploadPanel(){
     return '<div class="v06-import"><div class="v06-import-drop"><label for="v06-file">⇧<strong>Escolher print de build</strong><small>PNG, JPG ou WEBP · até 12 MB</small></label><input id="v06-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="v06ReadPrint(this.files[0])"></div>'+
       '<div id="v06-import-preview" class="v06-import-preview"></div>'+
-      '<p class="v06-source-note">O reconhecimento acontece no seu navegador, sem enviar a imagem a servidores. A leitura automática de texto exige download gratuito da biblioteca OCR; confirme todos os números.</p></div>';
+      '<p class="v06-source-note">O OCR lê somente o cabeçalho, os atributos totais e o cone. As seis relíquias ficam separadas. Confirme personagem, E0–E6, S1–S5 e cada valor antes de salvar; o processamento acontece no navegador.</p></div>';
   }
   window.v06StartImport=function(id){
     if(id)uploader.identifiedId=id;
@@ -274,7 +274,7 @@
   window.v06ReadPrint=async function(file){
     if(!file)return;
     if(file.size>12*1024*1024){showToast('Escolha uma imagem de até 12 MB');return;}
-    uploader.file=file;uploader.busy=true;
+    uploader.file=file;uploader.busy=true;uploader.identifiedId='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.ocrText='';
     const reader=new FileReader();
     reader.onload=async()=>{
       const full=String(reader.result);
