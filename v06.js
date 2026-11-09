@@ -163,25 +163,56 @@
     return 'Na sua conta, '+name+' está no nível '+fmt(owned.level||1)+', E'+fmt(owned.e||0)+'S'+fmt(owned.s||1)+stat+'. Antes de ajustar a rotação, compare os outros três integrantes e os gatilhos do kit. A recomendação não pressupõe um cone ou relíquia que ainda não foi cadastrado.';
   }
   profileOverview=function(id,b){return '<div class="v06-overview-actions"><button onclick="v06StartImport(\''+id+'\')">⇧ Atualizar pelo print</button><button onclick="editBuild(\''+id+'\')">⚙ Editar atributos</button></div>'+base.profileOverview(id,b)+pomCard('O que avaliar nesta build',verifiedGuide(id),'FICHA · '+lookup(id).name);};
-  profileEidolons=function(id,b){return '<div class="v06-eidolon-intro">'+pomCard('Cada fragmento tem sua própria história','Toque em E1 a E6 para abrir a arte individual disponível, os efeitos originais e o que mudou na rotação. Se a arte estiver indisponível, exibimos apenas o ícone no tamanho original — nunca um ícone borrado ampliado.','EIDOLONS')+'</div>'+base.profileEidolons(id,b);};
+
+  // Use the live character-rank catalog for every released and future character.
+  // E3/E5 frequently reuse skill icons and their upstream filenames can vanish.
+  // A local SVG fallback keeps these slots legible without inventing official art.
+  const eidoFallback=n=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="21" fill="#1b2434"/><path d="M50 10 60 39 90 50 60 61 50 90 40 61 10 50 40 39Z" fill="none" stroke="#e2c0a0" stroke-width="4"/><text x="50" y="57" font-family="Arial" font-size="22" fill="#e2c0a0" text-anchor="middle">E'+n+'</text></svg>');
+  function rankRecord(id,n){
+    const keys=gameData.chars?.[id]?.ranks||[];
+    return gameData.ranks?.[keys[n-1]]||gameData.ranks?.[id+'0'+n]||null;
+  }
+  const eidoIcon=(rank,n)=>rank?.icon?STR+rank.icon:eidoFallback(n);
+  function addEidoStyles(){
+    if(document.getElementById('nexus-eido-repair-css'))return;
+    const style=document.createElement('style');style.id='nexus-eido-repair-css';
+    style.textContent='.v10-eido-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin:18px 0}.v10-eido-tile{min-width:0;border:1px solid rgba(226,192,160,.33);background:rgba(20,27,43,.7);border-radius:14px;padding:7px 3px 8px;color:inherit;display:flex;align-items:center;flex-direction:column;gap:5px;cursor:pointer;position:relative}.v10-eido-tile.owned{border-color:rgba(122,212,181,.7);background:rgba(17,44,45,.66)}.v10-eido-tile img{width:min(100%,64px);height:53px;object-fit:contain;display:block}.v10-eido-tile strong{font-size:12px}.v10-eido-tile small{display:block;font-size:10px;opacity:.78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.v10-eido-modal{display:grid;grid-template-columns:minmax(90px,150px) 1fr;gap:17px;align-items:start}.v10-eido-modal img{width:100%;max-height:230px;object-fit:contain;background:rgba(14,22,39,.5);border:1px solid rgba(226,192,160,.2);border-radius:12px}.v10-eido-modal p{line-height:1.65;white-space:pre-line}.v10-eido-note{font-size:12px;opacity:.8;margin:6px 0 14px}@media(max-width:420px){.v10-eido-grid{gap:4px}.v10-eido-tile{border-radius:10px;padding:6px 1px}.v10-eido-tile img{height:41px}.v10-eido-tile small{display:none}.v10-eido-modal{grid-template-columns:86px 1fr;gap:10px}}';
+    document.head.appendChild(style);
+  }
+  profileEidolons=function(id,b){
+    addEidoStyles();
+    const character=gameData.chars?.[id]||{},owned=Number(b?.e||0);
+    const tiles=Array.from({length:6},(_,i)=>{
+      const n=i+1,r=rankRecord(id,n),icon=eidoIcon(r,n),fallback=eidoFallback(n);
+      const label=r?.name||'Eidolon ainda não catalogado';
+      return '<button type="button" class="v10-eido-tile '+(b&&n<=owned?'owned':'')+'" title="'+safe(label)+'" onclick="showEido(\''+id+'\','+n+')" aria-label="Abrir E'+n+': '+safe(label)+'"><strong>E'+n+'</strong><img loading="lazy" src="'+safe(icon)+'" alt="Ícone do Eidolon E'+n+'" onerror="this.onerror=null;this.src=\''+fallback+'\'"><small>'+safe(label)+'</small></button>';
+    }).join('');
+    return '<div class="v06-eidolon-intro">'+pomCard('Eidolons verificados por personagem','Os seis Eidolons abaixo usam os registros individuais do catálogo. Os efeitos podem ser abertos para leitura completa; imagens indisponíveis recebem um símbolo legível, não uma imagem quebrada.','EIDOLONS')+'</div>'+
+      '<div class="v10-eido-grid">'+tiles+'</div><p class="v10-eido-note">E'+owned+' registrado na sua conta. Toque em cada Eidolon para ver o efeito e a arte disponível.</p>';
+  };
+
   profileKit=function(id){return base.profileKit(id)+pomCard('Como interpretar o kit','O texto do jogo e seus multiplicadores estão acima. Nas explicações práticas, observe gatilho, custo, duração, aliados elegíveis e a ordem das ações. Dados de beta são identificados separadamente.','KIT COMPLETO');};
   profileRelics=function(id,b){
     const detail=state.v06RelicDetails?.[id];
     if(detail?.length){
       const images=state.v06Relics?.[id]||[];
       setTimeout(()=>{
-        import('./relic-inspector.js?v=1').then(m=>m.renderRelicSummary(detail,images))
+        import('./relic-inspector.js?v=3').then(m=>m.renderRelicSummary(detail,images))
           .then(html=>{const root=document.getElementById('v06-relic-saved');if(root)root.innerHTML=html;})
           .catch(err=>console.warn('Não foi possível exibir conjuntos',err));
       },0);
     }
     return base.profileRelics(id,b)+(detail?.length?'<div id="v06-relic-saved">Carregando detalhes do equipamento...</div>':'')+(state.v06Relics?.[id]?.length?'<section class="v06-relic-shots"><h3>Relíquias extraídas do seu print</h3><div>'+state.v06Relics[id].map((src,i)=>'<img loading="lazy" src="'+src+'" alt="Captura da relíquia '+(i+1)+'">').join('')+'</div><p>As imagens estão guardadas neste navegador. Confirme os atributos e o conjunto antes de comparar builds.</p></section>':'')+pomCard('Como priorizar seus subatributos','Um bom conjunto precisa de atributos úteis, velocidade efetiva e sincronização com a equipe. Sem as seis relíquias e os buffs de combate, não existe nota de build definitiva.','RELÍQUIAS');};
 
-  const originalEidoModal=base.showEido;
+
   showEido=function(id,n){
-    originalEidoModal(id,n);
-    const modal=document.querySelector('#overlay .modal, #overlay .modal-card, .modal');
-    if(modal){modal.classList.add('v06-eido-modal');modal.querySelectorAll('img.fragment-art').forEach(img=>{img.style.objectFit='contain';img.style.maxHeight='min(46vh,350px)';});}
+    const rank=rankRecord(id,n),c=gameData.chars?.[id]||lookup(id);
+    const name=rank?.name||'Eidolon sem dados publicados';
+    const source=EIDO_ART?.[id]?.[n-1]||eidoIcon(rank,n);
+    const fallback=eidoFallback(n);
+    const desc=rank?.desc||'Este Eidolon ainda não está disponível no catálogo sincronizado. Nenhum efeito foi inventado.';
+    showModal('E'+n+' · '+name,'<div class="v10-eido-modal"><img src="'+safe(source)+'" alt="Imagem do Eidolon E'+n+'" onerror="this.onerror=null;this.src=\''+fallback+'\'"><div><h3>'+safe(c?.name||'Personagem')+'</h3><p>'+safe(desc)+'</p><small>Fonte: catálogo de Eidolons do jogo; imagem ampliada somente quando disponível.</small></div></div>');
   };
   function v06OpenFuture(){
     showModal('Aeon ★ Aha · 4.7','<div class="v06-future-detail"><div class="v06-banner-art"><img src="'+ahaOfficial+'" alt="Arte de Aeon Aha (Nihilux)"></div><div class="v06-kicker">OFICIAL · VERSÃO 4.7 · 11/11/2026</div><h2>AEON ★ AHA</h2><p>Identidade de Nihilux / Rá. Personagem 5★ de Euforia e elemento Quântico. A versão final do kit entra em vigor com a atualização de 11 de novembro.</p><h3>Mecânicas apresentadas oficialmente</h3><ul><li><strong>Potencialização da Euforia:</strong> fortalece aliados desse Caminho e suas habilidades especiais.</li><li><strong>Instante de Aha:</strong> elemento central das atuações de Euforia.</li><li><strong>Recursos de equipe:</strong> a equipe contribui para a realização de suas habilidades e efeitos especiais.</li><li><strong>Pressão sobre o PV máximo:</strong> efeitos voltados a reduzir os PV máximos dos inimigos.</li></ul><div class="v06-source-note">Resumo do material oficial divulgado em 04/11/2026. A prévia não publica todos os multiplicadores. Números de beta não devem ser tratados como valores finais.</div>'+pomCard('Devo investir?','Se você usa equipes de Euforia, Aha merece avaliação prioritária. Antes de decidir E1/E2 ou cone, compare os ganhos reais com seus recursos e os personagens que já possui.','PRÓXIMO SALTO')+'<button class="v06-primary" onclick="closeModal();route(\'farm\')">Planejar materiais ↗</button></div>');
@@ -281,7 +312,7 @@
   function uploadPanel(){
     return '<div class="v06-import"><div class="v06-import-drop"><label for="v06-file">⇧<strong>Escolher print de build</strong><small>PNG, JPG ou WEBP · até 12 MB</small></label><input id="v06-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="v06ReadPrint(this.files[0])"></div>'+
       '<div id="v06-import-preview" class="v06-import-preview"></div>'+
-      '<p class="v06-source-note">O OCR lê somente o cabeçalho, os atributos totais e o cone. As seis relíquias ficam separadas. Confirme personagem, E0–E6, S1–S5 e cada valor antes de salvar; o processamento acontece no navegador.</p></div>';
+      '<p class="v06-source-note">O OCR analisa o cabeçalho, atributos totais, cone e as seis relíquias (conjunto, atributo principal e subatributos). Valores incertos ficam editáveis. Confirme personagem, E0–E6, S1–S5 e cada valor antes de salvar; o processamento acontece no navegador.</p></div>';
   }
   window.v06StartImport=function(id){
     if(id)uploader.identifiedId=id;
@@ -326,14 +357,14 @@
       '<label>Chance CRIT %<input type="number" step=".1" id="v06-crit"></label><label>Dano CRIT %<input type="number" step=".1" id="v06-cdmg"></label>'+
       '<label>Quebra %<input type="number" step=".1" id="v06-break"></label><label>Recuperação de Energia %<input type="number" step=".1" id="v06-energy"></label></div>'+
       '<div class="v06-kicker">AS SEIS RELÍQUIAS DO PRINT</div><div class="v06-piece-grid">'+uploader.relImages.map((src,i)=>'<figure><img src="'+src+'" alt="Relíquia '+(i+1)+'"><figcaption>'+['Cabeça','Mãos','Corpo','Pés','Esfera','Corda'][i]+'</figcaption></figure>').join('')+'</div><div id="v06-relic-editor"></div>'+
-      '<div id="v06-import-status" class="v06-import-status" role="status">OCR ainda não executado. Preencha ou confira os atributos totais, nunca os valores das relíquias.</div>'+
+      '<div id="v06-import-status" class="v06-import-status" role="status">OCR ainda não executado. Ao reconhecer, confira os atributos totais e os detalhes de cada relíquia.</div>'+
       '<label style="display:flex;align-items:flex-start;gap:12px;padding:16px 4px;font-size:13px;line-height:1.45"><input type="checkbox" id="v06-confirm" style="width:22px;height:22px;flex-shrink:0"> Eu conferi personagem, Eidolons, cone e atributos totais no print. Sei que a leitura automática pode errar.</label>'+
       '<button class="v06-primary v06-save-import" onclick="v06SaveImport()">Confirmar e salvar build ✓</button></div>';
   }
   window.v06ShowImportReview=function(){
     const content=uploadPanel()+showImportReview();
     showModal('Importar build · revisar dados',content);
-    window.__nexusRelicInspectorPromise=import('./relic-inspector.js?v=2').then(mod=>{
+    window.__nexusRelicInspectorPromise=import('./relic-inspector.js?v=3').then(mod=>{
       window.__nexusRelicInspector=mod;
       return mod.initializeRelics(uploader.relImages);
     }).catch(err=>console.warn('Detalhamento das relíquias indisponível',err));
@@ -678,7 +709,7 @@
       try{
         say('Atributos totais lidos. Identificando os ícones e os 30 atributos das relíquias…');
         await window.__nexusRelicInspectorPromise;
-        const relicAuto=await import('./relic-auto.js?v=1');
+        const relicAuto=await import('./relic-auto.js?v=3');
         const report=await relicAuto.autoDetectRelics(bitmap,worker);
         say('Personagem '+cname+' · '+(strip.rows.length-missing.length)+'/8 atributos totais · '+report.status+
             ' Confirme os valores sinalizados antes de salvar.');
