@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Keep the cinematic Aha variant coherent even inside dialogs attached to body.
+ if(!document.getElementById('nexus-theme-overlays-css')){
+  const css=document.createElement('link');css.id='nexus-theme-overlays-css';css.rel='stylesheet';css.href='./nexus-theme-overlays.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-theme-bridge-js')){
+  const script=document.createElement('script');script.id='nexus-theme-bridge-js';script.src='./nexus-theme-bridge.js';script.defer=true;document.head.appendChild(script);
+ }
  // Farm Planner 2.0, real PT-BR ascension costs from a verified static snapshot.
  if(!document.getElementById('nexus-farm-css')){
   const link=document.createElement('link');link.id='nexus-farm-css';link.rel='stylesheet';link.href='./nexus-farm-lab.css';document.head.appendChild(link);
