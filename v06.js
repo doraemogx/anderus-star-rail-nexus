@@ -1228,8 +1228,10 @@
       state.v06RelicDetails||={};
       // One canonical record for all import paths, with legacy adapter for
       // older character screens and manual edits. Do not erase prior values.
+      const previous=state.v06RelicDetails[id]||[];
+      const incoming=nexusAccount?nexusAccount.mergeRelicImport(relicData,previous):relicData;
       const unified=nexusAccount?nexusAccount.normalizeRelics(
-        relicData,prior.relics||{},nexusAccountCatalog?.relicSets||{}):relicData;
+        incoming,prior.relics||{},nexusAccountCatalog?.relicSets||{}):incoming;
       state.v06RelicDetails[id]=unified;
       if(nexusAccount)prior.relics=nexusAccount.toLegacy(
         unified,nexusAccountCatalog?.relicSets||{},prior.relics||{});
