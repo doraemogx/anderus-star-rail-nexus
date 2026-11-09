@@ -78,6 +78,46 @@ function gameEvidence(data, question, history) {
   return JSON.stringify(panels).slice(0, 14000);
 }
 
+
+function pearlE2VerifiedAnswer(data, question, account) {
+  const normalized = normalize(question);
+  if (!normalized.includes("pearl") || !/\be\s*2\b|eidolon\s*2|segundo eidolon/i.test(normalized)) return null;
+  const e2 = data.ranks["150302"];
+  const supreme = data.skills["150303"];
+  const skill = data.skills["150302"];
+  if (!e2 || !supreme || !skill) return null;
+
+  const pearl = account.find(x => normalize(x.nome) === "pearl");
+  const evanescia = account.find(x => normalize(x.nome) === "evanescia");
+  const extra = evanescia
+    ? "Na sua conta, Evanescia é E" + evanescia.eidolon + " e Pearl é E" + (pearl?.eidolon ?? 2) + ". Se você escolher Evanescia como Arquétipo Estético, a Suprema a avança normalmente; o E2 estende esse avanço aos OUTROS aliados da Euforia, não concede um avanço duplicado à Evanescia. O bônus de Dano de Euforia, por sua vez, continua relevante."
+    : "Se o Arquétipo Estético for Evanescia, o E2 não faz ela receber avanço duplicado: o avanço adicional se destina aos outros aliados elegíveis da Euforia.";
+
+  return [
+    "E2 DA PEARL — " + e2.name,
+    "",
+    "TEXTO DO JOGO (catálogo PT-BR): " + e2.desc,
+    "",
+    "NEXIA EXPLICA — EM LINGUAGEM DIRETA:",
+    "1. O E2 torna o Dano de Euforia dos aliados 15% mais 'galhofa'. Isso não é bônus de Chance de CRIT.",
+    "2. Ao usar a Suprema, Pearl concede o avanço de ação também aos outros aliados da Euforia, EXCLUINDO a própria Pearl e o personagem escolhido como Arquétipo Estético. O Arquétipo já recebe o avanço descrito na Suprema base.",
+    "3. A Suprema concede rodada EXTRA ao Arquétipo somente com quatro ou mais personagens da Euforia na equipe. É nessa rodada extra que o E2 dobra os ganhos iniciais de 'Mandou Bem' e 'Piada'. Com dois ou três personagens da Euforia, não se deve prometer essa rodada extra.",
+    "",
+    "COM A EVANESCIA:",
+    extra,
+    "",
+    "ROTAÇÃO ORIENTATIVA (NÃO É UMA SEQUÊNCIA ÚNICA GARANTIDA):",
+    "• Prepare a Energia da Pearl e use a Suprema escolhendo Evanescia como Arquétipo Estético, de preferência antes de uma janela relevante de dano da Evanescia.",
+    "• A ordem e o percentual de avanço dependem de quantos aliados da Euforia estão na equipe; na Suprema base, são 10%/15%/30% de avanço para 1/2/3 ou mais personagens da Euforia.",
+    "• A Perícia comum da Pearl concede 'Mandou Bem' à PRÓPRIA Pearl e cura o time. O ATQ Básico comum causa Dano de Gelo baseado na DEF. Não afirme que qualquer um deles transfere automaticamente 'Mandou Bem' ou 'Piada' à Evanescia.",
+    "• O ATQ Básico APRIMORADO da Pearl, acessível durante Aprendizagem Profunda, possui efeitos específicos de dano e cura. Considere seus requisitos e cargas.",
+    "",
+    "LIMITES: não existe troca manual de personagens durante o combate em Star Rail. Sem a equipe completa, ordem de turnos, Energia atual e inimigos, não é possível garantir uma rotação exata ou número de ciclos.",
+    "",
+    "Fonte: descrições em português de Eidolon 2, Suprema, Perícia e ATQ Básico de Pearl no catálogo StarRailRes."
+  ].join("\n");
+}
+
 function verifiedFallback(question) {
   const q = normalize(question);
   if (q.includes("pearl") && /\be2\b|eidolon 2/.test(q)) return 'DADO VERIFICADO — Pearl E2: o Dano de Euforia dos aliados fica 15% mais "galhofa"; ao usar a Suprema, outros aliados da Euforia (exceto Pearl e Arquétipo Estético) também recebem o efeito de avanço de ação; recursos "Mandou Bem" e "Piada" da rodada extra têm ganho inicial aumentado em 100%. NÃO aumenta Chance de CRIT.';
@@ -117,6 +157,13 @@ export default {
       const history = Array.isArray(body.history) ? body.history.slice(-4).map(x => ({
         role: x.role === "bot" ? "assistant" : "user", content: String(x.msg || "").slice(0, 450)
       })) : [];
+      // Consulta verificável de alto risco: neste caso a resposta é montada com texto
+      // de habilidades, sem permitir que um modelo invente rotações sobre Eidolons.
+      try {
+        const verifiedData = await getGameData();
+        const exact = pearlE2VerifiedAnswer(verifiedData, question, account);
+        if (exact) return Response.json({ answer: exact, model: "resposta factual verificada", knowledge_source: "StarRailRes PT-BR", mode: "verified" }, { headers: cors });
+      } catch (_) { /* Continua para o modo conversacional se a fonte estiver indisponível. */ }
       let evidence = "", source = "sem fonte atual";
       try {
         const data = await getGameData();
