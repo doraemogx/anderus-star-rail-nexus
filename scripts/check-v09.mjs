@@ -43,11 +43,27 @@ for(const symbol of ['v09SetVisualMode','renderVariants','renderEndgame','enhanc
 assert.ok(loader.includes('anderus-aeon-aha-visual-mode'));
 assert.ok(loader.includes('aha-detail.css'));
 assert.ok(loader.includes('enhanceNexusV09();'));
-assert.ok(sw.includes('anderus-shell-v10'));
+assert.ok(sw.includes('anderus-shell-v11'));
 assert.ok(read('v06.js').includes('repairOverviewEidolons'));
 assert.ok(read('v06.js').includes('rankRecord(id,n)'));
 assert.ok(read('v06.js').includes('relic-auto.js?v=3'));
 assert.ok(read('relic-auto.js').includes('makeTextCrop'));
 console.log('PASS resilient Eidolon icons, per-character rank metadata, and OCR retries');
+const live=JSON.parse(read('data/live-game.json'));
+const eidoSrc=read('v06.js'),start=eidoSrc.indexOf('  let eidolonCatalog=null'),end=eidoSrc.indexOf('  const eidoIcon=',start);
+assert.ok(start>=0&&end>start,'Missing shared PT-BR Eidolon catalog loader');
+const sample=eidoSrc.slice(start,end);
+const resolveRank=new Function('gameData','dataset',sample+';eidolonCatalog=dataset;return rankRecord;')({chars:{},ranks:{}},live);
+const present=Object.entries(live.chars);
+assert.ok(present.length>=90,'Character catalog incomplete');
+for(const [id,char] of present)for(let n=1;n<=6;n++){
+ const rank=resolveRank(id,n);
+ assert.ok(rank?.name&&rank?.desc,'Missing E'+n+' or effect for '+id+' · '+char.name);
+}
+assert.ok(eidoSrc.includes('loadEidolonCatalog().then('),'Modal not rehydrated after catalog fetch');
+assert.ok(eidoSrc.includes('eidoArtwork(id,n,rank)'),'Character-specific artwork preference missing');
+assert.ok(eidoSrc.includes('Voltar à ficha'),'Modal back navigation missing');
+assert.ok(eidoSrc.includes('v10-eido-navigation'),'Previous/next Eidolon buttons missing');
+console.log('PASS all '+present.length+' characters × 6 PT-BR Eidolon descriptions and modal navigation');
 assert.ok(!sw.includes("'./themes/aha.css'"));
 console.log('PASS assets, all four endgames, variant isolation, lazy theme, PWA');
