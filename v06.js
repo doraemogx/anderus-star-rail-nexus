@@ -112,12 +112,12 @@
       pomCard('Dois arquivos, funções diferentes','Minha Conta contém apenas personagens que você cadastrou. No Catálogo, você pode explorar todos os personagens e os kits futuros sem misturar dicas de investimento com a sua coleção.','SEU PROGRESSO')+'</div>';
   }
   function v06CardList(){
-    let list=CATALOG.filter(c=>!(/stelle/i.test(c.name)&&/800[24680]/.test(c.id)));
+    let list=CATALOG.slice();
     if(libraryFilter==='owned')list=list.filter(c=>state.characters[c.id]);
     if(libraryFilter==='favorites')list=list.filter(c=>state.favorites?.includes(c.id));
     if(libSearch)list=list.filter(c=>norm(c.name).includes(norm(libSearch)));
     if(!list.length) return '<div class="v06-empty"><span>✧</span><strong>Nenhum personagem neste filtro.</strong><p>Importe seus primeiros prints ou abra o catálogo completo.</p><button onclick="v06StartImport()">Importar print ＋</button></div>';
-    return list.map(c=>'<button class="v06-char-card" onclick="'+(c.id==='future-aha'?'v06OpenFuture()':'openProfile(\''+c.id+'\')')+'"><div class="v06-char-art"><img loading="lazy" src="'+safe(c.id==='future-aha'?ahaOfficial:(imgSrc(c.id,'preview')||imgSrc(c.id,'icon')))+'" alt="'+safe(c.name)+'" onerror="this.src=\''+safe(imgSrc(c.id,'icon'))+'\'"></div><div><small>'+ (state.characters[c.id]?'EM SUA CONTA':'CATÁLOGO') +'</small><strong>'+safe(c.name)+'</strong><span>'+(state.characters[c.id]?'Nv. '+fmt(state.characters[c.id].level||1)+' · E'+fmt(state.characters[c.id].e||0)+' S'+fmt(state.characters[c.id].s||1):'Ver kit, Eidolons e builds')+'</span></div><b>›</b></button>').join('');
+    return list.map(c=>'<button class="v06-char-card" onclick="'+(c.id==='future-aha'?'v06OpenFuture()':'openProfile(\''+c.id+'\')')+'"><div class="v06-char-art"><img loading="lazy" src="'+safe(c.id==='future-aha'?ahaOfficial:(imgSrc(c.id,'preview')||imgSrc(c.id,'icon')))+'" alt="'+safe(c.name)+'" onerror="this.onerror=null;this.src=\''+safe(imgSrc(c.id,'icon'))+'\'"></div><div><small>'+ (state.characters[c.id]?'EM SUA CONTA':'CATÁLOGO') +'</small><strong>'+safe(c.name)+'</strong><span>'+(state.characters[c.id]?'Nv. '+fmt(state.characters[c.id].level||1)+' · E'+fmt(state.characters[c.id].e||0)+' S'+fmt(state.characters[c.id].s||1):'Ver kit, Eidolons e builds')+'</span></div><b>›</b></button>').join('');
   }
   window.v06RefreshCards=()=>{const el=document.getElementById('v06-library-grid');if(el)el.innerHTML=v06CardList()};
   library=lib06;
@@ -126,7 +126,7 @@
     const id=state.profile||'1503', c=lookup(id),b=state.characters[id],look=selectLook(id),pic=state.v06Art?.[id]==='preview'?imgSrc(id,'preview'):look.art;
     const active=tab||'overview';
     const switches=[['overview','Atributos'],['kit','Kit e rastros'],['eidolons','Eidolons'],['relics','Relíquias'],['teams','Equipes']];
-    const body=active==='overview'?base.profileOverview(id,b):active==='kit'?base.profileKit(id):active==='eidolons'?base.profileEidolons(id,b):active==='relics'?base.profileRelics(id,b):profileTeams(id,b);
+    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='eidolons'?profileEidolons(id,b):active==='relics'?profileRelics(id,b):profileTeams(id,b);
     const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
     return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
     '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
