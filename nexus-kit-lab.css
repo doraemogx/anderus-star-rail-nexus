@@ -34,3 +34,8 @@
 #nexus-kit-dialog .kit-foot{padding-top:18px;margin-top:22px;border-top:1px solid #3e4e68;font-size:12px}
 @media(max-width:640px){#nexus-kit-dialog .kit-skills{grid-template-columns:1fr}#nexus-kit-dialog .kit-hero{padding:15px;gap:8px}.kit-portrait{max-width:100px}#nexus-kit-dialog .kit-rank img{max-width:85px}#nexus-kit-dialog .kit-rank{gap:10px}#nexus-kit-launcher{bottom:calc(env(safe-area-inset-bottom,0px) + 64px)}}
 @media(prefers-reduced-motion:reduce){#nexus-kit-dialog *{animation:none!important;transition:none!important}}
+#nexus-kit-dialog .kit-account-context{margin:19px 0;padding:18px;background:#202d43;border-left:3px solid #e5c087;border-radius:4px 12px 12px 4px}
+#nexus-kit-dialog .kit-account-context>p{color:#e9d7b4}
+#nexus-kit-dialog .kit-account-context article{padding:12px 0;border-top:1px solid #72819b66}
+#nexus-kit-dialog .kit-account-context article b{color:#f3d9a5}
+#nexus-kit-dialog .kit-account-context article p{margin:6px 0;color:#dce4f0;overflow-wrap:anywhere}
