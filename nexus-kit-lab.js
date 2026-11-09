@@ -151,10 +151,13 @@ async function open(id){
  if(id)selected=String(id);
  await fillSelect();
 }
+let mounted=false;
 function mount(){
- if(document.getElementById('nexus-kit-launcher'))return;
- const btn=document.createElement('button');btn.id='nexus-kit-launcher';btn.type='button';btn.textContent='Kit Lab · Completo';
- btn.addEventListener('click',()=>open());document.body.appendChild(btn);
+ if(mounted)return;mounted=true;
+ document.addEventListener('click',event=>{
+  const button=event.target.closest('[data-nexus-kit-for]');
+  if(button)open(button.dataset.nexusKitFor);
+ });
 }
 window.NexusKitLab={open,mount,resolveEffect,load};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
