@@ -34,7 +34,7 @@ function exportBackup(){
 function mergeAccount(current,incoming){
  const output=structuredClone(current);
  for(const [key,value] of Object.entries(incoming)){
-  if(key==='characters'||key==='v06RelicDetails'||key==='v06Relics'||key==='v06Screens'||key==='v06BuildHistory'||key==='v06MaterialInventory'){
+  if(key==='characters'||key==='v06RelicDetails'||key==='v06Relics'||key==='v06Screens'||key==='v06BuildHistory'||key==='v06MaterialInventory'||key==='v06AscensionPlans'){
    if(value&&typeof value==='object'&&!Array.isArray(value)){
     output[key]={...(output[key]||{}),...value};
    }
