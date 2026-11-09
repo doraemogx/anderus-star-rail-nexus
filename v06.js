@@ -752,7 +752,7 @@
     uploader.hintId=id||'';
     if(id)uploader.identifiedId=id;
     else uploader.identifiedId='';
-    uploader.preview='';uploader.file=null;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.sourceValid=false;
+    uploader.preview='';uploader.file=null;uploader.width=0;uploader.height=0;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.sourceValid=false;
     showModal('Importar build pelo print',uploadPanel());
   };
   window.v06ReadPrint=async function(file){
@@ -761,7 +761,7 @@
       showToast('Formato não suportado. Escolha PNG, JPG ou WEBP.');return;
     }
     if(!file.size||file.size>12*1024*1024){showToast('Escolha uma imagem de até 12 MB');return;}
-    uploader.file=file;uploader.busy=true;uploader.identifiedId='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.ocrText='';
+    uploader.file=file;uploader.width=0;uploader.height=0;uploader.busy=true;uploader.identifiedId='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.ocrText='';
     const reader=new FileReader();
     reader.onload=async()=>{
       const full=String(reader.result);
@@ -778,7 +778,7 @@
       const indicator=document.getElementById('v06-import-status');
       if(indicator){
         const ratio=uploader.width/uploader.height;
-        const supported=(ratio>=.82&&ratio<=.95)||(ratio>=1.02&&ratio<=1.18);
+        const supported=(uploader.width>=700&&uploader.height>=900&&ratio>=.82&&ratio<=.95)||(uploader.width>=700&&uploader.height>=600&&ratio>=1.02&&ratio<=1.18);
         indicator.textContent=supported?
           'Imagem carregada ('+uploader.width+' × '+uploader.height+'). Iniciando OCR; confira todos os resultados antes de salvar.':
           'Layout não reconhecido automaticamente ('+uploader.width+' × '+uploader.height+'). As seis relíquias continuam editáveis; nenhum recorte foi presumido.';
@@ -827,7 +827,7 @@
     const illustrated=ratio>=.82&&ratio<=.95;
     const battle=ratio>=1.02&&ratio<=1.18;
     // Never manufacture six cutouts from an unknown image layout.
-    if(!illustrated&&!battle){uploader.relImages=[];return;}
+    if((!illustrated&&!battle)||uploader.width<700||uploader.height<(illustrated?900:600)){uploader.relImages=[];return;}
     const regions=illustrated?[
       [.369,.591,.195,.157],[.571,.591,.195,.157],[.773,.591,.195,.157],
       [.369,.745,.195,.157],[.571,.745,.195,.157],[.773,.745,.195,.157]
