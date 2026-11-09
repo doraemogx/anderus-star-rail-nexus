@@ -258,6 +258,10 @@
       '<p>As últimas 20 alterações importadas ou editadas são preservadas neste navegador, sem incluir imagens grandes. A restauração não modifica a conta do jogo.</p>'+
       (entries.length?records:'<p>Nenhuma versão anterior registrada. As próximas alterações da build ficarão disponíveis aqui.</p>')+'</section>';
   }
+  document.addEventListener('click',event=>{
+    const button=event.target.closest('[data-restore-build][data-character]');
+    if(button)window.v11RestoreBuildHistory?.(button.dataset.character,Number(button.dataset.restoreBuild));
+  });
   window.v11RestoreBuildHistory=function(id,index){
     const entry=state.v06BuildHistory?.[id]?.[index];if(!entry)return;
     if(!window.confirm('Restaurar esta build anterior? A build atual será guardada no histórico antes da troca.'))return;
