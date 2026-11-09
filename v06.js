@@ -83,12 +83,12 @@
     const progress=need?Math.round(100*have/need):null;
     const heroArt=isDefault?v06Asset('caelus-concept'):(state.v06Art?.[state.theme]==='eidolon'&&EIDO_ART[state.theme]?.[5]?EIDO_ART[state.theme][5]:(state.v06Art?.[state.theme]==='preview'?imgSrc(state.theme,'preview'):look.art));
     const mod=[
-      ['♧','Minha Conta','Personagens, prints e progresso',"libraryFilter='owned';route('library')",'account'],
-      ['✦','Build Lab','Relíquias, cones e ajustes','v06RouteBuild()','build'],
-      ['⚔','Endgame','MOC, PF, AS e Arbitragem',"route('endgame')",'endgame'],
-      ['❖','Farm Planner','Materiais, rastros e ascensão',"route('farm')",'farm'],
-      ['✧','Warp Advisor','Banners e prioridades',"route('radar')",'warp'],
-      ['☾','Beta & Kits','Novidades e multiplicadores',"v06OpenFuture()",'beta']
+      ['image:'+STR+'icon/path/Explore.png','Minha Conta','Personagens, prints e progresso',"libraryFilter='owned';route('library')",'account'],
+      ['image:'+STR+'icon/path/Harmony.png','Build Lab','Relíquias, cones e ajustes','v06RouteBuild()','build'],
+      ['image:'+STR+'icon/path/Destruction.png','Endgame','MOC, PF, AS e Arbitragem',"route('endgame')",'endgame'],
+      ['image:'+STR+'icon/path/Abundance.png','Farm Planner','Materiais, rastros e ascensão',"route('farm')",'farm'],
+      ['image:'+STR+'icon/path/Elation.png','Warp Advisor','Banners e prioridades',"route('radar')",'warp'],
+      ['image:'+STR+'icon/path/Nihility.png','Beta & Kits','Novidades e multiplicadores',"v06OpenFuture()",'beta']
     ];
     return '<div class="v06-home">'+
       '<section class="v06-hero" aria-label="Jornada do Expresso Astral"><div class="v06-celestial"></div>'+
