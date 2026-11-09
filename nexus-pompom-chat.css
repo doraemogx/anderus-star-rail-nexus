@@ -40,3 +40,6 @@
 html.nexus-theme-aeon #nexus-pompom-dialog{background:#21152b;border-color:#deb3bb}
 html.nexus-theme-aeon #nexus-pompom-dialog .nexus-pompom-turn.reply{background:#371d3b;border-color:#daa8aa}
 html.nexus-theme-aeon .v20-pompom-launch{background:linear-gradient(115deg,#441f3e,#24152d);border-color:#e1b3bd}
+
+#nexus-pompom-dialog .nexus-pompom-source{display:inline-block;margin:10px 0 4px;color:#f2d6ad;font-size:12px;font-weight:700;text-underline-offset:4px;min-height:32px}
+#nexus-pompom-dialog .nexus-pompom-source:focus-visible{outline:3px solid #f0d2a4;outline-offset:3px}
