@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Farm Planner 2.0, real PT-BR ascension costs from a verified static snapshot.
+ if(!document.getElementById('nexus-farm-css')){
+  const link=document.createElement('link');link.id='nexus-farm-css';link.rel='stylesheet';link.href='./nexus-farm-lab.css';document.head.appendChild(link);
+ }
+ if(!document.getElementById('nexus-farm-js')){
+  const script=document.createElement('script');script.id='nexus-farm-js';script.src='./nexus-farm-lab.js';script.defer=true;document.head.appendChild(script);
+ }
  // Portable backup and verified transfer between devices.
  if(!document.getElementById('nexus-backup-css')){
   const css=document.createElement('link');css.id='nexus-backup-css';css.rel='stylesheet';css.href='./nexus-backup.css';document.head.appendChild(css);
