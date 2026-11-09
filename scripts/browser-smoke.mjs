@@ -97,6 +97,10 @@ try{
   await page.locator('#nexus-search-input').fill('Robin');
   await page.locator('.nexus-search-hit[data-search-type="character"]').first().waitFor({timeout:15000});
   assert.ok(await page.locator('.nexus-search-hit[data-search-type="character"]').count()>0);
+  await page.locator('#nexus-search-input').fill('Broto Queimado');
+  await page.locator('[data-search-category="material"]').click();
+  await page.locator('.nexus-search-hit[data-search-type="material"]').first().waitFor({timeout:15000});
+  assert.match(await page.locator('.nexus-search-hit[data-search-type="material"]').first().innerText(),/Broto/);
   await page.locator('#nexus-search-dialog [data-search-close]').click();
   // Unsupported screenshots must still yield six editable relic forms.
   const relicEditor=await page.evaluate(async()=>{
