@@ -247,14 +247,14 @@ function renderVerifiedEndgame(){
  const date=verifiedEndgame.verifiedAt;
  const today=new Date().toISOString().slice(0,10);
  const expired=period.end&&today>period.end;
- const badge=expired?'REVISÃO NECESSÁRIA':'ROTACÃO DOCUMENTADA';
+ const badge=expired?'REVISÃO NECESSÁRIA':period.verification==='confirmed'?'ROTAÇÃO OFICIAL CONFIRMADA':'REGRAS A VERIFICAR';
  const panel=document.createElement('section');panel.className='v20-official-rotation';
  panel.innerHTML='<div class="v20-rotation-head"><span>'+esc(badge)+' · '+esc(verifiedEndgame.version)+'</span><small>Referência '+esc(date)+'</small></div>'+
   '<h3>'+esc(period.name)+' · '+esc(period.phase)+'</h3>'+
   '<p>Vigência informada: '+esc(period.start)+' a '+esc(period.end)+' (horário do servidor).'+(expired?' Este registro expirou; confirme a rotação vigente no jogo.':'')+'</p>'+
   (period.effects?.length?'<ul>'+period.effects.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':
-   '<p>Bônus específicos ainda não validados no snapshot; confira as mecânicas de cada chefe no jogo.</p>')+
-  '<a href="'+esc(period.sourceUrl||verifiedEndgame.sourceUrl)+'" target="_blank" rel="noopener noreferrer">Fonte e regras de referência</a>';
+   '<p>'+esc(period.note||'Bônus específicos ainda não validados no snapshot; confira as mecânicas de cada chefe no jogo.')+'</p>')+
+  '<a href="'+esc(period.sourceUrl||verifiedEndgame.sourceUrl)+'" target="_blank" rel="noopener noreferrer">'+(period.verification==='confirmed'?'Comunicado oficial da HoYoverse':'Referência editorial; não é confirmação oficial')+'</a>';
  root.prepend(panel);
 }
 function enhance(){
