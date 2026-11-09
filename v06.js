@@ -162,7 +162,26 @@
     const stat=owned.spd?' • '+owned.spd+' VEL':'';
     return 'Na sua conta, '+name+' está no nível '+fmt(owned.level||1)+', E'+fmt(owned.e||0)+'S'+fmt(owned.s||1)+stat+'. Antes de ajustar a rotação, compare os outros três integrantes e os gatilhos do kit. A recomendação não pressupõe um cone ou relíquia que ainda não foi cadastrado.';
   }
-  profileOverview=function(id,b){return '<div class="v06-overview-actions"><button onclick="v06StartImport(\''+id+'\')">⇧ Atualizar pelo print</button><button onclick="editBuild(\''+id+'\')">⚙ Editar atributos</button></div>'+base.profileOverview(id,b)+pomCard('O que avaliar nesta build',verifiedGuide(id),'FICHA · '+lookup(id).name);};
+
+  function repairOverviewEidolons(markup,id){
+    const host=document.createElement('div');host.innerHTML=markup;
+    const images=[...host.querySelectorAll('img')],used=new Set();
+    for(let n=1;n<=6;n++){
+      const icon=rankRecord(id,n)?.icon||'';
+      const img=images.find(x=>!used.has(x)&&icon&&String(x.getAttribute('src')||'').includes(icon))
+       ||images.find(x=>!used.has(x)&&String(x.closest('[onclick]')?.getAttribute('onclick')||'').includes('showEido')&&new RegExp('[, ]'+n+'[)]').test(x.closest('[onclick]')?.getAttribute('onclick')||''));
+      if(!img)continue;
+      used.add(img);
+      img.setAttribute('onerror',"this.onerror=null;this.src='"+eidoFallback(n)+"'");
+      img.setAttribute('alt','Ícone do Eidolon E'+n);
+    }
+    return host.innerHTML;
+  }
+  profileOverview=function(id,b){
+    return '<div class="v06-overview-actions"><button onclick="v06StartImport(\''+id+'\')">⇧ Atualizar pelo print</button><button onclick="editBuild(\''+id+'\')">⚙ Editar atributos</button></div>'+
+      repairOverviewEidolons(base.profileOverview(id,b),id)+pomCard('O que avaliar nesta build',verifiedGuide(id),'FICHA · '+lookup(id).name);
+  };
+
 
   // Use the live character-rank catalog for every released and future character.
   // E3/E5 frequently reuse skill icons and their upstream filenames can vanish.
@@ -710,7 +729,7 @@
         say('Atributos totais lidos. Identificando os ícones e os 30 atributos das relíquias…');
         await window.__nexusRelicInspectorPromise;
         const relicAuto=await import('./relic-auto.js?v=3');
-        const report=await relicAuto.autoDetectRelics(bitmap,worker);
+        const report=await relicAuto.autoDetectRelics(bitmap,worker,(current,total)=>say('Conferindo as relíquias · campo '+current+'/'+total+' (segunda leitura)…'));
         say('Personagem '+cname+' · '+(strip.rows.length-missing.length)+'/8 atributos totais · '+report.status+
             ' Confirme os valores sinalizados antes de salvar.');
       }catch(relicError){
