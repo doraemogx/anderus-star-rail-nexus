@@ -40,6 +40,17 @@
     else if(/loba prateada|silver wolf|sparxie/.test(n)){group='hacker';text='⌘';font="'Outfit',Arial,sans-serif";shape='pixel';}
     else if(/aha|nihilux/.test(n)){group='carnival';text='✧';font="'Marcellus',Georgia,serif";shape='theatre';}
     else if(/phainon|sunday|aventurino|jing yuan/.test(n)){group='solar';text='✷';font="'Cinzel',Georgia,serif";shape='sun';}
+    // Every playable character gets a full visual archetype from their game element,
+    // with a distinct portrait, accent variation, typography, crest and panel geometry.
+    if(group==='astral' && !id.startsWith('800')){
+      const element=gameData.chars?.[id]?.element||'';
+      const path=gameData.chars?.[id]?.path||'';
+      const target=({Fire:'forge',Ice:'lunar',Wind:'tide',Lightning:'hacker',Quantum:'carnival',Imaginary:'solar',Physical:'bloom'})[element]
+        ||({Remembrance:'lunar',Elation:'carnival',Nihility:'hacker',Harmony:'bloom',Destruction:'forge',Abundance:'tide'})[path]||['tide','forge','bloom','solar','lunar','hacker','carnival'][idx%7];
+      group=target;
+      const m={forge:['⚔',"'Barlow Condensed', sans-serif",'blade'],lunar:['☾',"'Cinzel', serif",'moon'],tide:['❖',"'Cinzel', serif",'wave'],hacker:['⌘',"'Outfit', sans-serif",'pixel'],carnival:['✧',"'Marcellus', serif",'theatre'],solar:['✷',"'Cinzel', serif",'sun'],bloom:['✿',"'Marcellus', serif",'petal']};
+      [text,font,shape]=m[group];
+    }
     let color=colors[idx%colors.length];
     if(group==='forge')color=['#f4a38d','#992e39','#230d15'];
     if(group==='bloom')color=['#f9aed0','#9d6198','#211627'];
