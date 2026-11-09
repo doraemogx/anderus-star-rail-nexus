@@ -100,6 +100,11 @@ def run():
         names=ALIASES.get(id,[])
         if fallback and fallback!='{NICKNAME}' and fallback not in names:names=[fallback]+names
         names=[name for name in dict.fromkeys(names) if name]
+        if id.startswith('800') or id=='8010':
+            # The Wiki publishes six reusable fragments per Trailblazer appearance.
+            # Gender is encoded by the game ID; never show Stelle for Caelus.
+            gender='Male' if int(id)%2 else 'Female'
+            names=['Trailblazer '+gender]
         candidates[id]=[[wiki_file(name,n) for name in names] for n in range(1,7)]
         for options in candidates[id]:titles.update(options)
     try:
