@@ -52,7 +52,7 @@ function compareIcon(bitmap,refs,index){
 function normalized(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
 function inferStat(label,amount){
  const name=normalized(label).replace(/[^a-z0-9% ]/g,' ').replace(/\s+/g,' ').trim().replace(/\b(v1|ve1|veI)\b/g,'vel');
- const isPct=/%/.test(String(amount||'')+' '+String(label||''));
+ const isPct=/%/.test(String(amount||'')+' '+String(label||'')) || /\d[.,]\d/.test(String(amount||'')); // flat PV/ATQ/DEF rolls are integers
  if(/energia|regenera/.test(name))return 'Regeneração de Energia';
  if(/cura|healing/.test(name))return 'Bônus de Cura Realizada';
  if(/chance|taxa.*crit|crit.*rate|crit chance|critico.*chance/.test(name))return 'Chance de CRIT';
