@@ -518,7 +518,7 @@
       '<div class="v11-coach-list">'+notes.map((item,i)=>i<3?
          '<article class="v11-coach-note '+safe(item.kind)+'"><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><div><strong>'+safe(item.title)+'</strong><p>'+safe(item.body)+'</p></div></article>':
          '<details class="v11-coach-note v11-coach-collapsed '+safe(item.kind)+'"><summary><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><strong>'+safe(item.title)+'</strong><span aria-hidden="true" class="v11-coach-expand">+</span></summary><p>'+safe(item.body)+'</p></details>').join('')+'</div>'+
-      '<div class="v11-coach-actions"><button type="button" onclick="v11ProfileTab(\'relics\')">Conferir relíquias</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>';
+      '<div class="v11-coach-actions"><button type="button" data-nexus-pompom-open="'+safe(id)+'">Perguntar ao Pom-Pom sobre a build</button><button type="button" onclick="v11ProfileTab(\'relics\')">Conferir relíquias</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>';
   }
   window.v11ProfileTab=function(key){
     tab=key;refresh();
@@ -1333,6 +1333,7 @@
       blocks=pomCard('Calcule primeiro o que falta','No Farm Planner, desconte o estoque e considere as fusões 3:1 antes de estimar runs. Materiais semanais e créditos devem ser rastreados separadamente.','MATERIAIS');
     }
     return '<div class="v06-diary">'+subhead('GUIA DO CONDUTOR','Pom-Pom · Análise da sua conta','Leitura dos atributos, cones e equipamentos que você cadastrou, com pendências específicas por personagem.')+
+      '<div class="v20-pompom-launch"><div><strong>O Pom-Pom agora responde</strong><p>Pergunte sobre seus personagens, os seis equipamentos, cones, materiais e equipes. As respostas usam o que está registrado na conta.</p></div><button type="button" data-nexus-pompom-open>Conversar com o Pom-Pom</button></div>'+
       '<div class="v06-diary-intro">'+pomCard('O que precisa de atenção primeiro','Na guia Minha conta, abra cada personagem para conferir os alertas da sua build. Não invento notas, metas ou personagens que não constam no seu arquivo.','CONFERÊNCIA POR PERSONAGEM')+'</div>'+
       '<div class="v06-accountfilter">'+groups.map(([k,v])=>'<button class="'+(k===v06TipTab?'active':'')+'" onclick="v06SelectTips(\''+k+'\')">'+v+'</button>').join('')+'</div>'+
       blocks+'<div class="v06-source-note">Kits e Eidolons são sincronizados a partir do catálogo comunitário. Conselhos de Endgame são editoriais e não recebem selo de validação automaticamente.</div></div>';
