@@ -68,6 +68,9 @@ try{
     const data=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'null');
     return data?.v06SavedTeams?.some(t=>t.name==='Equipe de teste'&&t.members.length===4);
   },null,{timeout:12000});
+  await page.screenshot({path:'artifacts/team-lab-'+device.width+'.png'});
+  const teamRect=await page.locator('#nexus-team-dialog').boundingBox();
+  assert.ok(teamRect?.width<=device.width+2,'Team Lab wider than viewport');
   await page.locator('#nexus-team-dialog [data-team-close]').click();
   await tab('Kit Lab 2.0').click();
   await page.locator('[data-nexus-kit-for="1512"]').click();
@@ -78,6 +81,9 @@ try{
   assert.equal(await page.locator('.kit-rank').count(),6,'Kit Lab must display six Eidolons');
   await page.locator('[data-kit-summary]').click();
   assert.match(await page.locator('.kit-summary').innerText(),/Pom-Pom|Passageiro/);
+  await page.screenshot({path:'artifacts/kit-lab-'+device.width+'.png'});
+  const kitRect=await page.locator('#nexus-kit-dialog').boundingBox();
+  assert.ok(kitRect?.width<=device.width+2,'Kit Lab wider than viewport');
   await page.locator('.kit-close').click();
   await tab('Cone de Luz').click();
   await page.waitForFunction(()=>document.querySelector('.v11-cone-effect')?.textContent?.includes('32%'),null,{timeout:15000});
