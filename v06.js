@@ -1126,18 +1126,30 @@
   let v06TipTab='owned';
   const groups=[['owned','Minha conta'],['kits','Como ler kits'],['endgame','Endgame'],['farm','Farm']];
   function contextualTip(id){
-    const b=state.characters[id],n=lookup(id).name;
+    const b=state.characters[id],name=lookup(id).name;
     if(!b)return '';
-    if(id==='1503')return pomCard('Pearl E'+b.e+' · confira os alvos','A Suprema escolhe um Arquétipo Estético. Com E2, o avanço adicional alcança os outros aliados elegíveis de Euforia; rodada extra e duplicação dos recursos dependem das condições do kit.','CONSELHO DA PEARL');
-    if(id==='1505')return pomCard('Evanescia E'+b.e+' · planeje os gatilhos','Controle Energia, Mandou Bem e as ativações de Euforia com os suportes que você tiver realmente cadastrado. Não trate um atributo de tela como desempenho final.','CONSELHO DA EVANESCIA');
-    if(id==='1507')return pomCard('Mortenax Blade E'+b.e+' · alinhe as Supremas','O Campo, as Cargas e Supremas ofensivas da equipe definem o valor dos efeitos de Ataque Extra. Não conte Supremas somente de suporte como ataques.','CONSELHO DO MORTENAX');
-    return pomCard(n+' · ajuste antes de investir','Personagem registrado no nível '+(b.level||1)+', E'+(b.e||0)+'S'+(b.s||1)+'. Revise o conjunto, o cone, a ordem de VEL e a função na equipe antes de novos investimentos.','LEITURA DA SUA CONTA');
+    if(!nexusAccount||!nexusAccountCatalog){
+      readyAccount();
+      return '<p role="status">Conferindo as informações de '+safe(name)+'…</p>';
+    }
+    const character=nexusAccountCatalog.chars?.[id]||lookup(id);
+    const cone=accountCone(id);
+    const notes=nexusAccount.buildCoach({
+      character,build:b,records:accountRecords(id),
+      sets:nexusAccountCatalog.relicSets||{},cone,
+      coneRank:cone?nexusAccountCatalog.coneRanks?.[cone.id]:null
+    });
+    const warnings=notes.filter(item=>item.kind==='warning'||item.kind==='action');
+    const highlight=warnings[0]||notes[0];
+    return '<details class="v11-diary-person" '+(warnings.length?'data-priority="review"':'')+'><summary><span><strong>'+safe(name)+'</strong><small>Nv. '+(b.level||1)+' · E'+(b.e||0)+'S'+(b.s||1)+'</small></span><em>'+safe(highlight?.title||'Ver recomendações')+'</em><b>+</b></summary>'+
+      '<div class="v11-diary-notes">'+notes.map(x=>'<article class="'+safe(x.kind)+'"><strong>'+safe(x.title)+'</strong><p>'+safe(x.body)+'</p></article>').join('')+
+      '<button type="button" onclick="openProfile(\''+id+'\')">Abrir ficha e editar build ›</button></div></details>';
   }
   function diary06(){
     const chars=ownerKeys();
     let blocks='';
     if(v06TipTab==='owned'){
-      blocks=chars.length?chars.map(contextualTip).join(''):pomCard('Seu arquivo ainda está vazio','Importe um print em Minha Conta para receber dicas específicas dos personagens que você possui.','COMECE AQUI');
+      blocks=chars.length?'<p class="v11-diary-summary">'+chars.length+' personagem(ns) na sua conta. Toque em cada um para ver verificações, prioridades e efeitos do cone e dos conjuntos realmente equipados.</p>'+chars.map(contextualTip).join(''):pomCard('Seu arquivo ainda está vazio','Importe um print em Minha Conta para receber dicas específicas dos personagens que você possui.','COMECE AQUI');
     } else if(v06TipTab==='kits'){
       blocks=pomCard('Primeiro: leia o gatilho','Em um kit, encontre a condição de ativação, a duração, os alvos elegíveis e o custo da habilidade. O multiplicador sozinho não indica a melhor rotação.','MECÂNICAS')+
         pomCard('Eidolons não são todos iguais','Um Eidolon pode mudar a rotação, desbloquear uma interação ou apenas subir níveis. O valor depende da equipe e do investimento já feito.','INVESTIMENTO');
@@ -1147,8 +1159,8 @@
     } else {
       blocks=pomCard('Calcule primeiro o que falta','No Farm Planner, desconte o estoque e considere as fusões 3:1 antes de estimar runs. Materiais semanais e créditos devem ser rastreados separadamente.','MATERIAIS');
     }
-    return '<div class="v06-diary">'+subhead('GUIA DO CONDUTOR','Dicas do Pom-Pom','Nada de chat ou perguntas à IA. Conselhos do jogo, separados entre sua conta e o catálogo.')+
-      '<div class="v06-diary-intro">'+pomCard('Pronto para a próxima parada?','Selecione um assunto. Os conselhos de sua conta só usam personagens realmente registrados; o restante são guias gerais.','POM-POM A BORDO')+'</div>'+
+    return '<div class="v06-diary">'+subhead('GUIA DO CONDUTOR','Pom-Pom · Análise da sua conta','Leitura dos atributos, cones e equipamentos que você cadastrou, com pendências específicas por personagem.')+
+      '<div class="v06-diary-intro">'+pomCard('O que precisa de atenção primeiro','Na guia Minha conta, abra cada personagem para conferir os alertas da sua build. Não invento notas, metas ou personagens que não constam no seu arquivo.','CONFERÊNCIA POR PERSONAGEM')+'</div>'+
       '<div class="v06-accountfilter">'+groups.map(([k,v])=>'<button class="'+(k===v06TipTab?'active':'')+'" onclick="v06SelectTips(\''+k+'\')">'+v+'</button>').join('')+'</div>'+
       blocks+'<div class="v06-source-note">Kits e Eidolons são sincronizados a partir do catálogo comunitário. Conselhos de Endgame são editoriais e não recebem selo de validação automaticamente.</div></div>';
   }
