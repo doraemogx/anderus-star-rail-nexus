@@ -15,3 +15,5 @@ jobs:
           node-version: '22'
       - name: Sintaxe, temas, OCR e cobertura de modos
         run: node scripts/check-v09.mjs
+      - name: Migração de relíquias, cones S1-S5 e análise de conta
+        run: node scripts/check-account.mjs
