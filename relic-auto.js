@@ -183,7 +183,7 @@ function parseNumberRows(ocr){
  else if(lines.length===30)lines.forEach((l,i)=>{if(!out[i])out[i]=cleanRow(l).value||l;});
  return out;
 }
-async function recognizeStats(bitmap,worker){
+async function recognizeStats(bitmap,worker,progress=()=>{}){
  await worker.setParameters({tessedit_pageseg_mode:'6',tessedit_char_whitelist:''});
  const main=await worker.recognize(makeRelicStrip(bitmap));
  const rows=extractRows(main);
@@ -199,6 +199,7 @@ async function recognizeStats(bitmap,worker){
    const missingName=!inferStat(rows[i].name,rows[i].value);
    const missingValue=!Number.isFinite(parseValue(rows[i].value));
    if(!missingName&&!missingValue)continue;
+   progress(i+1,30);
    const slot=Math.floor(i/5),j=i%5,col=LEFTS[slot];
    const cy=ROW_Y[(slot<3?0:5)+j];
    await worker.setParameters({tessedit_pageseg_mode:'7',tessedit_char_whitelist:''});
@@ -227,10 +228,11 @@ function plausible(stat,value,main){
   return value<15000;
  }
  if(stat==='VEL')return value>=1&&value<=30;
- if(stat==='PV'||stat==='ATQ'||stat==='DEF')return value>=1&&value<=200;
+ if(stat==='PV')return value>=1&&value<=600;
+ if(stat==='ATQ'||stat==='DEF')return value>=1&&value<=300;
  return value>=0.1&&value<=60;
 }
-export async function autoDetectRelics(bitmap,worker){
+export async function autoDetectRelics(bitmap,worker,progress=()=>{}){
  const report={recognized:0,sets:0,uncertain:[],suggestions:[],status:'análise não concluída'};
  let refs=[];
  try{refs=await signatures();}catch(e){report.uncertain.push('Catálogo de imagens de relíquias indisponível');}
@@ -262,7 +264,7 @@ export async function autoDetectRelics(bitmap,worker){
   }
  }
  try{
-  const rows=await recognizeStats(bitmap,worker);
+  const rows=await recognizeStats(bitmap,worker,progress);
   for(let i=0;i<6;i++)for(let j=0;j<5;j++){
     const row=rows[i*5+j],stat=inferStat(row.name,row.value),value=parseValue(row.value);
     const statId=j===0?'main':'k'+(j-1),valId=j===0?'mainval':'v'+(j-1);
