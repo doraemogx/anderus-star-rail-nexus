@@ -51,7 +51,7 @@ function compareIcon(bitmap,refs,index){
 }
 function normalized(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
 function inferStat(label,amount){
- const name=normalized(label).replace(/[^a-z0-9% ]/g,' ').replace(/\s+/g,' ').trim();
+ const name=normalized(label).replace(/[^a-z0-9% ]/g,' ').replace(/\s+/g,' ').trim().replace(/\b(v1|ve1|veI)\b/g,'vel');
  const isPct=/%/.test(String(amount||'')+' '+String(label||''));
  if(/energia|regenera/.test(name))return 'Regeneração de Energia';
  if(/cura|healing/.test(name))return 'Bônus de Cura Realizada';
@@ -74,106 +74,149 @@ function inferStat(label,amount){
  return '';
 }
 function parseValue(text){
- const cleaned=String(text||'').replace(/[Oo]/g,'0').replace(/[lI]/g,'1').replace(/\s/g,'');
+ const cleaned=String(text||'').replace(/[Oo]/g,'0').replace(/[lI]/g,'1').replace(/\s/g,'').replace(/(\d)\.(\d{3})(?=\D|$)/g,'$1$2');
  const m=cleaned.match(/\d{1,5}(?:[.,]\d{1,2})?/);
  return m?Number(m[0].replace(',','.')):null;
 }
-function makeRelicStrip(bitmap){
- const output=document.createElement('canvas');
- output.width=1050;output.height=1800;
- const ctx=output.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,1050,1800);
- ctx.font='bold 16px Arial';ctx.fillStyle='#000';
+
+function makeTextCrop(bitmap,x,y,w,h,outWidth=520,outHeight=64){
+ // These cards use bright small glyphs on dark coloured backgrounds. The OCR
+ // must receive actual black characters on white, not raw UI art.
+ const c=document.createElement('canvas');c.width=outWidth;c.height=outHeight;
+ const ctx=c.getContext('2d',{willReadFrequently:true});
  const sx=bitmap.width/2000,sy=bitmap.height/1826;
- for(let i=0;i<6;i++){
-   const col=LEFTS[i],base=i<3?0:5;
-   for(let j=0;j<5;j++){
-     const cy=ROW_Y[base+j],line=i*5+j;
-     // Omit the game HUD icons and tiny upgrade-count badges whenever possible.
-     ctx.fillText(String(line+1).padStart(2,'0'),5,line*60+34);
-     ctx.drawImage(bitmap,(col+34)*sx,(cy-22)*sy,248*sx,44*sy,50,line*60,605,56);
-     ctx.drawImage(bitmap,(col+286)*sx,(cy-22)*sy,102*sx,44*sy,681,line*60,345,56);
-   }
+ ctx.drawImage(bitmap,x*sx,y*sy,w*sx,h*sy,0,0,outWidth,outHeight);
+ const pixels=ctx.getImageData(0,0,outWidth,outHeight);
+ for(let p=0;p<pixels.data.length;p+=4){
+   const r=pixels.data[p],g=pixels.data[p+1],b=pixels.data[p+2];
+   const light=.299*r+.587*g+.114*b;
+   const foreground=light>142 || (r>154&&g>108&&b>68) || (b>175&&g>133);
+   const v=foreground?0:255;
+   pixels.data[p]=pixels.data[p+1]=pixels.data[p+2]=v;
+   pixels.data[p+3]=255;
  }
- return output;
+ ctx.putImageData(pixels,0,0);
+ return c;
 }
+function makeRelicStrip(bitmap){
+ const out=document.createElement('canvas');out.width=1100;out.height=30*72;
+ const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);
+ ctx.fillStyle='#000';ctx.font='bold 19px Arial';ctx.textBaseline='middle';
+ for(let i=0;i<6;i++)for(let j=0;j<5;j++){
+   const idx=i*5+j,cy=ROW_Y[(i<3?0:5)+j],col=LEFTS[i],y=idx*72;
+   const name=makeTextCrop(bitmap,col+33,cy-22,249,44,625,64);
+   const value=makeTextCrop(bitmap,col+274,cy-22,124,44,345,64);
+   ctx.fillStyle='#000';ctx.fillText(String(idx+1).padStart(2,'0'),6,y+35);
+   ctx.drawImage(name,52,y+4);
+   ctx.drawImage(value,729,y+4);
+ }
+ return out;
+}
+
 function cleanRow(text){
- let clean=String(text||'').replace(/^\s*\d{1,2}[\s.:)\-]*/,'').replace(/\s+/g,' ').trim();
- // Some OCR engines merge label and last numeric token. Split from the right.
- const match=clean.match(/^(.*?\D)\s*([+\-]?\d{1,5}(?:[.,]\d{1,2})?\s*%?)\s*$/);
- if(match)return {name:match[1].trim(),value:match[2].trim()};
- return {name:clean,value:''};
+ const line=String(text||'').replace(/^\s*\d{1,2}[.):-]?\s*/,'').replace(/\s+/g,' ').trim();
+ const m=line.match(/^(.*?)\s*([+−-]?\s*\d{1,5}(?:[.,]\d{1,2})?\s*%?)\s*$/);
+ return m?{name:m[1].trim(),value:m[2].replace(/\s+/g,'')}:{name:line,value:''};
+}
+function lineNumber(text){
+ const m=String(text||'').match(/^\s*(\d{1,2})[.):-]?\s+/);
+ return m&&+m[1]>=1&&+m[1]<=30?+m[1]-1:-1;
 }
 function extractRows(ocr){
  const rows=Array.from({length:30},()=>({name:'',value:''}));
+ const assign=(i,text,prefer=false)=>{
+   if(i<0||i>29)return;
+   const row=cleanRow(text);
+   if(row.name && (prefer||!rows[i].name))rows[i].name=row.name;
+   if(row.value && (prefer||!rows[i].value))rows[i].value=row.value;
+ };
+ const blocks=[...(ocr.data?.lines||[]),...(ocr.data?.blocks||[]).flatMap(b=>b.paragraphs?.flatMap(p=>p.lines||[])||[])];
+ for(const line of blocks){
+   const box=line.bbox||{},mid=(Number(box.y0)+Number(box.y1))/2;
+   const i=Math.floor(mid/72);
+   if(Number.isFinite(mid))assign(i,line.text);
+ }
  const words=ocr.data?.words||[];
  for(const w of words){
-  const box=w.bbox||{},at=(Number(box.y0)+Number(box.y1))/2;
-  if(!Number.isFinite(at))continue;
-  const i=Math.floor(at/60);
-  if(i<0||i>=30||!w.text)continue;
-  if(Number(box.x0)<650)rows[i].name+=' '+w.text;
-  else rows[i].value+=' '+w.text;
+   const box=w.bbox||{},mid=(Number(box.y0)+Number(box.y1))/2;
+   if(!Number.isFinite(mid)||!w.text)continue;
+   const i=Math.floor(mid/72);
+   if(i<0||i>29)continue;
+   if(Number(box.x0)<710)rows[i].name+=' '+w.text;
+   else rows[i].value+=' '+w.text;
  }
- const textLines=String(ocr.data?.text||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
- // Only trust line order when the OCR returned an exact row-per-line image.
- if(textLines.length===30){
-  textLines.forEach((line,i)=>{
-   const split=cleanRow(line);
-   if(!rows[i].name.trim())rows[i].name=split.name;
-   if(!rows[i].value.trim())rows[i].value=split.value;
-  });
- }
+ const lines=String(ocr.data?.text||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ const numbered=lines.filter(l=>lineNumber(l)>=0);
+ if(numbered.length>=12)for(const line of numbered)assign(lineNumber(line),line,true);
+ else if(lines.length===30)lines.forEach((line,i)=>assign(i,line,true));
  return rows.map(r=>{
-  const both=cleanRow(r.name+' '+r.value);
-  const separate=cleanRow(r.name);
-  const value=r.value.trim()||both.value||separate.value;
-  const name=(both.value?both.name:separate.value?separate.name:r.name).replace(/^\s*\d{1,2}\s*/, '').trim();
-  return {name,value};
+   const n=cleanRow(r.name+' '+r.value),extra=cleanRow(r.name);
+   return {name:(n.value?n.name:extra.value?extra.name:r.name).replace(/^\s*\d{1,2}\s*/,'').trim(),
+      value:r.value.trim()||n.value||extra.value};
  });
 }
 function makeNumberStrip(bitmap){
- const canvas=document.createElement('canvas');canvas.width=560;canvas.height=30*60;
- const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,560,1800);
- const sx=bitmap.width/2000,sy=bitmap.height/1826;
- for(let i=0;i<6;i++){
-  const col=LEFTS[i],base=i<3?0:5;
-  for(let j=0;j<5;j++){
-   const y=ROW_Y[base+j],idx=i*5+j;
-   // Digit-only rectangular crop, aligned to the corresponding fixed stat row.
-   ctx.drawImage(bitmap,(col+271)*sx,(y-23)*sy,127*sx,46*sy,7,idx*60+1,540,58);
-  }
+ const c=document.createElement('canvas');c.width=480;c.height=30*72;
+ const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+ ctx.fillStyle='#000';ctx.font='bold 18px Arial';
+ for(let i=0;i<6;i++)for(let j=0;j<5;j++){
+   const k=i*5+j,y=ROW_Y[(i<3?0:5)+j],col=LEFTS[i];
+   ctx.fillText(String(k+1).padStart(2,'0'),7,k*72+39);
+   ctx.drawImage(makeTextCrop(bitmap,col+268,y-23,132,46,380,64),75,k*72+4);
  }
- return canvas;
+ return c;
 }
 function parseNumberRows(ocr){
- const values=Array(30).fill(null);
- const words=ocr.data?.words||[];
- for(const word of words){
-  const bb=word.bbox||{},cy=(Number(bb.y0)+Number(bb.y1))/2;
-  const idx=Math.floor(cy/60);
-  if(idx<0||idx>29||!Number.isFinite(cy))continue;
-  const str=String(word.text||'').replace(/\s/g,'');
-  if(/\d/.test(str))values[idx]=(values[idx]||'')+str;
+ const out=Array(30).fill('');
+ const blocks=ocr.data?.lines||[];
+ for(const l of blocks){
+   const b=l.bbox||{},mid=(Number(b.y0)+Number(b.y1))/2,i=Math.floor(mid/72);
+   if(i>=0&&i<30&&Number.isFinite(mid))out[i]=cleanRow(l.text).value||l.text;
  }
- const lines=String(ocr.data?.text||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
- if(lines.length===30)lines.forEach((line,i)=>{if(!values[i])values[i]=line;});
- return values;
+ for(const w of ocr.data?.words||[]){
+   const b=w.bbox||{},mid=(Number(b.y0)+Number(b.y1))/2,i=Math.floor(mid/72);
+   if(i>=0&&i<30&&Number.isFinite(mid)&&Number(b.x0)>55)out[i]+=' '+w.text;
+ }
+ const lines=String(ocr.data?.text||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ const numbered=lines.filter(l=>lineNumber(l)>=0);
+ if(numbered.length>=12)for(const l of numbered)out[lineNumber(l)]=cleanRow(l).value||out[lineNumber(l)];
+ else if(lines.length===30)lines.forEach((l,i)=>{if(!out[i])out[i]=cleanRow(l).value||l;});
+ return out;
 }
 async function recognizeStats(bitmap,worker){
  await worker.setParameters({tessedit_pageseg_mode:'6',tessedit_char_whitelist:''});
  const main=await worker.recognize(makeRelicStrip(bitmap));
  const rows=extractRows(main);
- // A second digit-focused pass rescues values lost by general OCR;
- // aligned by actual word coordinates, never guessed sequentially.
- const missing=rows.filter(x=>!/\d/.test(x.value)).length;
- if(missing){
-  await worker.setParameters({tessedit_pageseg_mode:'6',tessedit_char_whitelist:'0123456789.,%+'});
-  const numeric=await worker.recognize(makeNumberStrip(bitmap));
-  const numbers=parseNumberRows(numeric);
-  for(let i=0;i<30;i++)if(!/\d/.test(rows[i].value)&&numbers[i])rows[i].value=numbers[i];
+ // A separate numbers-only pass prevents a weak label reading from losing the value.
+ await worker.setParameters({tessedit_pageseg_mode:'6',tessedit_char_whitelist:'0123456789.,%+'});
+ const numbers=parseNumberRows(await worker.recognize(makeNumberStrip(bitmap)));
+ for(let i=0;i<30;i++){
+   if(!/\d/.test(rows[i].value)&&/\d/.test(numbers[i]))rows[i].value=numbers[i];
+ }
+ // If Tesseract coalesces or skips lines, retry individual cells with PSM 7;
+ // alignment never depends on the number of OCR lines returned.
+ for(let i=0;i<30;i++){
+   const missingName=!inferStat(rows[i].name,rows[i].value);
+   const missingValue=!Number.isFinite(parseValue(rows[i].value));
+   if(!missingName&&!missingValue)continue;
+   const slot=Math.floor(i/5),j=i%5,col=LEFTS[slot];
+   const cy=ROW_Y[(slot<3?0:5)+j];
+   await worker.setParameters({tessedit_pageseg_mode:'7',tessedit_char_whitelist:''});
+   if(missingName){
+     const name=await worker.recognize(makeTextCrop(bitmap,col+32,cy-23,257,46,700,90));
+     const candidate=cleanRow(name.data?.text).name;
+     if(inferStat(candidate,rows[i].value))rows[i].name=candidate;
+   }
+   if(missingValue){
+     await worker.setParameters({tessedit_pageseg_mode:'7',tessedit_char_whitelist:'0123456789.,%+'});
+     const amount=await worker.recognize(makeTextCrop(bitmap,col+265,cy-23,135,46,440,90));
+     const found=String(amount.data?.text||'').trim();
+     if(Number.isFinite(parseValue(found)))rows[i].value=found;
+   }
  }
  return rows;
 }
+
 function plausible(stat,value,main){
  if(!Number.isFinite(value)||value<=0)return false;
  const percent=/%/.test(stat)||/CRIT|Quebra|Energia|Cura|RES a|Acerto|Bônus de Dano/.test(stat);
