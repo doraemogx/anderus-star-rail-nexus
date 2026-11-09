@@ -94,11 +94,22 @@ function open(){
 }
 function mount(){
  if(document.getElementById('nexus-search-button'))return;
- const trigger=document.createElement('button');trigger.id='nexus-search-button';trigger.type='button';trigger.textContent='⌕ Buscar';trigger.setAttribute('aria-label','Pesquisa universal do Nexus');
- trigger.addEventListener('click',open);
  const header=document.querySelector('.mast-actions')||document.querySelector('.masthead');
- if(header)header.prepend(trigger);
- else document.body.append(trigger);
+ // Reuse the existing header magnifier instead of introducing a duplicate.
+ const existing=header?.querySelector('.i-btn[aria-label*="usca"],.i-btn[title*="usca"],.i-btn[onclick*="earch"]')
+    ||header?.querySelector('.i-btn');
+ if(existing){
+  existing.id='nexus-search-button';
+  existing.setAttribute('aria-label','Pesquisa universal do Nexus');
+  existing.setAttribute('aria-keyshortcuts','Control+K Meta+K');
+  existing.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();open();},true);
+ }else{
+  const trigger=document.createElement('button');
+  trigger.id='nexus-search-button';trigger.type='button';trigger.setAttribute('aria-label','Pesquisa universal do Nexus');
+  trigger.innerHTML='<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>';
+  trigger.addEventListener('click',open);
+  if(header)header.prepend(trigger);else document.body.append(trigger);
+ }
  document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open();}
  });
