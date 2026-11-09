@@ -15,7 +15,7 @@ Hub independente de **Honkai: Star Rail**, com foco em dados reais, usabilidade 
 | Minha Conta | Fichas, imagens, Eidolons, cone, seis relíquias, edição manual e histórico reversível de builds | Dados locais; confirmação por print é responsabilidade da pessoa |
 | Importação | Reconhecimento de dois layouts ilustrados e editor com seis peças editáveis | OCR não reconhece todas as imagens; campos incertos não são preenchidos artificialmente |
 | Kit Lab | Habilidades por nível, descrições, Eidolons, rastros e custos provenientes de catálogos PT-BR | Informações estruturadas de fonte comunitária; números não presentes não são inventados |
-| Pom-Pom | Recomendações determinísticas contextualizadas por build; explicações detalhadas expansíveis | Não calcula DPS real nem inventa composição ideal |
+| Pom-Pom | Dicas determinísticas e chat local com perguntas sobre build, cone, kit, equipes, farm e inventário | Sem LLM remoto automático, simulação de DPS ou conclusões além dos dados disponíveis |
 | Team Lab | Equipes de quatro personagens realmente cadastrados e salvamento no backup local | Papéis por Caminho não substituem simulação de combate |
 | Farm | Ascensão, rastros, níveis e estoque de materiais compartilhado | Não estima drops de runs sem taxa verificada; custos incompletos são sinalizados |
 | Orçamento Global | Soma necessidades de ascensão e rastros, descontando estoque uma única vez | Metas de ascensão precisam ser registradas; níveis desconhecidos ficam de fora |
