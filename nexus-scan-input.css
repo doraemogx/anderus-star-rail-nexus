@@ -1,0 +1,5 @@
+.v06-import-drop.nexus-scan-dragging{outline:3px dashed #f0ca94!important;outline-offset:-7px;background:#253953!important;transition:background .15s ease}
+.v06-import-drop{min-height:120px}
+.v06-import-drop:focus-within{outline:3px solid #f3d59a;outline-offset:3px}
+.v06-import-drop label small{display:block;line-height:1.65}
+@media(prefers-reduced-motion:reduce){.v06-import-drop{transition:none!important}}
