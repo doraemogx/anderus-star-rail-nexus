@@ -285,6 +285,14 @@ try{
   await tab('Cone de Luz').click();
   await page.waitForFunction(()=>document.querySelector('.v11-cone-effect')?.textContent?.includes('32%'),null,{timeout:15000});
   assert.match(await page.locator('.v11-cone-panel').innerText(),/24%/);
+  assert.match(await page.locator('.v11-cone-level-form').innerText(),/Ainda não informado/,'Unknown equipped cone level cannot default to character level');
+  await page.locator('.v11-cone-level-form input[name="coneLevel"]').fill('72');
+  await page.locator('.v11-cone-level-form button[type="submit"]').click();
+  await page.waitForFunction(()=>{
+    const saved=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}');
+    return saved.characters?.['1512']?.coneLevel===72;
+  },null,{timeout:12000});
+  assert.match(await page.locator('.v11-cone-level-form').innerText(),/Nível 72 \/ 80/);
   const sizeCone=await page.locator('.v11-cone-panel').boundingBox();
   assert.ok(sizeCone?.width>150);
   await tab('Relíquias').click();
