@@ -80,3 +80,13 @@
 .aha-theatre .v09-intel-metrics b{color:#e4bdbd;font:800 9px 'DM Sans',sans-serif;letter-spacing:.65px}
 .aha-theatre .v09-intel-metrics strong{color:#ffebd8;font:600 19px 'Cinzel',Georgia,serif}
 @media(min-width:720px){.aha-theatre .v09-intel-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.aha-theatre .v09-intel{padding:23px}}
+
+/* Versioned official rotation notice is distinct from community boss dossiers. */
+.v20-official-rotation{margin:12px 0 22px;padding:clamp(16px,3vw,24px);border:1px solid #d5b88d;background:linear-gradient(120deg,#1e3146,#1a2036);border-radius:13px;color:#f1e9d9}
+.v20-rotation-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:#e8cda8;font-size:11px;font-weight:700;letter-spacing:.07em}
+.v20-official-rotation h3{font:500 clamp(21px,4vw,29px) Georgia,serif;margin:11px 0 8px}
+.v20-official-rotation p{font:13px/1.7 'DM Sans',system-ui;color:#d5dfea}
+.v20-official-rotation ul{padding-left:20px;margin:12px 0 18px}
+.v20-official-rotation li{font:13px/1.8 'DM Sans',system-ui;margin-bottom:8px}
+.v20-official-rotation a{color:#f2d2a4;text-underline-offset:4px;font-weight:700}
+.aha-theatre .v20-official-rotation{background:linear-gradient(120deg,#351c3d,#1a152b);border-color:#dfaaba}
