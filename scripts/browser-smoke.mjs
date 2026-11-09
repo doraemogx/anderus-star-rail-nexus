@@ -9,7 +9,8 @@ const cases=[
 ];
 const fixture={
  characters:{'1512':{level:80,e:1,s:5,cone:'A Próxima Página da História',
-   pv:6284,atk:1659,def:1044,spd:138,crit:31.3,cdmg:127.1,break:15.5,energy:124.4}},
+   pv:6284,atk:1659,def:1044,spd:138,crit:31.3,cdmg:127.1,break:15.5,energy:124.4},
+  '1505':{level:80,e:6,s:1},'1503':{level:80,e:2,s:1},'1309':{level:80,e:0,s:1}},
  profile:'1512',
  v06RelicDetails:{'1512':[
   {setId:'127',level:15,main:{stat:'PV',value:705},subs:[{stat:'PV %',value:8.6},{stat:'VEL',value:4},{stat:'Taxa de Acerto de Efeito',value:11.6},{stat:'ATQ %',value:3.4}]},
@@ -56,6 +57,18 @@ try{
   const ovButtons=await page.locator('.v06-profile-controls button').count();
   assert.equal(ovButtons,2,'Overview must have one Edit and one Import control');
   const tab=key=>page.locator('.v06-tabs button').filter({hasText:key}).first();
+  await tab('Equipes').click();
+  await page.locator('[data-nexus-team-lab]').click();
+  await page.locator('#nexus-team-dialog[open]').waitFor({timeout:15000});
+  const picks=['1512','1505','1503','1309'];
+  for(let i=0;i<4;i++)await page.locator('#teamlab-slot-'+i).selectOption(picks[i]);
+  await page.locator('#teamlab-name').fill('Equipe de teste');
+  await page.locator('#nexus-team-dialog [data-team-save]').click();
+  await page.waitForFunction(()=>{
+    const data=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'null');
+    return data?.v06SavedTeams?.some(t=>t.name==='Equipe de teste'&&t.members.length===4);
+  },null,{timeout:12000});
+  await page.locator('#nexus-team-dialog [data-team-close]').click();
   await tab('Kit Lab 2.0').click();
   await page.locator('[data-nexus-kit-for="1512"]').click();
   await page.locator('#nexus-kit-dialog[open]').waitFor({timeout:15000});
