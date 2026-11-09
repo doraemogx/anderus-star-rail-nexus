@@ -56,6 +56,16 @@ try{
   const ovButtons=await page.locator('.v06-profile-controls button').count();
   assert.equal(ovButtons,2,'Overview must have one Edit and one Import control');
   const tab=key=>page.locator('.v06-tabs button').filter({hasText:key}).first();
+  await tab('Kit Lab 2.0').click();
+  await page.locator('[data-nexus-kit-for="1512"]').click();
+  await page.locator('#nexus-kit-dialog[open]').waitFor({timeout:15000});
+  await page.locator('#nexus-kit-content .kit-skill').first().waitFor({timeout:30000});
+  assert.ok(await page.locator('#nexus-kit-content .kit-skill').count()>=4,'Complete abilities absent from Kit Lab');
+  await page.locator('[data-kit-tab="ranks"]').click();
+  assert.equal(await page.locator('.kit-rank').count(),6,'Kit Lab must display six Eidolons');
+  await page.locator('[data-kit-summary]').click();
+  assert.match(await page.locator('.kit-summary').innerText(),/Pom-Pom|Passageiro/);
+  await page.locator('.kit-close').click();
   await tab('Cone de Luz').click();
   await page.waitForFunction(()=>document.querySelector('.v11-cone-effect')?.textContent?.includes('32%'),null,{timeout:15000});
   assert.match(await page.locator('.v11-cone-panel').innerText(),/24%/);
@@ -64,7 +74,7 @@ try{
   await tab('Relíquias').click();
   await page.locator('.v11-relic-card').first().waitFor({timeout:15000});
   assert.equal(await page.locator('.v11-relic-card').count(),6);
-  assert.match(await page.locator('.v11-relic-card').nth(2).innerText(),/64,8/,'Corrected +15 Crit body');
+  assert.match(await page.locator('.v11-relic-card').nth(2).innerText(),/4,8/,'Uncertain +15 OCR value must remain unchanged until confirmed');
   assert.match(await page.locator('.v11-relic-card').first().innerText(),/Portador da Reconstrução do Mundo/);
   assert.match(await page.locator('.v11-relic-card').nth(5).innerText(),/Vonwacq Vivaz/);
   const body=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));
