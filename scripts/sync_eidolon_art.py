@@ -9,7 +9,7 @@ def get(url, limit=2048):
   req=urllib.request.Request(url,headers=HEAD)
   with urllib.request.urlopen(req,timeout=15) as r:
    b=r.read(limit)
-   return f'{r.status} {r.headers.get("Content-Type")} {r.geturl()[:170]} bytes={len(b)} signature={b[:10].hex()}'
+   return f'{r.status} {r.headers.get("Content-Type")} {r.geturl()[:170]} bytes={len(b)} signature={b[:10].hex()} body={b[:1500].decode("utf-8","replace") if "json" in r.headers.get("Content-Type","") else ""}'
  except Exception as e:return type(e).__name__+' '+str(e)[:240]
 for title in examples:
  encoded=quote(title.replace(' ','_'))
