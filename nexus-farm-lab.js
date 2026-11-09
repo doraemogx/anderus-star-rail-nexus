@@ -39,9 +39,9 @@ function dialog(){
  document.body.append(dlg);
  dlg.querySelector('[data-farm-close]').onclick=()=>dlg.close();
  dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
- dlg.querySelector('#nexus-farm-character').addEventListener('change',e=>{character=e.target.value;render()});
- dlg.querySelector('#nexus-farm-from').addEventListener('change',e=>{from=Number(e.target.value);if(to<from)to=from;render()});
- dlg.querySelector('#nexus-farm-to').addEventListener('change',e=>{to=Number(e.target.value);if(to<from)from=to;render()});
+ dlg.querySelector('#nexus-farm-character').addEventListener('change',e=>{character=e.target.value;const existing=window.NexusFarmBridge?.ascensionRead(character)||{};from=existing.from??0;to=existing.to??6;render()});
+ dlg.querySelector('#nexus-farm-from').addEventListener('change',e=>{from=Number(e.target.value);if(to<from)to=from;window.NexusFarmBridge?.ascensionWrite(character,{from,to});render()});
+ dlg.querySelector('#nexus-farm-to').addEventListener('change',e=>{to=Number(e.target.value);if(to<from)from=to;window.NexusFarmBridge?.ascensionWrite(character,{from,to});render()});
  dlg.addEventListener('change',e=>{
   const input=e.target.closest('[data-farm-stock]');
   if(input){
@@ -81,15 +81,20 @@ async function render(){
   const total=Object.values(gap).filter(n=>n>0).length;
   root.innerHTML='<div class="nexus-farm-total"><strong>'+total+' tipo(s) de material ainda necessários</strong><span>De '+esc(steps[from])+' até '+esc(steps[to])+'</span></div>'+
    (rows||'<p>Não há novas ascensões entre os estágios selecionados.</p>')+
-   '<p class="nexus-farm-caveat">Os recursos informados são contados apenas uma vez neste planejamento. A conversão 3:1 depende da família de materiais; este painel não a aplica sem uma receita verificada.</p>';
+   '<p class="nexus-farm-caveat">Este é o custo apenas desta ascensão. Para ver demandas somadas de todos os planejamentos sem reutilizar o mesmo estoque, abra o orçamento global. Conversões 3:1 não são aplicadas sem receita verificada.</p>'+
+   '<button type="button" data-material-budget>Abrir orçamento global de materiais</button>';
  }catch(error){root.textContent='Não foi possível preparar a ascensão: '+String(error.message||error);}
 }
 async function open(id){
  const dlg=dialog();if(id)character=String(id);
  if(!dlg.open)dlg.showModal();
+ const saved=window.NexusFarmBridge?.ascensionRead(character)||{};
  const selected=(window.NexusFarmBridge?.roster()||[]).find(x=>x.id===character);
- if(selected?.level>=70)from=5;else if(selected?.level>=60)from=4;else if(selected?.level>=50)from=3;else if(selected?.level>=40)from=2;else if(selected?.level>=30)from=1;else from=0;
- to=6;await render();
+ const suggested=selected?.level>=70?5:selected?.level>=60?4:selected?.level>=50?3:selected?.level>=40?2:selected?.level>=30?1:0;
+ from=Number.isInteger(Number(saved.from))?Number(saved.from):suggested;
+ to=Number.isInteger(Number(saved.to))?Number(saved.to):6;
+ // A level-based suggestion is not persisted as a factual ascension state.
+ await render();
 }
 function mount(){
  if(mount.done)return;mount.done=true;
