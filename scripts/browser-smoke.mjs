@@ -39,6 +39,15 @@ try{
     console.error('BROWSER_STAGE_DEBUG',JSON.stringify(dom));
     throw error;
   });
+  // Account transfer controls should be reachable and show an actual export action.
+  await page.locator('#nexus-diagnostics-button').waitFor({timeout:15000});
+  await page.locator('#nexus-diagnostics-button').click();
+  await page.locator('#nexus-diag-backup').click();
+  await page.locator('#nexus-backup-dialog[open]').waitFor({timeout:15000});
+  assert.ok(await page.locator('#nexus-backup-dialog [data-backup-export]').isEnabled());
+  await page.screenshot({path:'artifacts/nexus-backup-'+device.width+'.png'});
+  await page.locator('#nexus-backup-dialog [data-backup-close]').click();
+  await page.locator('#nexus-diag-close').click();
   // Search canonical catalogue and verify a playable character result.
   await page.locator('#nexus-search-button').waitFor({timeout:15000});
   await page.locator('#nexus-search-button').click();
