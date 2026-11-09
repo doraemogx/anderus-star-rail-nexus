@@ -1,0 +1,175 @@
+{
+  "schema": 1,
+  "updatedAt": "2026-11-09",
+  "officialRelease": "2026-11-11",
+  "officialSource": "https://www.gamespress.com/pt/Honkai-Star-Rail-Version-47-Now-Lay-Laughter-to-All-St-wwwhoyoversecom",
+  "entries": [
+    {
+      "id": "1511",
+      "name": "Aeon ★ Aha",
+      "aliases": [
+        "Nihilux",
+        "Rá",
+        "Aeon Aha"
+      ],
+      "patch": "4.7",
+      "status": "BETA — não é versão final",
+      "version": "Gachabase v4.6.54 (BETA)",
+      "source": "https://hsr.gachabase.net/characters/1511/aeon-aha/beta",
+      "recordedAt": "2026-11-09",
+      "element": "Quântico",
+      "path": "Euforia",
+      "rarity": 5,
+      "art": "https://i.gachabase.net/mZQZSbIAQyJXbDElL_RE2AwSR7C4X0pOBxgQ3ybCNnA/q:50/f:webp/plain/hsr/assets/f8b5630e85022ab8b2761e4e3f614b42.png",
+      "baseStats": {
+        "pv": 1047,
+        "atk": 679,
+        "def": 509,
+        "spd": 94
+      },
+      "skills": [
+        {
+          "key": "basic",
+          "name": "Ataque Básico",
+          "level": 6,
+          "summary": "Causa 50% de Dano Quântico de Euforia a um inimigo; gera um ponto de Perícia.",
+          "multipliers": [
+            "50% Dano de Euforia"
+          ],
+          "pom": "Serve para economia de Pontos de Perícia e geração de Desejo."
+        },
+        {
+          "key": "skill",
+          "name": "Perícia — Emissário de Euforia",
+          "level": 10,
+          "summary": "Escolhe um aliado (não Aha) como Emissário até ser substituído; causa Ataque Extra em área de 50% de Dano Quântico de Euforia. O Emissário ganha 20% de Euforia; no início do turno, Aha recebe 1 Desejo.",
+          "multipliers": [
+            "50% Dano em área",
+            "20% Euforia ao Emissário",
+            "1 Desejo por turno do Emissário"
+          ],
+          "pom": "Marque o aliado que terá mais turnos úteis e use o bônus na janela de dano da equipe."
+        },
+        {
+          "key": "ultimate",
+          "name": "Suprema — Que Comece o Riso",
+          "level": 10,
+          "summary": "Custa 8 pontos de Desejo; avança a ação de Aha em 20%, ativa Rostos da Euforia por três turnos; causa 200% de Dano de Euforia em área e cinco acertos aleatórios de 60%.",
+          "multipliers": [
+            "8 Desejos",
+            "20% de avanço",
+            "3 turnos",
+            "200% em área",
+            "5 × 60% aleatórios"
+          ],
+          "pom": "Planeje a frequência dos turnos do Emissário e os acúmulos de Desejo; não equivale a Energia convencional."
+        },
+        {
+          "key": "talent",
+          "name": "Talento — Desejo e Instante de Aha",
+          "level": 10,
+          "summary": "Pode acumular até 10 pontos de Desejo; recebe 1 ao usar Básico, Perícia ou Habilidade de Euforia. Quando Piada alcança 40 pela primeira vez depois do turno de Aha, recebe 1 Desejo e aumenta o Dano CRIT do grupo em 40% por três turnos.",
+          "multipliers": [
+            "Até 10 Desejos",
+            "40 Piada",
+            "40% Dano CRIT por 3 turnos"
+          ],
+          "pom": "O intervalo de ativação importa: avalie o número de ações e gatilhos por rodada."
+        },
+        {
+          "key": "elation",
+          "name": "Habilidade de Euforia — Lua Cheia",
+          "level": 10,
+          "summary": "No fim do Instante de Aha, causa 60% de Dano Quântico de Euforia em área e Dano Verdadeiro equivalente a 20% do dano não verdadeiro causado pelos aliados nesse instante, dividido entre os inimigos.",
+          "multipliers": [
+            "60% em área",
+            "20% do dano acumulado (Verdadeiro)"
+          ],
+          "pom": "Quanto mais dano o time causar dentro do Instante, maior o componente de Dano Verdadeiro."
+        },
+        {
+          "key": "technique",
+          "name": "Técnica — Abracadabra",
+          "level": null,
+          "summary": "Cria zona por 20 segundos que atrapalha a detecção dos inimigos. No início da luta, Aha recebe uma ação extra e considera 20 Piada.",
+          "multipliers": [
+            "20 segundos",
+            "20 Piada"
+          ],
+          "pom": "Ajuda a começar o combate com vantagem de tempo e recursos."
+        }
+      ],
+      "traces": [
+        {
+          "name": "A2 — Brincadeira com os Aeons",
+          "summary": "A Perícia produz mais 20% de Dano de Euforia no Emissário e restaura 1 Ponto de Perícia."
+        },
+        {
+          "name": "A4 — Carnaval Caprichoso",
+          "summary": "Ao receber cura ou escudo de um aliado, Aha ganha 1 Desejo; reinicia após a Suprema."
+        },
+        {
+          "name": "A6 — Caixa de Tudo",
+          "summary": "Com VEL 125/150, o atributo Euforia de Aha sobe 120%/150%; a entrada no combate avança sua ação em 30%."
+        }
+      ],
+      "eidolons": [
+        {
+          "n": 1,
+          "name": "Quem riu primeiro?",
+          "summary": "Começa o combate com 5 pontos de Desejo; aliados recebem 15% de amplificação do Dano de Euforia.",
+          "art": "https://i.gachabase.net/v1qrHPLrRMBPiRVnwpWwWpOla3M7Btlqh9jadm8bqSM/q:50/f:webp/plain/hsr/assets/c814e3c60dadd2737e2e63258ed6746a.png"
+        },
+        {
+          "n": 2,
+          "name": "Entre seus olhos e os deles",
+          "summary": "Melhora os efeitos de ascensão dos aliados da Euforia; a descrição de beta contém referência interna incompleta e exige revisão para números adicionais.",
+          "art": "https://i.gachabase.net/SzesvVqY1WGe7JKveA7_DfeaCkRlW1oyWOkXZEz1i7M/q:50/f:webp/plain/hsr/assets/0dcd88c3b4d84c25dbd6f30572c8e033.png"
+        },
+        {
+          "n": 3,
+          "name": "Baralho de luto e alegria",
+          "summary": "Suprema +2 níveis, Ataque Básico +1 nível e Habilidade de Euforia +1 nível.",
+          "art": "https://i.gachabase.net/LyZgEvPxkCy7R63IAo-xGFXW6R6-AS6fv5dxmsOcEGg/q:50/f:webp/plain/hsr/assets/dc975a2c69a0f3528d2e91c5ae9ea84b.png"
+        },
+        {
+          "n": 4,
+          "name": "O destino de uma piada",
+          "summary": "O multiplicador original do Dano Verdadeiro da Habilidade de Euforia aumenta 25%; considera mais 100% dos acúmulos de Mandou Bem dos aliados quando Aha causa Dano de Euforia.",
+          "art": "https://i.gachabase.net/AtCJ_4IddWvaOm_yqBvwL4tnjQ6hDEMPgYLoXPT_fKs/q:50/f:webp/plain/hsr/assets/f130720b5df8145af9e0e8ec3ca34811.png"
+        },
+        {
+          "n": 5,
+          "name": "A cena e os bastidores",
+          "summary": "Perícia +2 níveis, Talento +2 níveis e Habilidade de Euforia +1 nível.",
+          "art": "https://i.gachabase.net/diWuu9Fu7qnt0RezCduk1z2V8BfHM0cbS3kS-RTExsQ/q:50/f:webp/plain/hsr/assets/8d62bc4ad30b5eadb79e715e7bdfa66f.png"
+        },
+        {
+          "n": 6,
+          "name": "Você é a Euforia",
+          "summary": "Mantém Dívida de Euforia de pelo menos 20% dos PV máximos do inimigo; a primeira Suprema concede 100% de avanço de ação e 100 Piada.",
+          "art": "https://i.gachabase.net/pHpoDN26hI3jFPJcINvzY8q7vGYH7AwSQ8bwTGUkK3s/q:50/f:webp/plain/hsr/assets/8980b47e7d24b73ac5f98dd3eba8d14b.png"
+        }
+      ],
+      "lightCone": {
+        "name": "Ao Primeiro Eco de Aha",
+        "effect": "Aumenta a VEL base em 12–20; ao usar Perícia em outro aliado concede 10–18 Piada e permite aos aliados ignorar 16–24% da DEF dos inimigos, sem acumular.",
+        "source": "https://hsr.gachabase.net/characters/1511/aeon-aha/beta"
+      },
+      "changeNotes": [
+        {
+          "field": "E1",
+          "before": "4 Desejos no início (guia beta antigo, 30/09)",
+          "after": "5 Desejos na versão v4.6.54 de 09/11",
+          "note": "Comparação entre duas fontes; não é histórico oficial de commits do beta"
+        },
+        {
+          "field": "E6",
+          "before": "40 Piada no primeiro uso (guia beta antigo, 30/09)",
+          "after": "100 Piada no primeiro uso da Suprema (v4.6.54, 09/11)",
+          "note": "Comparação entre duas fontes; ainda sujeito a alterações"
+        }
+      ]
+    }
+  ]
+}
