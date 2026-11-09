@@ -1,4 +1,4 @@
-#nexus-search-button{min-height:42px;min-width:74px;background:#222d41;border:1px solid #d6b681;border-radius:10px;padding:8px 12px;color:#f1ddc1;font:700 12px system-ui;cursor:pointer}
+#nexus-search-button{width:42px;height:42px;min-width:42px;min-height:42px;display:grid;place-items:center;background:#222d41;border:1px solid #d6b681;border-radius:10px;padding:0;color:#f1ddc1;font:700 13px system-ui;cursor:pointer;flex:0 0 42px}
 #nexus-search-button:focus-visible,#nexus-search-dialog button:focus-visible,#nexus-search-dialog input:focus-visible,.nexus-search-detail button:focus-visible{outline:3px solid #f7d495;outline-offset:3px}
 #nexus-search-dialog,.nexus-search-detail{max-width:min(790px,calc(100vw - 20px));width:100%;max-height:85dvh;overflow:auto;border:1px solid #d6b681;border-radius:16px;background:#101d31;color:#eee6da;box-shadow:0 20px 80px #000c;padding:0}
 #nexus-search-dialog::backdrop,.nexus-search-detail::backdrop{background:#020711dd}
@@ -21,4 +21,4 @@
 #nexus-search-dialog .nexus-search-help{font-size:11px;color:#a9b7c8;margin-top:20px}
 .nexus-search-detail dl{display:grid;grid-template-columns:minmax(100px,1fr) minmax(0,2fr);gap:12px}
 .nexus-search-detail dt{color:#eac799}.nexus-search-detail dd{margin:0;overflow-wrap:anywhere}
-@media(max-width:390px){#nexus-search-button{min-width:44px;font-size:11px;padding:6px}#nexus-search-dialog .nexus-search-categories{gap:4px}}
+@media(max-width:390px){#nexus-search-button{width:39px;height:39px;min-width:39px;min-height:39px;flex-basis:39px}#nexus-search-dialog .nexus-search-categories{gap:4px}}
