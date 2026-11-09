@@ -39,3 +39,20 @@
 #nexus-kit-dialog .kit-account-context article{padding:12px 0;border-top:1px solid #72819b66}
 #nexus-kit-dialog .kit-account-context article b{color:#f3d9a5}
 #nexus-kit-dialog .kit-account-context article p{margin:6px 0;color:#dce4f0;overflow-wrap:anywhere}
+
+/* Officially structured trace tree content with materials and skill costs. */
+#nexus-kit-dialog .kit-traces>h3{font:500 25px Georgia,serif;margin:25px 0 13px;color:#f3d2a5}
+#nexus-kit-dialog .kit-trace{border:1px solid #506481;background:#15253d;border-radius:13px;padding:17px;margin:10px 0;min-width:0}
+#nexus-kit-dialog .kit-trace-head{display:flex;align-items:center;gap:13px}
+#nexus-kit-dialog .kit-trace-head>img{width:53px;height:53px;object-fit:contain;flex:0 0 53px;background:#172033;border:1px solid #7e8493;border-radius:10px;padding:5px}
+#nexus-kit-dialog .kit-trace-head h3{font-size:18px;margin:5px 0}
+#nexus-kit-dialog .kit-trace-head small{font-size:11px;color:#b9c5d8}
+#nexus-kit-dialog .kit-trace>p{font:13px/1.75 system-ui;color:#e0e5ef;overflow-wrap:anywhere}
+#nexus-kit-dialog .kit-trace details{border-top:1px solid #68728a;padding-top:10px}
+#nexus-kit-dialog .kit-trace details summary{color:#eed2a6;cursor:pointer;min-height:35px;font-weight:700;font-size:13px}
+#nexus-kit-dialog .kit-trace-costs{list-style:none;margin:12px 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#nexus-kit-dialog .kit-trace-costs li{min-width:0;display:flex;align-items:center;gap:9px;border:1px solid #4b5c71;background:#0e1a2a;padding:8px;border-radius:8px;font-size:12px}
+#nexus-kit-dialog .kit-trace-costs img{width:35px;height:35px;object-fit:contain;flex:0 0 35px}
+#nexus-kit-dialog .kit-trace-costs li span{flex:1;min-width:0;overflow-wrap:anywhere}
+#nexus-kit-dialog .kit-trace-costs li strong{white-space:nowrap;color:#ebcf9e}
+@media(max-width:540px){#nexus-kit-dialog .kit-trace-costs{grid-template-columns:1fr}#nexus-kit-dialog .kit-trace{padding:13px}}
