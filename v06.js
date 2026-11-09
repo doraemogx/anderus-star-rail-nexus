@@ -632,8 +632,15 @@
   };
 
   window.v06SaveImport=function(){
-    const id=document.getElementById('v06-id')?.value;
+    let id=document.getElementById('v06-id')?.value;
     if(!id){showToast('Escolha o personagem correto antes de salvar');return;}
+    let newCharacter=null;
+    if(id==='__custom__'){
+      const name=document.getElementById('v06-custom-name')?.value.trim().replace(/\s+/g,' ');
+      if(!name||name.length<2){showToast('Digite o nome do personagem não listado');return;}
+      id='custom-'+norm(name).replace(/\s+/g,'-').slice(0,70);
+      newCharacter={id,name,rarity:5,element:'',path:'',icon:'',portrait:'',preview:'',skills:[],ranks:[]};
+    }
     if(!document.getElementById('v06-confirm')?.checked){
       showToast('Confira os números e marque a confirmação antes de salvar');return;
     }
@@ -644,6 +651,12 @@
     if(!document.getElementById('v06-e')?.value||!document.getElementById('v06-s')?.value){
       // E0 equivale à string '0', que é truthy.
       showToast('Selecione os Eidolons e a sobreposição do cone');return;
+    }
+    if(newCharacter){
+      state.v06CustomCharacters ||= {};
+      state.v06CustomCharacters[id]=newCharacter;
+      if(!CATALOG.some(c=>c.id===id)) CATALOG.push(newCharacter);
+      gameData.chars[id]={id,name:newCharacter.name,skills:[],ranks:[]};
     }
     const prior=state.characters[id]||{level:1,e:0,s:1,cone:''};
     const read=k=>{const v=document.getElementById('v06-'+k)?.value;return v===''||v==null?null:Number(v);};
