@@ -45,6 +45,14 @@ function answer(question,characterId,account,g,engine){
    current=coachFor(characterId,account,g,engine);
  const reply=(title,body,points=[],actions=[],source='Dados locais do Nexus + catálogo PT-BR')=>
   ({title,body,points,actions,source});
+ if(/\bdps\b|dano exato|\bciclos?\b|\b0[ -]?ciclo\b|pontuacao exata|simulacao exata/.test(q)){
+  return reply('Simulação não validada',
+   'Não consigo sustentar um número exato de DPS, turnos ou ciclos com os dados atuais. Um resultado confiável exige velocidade e ordem de ações, inimigos, resistências, buffs, rotação e kit completo.',
+   ['Posso orientar sua build, verificar peças faltantes e mostrar as regras de Endgame registradas.',
+    'Não vou inventar ciclos, pontuações ou dano numérico como se fossem medições reais.'],
+   [{label:'Revisar build',action:'profile'},{label:'Abrir Endgame',action:'endgame'}],
+   'Limites do motor analítico local — sem simulação de combate validada');
+ }
  if(/pity|tiro|jade|salto|banner|garant|eidolon.*quanto/.test(q)){
   const plan=account.v06WarpPlan||{},passes=Number(plan.passes||0)+Number(plan.futurePasses||0),
    jades=Number(plan.jades||0)+Number(plan.futureJades||0);
