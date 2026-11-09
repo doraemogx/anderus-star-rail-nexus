@@ -140,7 +140,35 @@ async function numberAt(worker,bitmap,stat){
 function relicRowCoords(i,j){
  const x=COL[i%3],bottom=i>=3;
  const y=(j===0?MAINS[bottom?1:0]:(bottom?LINES_BOTTOM[j-1]:LINES_TOP[j-1]));
- return {label:[x+29,y-24,250,49],value:[x+273,y-24,107,49]};
+ // Leave the enhancement badges (×1, ×2, ×3) out of the numeric crop.
+ // Old x+273 captured "×2 11,6%" as "211,6".
+ return {label:[x+29,y-24,250,49],value:[x+305,y-24,76,49]};
+}
+export function plausibleRelicValue(stat,value,slot,main){
+ if(!stat||!Number.isFinite(value)||value<=0)return false;
+ if(main){
+   if(slot===0)return stat==='PV'&&value>=100&&value<=2000;
+   if(slot===1)return stat==='ATQ'&&value>=50&&value<=800;
+   if(slot===2)return ['PV %','ATQ %','DEF %','Chance de CRIT','Dano CRIT',
+     'Taxa de Acerto de Efeito','Bônus de Cura Realizada'].includes(stat)&&value<=110;
+   if(slot===3)return ['PV %','ATQ %','DEF %','VEL'].includes(stat)&&value<=110;
+   if(slot===4)return ['PV %','ATQ %','DEF %',
+     'Bônus de Dano Físico','Bônus de Dano de Fogo','Bônus de Dano de Gelo',
+     'Bônus de Dano de Vento','Bônus de Dano de Raio',
+     'Bônus de Dano Quântico','Bônus de Dano Imaginário'].includes(stat)&&value<=110;
+   return ['PV %','ATQ %','DEF %','Regeneração de Energia','Efeito de Quebra'].includes(stat)&&value<=110;
+ }
+ const ranges={'PV':650,'ATQ':275,'DEF':275,'VEL':19,'Chance de CRIT':23,
+  'Dano CRIT':47,'PV %':54,'ATQ %':54,'DEF %':54,
+  'Taxa de Acerto de Efeito':55,'RES a Efeito':55,'Efeito de Quebra':70};
+ return Object.hasOwn(ranges,stat)&&value<=ranges[stat];
+}
+export function relicValueFromText(text,stat,slot,main=false){
+ const raw=String(text||'').replace(/\s+/g,' ').trim();
+ // An explicit percentage is required when the substat is percentage-based.
+ if(!raw)return null;
+ const value=parseNumber(raw);
+ return plausibleRelicValue(stat,value,slot,main)?value:null;
 }
 async function relicRows(worker,bitmap,progress){
  const found=[];
@@ -151,12 +179,22 @@ async function relicRows(worker,bitmap,progress){
    for(let j=0;j<5;j++){
      if(j===0&&progress)progress('Lendo relíquia '+(i+1)+'/6…');
      const loc=relicRowCoords(i,j);
-     const line=await ocr(worker,bitmap,loc.label,7,'normal');
-     const amount=await ocr(worker,bitmap,loc.value,7,'normal','0123456789.,%');
-     const stat=inferStat(line,amount),value=parseNumber(amount);
-     const main=j===0;
-     const plausible=value!==null&&value>0&&(main?value<=10000:value<=600);
-     rows.push({stat:stat&&plausible?stat:'',value:stat&&plausible?value:null,label:line,raw:amount});
+     let line=await ocr(worker,bitmap,loc.label,7,'normal');
+     let amount=await ocr(worker,bitmap,loc.value,7,'normal','0123456789.,%');
+     let stat=inferStat(line,amount),value=relicValueFromText(amount,stat,i,j===0);
+     if(!stat){
+       const alternate=await ocr(worker,bitmap,loc.label,7,'high');
+       const guess=inferStat(alternate,amount);
+       if(guess){stat=guess;line=alternate;value=relicValueFromText(amount,stat,i,j===0);}
+     }
+     if(value===null&&stat){
+       for(const variant of ['high','soft']){
+         const retry=await ocr(worker,bitmap,loc.value,7,variant,'0123456789.,%');
+         const parsed=relicValueFromText(retry,stat,i,j===0);
+         if(parsed!==null){amount=retry;value=parsed;break;}
+       }
+     }
+     rows.push({stat:stat&&value!==null?stat:'',value:stat&&value!==null?value:null,label:line,raw:amount});
    }
    found.push(rows);
  }
@@ -192,11 +230,17 @@ export async function readIllustratedShowcase(bitmap,worker,{characters=[],coneN
     rawSuper.match(/sobreposi\D{0,8}([1-5])/i);
  const e=classifyEidolons(bitmap);
  const level=Number((levelText.match(/\b([1-8]\d)\b/)||[])[1])||80;
- let relics=null;
- if(includeRelics){try{relics=await relicRows(worker,bitmap,progress);}
- catch(error){console.warn('Relics OCR:',error);}}
+ let relics=null,relicSets=null;
+ if(includeRelics){
+   try{
+     const matcher=await import('./illustrated-relic-matcher.js?v=1');
+     relicSets=await matcher.recognizeIllustratedRelicSets(bitmap,progress);
+   }catch(error){console.warn('Reconhecimento de conjuntos:',error);}
+   try{relics=await relicRows(worker,bitmap,progress);}
+   catch(error){console.warn('Leitura das relíquias:',error);}
+ }
  return {layout:'illustrated-2000x2300',title,character,level,cone,superimposition:nSuper?+nSuper[1]:null,
-     eidolon:e.value,eidolonScores:e.brightRatios,totals,relics,
+     eidolon:e.value,eidolonScores:e.brightRatios,totals,relics,relicSets,
      diagnostics:{rawCone,rawSuper,levelText}};
 }
 export function applyShowcaseToForm(report,root=document){
