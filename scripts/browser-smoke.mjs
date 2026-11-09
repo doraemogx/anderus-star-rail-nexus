@@ -205,6 +205,13 @@ try{
       assert.match(await page.locator('.v20-official-rotation').innerText(),/ROTAÇÃO OFICIAL CONFIRMADA|REGRAS A VERIFICAR/);
       assert.ok(await page.locator('.v20-official-rotation a[href*="hoyoverse.com"]').count()>0,
         'Official Endgame modifier must link to source');
+      await page.locator('.v09-boss-ask').first().click();
+      await page.locator('#nexus-pompom-dialog[open]').waitFor({timeout:15000});
+      await page.waitForFunction(()=>document.querySelector('#nexus-pompom-dialogue')?.textContent?.includes('Mecânica registrada:'),null,{timeout:15000});
+      assert.ok(await page.locator('#nexus-pompom-dialogue .nexus-pompom-source[href^="https://"]').count()>0,
+        'Boss context must show a source link');
+      await page.screenshot({path:'artifacts/endgame-pompom-'+device.width+'.png'});
+      await page.locator('#nexus-pompom-dialog [data-pompom-close]').click();
       await page.screenshot({path:'artifacts/endgame-'+device.width+'.png'});
     }
     assert.equal(errors.length,before,'JavaScript exception while navigating to '+view+': '+errors.slice(before).join(' | '));
