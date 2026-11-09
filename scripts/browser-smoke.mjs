@@ -161,6 +161,7 @@ try{
   assert.equal(tracePlan?.current,0,'Trace progress must persist');
   await page.locator('#nexus-traces-dialog [data-material-budget]').click();
   await page.locator('#nexus-material-budget[open]').waitFor({timeout:15000});
+  await page.locator('#nexus-budget-results .nexus-budget-breakdown').waitFor({timeout:30000});
   assert.match(await page.locator('#nexus-budget-results').innerText(),/Planejamentos incluídos/);
   await page.screenshot({path:'artifacts/material-budget-'+device.width+'.png'});
   await page.locator('#nexus-material-budget [data-budget-close]').click();
