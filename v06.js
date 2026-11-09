@@ -549,7 +549,7 @@
     const rows=accountRecords(id),analysis=nexusAccount.examineRelics(rows),images=state.v06Relics?.[id]||[];
     return '<section class="v11-relics"><div class="v11-section-lead"><span class="v06-kicker">EQUIPAMENTO · SUA CONTA</span><h2>Relíquias equipadas</h2><p>'+analysis.registered+'/6 peças registradas · '+analysis.complete+'/6 completas. Toque em uma peça para revisar conjunto, atributo principal e subatributos.</p></div>'+
       '<div class="v11-relic-grid">'+rows.map((piece,i)=>profileRelicCard(id,i,piece,images)).join('')+'</div>'+
-      '<div class="v11-actions"><button type="button" onclick="v06StartImport(\''+id+'\')">⇧ Atualizar equipamentos pelo print</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>'+
+      '<div class="v11-actions"><button type="button" onclick="v06StartImport(\''+id+'\')">⇧ Atualizar equipamentos pelo print</button><button type="button" data-nexus-relic-optimizer="'+safe(id)+'">Analisar relíquias com o Pom-Pom</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>'+
       renderAccountCoach(id);
   };
   window.v11EditRelic=async function(id,index){
