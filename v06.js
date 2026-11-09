@@ -757,7 +757,10 @@
   };
   window.v06ReadPrint=async function(file){
     if(!file)return;
-    if(file.size>12*1024*1024){showToast('Escolha uma imagem de até 12 MB');return;}
+    if(!['image/png','image/jpeg','image/webp'].includes(file.type)){
+      showToast('Formato não suportado. Escolha PNG, JPG ou WEBP.');return;
+    }
+    if(!file.size||file.size>12*1024*1024){showToast('Escolha uma imagem de até 12 MB');return;}
     uploader.file=file;uploader.busy=true;uploader.identifiedId='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.ocrText='';
     const reader=new FileReader();
     reader.onload=async()=>{
@@ -765,12 +768,21 @@
       const img=new Image();
       await new Promise(done=>{img.onload=done;img.onerror=done;img.src=full;});
       if(img.naturalWidth){
+        uploader.width=img.naturalWidth;uploader.height=img.naturalHeight;
         const w=Math.min(960,img.naturalWidth),h=Math.round(w*img.naturalHeight/img.naturalWidth);
         const c=document.createElement('canvas');c.width=w;c.height=h;
         c.getContext('2d').drawImage(img,0,0,w,h);
         uploader.preview=c.toDataURL('image/webp',.62);
       }else uploader.preview=full;
       uploader.busy=false;await cropRelics();v06ShowImportReview();
+      const indicator=document.getElementById('v06-import-status');
+      if(indicator){
+        const ratio=uploader.width/uploader.height;
+        const supported=(ratio>=.82&&ratio<=.95)||(ratio>=1.02&&ratio<=1.18);
+        indicator.textContent=supported?
+          'Imagem carregada ('+uploader.width+' × '+uploader.height+'). Iniciando OCR; confira todos os resultados antes de salvar.':
+          'Layout não reconhecido automaticamente ('+uploader.width+' × '+uploader.height+'). As seis relíquias continuam editáveis; nenhum recorte foi presumido.';
+      }
       // Auto-start extraction; retain editable review and explicit save confirmation.
       Promise.resolve().then(()=>window.v06AutoRead()).catch(error=>console.warn('OCR automático:',error));
     };
@@ -785,7 +797,7 @@
       '<div class="v06-action-row"><button class="v06-primary" onclick="v06AutoRead()">✧ Reconhecer dados do print</button><button class="v06-secondary" onclick="document.getElementById(\'v06-file\').click()">Trocar imagem</button></div>'+
       '<div class="v06-fieldgroup"><label>Personagem<select id="v06-id" onchange="document.getElementById(\'v06-custom-name-wrap\').style.display=this.value===\'__custom__\'?\'block\':\'none\'">'+choice+'</select></label>'+
       '<label id="v06-custom-name-wrap" style="display:none;grid-column:1/-1">Nome do personagem ainda não listado<input id="v06-custom-name" maxlength="80" placeholder="Nome como aparece no jogo"></label>'+
-      '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="80"></label>'+
+      '<label>Nível<input id="v06-level" type="number" min="1" max="80" placeholder="Não identificado"></label>'+
       '<label>Eidolons (sugestão visual — confirme E0–E6)<select id="v06-e"><option value="">Selecione E0–E6</option>'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
       '<label>Sobreposição do cone<select id="v06-s"><option value="">Selecione S1–S5</option>'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===uploader.superimposition?'selected':'')+'>S'+(i+1)+'</option>').join('')+'</select></label>'+
       '<label style="grid-column:1/-1">Nome do cone de luz<input id="v06-cone" value="'+safe(uploader.cone||'')+'" placeholder="Nome do cone de luz"></label>'+
@@ -812,8 +824,10 @@
     await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=uploader.preview});
     if(!img.naturalWidth)return;
     const ratio=img.naturalWidth/img.naturalHeight;
-    if(ratio<0.8 || ratio>1.6){uploader.relImages=[];return;}
     const illustrated=ratio>=.82&&ratio<=.95;
+    const battle=ratio>=1.02&&ratio<=1.18;
+    // Never manufacture six cutouts from an unknown image layout.
+    if(!illustrated&&!battle){uploader.relImages=[];return;}
     const regions=illustrated?[
       [.369,.591,.195,.157],[.571,.591,.195,.157],[.773,.591,.195,.157],
       [.369,.745,.195,.157],[.571,.745,.195,.157],[.773,.745,.195,.157]
