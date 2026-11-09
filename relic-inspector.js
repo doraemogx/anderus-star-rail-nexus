@@ -61,8 +61,20 @@ export async function renderRelicSummary(records,images){
    const sub=(piece.subs||[]).filter(s=>s.stat&&s.value!==null).map(s=>s.stat+' '+s.value).join(' · ');
    return '<article class="v06-relic-summary-item"><img alt="" src="'+safe(images?.[i]||'')+'"><div><b>'+safe(SLOT[i])+' · '+safe(name)+'</b><small>+'+Number(piece.level||0)+' · '+safe(main)+'</small><p>'+safe(sub||'Secundários ainda não registrados')+'</p></div></article>';
  }).join('');
+
+ const counts={};
+ for(const piece of records||[])if(piece.setId)counts[piece.setId]=(counts[piece.setId]||0)+1;
+ const bonuses=Object.entries(counts).flatMap(([id,count])=>{
+   const set=sets[id],desc=set?.desc||[];
+   const unlocked=id.startsWith('3')?count>=2:count>=4?4:count>=2?2:0;
+   if(!unlocked)return [];
+   const effects=unlocked===4?[desc[0],desc[1]]:[desc[0]];
+   return ['<div class="v06-set-bonus"><b>'+safe(set?.name||'Conjunto '+id)+' · '+unlocked+' peças</b>'+
+     effects.filter(Boolean).map(v=>'<p>'+safe(v)+'</p>').join('')+'</div>'];
+ }).join('');
  const complete=(records||[]).length===6&&records.every(r=>!!r.setId&&!!r.main?.stat&&r.main.value!==null);
  return '<section class="v06-relic-summary"><h3>Equipamento detalhado</h3><p>'+(
  complete?'Seis conjuntos e atributos principais identificados e registrados.':'Análise de conjuntos pendente: confirme nomes e atributos de todas as peças.'
- )+'</p>'+rows+(complete?'<p class="v06-rel-note">Pom-Pom: compare os conjuntos ativados, atributos principais e rolagens úteis com a função real deste personagem. Esta tela não atribui nota competitiva sem metas de build verificadas.</p>':'')+'</section>';
+ )+'</p>'+rows+(bonuses?'<h4>Bônus de conjunto ativados</h4>'+bonuses:'')+
+ (complete?'<p class="v06-rel-note">Pom-Pom: confira as combinações, os atributos principais e as rolagens secundárias em relação ao kit deste personagem. Evite trocar peças apenas por notas genéricas.</p>':'')+'</section>';
 }
