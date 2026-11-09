@@ -142,7 +142,10 @@ function relicRowCoords(i,j){
  const y=(j===0?MAINS[bottom?1:0]:(bottom?LINES_BOTTOM[j-1]:LINES_TOP[j-1]));
  // Leave the enhancement badges (×1, ×2, ×3) out of the numeric crop.
  // Old x+273 captured "×2 11,6%" as "211,6".
- return {label:[x+29,y-24,250,49],value:[x+305,y-24,76,49]};
+ // Begin after the small status pictogram, which previously polluted OCR text.
+ // Rope's main energy-regeneration label wraps onto two physical lines.
+ return {label:i===5&&j===0?[x+49,y-32,249,66]:[x+49,y-24,250,49],
+   value:[x+305,y-24,76,49]};
 }
 export function plausibleRelicValue(stat,value,slot,main){
  if(!stat||!Number.isFinite(value)||value<=0)return false;
@@ -179,7 +182,7 @@ async function relicRows(worker,bitmap,progress){
    for(let j=0;j<5;j++){
      if(j===0&&progress)progress('Lendo relíquia '+(i+1)+'/6…');
      const loc=relicRowCoords(i,j);
-     let line=await ocr(worker,bitmap,loc.label,7,'normal');
+     let line=await ocr(worker,bitmap,loc.label,i===5&&j===0?6:7,'normal');
      let amount=await ocr(worker,bitmap,loc.value,7,'normal','0123456789.,%');
      let stat=inferStat(line,amount),value=relicValueFromText(amount,stat,i,j===0);
      if(!stat){
