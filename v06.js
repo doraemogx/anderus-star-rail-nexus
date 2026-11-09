@@ -233,7 +233,7 @@
     a.classList.add('v06-app');
   };
   function freshUI(){
-    document.getElementById('nexFab')?.remove();
+    const legacyFab=document.getElementById('nexFab');if(legacyFab){legacyFab.style.display='none';legacyFab.setAttribute('aria-hidden','true');legacyFab.tabIndex=-1;}
     const brand=document.querySelector('.brand-title');if(brand)brand.innerHTML='ANDERUS<small>STAR RAIL NEXUS</small>';
     const open=document.querySelector('.mast-actions .i-btn[title="Buscar personagens"]');
     if(open)open.setAttribute('title','Arquivo de personagens');
