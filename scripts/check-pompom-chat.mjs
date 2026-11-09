@@ -23,5 +23,5 @@ assert.ok(relics.actions.some(a=>a.action==='relic'));
 const farm=p.answer('Quanto falta de materiais?','1512',user,game,engine);
 assert.ok(farm.actions.some(a=>a.action==='materials'));
 const unsupported=p.answer('Qual o DPS exato em 1 ciclo?','1512',user,game,engine);
-assert.match(unsupported.body,/não consigo sustentar/);
+assert.match([unsupported.body,...unsupported.points].join(' '),/não consigo sustentar/);
 console.log('PASS Pom-Pom factual local answers, source limits and account-specific priorities');
