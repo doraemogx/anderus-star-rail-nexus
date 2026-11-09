@@ -1,0 +1,344 @@
+(function installNexusV06(){
+  const base={
+    home:home,library:library,profile:profile,profileOverview:profileOverview,
+    profileEidolons:profileEidolons,profileKit:profileKit,profileRelics:profileRelics,
+    endgame:endgame,radar:radar,themes:themes,settings:settings,render:render,
+    applyTheme:applyTheme,showEido:showEido,showSkill:showSkill,showModal:showModal
+  };
+  const heroOfficial='https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/character_portrait/8001.png';
+  const ahaOfficial='https://i.gachabase.net/mZQZSbIAQyJXbDElL_RE2AwSR7C4X0pOBxgQ3ybCNnA/q:50/f:webp/plain/hsr/assets/f8b5630e85022ab8b2761e4e3f614b42.png';
+  const safe=s=>esc(s);
+  const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  const fmt=n=>Number(n||0).toLocaleString('pt-BR',{maximumFractionDigits:1});
+  const ownerKeys=()=>Object.keys(state.characters||{}).filter(id=>!!state.characters[id]&&!!CATALOG.find(c=>c.id===id));
+  const ownedCount=()=>ownerKeys().length;
+  const colors=[
+    ['#efbc78','#8c5caa','#0c1730'],['#f1a1c8','#894ca5','#21152f'],['#fc9275','#9a2928','#201017'],
+    ['#6bd2d3','#3485ab','#0b2131'],['#c2b4fa','#6158b9','#14162e'],['#ffe5a5','#a97851','#261a20'],
+    ['#7cdea2','#36928e','#0c2222'],['#f09aa5','#7c5377','#1e182b'],['#8db9f0','#536fbc','#121d36']
+  ];
+  function stableIndex(id){let n=0;for(const c of String(id))n=(n*31+c.charCodeAt(0))>>>0;return n;}
+  const selectLook=(id)=>{
+    const c=lookup(id),n=norm(c.name),idx=stableIndex(id);
+    let group='astral',text='✦',font="'Marcellus', Georgia, serif",shape='orbit';
+    if(/mortenax|blade|acheron|boothill|hysilens/.test(n)){group='forge';text='⚔';font="'Barlow Condensed', 'Arial Narrow', sans-serif";shape='blade';}
+    else if(/evanescia|robin|cyrene|sparkle|ruan mei|vanessa|march|7 de marco/.test(n)){group='bloom';text='✿';font="'Marcellus',Georgia,serif";shape='petal';}
+    else if(/pearl|hyacine|dan heng|jingliu|black swan/.test(n)){group='tide';text='❖';font="'Cinzel',Georgia,serif";shape='wave';}
+    else if(/noite eterna|castorice|the herta|a herta/.test(n)){group='lunar';text='☾';font="'Cinzel',Georgia,serif";shape='moon';}
+    else if(/loba prateada|silver wolf|sparxie/.test(n)){group='hacker';text='⌘';font="'Outfit',Arial,sans-serif";shape='pixel';}
+    else if(/aha|nihilux/.test(n)){group='carnival';text='✧';font="'Marcellus',Georgia,serif";shape='theatre';}
+    else if(/phainon|sunday|aventurino|jing yuan/.test(n)){group='solar';text='✷';font="'Cinzel',Georgia,serif";shape='sun';}
+    let color=colors[idx%colors.length];
+    if(group==='forge')color=['#f4a38d','#992e39','#230d15'];
+    if(group==='bloom')color=['#f9aed0','#9d6198','#211627'];
+    if(group==='tide')color=['#a9d9e6','#477eb1','#0b202d'];
+    if(group==='lunar')color=['#c4bcf7','#7165aa','#101327'];
+    if(group==='hacker')color=['#9cebd8','#4774a8','#0a1725'];
+    if(group==='carnival')color=['#fec3d0','#bb405d','#261125'];
+    if(group==='solar')color=['#edc78b','#ac7339','#251b19'];
+    if(id==='8001')color=['#efd0a0','#8aa9d3','#071b2c'];
+    return {group,text,font,shape,color,art:id==='future-aha'?ahaOfficial:imgSrc(id,'portrait')||heroOfficial,name:c.name,id};
+  };
+  state.v06Art||={};state.v06AccountNotes||={};state.v06Goal||={id:'future-aha',target:'E0S1'};
+  let uploader={file:null,preview:'',relImages:[],identifiedId:'1503',ocrText:'',eidolon:0,busy:false};
+  const pathImage=(id)=>{const c=gameData.chars[id];const path=c?.path||'';return path?'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/'+path+'.png':'';};
+  const genCard=(label,value,icon)=>'<div class="v06-metric"><span class="v06-metric-icon">'+icon+'</span><strong>'+safe(value)+'</strong><small>'+safe(label)+'</small></div>';
+  const pomCard=(title,body,meta='CONSELHO DO EXPRESSO')=>'<aside class="v06-pom-tip"><img loading="lazy" src="assets/pompom-face.webp" alt="Pom-Pom" onerror="this.src=\'assets/nexia.webp\'"><div><div class="v06-kicker">✦ '+safe(meta)+'</div><b>'+safe(title)+'</b><p>'+safe(body)+'</p></div></aside>';
+  const subhead=(k,t,p)=>'<header class="v06-pagehead"><span class="v06-kicker">'+safe(k)+'</span><h1>'+safe(t)+'</h1><p>'+safe(p)+'</p></header>';
+  const tile=(ico,title,caption,go,kind,index)=>{
+    const art=['assets/module-account.webp','assets/module-build.webp','assets/module-endgame.webp','assets/module-farm.webp','assets/module-warp.webp','assets/module-beta.webp'][index];
+    return '<button class="v06-tile v06-tile-'+kind+'" onclick="'+go+'"><span class="v06-tile-glow"></span><span class="v06-tile-deco">'+(ico.startsWith('image:')?'<img src="'+ico.slice(6)+'" alt="">':ico)+'</span><span class="v06-tile-art" style="background-image:url(\''+art+'\')"></span><strong>'+safe(title)+'</strong><small>'+safe(caption)+'</small><span class="v06-tile-arrow">↗</span></button>';
+  };
+  function countAccount(){return ownerKeys().reduce((a,id)=>a+Number(state.characters[id]?.e||0),0);}
+  function routeBuild(){libraryFilter='owned';route('library');}
+  window.v06RouteBuild=routeBuild;
+  function home06(){
+    const look=selectLook(state.theme),isDefault=state.theme==='8001',n=ownedCount();
+    const goal=state.v06Goal?.id||'future-aha',p=lookup(goal),planned=state.farm&&Object.values(state.farm).some(v=>Number(v.need)>0);
+    const need=Object.values(state.farm||{}).reduce((a,v)=>a+(Number(v.need)||0),0);
+    const have=Object.values(state.farm||{}).reduce((a,v)=>a+Math.min(Number(v.need)||0,Number(v.have)||0),0);
+    const progress=need?Math.round(100*have/need):null;
+    const heroArt=isDefault?'assets/caelus-concept.png':(state.v06Art?.[state.theme]==='preview'?imgSrc(state.theme,'preview'):look.art);
+    const mod=[
+      ['♧','Minha Conta','Personagens, prints e progresso',"libraryFilter='owned';route('library')",'account'],
+      ['✦','Build Lab','Relíquias, cones e ajustes','v06RouteBuild()','build'],
+      ['⚔','Endgame','MOC, PF, AS e Arbitragem',"route('endgame')",'endgame'],
+      ['❖','Farm Planner','Materiais, rastros e ascensão',"route('farm')",'farm'],
+      ['✧','Warp Advisor','Banners e prioridades',"route('radar')",'warp'],
+      ['☾','Beta & Kits','Novidades e multiplicadores',"v06OpenFuture()",'beta']
+    ];
+    return '<div class="v06-home">'+
+      '<section class="v06-hero" aria-label="Jornada do Expresso Astral"><div class="v06-celestial"></div>'+
+        '<div class="v06-hero-art" style="background-image:url(\''+safe(heroArt)+'\')"></div>'+
+        '<div class="v06-hero-vignette"></div><div class="v06-hero-top"><span>✦ ARQUIVO DO DESBRAVADOR</span><span>ESTAÇÃO ASTRAL · v0.6</span></div>'+
+        '<div class="v06-hero-copy"><span class="v06-hero-id">✦ '+safe(isDefault?'CAELUS · DESBRAVADOR':look.name.toUpperCase())+'</span>'+
+        '<h1>Seu universo.<br><em>Seu próximo salto.</em></h1>'+
+        '<p>Construa sua conta, domine as mecânicas e planeje sua próxima jornada.</p>'+
+        '<div class="v06-hero-buttons"><button onclick="v06StartImport()">＋ Importar print</button><button class="ghost" onclick="libraryFilter=\'owned\';route(\'library\')">Minha conta ↗</button></div></div>'+
+      '</section>'+
+      '<div class="v06-divider"><span>✧</span></div>'+
+      '<section class="v06-brief"><div class="v06-sectionline"><div><span class="v06-kicker">CENTRO DE COMANDO</span><h2>Escolha seu destino</h2></div><span>06 MÓDULOS</span></div>'+
+        '<div class="v06-tile-grid">'+mod.map((t,i)=>tile(t[0],t[1],t[2],t[3],t[4],i)).join('')+'</div></section>'+
+      '<section class="v06-snapshot"><div class="v06-sectionline"><div><span class="v06-kicker">SEU PROGRESSO</span><h2>Registro do Expresso</h2></div><button onclick="libraryFilter=\'owned\';route(\'library\')">Ver conta ↗</button></div>'+
+         '<div class="v06-stats">'+genCard('Personagens',n,'♧')+genCard('Eidolons',countAccount(),'✦')+genCard('Nível 80',ownerKeys().filter(k=>state.characters[k]?.level>=80).length,'✧')+'</div></section>'+
+      '<section class="v06-feature-panel v06-goal"><div class="v06-panel-heading"><span>◎ SEU PRÓXIMO OBJETIVO</span><button onclick="route(\'farm\')">Farm Planner ↗</button></div>'+
+      '<div class="v06-feature-body"><img class="v06-aha-art" src="'+ahaOfficial+'" alt="Aeon Aha — arte de personagem da v4.7"><div class="v06-feature-text"><small class="v06-kicker">VERSÃO 4.7 · 11 NOV 2026</small><h3>AEON ★ AHA</h3><p>Nihilux / Rá · Euforia • Quântico</p><b>'+ (progress===null?'Estoque ainda não informado':progress+'% dos materiais cadastrados')+'</b><div class="v06-progress"><i style="width:'+(progress||0)+'%"></i></div><button onclick="v06OpenFuture()">Explorar kit & banner ↗</button></div></div></section>'+
+      '<section class="v06-future"><div class="v06-sectionline"><div><span class="v06-kicker">SALA DE SALTOS</span><h2>Futuros banners</h2></div><button onclick="v06OpenFuture()">Ver detalhes ↗</button></div><button class="v06-banner-strip" onclick="v06OpenFuture()"><img src="'+ahaOfficial+'" alt="Aeon Aha"><div><span class="v06-kicker">CONFIRMADO · 11/11/2026</span><h3>Agora, Um Riso às Estrelas</h3><p>Aeon ★ Aha • estreia da versão 4.7</p><span>Ver habilidades, cones e análise ▸</span></div></button></section>'+
+      pomCard('Uma dica antes de cada salto','Os seus personagens e equipamentos são analisados somente quando estiverem registrados. Para entender kits de personagens futuros, abra o Catálogo — ele é separado da sua conta.','DICAS DO POM-POM')+
+      '<div class="v06-footnote">✧ ANDERUS STAR RAIL NEXUS · PROJETO INDEPENDENTE</div></div>';
+  }
+  home=home06;
+
+  function lib06(){
+    const count=ownedCount();
+    return '<div class="v06-lib">'+subhead('ARQUIVO DO EXPRESSO','Sua conta & personagens','Cadastre seus personagens pelo print, acompanhe suas builds e consulte o catálogo completo.')+
+      '<section class="v06-upload-banner"><div><span class="v06-kicker">IMPORTAÇÃO DE BUILDS</span><h2>De um print para o seu arquivo.</h2><p>Envie a captura com atributos, cone, rastros, relíquias e Eidolons. Confira os campos reconhecidos antes de salvar.</p><div class="v06-action-row"><button class="v06-primary" onclick="v06StartImport()">✦ Importar print</button><button class="v06-secondary" onclick="v06OpenQuickAdd()">＋ Adicionar manualmente</button></div></div><span class="v06-upload-icon">⇧</span></section>'+
+      '<div class="v06-accountbar">'+genCard('Na conta',count,'♧')+genCard('Eidolons',countAccount(),'✦')+'</div>'+
+      '<div class="v06-accountfilter"><button onclick="libraryFilter=\'owned\';refresh()" class="'+(libraryFilter==='owned'?'active':'')+'">Minha conta</button><button onclick="libraryFilter=\'all\';refresh()" class="'+(libraryFilter==='all'?'active':'')+'">Catálogo completo</button><button onclick="libraryFilter=\'favorites\';refresh()" class="'+(libraryFilter==='favorites'?'active':'')+'">Favoritos</button></div>'+
+      '<label class="v06-search">⌕ <input placeholder="Buscar personagem, caminho ou versão…" value="'+safe(libSearch)+'" oninput="libSearch=this.value;v06RefreshCards()" type="search"></label>'+
+      '<div id="v06-library-grid" class="v06-library-grid">'+v06CardList()+'</div>'+
+      pomCard('Dois arquivos, funções diferentes','Minha Conta contém apenas personagens que você cadastrou. No Catálogo, você pode explorar todos os personagens e os kits futuros sem misturar dicas de investimento com a sua coleção.','SEU PROGRESSO')+'</div>';
+  }
+  function v06CardList(){
+    let list=CATALOG.filter(c=>c.id!=='future-aha' && !(/stelle/i.test(c.name)&&/800[24680]/.test(c.id)));
+    if(libraryFilter==='owned')list=list.filter(c=>state.characters[c.id]);
+    if(libraryFilter==='favorites')list=list.filter(c=>state.favorites?.includes(c.id));
+    if(libSearch)list=list.filter(c=>norm(c.name).includes(norm(libSearch)));
+    if(!list.length) return '<div class="v06-empty"><span>✧</span><strong>Nenhum personagem neste filtro.</strong><p>Importe seus primeiros prints ou abra o catálogo completo.</p><button onclick="v06StartImport()">Importar print ＋</button></div>';
+    return list.map(c=>'<button class="v06-char-card" onclick="openProfile(\''+c.id+'\')"><div class="v06-char-art"><img loading="lazy" src="'+safe(imgSrc(c.id,'preview')||imgSrc(c.id,'icon'))+'" alt="'+safe(c.name)+'" onerror="this.src=\''+safe(imgSrc(c.id,'icon'))+'\'"></div><div><small>'+ (state.characters[c.id]?'EM SUA CONTA':'CATÁLOGO') +'</small><strong>'+safe(c.name)+'</strong><span>'+(state.characters[c.id]?'Nv. '+fmt(state.characters[c.id].level||1)+' · E'+fmt(state.characters[c.id].e||0)+' S'+fmt(state.characters[c.id].s||1):'Ver kit, Eidolons e builds')+'</span></div><b>›</b></button>').join('');
+  }
+  window.v06RefreshCards=()=>{const el=document.getElementById('v06-library-grid');if(el)el.innerHTML=v06CardList()};
+  library=lib06;
+
+  function profile06(){
+    const id=state.profile||'1503', c=lookup(id),b=state.characters[id],look=selectLook(id),pic=state.v06Art?.[id]==='preview'?imgSrc(id,'preview'):look.art;
+    const active=tab||'overview';
+    const switches=[['overview','Atributos'],['kit','Kit e rastros'],['eidolons','Eidolons'],['relics','Relíquias'],['teams','Equipes']];
+    const body=active==='overview'?base.profileOverview(id,b):active==='kit'?base.profileKit(id):active==='eidolons'?base.profileEidolons(id,b):active==='relics'?base.profileRelics(id,b):profileTeams(id,b);
+    const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
+    return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
+    '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
+    '<div class="v06-profile-controls"><button class="v06-primary" onclick="'+(b?'editBuild(\''+id+'\')':'addOwned(\''+id+'\')')+'">'+(b?'Editar minha build':'＋ Adicionar à conta')+'</button><button class="v06-secondary" onclick="v06StartImport(\''+id+'\')">⇧ Importar print</button></div>'+
+    '<nav class="v06-tabs">'+switches.map(([key,title])=>'<button class="'+(active===key?'active':'')+'" onclick="tab=\''+key+'\';refresh()">'+title+'</button>').join('')+'</nav>'+
+    '<div class="v06-profile-body">'+body+'</div>'+((b&&state.v06Screens?.[id])?'<section class="v06-upload-reference"><h3>Seu print de referência</h3><img loading="lazy" src="'+state.v06Screens[id]+'" alt="Print importado por você"><button onclick="v06StartImport(\''+id+'\')">Atualizar print</button></section>':'')+
+    '</div>';
+  }
+  profile=profile06;
+
+  function verifiedGuide(id,subject){
+    const c=lookup(id),owned=state.characters[id],name=c.name;
+    if(!owned)return 'O Pom-Pom explica as condições do kit de '+name+' como parte do catálogo. Adicione o personagem à sua conta para receber orientação dos seus atributos e investimentos.';
+    const stat=owned.spd?' • '+owned.spd+' VEL':'';
+    return 'Na sua conta, '+name+' está no nível '+fmt(owned.level||1)+', E'+fmt(owned.e||0)+'S'+fmt(owned.s||1)+stat+'. Antes de ajustar a rotação, compare os outros três integrantes e os gatilhos do kit. A recomendação não pressupõe um cone ou relíquia que ainda não foi cadastrado.';
+  }
+  profileOverview=function(id,b){return '<div class="v06-overview-actions"><button onclick="v06StartImport(\''+id+'\')">⇧ Atualizar pelo print</button><button onclick="editBuild(\''+id+'\')">⚙ Editar atributos</button></div>'+base.profileOverview(id,b)+pomCard('O que avaliar nesta build',verifiedGuide(id),'FICHA · '+lookup(id).name);};
+  profileEidolons=function(id,b){return '<div class="v06-eidolon-intro">'+pomCard('Cada fragmento tem sua própria história','Toque em E1 a E6 para abrir a arte individual disponível, os efeitos originais e o que mudou na rotação. Se a arte estiver indisponível, exibimos apenas o ícone no tamanho original — nunca um ícone borrado ampliado.','EIDOLONS')+'</div>'+base.profileEidolons(id,b);};
+  profileKit=function(id){return base.profileKit(id)+pomCard('Como interpretar o kit','O texto do jogo e seus multiplicadores estão acima. Nas explicações práticas, observe gatilho, custo, duração, aliados elegíveis e a ordem das ações. Dados de beta são identificados separadamente.','KIT COMPLETO');};
+  profileRelics=function(id,b){return base.profileRelics(id,b)+(state.v06Relics?.[id]?.length?'<section class="v06-relic-shots"><h3>Relíquias extraídas do seu print</h3><div>'+state.v06Relics[id].map((src,i)=>'<img loading="lazy" src="'+src+'" alt="Captura da relíquia '+(i+1)+'">').join('')+'</div><p>As imagens estão guardadas neste navegador. Confirme os atributos e o conjunto antes de comparar builds.</p></section>':'')+pomCard('Como priorizar seus subatributos','Um bom conjunto precisa de atributos úteis, velocidade efetiva e sincronização com a equipe. Sem as seis relíquias e os buffs de combate, não existe nota de build definitiva.','RELÍQUIAS');};
+
+  const originalEidoModal=base.showEido;
+  showEido=function(id,n){
+    originalEidoModal(id,n);
+    const modal=document.querySelector('#overlay .modal, #overlay .modal-card, .modal');
+    if(modal){modal.classList.add('v06-eido-modal');modal.querySelectorAll('img.fragment-art').forEach(img=>{img.style.objectFit='contain';img.style.maxHeight='min(46vh,350px)';});}
+  };
+  function v06OpenFuture(){
+    showModal('Aeon ★ Aha · 4.7','<div class="v06-future-detail"><div class="v06-banner-art"><img src="'+ahaOfficial+'" alt="Arte de Aeon Aha (Nihilux)"></div><div class="v06-kicker">OFICIAL · VERSÃO 4.7 · 11/11/2026</div><h2>AEON ★ AHA</h2><p>Identidade de Nihilux / Rá. Personagem 5★ de Euforia e elemento Quântico. A versão final do kit entra em vigor com a atualização de 11 de novembro.</p><h3>Mecânicas apresentadas oficialmente</h3><ul><li><strong>Potencialização da Euforia:</strong> fortalece aliados desse Caminho e suas habilidades especiais.</li><li><strong>Instante de Aha:</strong> elemento central das atuações de Euforia.</li><li><strong>Recursos de equipe:</strong> a equipe contribui para a realização de suas habilidades e efeitos especiais.</li><li><strong>Pressão sobre o PV máximo:</strong> efeitos voltados a reduzir os PV máximos dos inimigos.</li></ul><div class="v06-source-note">Resumo do material oficial divulgado em 04/11/2026. A prévia não publica todos os multiplicadores. Números de beta não devem ser tratados como valores finais.</div>'+pomCard('Devo investir?','Se você usa equipes de Euforia, Aha merece avaliação prioritária. Antes de decidir E1/E2 ou cone, compare os ganhos reais com seus recursos e os personagens que já possui.','PRÓXIMO SALTO')+'<button class="v06-primary" onclick="closeModal();route(\'farm\')">Planejar materiais ↗</button></div>');
+  }
+  window.v06OpenFuture=v06OpenFuture;
+  nextBannerModal=v06OpenFuture;
+  radar=function(){
+    const x=base.radar();
+    return '<section class="v06-radarhead">'+subhead('CENTRO DE OBSERVAÇÃO','Próximas versões','Kits, banners e histórico com fontes e níveis de confirmação.')+
+      '<button class="v06-radar-banner" onclick="v06OpenFuture()"><img src="'+ahaOfficial+'" alt="Arte de Aeon Aha"><span><small>ESTREIA OFICIAL · 11 NOV</small><strong>AEON ★ AHA</strong><em>Nihilux · Euforia / Quântico</em><b>Explorar kit ↗</b></span></button></section>'+
+      x.replace(/Evanescia E6S1 e Pearl E2S1/g,ownedCount()+' personagem(ns) cadastrados')+
+      pomCard('Novos patches, novas decisões','O catálogo de personagens é sincronizado pelo GitHub. Estratégias de Endgame e recomendações de investimento só recebem selo de atualizadas depois de conferidas contra as regras e inimigos da rotação.','RADAR');
+  };
+  const modeKeys={moc:{period:'02/11–14/12/2026',summary:'Sobrevivência dos Mais Aptos',boss:'Inimigos e buffs variam por andar e metade.'},
+    pf:{period:'19/10–30/11/2026',summary:'Palavras Imaginadas',boss:'Onda de inimigos e pontuação por eliminação.'},
+    sa:{period:'05/10–16/11/2026',summary:'Dominação do Esquecimento',boss:'Avalie os chefes separadamente em cada lado.'},
+    aa:{period:'4.6 · até a mudança de versão',summary:'Arbitragem de Anomalias',boss:'Três cavaleiros e o confronto final do Rei em Xeque.'}};
+  endgame=function(){
+    const m=modeKeys[mode]||modeKeys.moc,keys=ownerKeys();
+    return '<section class="v06-endgame-lead">'+subhead('ARBITRAGEM & DESAFIOS','Endgame Intelligence','Cada andar, lado e chefe tem suas próprias condições. Escolha uma equipe da sua conta.')+
+      '<div class="v06-endmode">'+Object.keys(MODE).map(k=>'<button class="'+(k===mode?'active':'')+'" onclick="mode=\''+k+'\';floor=\''+(k==='moc'?'12':'4')+'\';refresh()">'+MODE[k].short+'</button>').join('')+'</div>'+
+      '<div class="v06-encounter"><small class="v06-kicker">'+safe(m.period)+'</small><h2>'+safe(m.summary)+'</h2><p>'+safe(m.boss)+'</p><span>'+keys.length+' personagens disponíveis na sua conta</span></div></section>'+
+      base.endgame()+
+      pomCard('Como escolher as equipes','O Pom-Pom só utiliza o inventário que você cadastrou. Um personagem não enviado não entra automaticamente nas recomendações. Estimativas de 0 ou 1 ciclo exigem PV, ondas, buffs, relíquias e rotações mensuráveis.','ESTRATÉGIA DE COMBATE');
+  };
+  const originalThemes=base.themes;
+  themes=function(){
+    const look=selectLook(state.theme),c=lookup(state.theme),art=state.v06Art?.[state.theme]||'portrait';
+    const imgs=[['portrait','Arte principal',look.art],['preview','Ícone ilustrado',imgSrc(state.theme,'preview')||look.art]];
+    if(EIDO_ART[state.theme]?.[5])imgs.push(['eidolon','Fragmento E6',EIDO_ART[state.theme][5]]);
+    return '<div class="v06-themes">'+subhead('ATELIÊ DO EXPRESSO','Theme Studio','Transforme o Nexus inteiro — ilustrações, navegação, molduras, ícones, fontes, ornamentos e movimento.')+
+      '<div class="v06-theme-stage"><div class="v06-theme-stage-art"><img src="'+safe(art==='eidolon'&&EIDO_ART[state.theme]?.[5]?EIDO_ART[state.theme][5]:art==='preview'?(imgSrc(state.theme,'preview')||look.art):look.art)+'" alt="'+safe(c.name)+'"></div><div class="v06-theme-caption"><span class="v06-kicker">IDENTIDADE ATIVA</span><h2>'+safe(c.name)+'</h2><p>'+look.text+' '+safe(look.group.toUpperCase())+' · '+safe(look.shape)+'</p><span>INTERFACE PERSONALIZADA</span></div></div>'+
+      '<div class="v06-theme-restore"><button onclick="setTheme(\'8001\')">✦ Restaurar tema padrão · Expresso Astral</button></div>'+
+      '<div class="v06-theme-swatches"><span>TIPOGRAFIA</span><strong style="font-family:'+look.font+'">'+safe(c.name)+'</strong><span>PALETA</span><div class="v06-swatches">'+look.color.map(a=>'<i style="background:'+a+'"></i>').join('')+'</div><span>ÍCONE & MOLDURA</span><strong>'+look.text+' '+safe(look.shape)+'</strong></div>'+
+      '<div class="v06-sectionline"><h2>Escolher arte do tema</h2><small>Variações disponíveis</small></div><div class="v06-art-picks">'+imgs.map(([k,label,url])=>'<button class="'+(art===k?'active':'')+'" onclick="v06SetArt(\''+k+'\')"><img src="'+safe(url)+'" loading="lazy" alt=""><span>'+safe(label)+'</span></button>').join('')+'</div>'+
+      '<div class="v06-sectionline"><h2>Biblioteca de identidades</h2><small>'+CATALOG.length+' opções</small></div><label class="v06-search">⌕ <input type="search" placeholder="Buscar qualquer personagem…" value="'+safe(themeSearch)+'" oninput="themeSearch=this.value;v06ThemeCards()"></label>'+
+      '<div id="v06-theme-grid" class="v06-theme-grid">'+v06ThemeItems()+'</div>'+
+      pomCard('Uma transformação, não um filtro','Cada personagem utiliza uma composição visual própria, com ilustração, cor de destaque, identidade tipográfica, bordas, ornamentos e ritmo de animação. Quando faltar uma arte oficial alternativa, o Nexus não inventa que existe.','ATELIÊ')+'</div>';
+  };
+  function v06ThemeItems(){
+    const matches=CATALOG.filter(c=>!themeSearch||norm(c.name).includes(norm(themeSearch)));
+    return matches.map(c=>'<button class="'+(c.id===state.theme?'active':'')+'" onclick="setTheme(\''+c.id+'\')"><img src="'+safe(c.id==='future-aha'?ahaOfficial:imgSrc(c.id,'preview'))+'" loading="lazy" alt="'+safe(c.name)+'" onerror="this.style.display=\'none\'"><span>'+safe(c.name)+'</span></button>').join('');
+  }
+  window.v06ThemeCards=()=>{let e=document.getElementById('v06-theme-grid');if(e)e.innerHTML=v06ThemeItems()};
+  window.v06SetArt=kind=>{state.v06Art||={};state.v06Art[state.theme]=kind;save();refresh();};
+  const originalApply=applyTheme;
+  applyTheme=function(){
+    originalApply();
+    const l=selectLook(state.theme),a=document.querySelector('.app');
+    if(!a)return;
+    a.dataset.v06Look=l.group;a.dataset.v06Shape=l.shape;
+    a.style.setProperty('--v-color',l.color[0]);a.style.setProperty('--v-color2',l.color[1]);a.style.setProperty('--v-deep',l.color[2]);
+    a.style.setProperty('--v-title-font',l.font);a.style.setProperty('--v-symbol','"'+l.text+'"');
+    a.style.setProperty('--v-cover','url("'+(state.v06Art?.[state.theme]==='preview'?imgSrc(state.theme,'preview'):l.art)+'")');
+    a.classList.add('v06-app');
+  };
+  function freshUI(){
+    document.getElementById('nexFab')?.remove();
+    const brand=document.querySelector('.brand-title');if(brand)brand.innerHTML='ANDERUS<small>STAR RAIL NEXUS</small>';
+    const open=document.querySelector('.mast-actions .i-btn[title="Buscar personagens"]');
+    if(open)open.setAttribute('title','Arquivo de personagens');
+    document.querySelectorAll('.module-tile img,.v06-tile img').forEach(x=>x.loading='lazy');
+    const nav=document.getElementById('bottomNav');if(nav){nav.classList.add('v06-bottom');}
+  }
+  const prevRender=render;
+  render=function(){
+    prevRender();
+    const stage=document.getElementById('stage');
+    stage?.classList.add('v06-stage');
+    document.querySelector('.app')?.classList.toggle('v06-on-home',page==='home');
+    freshUI();
+  };
+
+  window.v06OpenQuickAdd=function(){
+    showModal('Adicionar personagem à conta','<div class="v06-add-modal"><p>Selecione um personagem do catálogo. Depois abra sua ficha para cadastrar nível, Eidolons, cone e atributos.</p><label class="v06-search">⌕ <input type="search" oninput="v06QuickFilter(this.value)" placeholder="Pesquisar personagem"></label><div id="v06-quick-list">'+quickList('')+'</div></div>');
+  };
+  function quickList(query){
+    return CATALOG.filter(c=>c.id!=='future-aha'&&norm(c.name).includes(norm(query))).slice(0,100).map(c=>'<button onclick="closeModal();addOwned(\''+c.id+'\');openProfile(\''+c.id+'\')"><img src="'+safe(imgSrc(c.id,'icon'))+'" alt="" loading="lazy"><span>'+safe(c.name)+'</span> ＋</button>').join('');
+  }
+  window.v06QuickFilter=q=>{const e=document.getElementById('v06-quick-list');if(e)e.innerHTML=quickList(q)};
+
+  function uploadPanel(){
+    return '<div class="v06-import"><div class="v06-import-drop"><label for="v06-file">⇧<strong>Escolher print de build</strong><small>PNG, JPG ou WEBP · até 12 MB</small></label><input id="v06-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="v06ReadPrint(this.files[0])"></div>'+
+      '<div id="v06-import-preview" class="v06-import-preview"></div>'+
+      '<p class="v06-source-note">O reconhecimento acontece no seu navegador, sem enviar a imagem a servidores. A leitura automática de texto exige download gratuito da biblioteca OCR; confirme todos os números.</p></div>';
+  }
+  window.v06StartImport=function(id){
+    if(id)uploader.identifiedId=id;
+    else uploader.identifiedId=state.profile&&state.characters[state.profile]?state.profile:'1503';
+    uploader.preview='';uploader.file=null;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=0;
+    showModal('Importar build pelo print',uploadPanel());
+  };
+  window.v06ReadPrint=async function(file){
+    if(!file)return;
+    if(file.size>12*1024*1024){showToast('Escolha uma imagem de até 12 MB');return;}
+    uploader.file=file;uploader.busy=true;
+    const reader=new FileReader();
+    reader.onload=async()=>{uploader.preview=String(reader.result);uploader.busy=false;await cropRelics();v06ShowImportReview();};
+    reader.readAsDataURL(file);
+  };
+  function showImportReview(){
+    const names=CATALOG.filter(c=>c.id!=='future-aha' && !/^800[24680]$/.test(c.id));
+    const choice=names.map(c=>'<option value="'+c.id+'" '+(c.id===uploader.identifiedId?'selected':'')+'>'+safe(c.name)+'</option>').join('');
+    return '<div class="v06-import-form"><div class="v06-import-image"><img src="'+uploader.preview+'" alt="Print enviado"></div>'+
+      '<div class="v06-action-row"><button class="v06-primary" onclick="v06AutoRead()">✧ Reconhecer dados do print</button><button class="v06-secondary" onclick="document.getElementById(\'v06-file\').click()">Trocar imagem</button></div>'+
+      '<div class="v06-fieldgroup"><label>Personagem<select id="v06-id">'+choice+'</select></label>'+
+      '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="80"></label>'+
+      '<label>Eidolons (confirme os cadeados)<select id="v06-e">'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
+      '<label>Sobreposição do cone<select id="v06-s">'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'">S'+(i+1)+'</option>').join('')+'</select></label>'+
+      '<label>PV<input type="number" id="v06-pv" placeholder="PV total"></label><label>ATQ<input type="number" id="v06-atk" placeholder="ATQ total"></label>'+
+      '<label>DEF<input type="number" id="v06-def" placeholder="DEF total"></label><label>VEL<input type="number" id="v06-spd" placeholder="VEL"></label>'+
+      '<label>Chance CRIT %<input type="number" step=".1" id="v06-crit"></label><label>Dano CRIT %<input type="number" step=".1" id="v06-cdmg"></label>'+
+      '<label>Quebra %<input type="number" step=".1" id="v06-break"></label><label>Recuperação de Energia %<input type="number" step=".1" id="v06-energy"></label></div>'+
+      '<div class="v06-kicker">AS SEIS RELÍQUIAS DO PRINT</div><div class="v06-piece-grid">'+uploader.relImages.map((src,i)=>'<figure><img src="'+src+'" alt="Relíquia '+(i+1)+'"><figcaption>'+['Cabeça','Mãos','Corpo','Pés','Esfera','Corda'][i]+'</figcaption></figure>').join('')+'</div>'+
+      '<div id="v06-import-status" class="v06-import-status">OCR ainda não executado. Você pode cadastrar manualmente.</div><button class="v06-primary v06-save-import" onclick="v06SaveImport()">Salvar personagem e print ✓</button></div>';
+  }
+  window.v06ShowImportReview=function(){
+    const content=uploadPanel()+showImportReview();
+    showModal('Importar build · revisar dados',content);
+  };
+  async function cropRelics(){
+    if(!uploader.preview)return;
+    const img=new Image();
+    await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=uploader.preview});
+    if(!img.naturalWidth)return;
+    const ratio=img.naturalWidth/img.naturalHeight;
+    if(ratio<0.8 || ratio>1.6){uploader.relImages=[];return;}
+    const regions=[
+      [0.366,0.468,0.194,0.214],[0.57,0.468,0.194,0.214],[0.775,0.468,0.194,0.214],
+      [0.366,0.683,0.194,0.214],[0.57,0.683,0.194,0.214],[0.775,0.683,0.194,0.214]
+    ];
+    uploader.relImages=regions.map(([x,y,w,h])=>{
+      const canvas=document.createElement('canvas');canvas.width=145;canvas.height=164;
+      const ctx=canvas.getContext('2d');ctx.drawImage(img,Math.round(x*img.width),Math.round(y*img.height),Math.round(w*img.width),Math.round(h*img.height),0,0,145,164);
+      return canvas.toDataURL('image/webp',.65);
+    });
+  }
+  function getLang(){
+    return new Promise((resolve,reject)=>{
+      if(window.Tesseract)return resolve(window.Tesseract);
+      const tag=document.createElement('script');tag.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';tag.onload=()=>resolve(window.Tesseract);tag.onerror=()=>reject(Error('A biblioteca OCR não carregou'));document.head.appendChild(tag);
+    });
+  }
+  window.v06AutoRead=async function(){
+    const status=document.getElementById('v06-import-status');if(status)status.textContent='Lendo texto no dispositivo… pode levar alguns instantes.';
+    try{
+      const ocr=await getLang();
+      const result=await ocr.recognize(uploader.file,'eng',{logger:msg=>{if(status&&msg.status==='recognizing text')status.textContent='Lendo imagem: '+Math.round(msg.progress*100)+'%';}});
+      uploader.ocrText=result.data.text||'';
+      const text=uploader.ocrText,lower=norm(text);
+      const found=CATALOG.filter(c=>c.id!=='future-aha').sort((a,b)=>b.name.length-a.name.length).find(c=>norm(c.name).length>4&&lower.includes(norm(c.name)));
+      if(found){uploader.identifiedId=found.id;document.getElementById('v06-id').value=found.id;}
+      const pull=(pat)=>{let m=text.match(pat);return m?Number(m[1].replace(',','.')):null;};
+      const regex={
+        pv:/(?:PV|HP)\s*(?:\d+\s*\+\s*\d+\s*)?(\d{3,5})/i,
+        atk:/(?:ATQ|ATK)\s*(?:\d+\s*\+\s*\d+\s*)?(\d{3,5})/i,
+        def:/(?:DEF)\s*(?:\d+\s*\+\s*\d+\s*)?(\d{3,5})/i,
+        spd:/(?:VEL|SPD)\s*(?:\d+\s*\+\s*\d+\s*)?(\d{2,3})/i,
+        crit:/(?:Chance\s+de\s+CRIT|CRIT\s+Rate)\s*(\d{1,3}[.,]\d)/i,
+        cdmg:/(?:Dano\s+CRIT|CRIT\s+DMG)\s*(\d{1,3}[.,]\d)/i,
+        break:/(?:Efeito\s+de\s+Quebra|Break\s+Effect)\s*(\d{1,3}[.,]\d)/i,
+        energy:/(?:Regenera.{0,15}Energia|Energy\s+Regeneration)\s*(\d{1,3}[.,]\d)/i
+      };
+      let fields=0;
+      for(const [key,pattern] of Object.entries(regex)){let value=pull(pattern);const el=document.getElementById('v06-'+key);if(el&&Number.isFinite(value)){el.value=value;fields++;}}
+      let level=pull(/(?:Nv\.?|Lv\.?)\s*(\d{1,2})/i);if(level){document.getElementById('v06-level').value=level;fields++;}
+      const eSuggested=await suggestEidolons();
+      if(eSuggested!=null){document.getElementById('v06-e').value=eSuggested;uploader.eidolon=eSuggested;}
+      if(status)status.textContent='Leitura concluída: '+fields+' campos detectados. '+(eSuggested!==null?'Eidolons sugeridos: E'+eSuggested+'. ':'')+'Revise os números antes de salvar.';
+    }catch(err){if(status)status.textContent='Não foi possível reconhecer automaticamente: '+err.message+'. Você pode preencher os campos manualmente.';}
+  };
+  async function suggestEidolons(){
+    const img=new Image();await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=uploader.preview});
+    if(!img.naturalWidth)return null;
+    const canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
+    let unlocked=0;
+    for(let i=0;i<6;i++){
+      const cx=img.naturalWidth*(0.085+0.041*i),cy=img.naturalHeight*.572,r=Math.max(3,Math.round(img.naturalWidth*.006));
+      const pix=ctx.getImageData(Math.max(0,Math.floor(cx-r)),Math.max(0,Math.floor(cy-r)),r*2,r*2).data;let bright=0;
+      for(let j=0;j<pix.length;j+=4){const v=(pix[j]+pix[j+1]+pix[j+2])/3;if(v>175)bright++;}
+      if(bright/(pix.length/4)>.18)unlocked++;else break;
+    }
+    return unlocked;
+  }
+  window.v06SaveImport=function(){
+    const id=document.getElementById('v06-id')?.value;if(!id)return;
+    const prior=state.characters[id]||{level:1,e:0,s:1,cone:''};
+    const read=k=>{const v=document.getElementById('v06-'+k)?.value;return v===''||v==null?null:Number(v);};
+    const keys=['level','e','s','pv','atk','def','spd','crit','cdmg','break','energy'];
+    for(const k of keys){const n=read(k);if(Number.isFinite(n))prior[k]=n;}
+    state.characters[id]=prior;state.v06Screens||={};state.v06Relics||={};
+    if(uploader.preview){const image=new Image();image.src=uploader.preview;state.v06Screens[id]=uploader.preview;}
+    if(uploader.relImages.length)state.v06Relics[id]=uploader.relImages;
+    state.profile=id;save();closeModal();tab='overview';route('profile');showToast('Print e personagem registrados na sua conta');
+  };
+  // Disable stale chat surface and floating mascot even if the 0.5 renderer recreates them.
+  const originalMenu=renderMenu;
+  renderMenu=function(){originalMenu();const menu=document.getElementById('floatMenu');if(menu)menu.innerHTML=menu.innerHTML.replace(/Diário do Pom-Pom/g,'Dicas do Pom-Pom');};
+  if(window.history&&window.history.replaceState)document.documentElement.dataset.nexusVersion='0.6';
+})();
