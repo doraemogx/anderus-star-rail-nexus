@@ -11,6 +11,13 @@ function loadArt(){return artPromise||(artPromise=fetch('./data/eidolon-art.json
 let gamePromise=null,selected='',showSummary=false,activeTab='skills';
 const modalId='nexus-kit-dialog';
 const clean=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+let tracePromise=null;
+function loadTraces(){
+ if(!tracePromise)tracePromise=fetch('./data/character-traces.json',{cache:'no-store'}).then(r=>{
+  if(!r.ok)throw Error('Catálogo de rastros indisponível: '+r.status);return r.json();
+ }).catch(e=>{tracePromise=null;throw e;});
+ return tracePromise;
+}
 function load(){
  if(!gamePromise)gamePromise=fetch('./data/live-game.json',{cache:'no-store'}).then(r=>{
   if(!r.ok)throw Error('Catálogo não disponível: '+r.status);return r.json();
@@ -40,6 +47,43 @@ function resolveEffect(effect,params,level){
 }
 function getSkills(c,g){
  return [...new Set(c.skills||[])].map(id=>({...g.skills?.[id],id})).filter(s=>s.desc||s.name);
+}
+function renderTraces(c,g){
+ const data=g.traceData||{},nodes=data.trees?.[c.id]||[],items=data.items||{};
+ if(!nodes.length)return '<div class="kit-warning">Rastros não disponíveis neste catálogo. Nenhum requisito será estimado.</div>';
+ const major=[],minor=[],skill=[];
+ for(const node of nodes){
+  const skillId=node.levelUpSkills?.[0]?.id;
+  const ability=skillId?g.skills?.[skillId]:null;
+  const title=node.name||ability?.name||'Rastro '+node.id;
+  const isAbility=!!skillId;
+  const isMajor=!isAbility&&node.desc;
+  const effect=node.desc?resolveEffect(node,node.params,1):null;
+  const properties=(node.levels||[]).flatMap(x=>x.properties||[]);
+  const uniqueProp=properties.find(x=>x?.value!==undefined);
+  const propertyText=uniqueProp?
+    'Atributo: '+esc(node.name||uniqueProp.type||'Bônus')+' · '+esc(valueFormat(uniqueProp.value,/ratio|chance|rate|crit|break/i.test(uniqueProp.type||''))||String(uniqueProp.value)):
+    '';
+  const costs={};
+  for(const level of node.levels||[])for(const row of level.materials||[]){
+   costs[row.id]=(costs[row.id]||0)+Number(row.num||0);
+  }
+  const requirements=Object.entries(costs).map(([id,amount])=>{
+   const item=items[id]||{};
+   return '<li>'+(item.icon?'<img src="'+esc(image(item.icon))+'" alt="" loading="lazy" onerror="this.hidden=true">':'')+
+     '<span>'+esc(item.name||'Material '+id)+'</span><strong>×'+amount.toLocaleString('pt-BR')+'</strong></li>';
+  }).join('');
+  const html='<article class="kit-trace"><div class="kit-trace-head">'+
+   (node.icon?'<img src="'+esc(image(node.icon))+'" alt="" loading="lazy" onerror="this.hidden=true">':'')+
+   '<div><span class="kit-type">'+(isAbility?'RASTRO DE HABILIDADE':isMajor?'RASTRO PRINCIPAL':'RASTRO MENOR')+'</span>'+
+   '<h3>'+esc(title)+'</h3><small>Máximo: '+esc(node.maxLevel||1)+' nível(is) · ID '+esc(node.id)+'</small></div></div>'+
+   (effect?'<p>'+effect.html+'</p>':propertyText?'<p>'+propertyText+'</p>':'<p>Esta ramificação aumenta o nível da habilidade indicada. Consulte o Kit para os valores exatos.</p>')+
+   '<details><summary>Materiais para completar este rastro</summary>'+(requirements?'<ul class="kit-trace-costs">'+requirements+'</ul>':'<p>Sem custo de materiais listado nesta ramificação.</p>')+'</details></article>';
+  (isAbility?skill:isMajor?major:minor).push(html);
+ }
+ return '<div class="kit-traces"><p class="kit-warning">Custos exibidos para completar cada rastro do nível inicial ao máximo, não o que falta na sua conta. Confirme quais rastros já foram desbloqueados.</p>'+
+  '<h3>Rastros principais</h3>'+major.join('')+'<h3>Rastros menores</h3>'+minor.join('')+
+  '<h3>Aprimoramentos de habilidades</h3>'+skill.join('')+'</div>';
 }
 function getEidolons(c,g){
  return (c.ranks||[]).slice(0,6).map((id,index)=>({...g.ranks?.[id],id,n:index+1}));
@@ -77,11 +121,13 @@ function compose(c,g,advice){
   (c.portrait?'<img class="kit-portrait" src="'+esc(image(c.portrait))+'" alt="" loading="lazy">':'')+
   '<div><span class="kit-eyebrow">CHARACTER DOSSIER / KIT LAB</span><h2>'+esc(c.name)+'</h2><p>'+esc(elements[c.element]||c.element||'')+' · '+esc(paths[c.path]||c.path||'')+' · '+esc(c.rarity)+'★</p><small>Catálogo atualizado em '+esc(sourceDate)+'</small></div></header>';
  const controls='<div class="kit-tabs" role="group" aria-label="Seções do kit">'+
-  '<button type="button" data-kit-tab="skills" '+(activeTab==='skills'?'aria-pressed="true"':'')+'>Kit e rastros</button>'+
+  '<button type="button" data-kit-tab="skills" '+(activeTab==='skills'?'aria-pressed="true"':'')+'>Habilidades</button>'+
+  '<button type="button" data-kit-tab="traces" '+(activeTab==='traces'?'aria-pressed="true"':'')+'>Rastros e materiais</button>'+
   '<button type="button" data-kit-tab="ranks" '+(activeTab==='ranks'?'aria-pressed="true"':'')+'>Eidolons E1–E6</button>'+
   '<button type="button" data-kit-summary '+(showSummary?'aria-pressed="true"':'')+'>Pom-Pom, me explica!</button></div>';
  let body='';
  if(showSummary)body=summary(c,g,advice);
+ else if(activeTab==='traces')body=renderTraces(c,g);
  else if(activeTab==='ranks')body='<div class="kit-ranks">'+ranks.map(e=>{
   const effect=resolveEffect(e,e.params,1);
   const art=g.eidolonArt?.[c.id]?.[e.n-1]||'';
@@ -128,7 +174,9 @@ async function fillSelect(filter=''){
 async function render(){
  const target=document.getElementById('nexus-kit-content');if(!target)return;
  try{
-  const g=await load();const art=await loadArt();g.eidolonArt=art.characters||{};const c=g.chars?.[selected];
+  const g=await load();const art=await loadArt();g.eidolonArt=art.characters||{};
+  if(activeTab==='traces')g.traceData=await loadTraces();
+  const c=g.chars?.[selected];
   if(!c){target.innerHTML='<p class="kit-warning">Selecione um personagem válido.</p>';return;}
   const levelCache={};
   target.querySelectorAll('[data-skill-level]').forEach(x=>levelCache[x.dataset.skillLevel]=x.value);
