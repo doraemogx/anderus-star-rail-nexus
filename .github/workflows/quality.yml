@@ -28,6 +28,8 @@ jobs:
           node --check nexus-backup.js
           node --check nexus-farm-lab.js
           node --check nexus-theme-bridge.js
+          node --check nexus-warp-math.js
+          node --check nexus-warp-advisor.js
           node --check worker/index.js
       - name: Validar sincronização de dados e rollback
         run: python3 scripts/check-sync-game.py
@@ -39,6 +41,8 @@ jobs:
         run: node scripts/check-traces.mjs
       - name: OCR parcial sem perda ou mistura de equipamentos
         run: node scripts/check-relic-merge.mjs
+      - name: Warp Advisor — pity e probabilidades conservadoras
+        run: node scripts/check-warp.mjs
       - name: Kit Lab 2.0 — dados, interpolação e imagens
         run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
