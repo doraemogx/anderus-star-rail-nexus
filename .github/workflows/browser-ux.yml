@@ -33,10 +33,13 @@ jobs:
           python3 -m http.server 8787 --bind 127.0.0.1 >/tmp/nexus-browser-server.log 2>&1 &
           node scripts/browser-smoke.mjs
           node scripts/browser-offline.mjs
+      - name: Preparar galeria de revisão por tela
+        if: always()
+        run: node scripts/build-review-gallery.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nexus-browser-ux
-          path: artifacts/*.png
+          path: artifacts/*
           if-no-files-found: ignore
