@@ -158,6 +158,7 @@ function dialog(){
   if(act==='warp')window.NexusWarpAdvisor?.open();
   if(act==='profile')window.openProfile?.(selected);
   if(act==='account')window.route?.('library');
+  if(act==='endgame')window.route?.('endgame');
  });
  return dlg;
 }
