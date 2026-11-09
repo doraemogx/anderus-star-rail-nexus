@@ -65,5 +65,28 @@ assert.ok(eidoSrc.includes('eidoArtwork(id,n,rank)'),'Character-specific artwork
 assert.ok(eidoSrc.includes('Voltar à ficha'),'Modal back navigation missing');
 assert.ok(eidoSrc.includes('v10-eido-navigation'),'Previous/next Eidolon buttons missing');
 console.log('PASS all '+present.length+' characters × 6 PT-BR Eidolon descriptions and modal navigation');
+const artwork=JSON.parse(read('data/eidolon-art.json'));
+assert.equal(Object.keys(artwork.characters).length,present.length,'Art catalog does not match current roster');
+let artCount=0;
+for(const [id,char] of present){
+ const pieces=artwork.characters[id]||[];
+ assert.equal(pieces.length,6,'Not six artwork slots for '+id+' · '+char.name);
+ for(let n=1;n<=6;n++){
+  const art=pieces[n-1];
+  assert.ok(typeof art==='string'&&art.startsWith('https://static.wikia.nocookie.net/houkai-star-rail/images/'),'Missing real image for '+id+' E'+n);
+  assert.ok(art.includes('_Eidolon_'+n+'.png/'),'Mismatched image number for '+id+' E'+n);
+  if(id==='1505')assert.ok(art.includes('Character_Evanescia_'),'Evanescia fragment mismatched');
+  if(id==='1503')assert.ok(art.includes('Character_Pearl_'),'Pearl fragment mismatched');
+  if(id==='8009')assert.ok(art.includes('Character_Trailblazer_Male_'),'Caelus art must not use Stelle');
+  artCount++;
+ }
+}
+assert.ok(eidoSrc.includes("fetchJSON('./data/eidolon-art.json')"),'Art catalog is not actually loaded');
+assert.ok(eidoSrc.includes('updateEidolonArtInPage()'),'Existing overview icons are not upgraded');
+assert.ok(eidoSrc.includes("img.nexus-eidolon-fragment"),'Character overview is not wired to fragments');
+assert.ok(eidoSrc.includes('v10-eido-art'),'Eidolon detail artwork missing');
+assert.ok(read('.github/workflows/sync-content.yml').includes('python scripts/sync_eidolon_art.py'),'Future Eidolon updates not automated');
+console.log('PASS '+artCount+'/'+(present.length*6)+' verified original Eidolon art URLs across overview, detail and future sync');
+
 assert.ok(!sw.includes("'./themes/aha.css'"));
 console.log('PASS assets, all four endgames, variant isolation, lazy theme, PWA');
