@@ -43,7 +43,7 @@ for(const symbol of ['v09SetVisualMode','renderVariants','renderEndgame','enhanc
 assert.ok(loader.includes('anderus-aeon-aha-visual-mode'));
 assert.ok(loader.includes('aha-detail.css'));
 assert.ok(loader.includes('enhanceNexusV09();'));
-assert.ok(sw.includes('anderus-shell-v14'));
+assert.ok(sw.includes('anderus-shell-v15'));
 assert.ok(read('v06.js').includes('repairOverviewEidolons'));
 assert.ok(read('v06.js').includes('rankRecord(id,n)'));
 assert.ok(read('v06.js').includes('relic-auto.js?v=3'));
@@ -154,14 +154,6 @@ console.log('PASS +15 fixed main stats are corrected only for verified relic lev
 
 console.log('PASS assets, all four endgames, variant isolation, lazy theme, PWA');
 
-
-
-const htmlSource=read('index.html');
-for(const marker of ['function profileRelics(', 'function editBuild(', 'function save(', 'function showModal(', 'function render(', 'let state=', 'const state=', 'function load(', 'function openProfile(', 'function profileOverview(']){
- const at=htmlSource.indexOf(marker);
- if(at>=0){
-   const span=marker.includes('profileRelics')?4200:marker.includes('editBuild')?2600:marker.includes('save(')?2200:1800;
-   const source=htmlSource.slice(at,at+span).split('data:image')[0];
-   console.log('AUDIT_BASE_FUNCTION',marker,'OFFSET',at,source);
- }
-}
+for(const asset of ['nexus-account-engine.js','nexus-account.css','data/live-game.json','data/relic-icon-signatures.json'])
+  assert.ok(sw.includes(asset),'Offline shell missing account asset: '+asset);
+console.log('PASS PWA v15 caches account records and game catalog for offline access');
