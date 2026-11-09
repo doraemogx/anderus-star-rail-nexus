@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Trace Planner uses shared account material inventory and optional levels.
+ if(!document.getElementById('nexus-trace-plan-css')){
+  const link=document.createElement('link');link.id='nexus-trace-plan-css';link.rel='stylesheet';link.href='./nexus-trace-planner.css';document.head.appendChild(link);
+ }
+ if(!document.getElementById('nexus-trace-plan-js')){
+  const script=document.createElement('script');script.id='nexus-trace-plan-js';script.src='./nexus-trace-planner.js';script.defer=true;document.head.appendChild(script);
+ }
  // Warp Math loads first; the planner uses the same sourced rules.
  if(!document.getElementById('nexus-warp-css')){
   const style=document.createElement('link');style.id='nexus-warp-css';style.rel='stylesheet';style.href='./nexus-warp-advisor.css';document.head.appendChild(style);
