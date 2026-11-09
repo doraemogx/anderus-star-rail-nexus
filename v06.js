@@ -548,6 +548,16 @@
     let worker=null,bitmap=null;
     try{
       say('Lendo o modelo fixo do registro de batalha...');
+      // Avoid carrying previously OCR-filled fields over into a new screenshot.
+      for(const key of ['pv','atk','def','spd','crit','cdmg','break','energy']){
+        const el=document.getElementById('v06-'+key);
+        if(el)el.value='';
+      }
+      uploader.identifiedId='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';
+      for(const key of ['id','e','s','cone']){
+        const el=document.getElementById('v06-'+key);
+        if(el)el.value='';
+      }
       const ocr=await getLang();
       bitmap=await createImageBitmap(uploader.file);
       const ratio=bitmap.width/bitmap.height;
