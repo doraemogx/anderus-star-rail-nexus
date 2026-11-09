@@ -308,6 +308,7 @@
     roster:()=>Object.entries(state.characters||{}).filter(([id,data])=>data&&gameData.chars?.[id])
       .map(([id,data])=>({id,name:lookup(id)?.name||gameData.chars[id]?.name||id,
         path:gameData.chars[id]?.path||'',element:gameData.chars[id]?.element||'',
+        icon:gameData.chars[id]?.icon||'',portrait:gameData.chars[id]?.portrait||'',
         level:Number(data.level||1),e:Number(data.e||0),s:Number(data.s||1)})),
     list:()=>JSON.parse(JSON.stringify(state.v06SavedTeams||[])),
     save:(team)=>{
