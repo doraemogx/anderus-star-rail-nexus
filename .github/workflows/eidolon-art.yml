@@ -18,3 +18,15 @@ jobs:
           python-version: '3.12'
       - name: Verificar fontes de imagens reais
         run: python scripts/sync_eidolon_art.py --probe
+      - name: Auditar elementos reais da ficha original
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          for term in ('function profileOverview(', 'profileOverview=function(', 'function showEido(', 'showEido=function('):
+              at=s.find(term)
+              if at>=0:
+                  print('BASE_FRAGMENT',term,'OFFSET',at)
+                  print(s[at:at+4500])
+          PY
+
