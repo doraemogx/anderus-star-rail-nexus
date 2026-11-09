@@ -1,0 +1,791 @@
+{
+  "source": "Honkai: Star Rail Wiki / MediaWiki imageinfo (original character Eidolon images)",
+  "license": "HoYoverse assets — fan site, noncommercial",
+  "updatedAt": "2026-11-09T14:32:24+00:00",
+  "characters": {
+    "1001": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/ab/Character_March_7th_%28Preservation%29_Eidolon_1.png/revision/latest?cb=20240123090618",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3a/Character_March_7th_%28Preservation%29_Eidolon_2.png/revision/latest?cb=20240123090626",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ef/Character_March_7th_%28Preservation%29_Eidolon_3.png/revision/latest?cb=20240123090634",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/04/Character_March_7th_%28Preservation%29_Eidolon_4.png/revision/latest?cb=20240123090641",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cd/Character_March_7th_%28Preservation%29_Eidolon_5.png/revision/latest?cb=20240123090649",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/56/Character_March_7th_%28Preservation%29_Eidolon_6.png/revision/latest?cb=20240123090656"
+    ],
+    "1002": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9a/Character_Dan_Heng_Eidolon_1.png/revision/latest?cb=20240123090837",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Dan_Heng_Eidolon_2.png/revision/latest?cb=20240123090846",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/53/Character_Dan_Heng_Eidolon_3.png/revision/latest?cb=20240123090854",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/27/Character_Dan_Heng_Eidolon_4.png/revision/latest?cb=20240123090904",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a2/Character_Dan_Heng_Eidolon_5.png/revision/latest?cb=20240123090914",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f8/Character_Dan_Heng_Eidolon_6.png/revision/latest?cb=20240123090922"
+    ],
+    "1003": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3e/Character_Himeko_Eidolon_1.png/revision/latest?cb=20240123194655",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1f/Character_Himeko_Eidolon_2.png/revision/latest?cb=20240123194703",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d0/Character_Himeko_Eidolon_3.png/revision/latest?cb=20240123194710",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3f/Character_Himeko_Eidolon_4.png/revision/latest?cb=20240123194718",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d8/Character_Himeko_Eidolon_5.png/revision/latest?cb=20240123194726",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/97/Character_Himeko_Eidolon_6.png/revision/latest?cb=20240123194733"
+    ],
+    "1004": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b7/Character_Welt_Eidolon_1.png/revision/latest?cb=20240123194506",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d3/Character_Welt_Eidolon_2.png/revision/latest?cb=20240123194515",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cb/Character_Welt_Eidolon_3.png/revision/latest?cb=20240123194523",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9f/Character_Welt_Eidolon_4.png/revision/latest?cb=20240123194532",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/72/Character_Welt_Eidolon_5.png/revision/latest?cb=20240123194539",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5e/Character_Welt_Eidolon_6.png/revision/latest?cb=20240123194547"
+    ],
+    "1005": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/11/Character_Kafka_Eidolon_1.png/revision/latest?cb=20240123194248",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d2/Character_Kafka_Eidolon_2.png/revision/latest?cb=20240123194256",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/50/Character_Kafka_Eidolon_3.png/revision/latest?cb=20240123194305",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b3/Character_Kafka_Eidolon_4.png/revision/latest?cb=20240123194314",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7f/Character_Kafka_Eidolon_5.png/revision/latest?cb=20240123194322",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8e/Character_Kafka_Eidolon_6.png/revision/latest?cb=20240123194330"
+    ],
+    "1006": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/ca/Character_Silver_Wolf_Eidolon_1.png/revision/latest?cb=20240123194056",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d1/Character_Silver_Wolf_Eidolon_2.png/revision/latest?cb=20240123194103",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/13/Character_Silver_Wolf_Eidolon_3.png/revision/latest?cb=20240123194111",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/23/Character_Silver_Wolf_Eidolon_4.png/revision/latest?cb=20240123194119",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a7/Character_Silver_Wolf_Eidolon_5.png/revision/latest?cb=20240123194127",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/11/Character_Silver_Wolf_Eidolon_6.png/revision/latest?cb=20240123194134"
+    ],
+    "1008": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b2/Character_Arlan_Eidolon_1.png/revision/latest?cb=20240123193917",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d9/Character_Arlan_Eidolon_2.png/revision/latest?cb=20240123193925",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/33/Character_Arlan_Eidolon_3.png/revision/latest?cb=20240123193933",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f7/Character_Arlan_Eidolon_4.png/revision/latest?cb=20240123193942",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2e/Character_Arlan_Eidolon_5.png/revision/latest?cb=20240123193950",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d6/Character_Arlan_Eidolon_6.png/revision/latest?cb=20240123193957"
+    ],
+    "1009": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9e/Character_Asta_Eidolon_1.png/revision/latest?cb=20240123193753",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/64/Character_Asta_Eidolon_2.png/revision/latest?cb=20240123193800",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7f/Character_Asta_Eidolon_3.png/revision/latest?cb=20240123193808",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fe/Character_Asta_Eidolon_4.png/revision/latest?cb=20240123193815",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/83/Character_Asta_Eidolon_5.png/revision/latest?cb=20240123193822",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c2/Character_Asta_Eidolon_6.png/revision/latest?cb=20240123193830"
+    ],
+    "1013": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/91/Character_Herta_Eidolon_1.png/revision/latest?cb=20240123112249",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/05/Character_Herta_Eidolon_2.png/revision/latest?cb=20240123112256",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/aa/Character_Herta_Eidolon_3.png/revision/latest?cb=20240123112303",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/db/Character_Herta_Eidolon_4.png/revision/latest?cb=20240123112310",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fe/Character_Herta_Eidolon_5.png/revision/latest?cb=20240123112317",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/15/Character_Herta_Eidolon_6.png/revision/latest?cb=20240123112323"
+    ],
+    "1014": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6b/Character_Saber_Eidolon_1.png/revision/latest?cb=20250708093001",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fd/Character_Saber_Eidolon_2.png/revision/latest?cb=20250708093010",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/da/Character_Saber_Eidolon_3.png/revision/latest?cb=20250708093019",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f0/Character_Saber_Eidolon_4.png/revision/latest?cb=20250708093027",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c8/Character_Saber_Eidolon_5.png/revision/latest?cb=20250708093036",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c1/Character_Saber_Eidolon_6.png/revision/latest?cb=20250708093044"
+    ],
+    "1015": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a1/Character_Archer_Eidolon_1.png/revision/latest?cb=20250712101436",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f6/Character_Archer_Eidolon_2.png/revision/latest?cb=20250712101450",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/64/Character_Archer_Eidolon_3.png/revision/latest?cb=20250712101458",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f9/Character_Archer_Eidolon_4.png/revision/latest?cb=20250712101507",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1d/Character_Archer_Eidolon_5.png/revision/latest?cb=20250712101516",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/16/Character_Archer_Eidolon_6.png/revision/latest?cb=20250712101524"
+    ],
+    "1101": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/08/Character_Bronya_Eidolon_1.png/revision/latest?cb=20240123112114",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bf/Character_Bronya_Eidolon_2.png/revision/latest?cb=20240123112122",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/27/Character_Bronya_Eidolon_3.png/revision/latest?cb=20240123112131",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/35/Character_Bronya_Eidolon_4.png/revision/latest?cb=20240123112139",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9c/Character_Bronya_Eidolon_5.png/revision/latest?cb=20240123112150",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a2/Character_Bronya_Eidolon_6.png/revision/latest?cb=20240123112157"
+    ],
+    "1102": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/77/Character_Seele_Eidolon_1.png/revision/latest?cb=20240123111828",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/84/Character_Seele_Eidolon_2.png/revision/latest?cb=20240123111836",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/59/Character_Seele_Eidolon_3.png/revision/latest?cb=20240123111844",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/17/Character_Seele_Eidolon_4.png/revision/latest?cb=20240123111852",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ef/Character_Seele_Eidolon_5.png/revision/latest?cb=20240123111900",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/89/Character_Seele_Eidolon_6.png/revision/latest?cb=20240123111907"
+    ],
+    "1103": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/73/Character_Serval_Eidolon_1.png/revision/latest?cb=20240123111954",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/00/Character_Serval_Eidolon_2.png/revision/latest?cb=20240123112001",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/01/Character_Serval_Eidolon_3.png/revision/latest?cb=20240123112007",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2d/Character_Serval_Eidolon_4.png/revision/latest?cb=20240123112014",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/22/Character_Serval_Eidolon_5.png/revision/latest?cb=20240123112022",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a4/Character_Serval_Eidolon_6.png/revision/latest?cb=20240123112028"
+    ],
+    "1104": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/49/Character_Gepard_Eidolon_1.png/revision/latest?cb=20240123111626",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b6/Character_Gepard_Eidolon_2.png/revision/latest?cb=20240123111634",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/62/Character_Gepard_Eidolon_3.png/revision/latest?cb=20240123111641",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a9/Character_Gepard_Eidolon_4.png/revision/latest?cb=20240123111648",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/62/Character_Gepard_Eidolon_5.png/revision/latest?cb=20240123111655",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f4/Character_Gepard_Eidolon_6.png/revision/latest?cb=20240123111702"
+    ],
+    "1105": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/40/Character_Natasha_Eidolon_1.png/revision/latest?cb=20240123111456",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6c/Character_Natasha_Eidolon_2.png/revision/latest?cb=20240123111508",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7c/Character_Natasha_Eidolon_3.png/revision/latest?cb=20240123111515",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Natasha_Eidolon_4.png/revision/latest?cb=20240123111524",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b5/Character_Natasha_Eidolon_5.png/revision/latest?cb=20240123111532",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f8/Character_Natasha_Eidolon_6.png/revision/latest?cb=20240123111540"
+    ],
+    "1106": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/57/Character_Pela_Eidolon_1.png/revision/latest?cb=20240123111323",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/50/Character_Pela_Eidolon_2.png/revision/latest?cb=20240123111330",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/db/Character_Pela_Eidolon_3.png/revision/latest?cb=20240123111340",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c1/Character_Pela_Eidolon_4.png/revision/latest?cb=20240123111348",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2b/Character_Pela_Eidolon_5.png/revision/latest?cb=20240123111358",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f5/Character_Pela_Eidolon_6.png/revision/latest?cb=20240123111405"
+    ],
+    "1107": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ef/Character_Clara_Eidolon_1.png/revision/latest?cb=20240123111200",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c5/Character_Clara_Eidolon_2.png/revision/latest?cb=20240123111207",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2f/Character_Clara_Eidolon_3.png/revision/latest?cb=20240123111214",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a4/Character_Clara_Eidolon_4.png/revision/latest?cb=20240123111223",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/27/Character_Clara_Eidolon_5.png/revision/latest?cb=20240123111230",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9a/Character_Clara_Eidolon_6.png/revision/latest?cb=20240123111237"
+    ],
+    "1108": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/70/Character_Sampo_Eidolon_1.png/revision/latest?cb=20240123111018",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c0/Character_Sampo_Eidolon_2.png/revision/latest?cb=20240123111026",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c4/Character_Sampo_Eidolon_3.png/revision/latest?cb=20240123111034",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6d/Character_Sampo_Eidolon_4.png/revision/latest?cb=20240123111042",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/60/Character_Sampo_Eidolon_5.png/revision/latest?cb=20240123111050",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c5/Character_Sampo_Eidolon_6.png/revision/latest?cb=20240123111057"
+    ],
+    "1109": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1f/Character_Hook_Eidolon_1.png/revision/latest?cb=20240123110850",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/83/Character_Hook_Eidolon_2.png/revision/latest?cb=20240123110856",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a9/Character_Hook_Eidolon_3.png/revision/latest?cb=20240123110904",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ee/Character_Hook_Eidolon_4.png/revision/latest?cb=20240123110911",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/90/Character_Hook_Eidolon_5.png/revision/latest?cb=20240123110918",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2b/Character_Hook_Eidolon_6.png/revision/latest?cb=20240123110926"
+    ],
+    "1110": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4c/Character_Lynx_Eidolon_1.png/revision/latest?cb=20240123110652",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3f/Character_Lynx_Eidolon_2.png/revision/latest?cb=20240123110702",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f9/Character_Lynx_Eidolon_3.png/revision/latest?cb=20240123110711",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/30/Character_Lynx_Eidolon_4.png/revision/latest?cb=20240123110719",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9e/Character_Lynx_Eidolon_5.png/revision/latest?cb=20240123110729",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e7/Character_Lynx_Eidolon_6.png/revision/latest?cb=20240123110736"
+    ],
+    "1111": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a4/Character_Luka_Eidolon_1.png/revision/latest?cb=20240123110452",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b3/Character_Luka_Eidolon_2.png/revision/latest?cb=20240123110459",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7e/Character_Luka_Eidolon_3.png/revision/latest?cb=20240123110505",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c5/Character_Luka_Eidolon_4.png/revision/latest?cb=20240123110514",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/88/Character_Luka_Eidolon_5.png/revision/latest?cb=20240123110521",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d6/Character_Luka_Eidolon_6.png/revision/latest?cb=20240123110528"
+    ],
+    "1112": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c0/Character_Topaz_and_Numby_Eidolon_1.png/revision/latest?cb=20240123110318",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4e/Character_Topaz_and_Numby_Eidolon_2.png/revision/latest?cb=20240123110320",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cb/Character_Topaz_and_Numby_Eidolon_3.png/revision/latest?cb=20240123110322",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a3/Character_Topaz_and_Numby_Eidolon_4.png/revision/latest?cb=20240123110324",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/ad/Character_Topaz_and_Numby_Eidolon_5.png/revision/latest?cb=20240123110326",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/90/Character_Topaz_and_Numby_Eidolon_6.png/revision/latest?cb=20240123110328"
+    ],
+    "1201": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/00/Character_Qingque_Eidolon_1.png/revision/latest?cb=20240123105958",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/36/Character_Qingque_Eidolon_2.png/revision/latest?cb=20240123110002",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ed/Character_Qingque_Eidolon_3.png/revision/latest?cb=20240123110005",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7b/Character_Qingque_Eidolon_4.png/revision/latest?cb=20240123110008",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d1/Character_Qingque_Eidolon_5.png/revision/latest?cb=20240123110011",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/33/Character_Qingque_Eidolon_6.png/revision/latest?cb=20240123110014"
+    ],
+    "1202": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a3/Character_Tingyun_Eidolon_1.png/revision/latest?cb=20240123105646",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9c/Character_Tingyun_Eidolon_2.png/revision/latest?cb=20240123105654",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/30/Character_Tingyun_Eidolon_3.png/revision/latest?cb=20240123105702",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/51/Character_Tingyun_Eidolon_4.png/revision/latest?cb=20240123105711",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0d/Character_Tingyun_Eidolon_5.png/revision/latest?cb=20240123105722",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/31/Character_Tingyun_Eidolon_6.png/revision/latest?cb=20240123105730"
+    ],
+    "1203": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c7/Character_Luocha_Eidolon_1.png/revision/latest?cb=20240123105500",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9c/Character_Luocha_Eidolon_2.png/revision/latest?cb=20240123105508",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9d/Character_Luocha_Eidolon_3.png/revision/latest?cb=20240123105515",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/92/Character_Luocha_Eidolon_4.png/revision/latest?cb=20240123105522",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a3/Character_Luocha_Eidolon_5.png/revision/latest?cb=20240123105529",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b1/Character_Luocha_Eidolon_6.png/revision/latest?cb=20240123105536"
+    ],
+    "1204": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/69/Character_Jing_Yuan_Eidolon_1.png/revision/latest?cb=20240123105236",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3f/Character_Jing_Yuan_Eidolon_2.png/revision/latest?cb=20240123105245",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/da/Character_Jing_Yuan_Eidolon_3.png/revision/latest?cb=20240123105256",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/64/Character_Jing_Yuan_Eidolon_4.png/revision/latest?cb=20240123105304",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/77/Character_Jing_Yuan_Eidolon_5.png/revision/latest?cb=20240123105313",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f4/Character_Jing_Yuan_Eidolon_6.png/revision/latest?cb=20240123105320"
+    ],
+    "1205": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4a/Character_Blade_Eidolon_1.png/revision/latest?cb=20240123105051",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/07/Character_Blade_Eidolon_2.png/revision/latest?cb=20240123105100",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/54/Character_Blade_Eidolon_3.png/revision/latest?cb=20240123105109",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/be/Character_Blade_Eidolon_4.png/revision/latest?cb=20240123105119",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/06/Character_Blade_Eidolon_5.png/revision/latest?cb=20240123105129",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5e/Character_Blade_Eidolon_6.png/revision/latest?cb=20240123105137"
+    ],
+    "1206": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4c/Character_Sushang_Eidolon_1.png/revision/latest?cb=20240123110106",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/45/Character_Sushang_Eidolon_2.png/revision/latest?cb=20240123110113",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/17/Character_Sushang_Eidolon_3.png/revision/latest?cb=20240123110125",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/70/Character_Sushang_Eidolon_4.png/revision/latest?cb=20240123110133",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/62/Character_Sushang_Eidolon_5.png/revision/latest?cb=20240123110142",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8c/Character_Sushang_Eidolon_6.png/revision/latest?cb=20240123110150"
+    ],
+    "1207": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/ac/Character_Yukong_Eidolon_1.png/revision/latest?cb=20240123104609",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0a/Character_Yukong_Eidolon_2.png/revision/latest?cb=20240123104617",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/01/Character_Yukong_Eidolon_3.png/revision/latest?cb=20240123104624",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/64/Character_Yukong_Eidolon_4.png/revision/latest?cb=20240123104632",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e8/Character_Yukong_Eidolon_5.png/revision/latest?cb=20240123104639",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/08/Character_Yukong_Eidolon_6.png/revision/latest?cb=20240123104647"
+    ],
+    "1208": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6c/Character_Fu_Xuan_Eidolon_1.png/revision/latest?cb=20240123104411",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5e/Character_Fu_Xuan_Eidolon_2.png/revision/latest?cb=20240123104420",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0f/Character_Fu_Xuan_Eidolon_3.png/revision/latest?cb=20240123104428",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/20/Character_Fu_Xuan_Eidolon_4.png/revision/latest?cb=20240123104437",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d9/Character_Fu_Xuan_Eidolon_5.png/revision/latest?cb=20240123104445",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/54/Character_Fu_Xuan_Eidolon_6.png/revision/latest?cb=20240123104453"
+    ],
+    "1209": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2f/Character_Yanqing_Eidolon_1.png/revision/latest?cb=20240123102725",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/98/Character_Yanqing_Eidolon_2.png/revision/latest?cb=20240123102733",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e8/Character_Yanqing_Eidolon_3.png/revision/latest?cb=20240123102740",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fb/Character_Yanqing_Eidolon_4.png/revision/latest?cb=20240123102747",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8d/Character_Yanqing_Eidolon_5.png/revision/latest?cb=20240123102755",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0e/Character_Yanqing_Eidolon_6.png/revision/latest?cb=20240123102802"
+    ],
+    "1210": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b7/Character_Guinaifen_Eidolon_1.png/revision/latest?cb=20240123102559",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2d/Character_Guinaifen_Eidolon_2.png/revision/latest?cb=20240123102548",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4a/Character_Guinaifen_Eidolon_3.png/revision/latest?cb=20240123102550",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/09/Character_Guinaifen_Eidolon_4.png/revision/latest?cb=20240123102552",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/47/Character_Guinaifen_Eidolon_5.png/revision/latest?cb=20240123102554",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e8/Character_Guinaifen_Eidolon_6.png/revision/latest?cb=20240123102556"
+    ],
+    "1211": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/64/Character_Bailu_Eidolon_1.png/revision/latest?cb=20240123102231",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5d/Character_Bailu_Eidolon_2.png/revision/latest?cb=20240123102240",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7b/Character_Bailu_Eidolon_3.png/revision/latest?cb=20240123102249",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/84/Character_Bailu_Eidolon_4.png/revision/latest?cb=20240123102258",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bb/Character_Bailu_Eidolon_5.png/revision/latest?cb=20240123102307",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/83/Character_Bailu_Eidolon_6.png/revision/latest?cb=20240123102314"
+    ],
+    "1212": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2c/Character_Jingliu_Eidolon_1.png/revision/latest?cb=20240123101748",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4a/Character_Jingliu_Eidolon_2.png/revision/latest?cb=20240123101750",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6a/Character_Jingliu_Eidolon_3.png/revision/latest?cb=20240123101752",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a8/Character_Jingliu_Eidolon_4.png/revision/latest?cb=20240123101755",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fc/Character_Jingliu_Eidolon_5.png/revision/latest?cb=20240123101757",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a8/Character_Jingliu_Eidolon_6.png/revision/latest?cb=20240123101758"
+    ],
+    "1213": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/92/Character_Dan_Heng_%E2%80%A2_Imbibitor_Lunae_Eidolon_1.png/revision/latest?cb=20240123101605",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6d/Character_Dan_Heng_%E2%80%A2_Imbibitor_Lunae_Eidolon_2.png/revision/latest?cb=20240123101614",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cd/Character_Dan_Heng_%E2%80%A2_Imbibitor_Lunae_Eidolon_3.png/revision/latest?cb=20240123101622",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/da/Character_Dan_Heng_%E2%80%A2_Imbibitor_Lunae_Eidolon_4.png/revision/latest?cb=20240123101630",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8a/Character_Dan_Heng_%E2%80%A2_Imbibitor_Lunae_Eidolon_5.png/revision/latest?cb=20240123101639",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e2/Character_Dan_Heng_%E2%80%A2_Imbibitor_Lunae_Eidolon_6.png/revision/latest?cb=20240123101647"
+    ],
+    "1214": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7f/Character_Xueyi_Eidolon_1.png/revision/latest?cb=20240123100709",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cf/Character_Xueyi_Eidolon_2.png/revision/latest?cb=20240123100711",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7a/Character_Xueyi_Eidolon_3.png/revision/latest?cb=20240123100713",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7f/Character_Xueyi_Eidolon_4.png/revision/latest?cb=20240123100715",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/21/Character_Xueyi_Eidolon_5.png/revision/latest?cb=20240123100717",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f3/Character_Xueyi_Eidolon_6.png/revision/latest?cb=20240123100719"
+    ],
+    "1215": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d2/Character_Hanya_Eidolon_1.png/revision/latest?cb=20240123100555",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/72/Character_Hanya_Eidolon_2.png/revision/latest?cb=20240123100557",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0a/Character_Hanya_Eidolon_3.png/revision/latest?cb=20240123100559",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8a/Character_Hanya_Eidolon_4.png/revision/latest?cb=20240123100602",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c7/Character_Hanya_Eidolon_5.png/revision/latest?cb=20240123100604",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/30/Character_Hanya_Eidolon_6.png/revision/latest?cb=20240123100606"
+    ],
+    "1217": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fb/Character_Huohuo_Eidolon_1.png/revision/latest?cb=20240123100223",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8e/Character_Huohuo_Eidolon_2.png/revision/latest?cb=20240123100225",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9b/Character_Huohuo_Eidolon_3.png/revision/latest?cb=20240123100227",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9c/Character_Huohuo_Eidolon_4.png/revision/latest?cb=20240123100229",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7a/Character_Huohuo_Eidolon_5.png/revision/latest?cb=20240123100231",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/79/Character_Huohuo_Eidolon_6.png/revision/latest?cb=20240123100233"
+    ],
+    "1218": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/39/Character_Jiaoqiu_Eidolon_1.png/revision/latest?cb=20240822205816",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f5/Character_Jiaoqiu_Eidolon_2.png/revision/latest?cb=20240822205844",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/17/Character_Jiaoqiu_Eidolon_3.png/revision/latest?cb=20240822205910",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e3/Character_Jiaoqiu_Eidolon_4.png/revision/latest?cb=20240822205953",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0f/Character_Jiaoqiu_Eidolon_5.png/revision/latest?cb=20240822210102",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f6/Character_Jiaoqiu_Eidolon_6.png/revision/latest?cb=20240822210130"
+    ],
+    "1220": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/71/Character_Feixiao_Eidolon_1.png/revision/latest?cb=20240904082150",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/48/Character_Feixiao_Eidolon_2.png/revision/latest?cb=20240904082223",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/16/Character_Feixiao_Eidolon_3.png/revision/latest?cb=20240904082303",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Feixiao_Eidolon_4.png/revision/latest?cb=20240904082335",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/83/Character_Feixiao_Eidolon_5.png/revision/latest?cb=20240904082407",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/be/Character_Feixiao_Eidolon_6.png/revision/latest?cb=20240904082430"
+    ],
+    "1221": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/01/Character_Yunli_Eidolon_1.png/revision/latest?cb=20240805130522",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3f/Character_Yunli_Eidolon_2.png/revision/latest?cb=20240805130554",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/57/Character_Yunli_Eidolon_3.png/revision/latest?cb=20240805132926",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/02/Character_Yunli_Eidolon_4.png/revision/latest?cb=20240805132948",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/33/Character_Yunli_Eidolon_5.png/revision/latest?cb=20240805133050",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/da/Character_Yunli_Eidolon_6.png/revision/latest?cb=20240805133135"
+    ],
+    "1222": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7a/Character_Lingsha_Eidolon_1.png/revision/latest?cb=20240930162216",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7c/Character_Lingsha_Eidolon_2.png/revision/latest?cb=20240930162306",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5b/Character_Lingsha_Eidolon_3.png/revision/latest?cb=20240930162343",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ea/Character_Lingsha_Eidolon_4.png/revision/latest?cb=20240930162419",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c1/Character_Lingsha_Eidolon_5.png/revision/latest?cb=20240930162442",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c4/Character_Lingsha_Eidolon_6.png/revision/latest?cb=20240930162505"
+    ],
+    "1223": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/35/Character_Moze_Eidolon_1.png/revision/latest?cb=20240904082517",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1b/Character_Moze_Eidolon_2.png/revision/latest?cb=20240904082545",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fd/Character_Moze_Eidolon_3.png/revision/latest?cb=20240904082608",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8d/Character_Moze_Eidolon_4.png/revision/latest?cb=20240904082644",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e9/Character_Moze_Eidolon_5.png/revision/latest?cb=20240904082716",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/30/Character_Moze_Eidolon_6.png/revision/latest?cb=20240904082739"
+    ],
+    "1224": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a4/Character_March_7th_%28The_Hunt%29_Eidolon_1.png/revision/latest?cb=20240810042238",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e1/Character_March_7th_%28The_Hunt%29_Eidolon_2.png/revision/latest?cb=20240810042303",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6a/Character_March_7th_%28The_Hunt%29_Eidolon_3.png/revision/latest?cb=20240810042342",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3c/Character_March_7th_%28The_Hunt%29_Eidolon_4.png/revision/latest?cb=20240810042352",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b7/Character_March_7th_%28The_Hunt%29_Eidolon_5.png/revision/latest?cb=20240810042402",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_March_7th_%28The_Hunt%29_Eidolon_6.png/revision/latest?cb=20240810042412"
+    ],
+    "1225": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/52/Character_Fugue_Eidolon_1.png/revision/latest?cb=20241225063153",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/82/Character_Fugue_Eidolon_2.png/revision/latest?cb=20241225063224",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/aa/Character_Fugue_Eidolon_3.png/revision/latest?cb=20241225063252",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2b/Character_Fugue_Eidolon_4.png/revision/latest?cb=20241225063319",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/54/Character_Fugue_Eidolon_5.png/revision/latest?cb=20241225063348",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f3/Character_Fugue_Eidolon_6.png/revision/latest?cb=20241225063415"
+    ],
+    "1301": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b9/Character_Gallagher_Eidolon_1.png/revision/latest?cb=20240327022046",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0f/Character_Gallagher_Eidolon_2.png/revision/latest?cb=20240327022047",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/84/Character_Gallagher_Eidolon_3.png/revision/latest?cb=20240327022049",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1a/Character_Gallagher_Eidolon_4.png/revision/latest?cb=20240327022051",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ec/Character_Gallagher_Eidolon_5.png/revision/latest?cb=20240327022052",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/23/Character_Gallagher_Eidolon_6.png/revision/latest?cb=20240327022054"
+    ],
+    "1302": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/45/Character_Argenti_Eidolon_1.png/revision/latest?cb=20240123084926",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/23/Character_Argenti_Eidolon_2.png/revision/latest?cb=20240123085144",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0b/Character_Argenti_Eidolon_3.png/revision/latest?cb=20240123085146",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/08/Character_Argenti_Eidolon_4.png/revision/latest?cb=20240123085147",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/24/Character_Argenti_Eidolon_5.png/revision/latest?cb=20240123085147",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/99/Character_Argenti_Eidolon_6.png/revision/latest?cb=20240123085147"
+    ],
+    "1303": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d5/Character_Ruan_Mei_Eidolon_1.png/revision/latest?cb=20240123101353",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/57/Character_Ruan_Mei_Eidolon_2.png/revision/latest?cb=20240123101355",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/01/Character_Ruan_Mei_Eidolon_3.png/revision/latest?cb=20240123101357",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7a/Character_Ruan_Mei_Eidolon_4.png/revision/latest?cb=20240123101359",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/67/Character_Ruan_Mei_Eidolon_5.png/revision/latest?cb=20240123101401",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1c/Character_Ruan_Mei_Eidolon_6.png/revision/latest?cb=20240123101404"
+    ],
+    "1304": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6b/Character_Aventurine_Eidolon_1.png/revision/latest?cb=20240415153106",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/31/Character_Aventurine_Eidolon_2.png/revision/latest?cb=20240415153103",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/27/Character_Aventurine_Eidolon_3.png/revision/latest?cb=20240415153056",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8c/Character_Aventurine_Eidolon_4.png/revision/latest?cb=20240415153100",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6f/Character_Aventurine_Eidolon_5.png/revision/latest?cb=20240415153053",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a4/Character_Aventurine_Eidolon_6.png/revision/latest?cb=20240415153049"
+    ],
+    "1305": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f5/Character_Dr._Ratio_Eidolon_1.png/revision/latest?cb=20240123101028",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cc/Character_Dr._Ratio_Eidolon_2.png/revision/latest?cb=20240123101119",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/aa/Character_Dr._Ratio_Eidolon_3.png/revision/latest?cb=20240123101121",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/35/Character_Dr._Ratio_Eidolon_4.png/revision/latest?cb=20240123101123",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a7/Character_Dr._Ratio_Eidolon_5.png/revision/latest?cb=20240123101125",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/02/Character_Dr._Ratio_Eidolon_6.png/revision/latest?cb=20240123101127"
+    ],
+    "1306": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a6/Character_Sparkle_Eidolon_1.png/revision/latest?cb=20240302223016",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d4/Character_Sparkle_Eidolon_2.png/revision/latest?cb=20240302223018",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/ad/Character_Sparkle_Eidolon_3.png/revision/latest?cb=20240302223020",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/60/Character_Sparkle_Eidolon_4.png/revision/latest?cb=20240302223022",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_Sparkle_Eidolon_5.png/revision/latest?cb=20240302223023",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e4/Character_Sparkle_Eidolon_6.png/revision/latest?cb=20240302223025"
+    ],
+    "1307": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b8/Character_Black_Swan_Eidolon_1.png/revision/latest?cb=20240206023636",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/eb/Character_Black_Swan_Eidolon_2.png/revision/latest?cb=20240206023638",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/90/Character_Black_Swan_Eidolon_3.png/revision/latest?cb=20240206023640",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c1/Character_Black_Swan_Eidolon_4.png/revision/latest?cb=20240206023642",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e0/Character_Black_Swan_Eidolon_5.png/revision/latest?cb=20240206023644",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4f/Character_Black_Swan_Eidolon_6.png/revision/latest?cb=20240206023646"
+    ],
+    "1308": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/87/Character_Acheron_Eidolon_1.png/revision/latest?cb=20240327022025",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9e/Character_Acheron_Eidolon_2.png/revision/latest?cb=20240327022026",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/88/Character_Acheron_Eidolon_3.png/revision/latest?cb=20240327022028",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e7/Character_Acheron_Eidolon_4.png/revision/latest?cb=20240327022030",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/60/Character_Acheron_Eidolon_5.png/revision/latest?cb=20240327022032",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/34/Character_Acheron_Eidolon_6.png/revision/latest?cb=20240327022036"
+    ],
+    "1309": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8e/Character_Robin_Eidolon_1.png/revision/latest?cb=20240501165608",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2d/Character_Robin_Eidolon_2.png/revision/latest?cb=20240501165909",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/83/Character_Robin_Eidolon_3.png/revision/latest?cb=20240501170037",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b8/Character_Robin_Eidolon_4.png/revision/latest?cb=20240501170048",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5c/Character_Robin_Eidolon_5.png/revision/latest?cb=20240501170055",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/39/Character_Robin_Eidolon_6.png/revision/latest?cb=20240501170101"
+    ],
+    "1310": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/15/Character_Firefly_Eidolon_1.png/revision/latest?cb=20240612174719",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d9/Character_Firefly_Eidolon_2.png/revision/latest?cb=20240612174726",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c4/Character_Firefly_Eidolon_3.png/revision/latest?cb=20240612174733",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ef/Character_Firefly_Eidolon_4.png/revision/latest?cb=20240612174742",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/74/Character_Firefly_Eidolon_5.png/revision/latest?cb=20240612174750",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c2/Character_Firefly_Eidolon_6.png/revision/latest?cb=20240612174756"
+    ],
+    "1312": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/ae/Character_Misha_Eidolon_1.png/revision/latest?cb=20240206023648",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/62/Character_Misha_Eidolon_2.png/revision/latest?cb=20240206023650",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/10/Character_Misha_Eidolon_3.png/revision/latest?cb=20240206023652",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bb/Character_Misha_Eidolon_4.png/revision/latest?cb=20240206023655",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4e/Character_Misha_Eidolon_5.png/revision/latest?cb=20240206023657",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/14/Character_Misha_Eidolon_6.png/revision/latest?cb=20240206023659"
+    ],
+    "1313": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9f/Character_Sunday_Eidolon_1.png/revision/latest?cb=20241127062309",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/52/Character_Sunday_Eidolon_2.png/revision/latest?cb=20241127062332",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/03/Character_Sunday_Eidolon_3.png/revision/latest?cb=20241127062355",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/19/Character_Sunday_Eidolon_4.png/revision/latest?cb=20241127062429",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5b/Character_Sunday_Eidolon_5.png/revision/latest?cb=20241127062457",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/37/Character_Sunday_Eidolon_6.png/revision/latest?cb=20241127062522"
+    ],
+    "1314": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/de/Character_Jade_Eidolon_1.png/revision/latest?cb=20240706171701",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f8/Character_Jade_Eidolon_2.png/revision/latest?cb=20240706171754",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0c/Character_Jade_Eidolon_3.png/revision/latest?cb=20240706171819",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/dc/Character_Jade_Eidolon_4.png/revision/latest?cb=20240706171852",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9b/Character_Jade_Eidolon_5.png/revision/latest?cb=20240706171924",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/ba/Character_Jade_Eidolon_6.png/revision/latest?cb=20240706171955"
+    ],
+    "1315": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/19/Character_Boothill_Eidolon_1.png/revision/latest?cb=20240523185105",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8e/Character_Boothill_Eidolon_2.png/revision/latest?cb=20240523185113",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/75/Character_Boothill_Eidolon_3.png/revision/latest?cb=20240523185120",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6d/Character_Boothill_Eidolon_4.png/revision/latest?cb=20240523185132",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b5/Character_Boothill_Eidolon_5.png/revision/latest?cb=20240523185140",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6d/Character_Boothill_Eidolon_6.png/revision/latest?cb=20240523185149"
+    ],
+    "1317": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d7/Character_Rappa_Eidolon_1.png/revision/latest?cb=20241016145605",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f6/Character_Rappa_Eidolon_2.png/revision/latest?cb=20241016145636",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a6/Character_Rappa_Eidolon_3.png/revision/latest?cb=20241016145701",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9f/Character_Rappa_Eidolon_4.png/revision/latest?cb=20241016145728",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/43/Character_Rappa_Eidolon_5.png/revision/latest?cb=20241016145758",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/97/Character_Rappa_Eidolon_6.png/revision/latest?cb=20241016145823"
+    ],
+    "1321": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cc/Character_The_Dahlia_Eidolon_1.png/revision/latest?cb=20251210144723",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c6/Character_The_Dahlia_Eidolon_2.png/revision/latest?cb=20251210144730",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5d/Character_The_Dahlia_Eidolon_3.png/revision/latest?cb=20251210144735",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cb/Character_The_Dahlia_Eidolon_4.png/revision/latest?cb=20251210144746",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ee/Character_The_Dahlia_Eidolon_5.png/revision/latest?cb=20251210144750",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0d/Character_The_Dahlia_Eidolon_6.png/revision/latest?cb=20251210144750"
+    ],
+    "1401": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/19/Character_The_Herta_Eidolon_1.png/revision/latest?cb=20250115080143",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/03/Character_The_Herta_Eidolon_2.png/revision/latest?cb=20250115080217",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9b/Character_The_Herta_Eidolon_3.png/revision/latest?cb=20250115080258",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/19/Character_The_Herta_Eidolon_4.png/revision/latest?cb=20250115080334",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/55/Character_The_Herta_Eidolon_5.png/revision/latest?cb=20250115080411",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d6/Character_The_Herta_Eidolon_6.png/revision/latest?cb=20250115080437"
+    ],
+    "1402": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/53/Character_Aglaea_Eidolon_1.png/revision/latest?cb=20250205043825",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bf/Character_Aglaea_Eidolon_2.png/revision/latest?cb=20250205043856",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/59/Character_Aglaea_Eidolon_3.png/revision/latest?cb=20250205043921",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/02/Character_Aglaea_Eidolon_4.png/revision/latest?cb=20250205043946",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6e/Character_Aglaea_Eidolon_5.png/revision/latest?cb=20250205044011",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/14/Character_Aglaea_Eidolon_6.png/revision/latest?cb=20250205044038"
+    ],
+    "1403": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c2/Character_Tribbie_Eidolon_1.png/revision/latest?cb=20250226135359",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/04/Character_Tribbie_Eidolon_2.png/revision/latest?cb=20250226135427",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e6/Character_Tribbie_Eidolon_3.png/revision/latest?cb=20250226135455",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ef/Character_Tribbie_Eidolon_4.png/revision/latest?cb=20250226135520",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/32/Character_Tribbie_Eidolon_5.png/revision/latest?cb=20250226135551",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a3/Character_Tribbie_Eidolon_6.png/revision/latest?cb=20250226135619"
+    ],
+    "1404": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c2/Character_Mydei_Eidolon_1.png/revision/latest?cb=20250319082159",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2c/Character_Mydei_Eidolon_2.png/revision/latest?cb=20250319082304",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a8/Character_Mydei_Eidolon_3.png/revision/latest?cb=20250319082435",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/13/Character_Mydei_Eidolon_4.png/revision/latest?cb=20250319082532",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/99/Character_Mydei_Eidolon_5.png/revision/latest?cb=20250319082610",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1b/Character_Mydei_Eidolon_6.png/revision/latest?cb=20250319082638"
+    ],
+    "1405": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0c/Character_Anaxa_Eidolon_1.png/revision/latest?cb=20250426232048",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3c/Character_Anaxa_Eidolon_2.png/revision/latest?cb=20250426232059",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/74/Character_Anaxa_Eidolon_3.png/revision/latest?cb=20250426232111",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/af/Character_Anaxa_Eidolon_4.png/revision/latest?cb=20250426232123",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5f/Character_Anaxa_Eidolon_5.png/revision/latest?cb=20250426232133",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a5/Character_Anaxa_Eidolon_6.png/revision/latest?cb=20250426232143"
+    ],
+    "1406": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e8/Character_Cipher_Eidolon_1.png/revision/latest?cb=20250606214400",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f2/Character_Cipher_Eidolon_2.png/revision/latest?cb=20250606214413",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/64/Character_Cipher_Eidolon_3.png/revision/latest?cb=20250606214422",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/23/Character_Cipher_Eidolon_4.png/revision/latest?cb=20250606214432",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/88/Character_Cipher_Eidolon_5.png/revision/latest?cb=20250606214442",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/21/Character_Cipher_Eidolon_6.png/revision/latest?cb=20250606214451"
+    ],
+    "1407": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/55/Character_Castorice_Eidolon_1.png/revision/latest?cb=20250402074921",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/20/Character_Castorice_Eidolon_2.png/revision/latest?cb=20250402074851",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/27/Character_Castorice_Eidolon_3.png/revision/latest?cb=20250402075050",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/da/Character_Castorice_Eidolon_4.png/revision/latest?cb=20250402075021",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7c/Character_Castorice_Eidolon_5.png/revision/latest?cb=20250402075035",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3c/Character_Castorice_Eidolon_6.png/revision/latest?cb=20250402074945"
+    ],
+    "1408": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4f/Character_Phainon_Eidolon_1.png/revision/latest?cb=20250626021219",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/ef/Character_Phainon_Eidolon_2.png/revision/latest?cb=20250626021231",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/67/Character_Phainon_Eidolon_3.png/revision/latest?cb=20250626021240",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/14/Character_Phainon_Eidolon_4.png/revision/latest?cb=20250626021250",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fa/Character_Phainon_Eidolon_5.png/revision/latest?cb=20250626021301",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0f/Character_Phainon_Eidolon_6.png/revision/latest?cb=20250626021311"
+    ],
+    "1409": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/39/Character_Hyacine_Eidolon_1.png/revision/latest?cb=20250521031609",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/74/Character_Hyacine_Eidolon_2.png/revision/latest?cb=20250521031617",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a6/Character_Hyacine_Eidolon_3.png/revision/latest?cb=20250521031626",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b8/Character_Hyacine_Eidolon_4.png/revision/latest?cb=20250521031635",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/64/Character_Hyacine_Eidolon_5.png/revision/latest?cb=20250521031644",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4f/Character_Hyacine_Eidolon_6.png/revision/latest?cb=20250521031654"
+    ],
+    "1410": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/ba/Character_Hysilens_Eidolon_1.png/revision/latest?cb=20250807114941",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7c/Character_Hysilens_Eidolon_2.png/revision/latest?cb=20250807114950",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1f/Character_Hysilens_Eidolon_3.png/revision/latest?cb=20250807115002",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cc/Character_Hysilens_Eidolon_4.png/revision/latest?cb=20250807115010",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f3/Character_Hysilens_Eidolon_5.png/revision/latest?cb=20250807115020",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b5/Character_Hysilens_Eidolon_6.png/revision/latest?cb=20250807115030"
+    ],
+    "1412": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2f/Character_Cerydra_Eidolon_1.png/revision/latest?cb=20250827204520",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/34/Character_Cerydra_Eidolon_2.png/revision/latest?cb=20250827204531",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fc/Character_Cerydra_Eidolon_3.png/revision/latest?cb=20250827204539",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e0/Character_Cerydra_Eidolon_4.png/revision/latest?cb=20250827204549",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bc/Character_Cerydra_Eidolon_5.png/revision/latest?cb=20250827204558",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e2/Character_Cerydra_Eidolon_6.png/revision/latest?cb=20250827204607"
+    ],
+    "1413": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2d/Character_Evernight_Eidolon_1.png/revision/latest?cb=20250917130222",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/9b/Character_Evernight_Eidolon_2.png/revision/latest?cb=20250917130240",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6e/Character_Evernight_Eidolon_3.png/revision/latest?cb=20250917130251",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/dd/Character_Evernight_Eidolon_4.png/revision/latest?cb=20250917130301",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/97/Character_Evernight_Eidolon_5.png/revision/latest?cb=20250917130313",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/53/Character_Evernight_Eidolon_6.png/revision/latest?cb=20250917130324"
+    ],
+    "1414": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/3a/Character_Dan_Heng_%E2%80%A2_Permansor_Terrae_Eidolon_1.png/revision/latest?cb=20251008130505",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4c/Character_Dan_Heng_%E2%80%A2_Permansor_Terrae_Eidolon_2.png/revision/latest?cb=20251008130514",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bf/Character_Dan_Heng_%E2%80%A2_Permansor_Terrae_Eidolon_3.png/revision/latest?cb=20251008130524",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/24/Character_Dan_Heng_%E2%80%A2_Permansor_Terrae_Eidolon_4.png/revision/latest?cb=20251008130536",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8b/Character_Dan_Heng_%E2%80%A2_Permansor_Terrae_Eidolon_5.png/revision/latest?cb=20251008130545",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5d/Character_Dan_Heng_%E2%80%A2_Permansor_Terrae_Eidolon_6.png/revision/latest?cb=20251008130557"
+    ],
+    "1415": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/86/Character_Cyrene_Eidolon_1.png/revision/latest?cb=20251029074616",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/60/Character_Cyrene_Eidolon_2.png/revision/latest?cb=20251029074631",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/72/Character_Cyrene_Eidolon_3.png/revision/latest?cb=20251029074641",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8f/Character_Cyrene_Eidolon_4.png/revision/latest?cb=20251029074650",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/21/Character_Cyrene_Eidolon_5.png/revision/latest?cb=20251029074659",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fa/Character_Cyrene_Eidolon_6.png/revision/latest?cb=20251029074709"
+    ],
+    "1501": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/06/Character_Sparxie_Eidolon_1.png/revision/latest?cb=20260208092217",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/31/Character_Sparxie_Eidolon_2.png/revision/latest?cb=20260208092213",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f1/Character_Sparxie_Eidolon_3.png/revision/latest?cb=20260208092207",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fd/Character_Sparxie_Eidolon_4.png/revision/latest?cb=20260208092159",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7c/Character_Sparxie_Eidolon_5.png/revision/latest?cb=20260208092150",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c1/Character_Sparxie_Eidolon_6.png/revision/latest?cb=20260208092142"
+    ],
+    "1502": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/dc/Character_Yao_Guang_Eidolon_1.png/revision/latest?cb=20260208092258",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fa/Character_Yao_Guang_Eidolon_2.png/revision/latest?cb=20260208092251",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/aa/Character_Yao_Guang_Eidolon_3.png/revision/latest?cb=20260208092243",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/49/Character_Yao_Guang_Eidolon_4.png/revision/latest?cb=20260208092235",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c6/Character_Yao_Guang_Eidolon_5.png/revision/latest?cb=20260208092229",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_Yao_Guang_Eidolon_6.png/revision/latest?cb=20260208092222"
+    ],
+    "1503": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2d/Character_Pearl_Eidolon_1.png/revision/latest?cb=20260922160529",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0c/Character_Pearl_Eidolon_2.png/revision/latest?cb=20260922160540",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e9/Character_Pearl_Eidolon_3.png/revision/latest?cb=20260922160550",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/08/Character_Pearl_Eidolon_4.png/revision/latest?cb=20260922160602",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/86/Character_Pearl_Eidolon_5.png/revision/latest?cb=20260922160615",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/2c/Character_Pearl_Eidolon_6.png/revision/latest?cb=20260922160627"
+    ],
+    "1504": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cd/Character_Ashveil_Eidolon_1.png/revision/latest?cb=20260325080813",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e8/Character_Ashveil_Eidolon_2.png/revision/latest?cb=20260325080631",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/38/Character_Ashveil_Eidolon_3.png/revision/latest?cb=20260325080652",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e1/Character_Ashveil_Eidolon_4.png/revision/latest?cb=20260325080646",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/29/Character_Ashveil_Eidolon_5.png/revision/latest?cb=20260325080641",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/10/Character_Ashveil_Eidolon_6.png/revision/latest?cb=20260325080637"
+    ],
+    "1505": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/cd/Character_Evanescia_Eidolon_1.png/revision/latest?cb=20260506095722",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6d/Character_Evanescia_Eidolon_2.png/revision/latest?cb=20260506095950",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/85/Character_Evanescia_Eidolon_3.png/revision/latest?cb=20260506095933",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b9/Character_Evanescia_Eidolon_4.png/revision/latest?cb=20260506095937",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/21/Character_Evanescia_Eidolon_5.png/revision/latest?cb=20260506095940",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/c/c3/Character_Evanescia_Eidolon_6.png/revision/latest?cb=20260506095946"
+    ],
+    "1506": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4e/Character_Silver_Wolf_LV.999_Eidolon_1.png/revision/latest?cb=20260415052044",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/56/Character_Silver_Wolf_LV.999_Eidolon_2.png/revision/latest?cb=20260415052029",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/30/Character_Silver_Wolf_LV.999_Eidolon_3.png/revision/latest?cb=20260415052013",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/51/Character_Silver_Wolf_LV.999_Eidolon_4.png/revision/latest?cb=20260415052007",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/41/Character_Silver_Wolf_LV.999_Eidolon_5.png/revision/latest?cb=20260415051959",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/65/Character_Silver_Wolf_LV.999_Eidolon_6.png/revision/latest?cb=20260415051952"
+    ],
+    "1507": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/7c/Character_Mortenax_Blade_Eidolon_1.png/revision/latest?cb=20260601030031",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/97/Character_Mortenax_Blade_Eidolon_2.png/revision/latest?cb=20260601030106",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/91/Character_Mortenax_Blade_Eidolon_3.png/revision/latest?cb=20260601030206",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/fb/Character_Mortenax_Blade_Eidolon_4.png/revision/latest?cb=20260601030226",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/46/Character_Mortenax_Blade_Eidolon_5.png/revision/latest?cb=20260601030259",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e8/Character_Mortenax_Blade_Eidolon_6.png/revision/latest?cb=20260601030401"
+    ],
+    "1508": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/4e/Character_Rin_Tohsaka_Eidolon_1.png/revision/latest?cb=20260723223122",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a4/Character_Rin_Tohsaka_Eidolon_2.png/revision/latest?cb=20260723223116",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/e/e3/Character_Rin_Tohsaka_Eidolon_3.png/revision/latest?cb=20260723223112",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/66/Character_Rin_Tohsaka_Eidolon_4.png/revision/latest?cb=20260723223109",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/82/Character_Rin_Tohsaka_Eidolon_5.png/revision/latest?cb=20260723223105",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/1f/Character_Rin_Tohsaka_Eidolon_6.png/revision/latest?cb=20260723223102"
+    ],
+    "1509": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/6f/Character_Gilgamesh_Eidolon_1.png/revision/latest?cb=20260723223151",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/61/Character_Gilgamesh_Eidolon_2.png/revision/latest?cb=20260723223145",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/f/f1/Character_Gilgamesh_Eidolon_3.png/revision/latest?cb=20260723223143",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_Gilgamesh_Eidolon_4.png/revision/latest?cb=20260723223139",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/47/Character_Gilgamesh_Eidolon_5.png/revision/latest?cb=20260723223133",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/d4/Character_Gilgamesh_Eidolon_6.png/revision/latest?cb=20260723223127"
+    ],
+    "1510": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/0f/Character_Himeko_%E2%80%A2_Nova_Eidolon_1.png/revision/latest?cb=20260714234140",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/0/00/Character_Himeko_%E2%80%A2_Nova_Eidolon_2.png/revision/latest?cb=20260714234135",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/a8/Character_Himeko_%E2%80%A2_Nova_Eidolon_3.png/revision/latest?cb=20260714234130",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/39/Character_Himeko_%E2%80%A2_Nova_Eidolon_4.png/revision/latest?cb=20260714234124",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/a/ad/Character_Himeko_%E2%80%A2_Nova_Eidolon_5.png/revision/latest?cb=20260714234118",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/98/Character_Himeko_%E2%80%A2_Nova_Eidolon_6.png/revision/latest?cb=20260714234112"
+    ],
+    "1512": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/61/Character_Robin_%E2%80%A2_Summeretto_Eidolon_1.png/revision/latest?cb=20260819083052",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/5d/Character_Robin_%E2%80%A2_Summeretto_Eidolon_2.png/revision/latest?cb=20260819083104",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8e/Character_Robin_%E2%80%A2_Summeretto_Eidolon_3.png/revision/latest?cb=20260819083115",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/23/Character_Robin_%E2%80%A2_Summeretto_Eidolon_4.png/revision/latest?cb=20260819083130",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Robin_%E2%80%A2_Summeretto_Eidolon_5.png/revision/latest?cb=20260819083140",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/68/Character_Robin_%E2%80%A2_Summeretto_Eidolon_6.png/revision/latest?cb=20260819083152"
+    ],
+    "1513": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b6/Character_Aventurine_%E2%80%A2_Waveflair_Eidolon_1.png/revision/latest?cb=20260912040436",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/1/11/Character_Aventurine_%E2%80%A2_Waveflair_Eidolon_2.png/revision/latest?cb=20260912040450",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/66/Character_Aventurine_%E2%80%A2_Waveflair_Eidolon_3.png/revision/latest?cb=20260912040501",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/92/Character_Aventurine_%E2%80%A2_Waveflair_Eidolon_4.png/revision/latest?cb=20260912040510",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/8/8c/Character_Aventurine_%E2%80%A2_Waveflair_Eidolon_5.png/revision/latest?cb=20260912040520",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/6/68/Character_Aventurine_%E2%80%A2_Waveflair_Eidolon_6.png/revision/latest?cb=20260912040533"
+    ],
+    "8001": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b6/Character_Trailblazer_Male_Eidolon_1.png/revision/latest?cb=20240123200712",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_2.png/revision/latest?cb=20240123200714",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/73/Character_Trailblazer_Male_Eidolon_3.png/revision/latest?cb=20240123200716",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_4.png/revision/latest?cb=20240123200717",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/20/Character_Trailblazer_Male_Eidolon_5.png/revision/latest?cb=20240123200719",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/37/Character_Trailblazer_Male_Eidolon_6.png/revision/latest?cb=20240123200721"
+    ],
+    "8002": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/51/Character_Trailblazer_Female_Eidolon_1.png/revision/latest?cb=20240123200531",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/41/Character_Trailblazer_Female_Eidolon_2.png/revision/latest?cb=20240123200532",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bc/Character_Trailblazer_Female_Eidolon_3.png/revision/latest?cb=20240123200534",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Trailblazer_Female_Eidolon_4.png/revision/latest?cb=20240123200536",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_Trailblazer_Female_Eidolon_5.png/revision/latest?cb=20240123200538",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/db/Character_Trailblazer_Female_Eidolon_6.png/revision/latest?cb=20240123200540"
+    ],
+    "8003": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b6/Character_Trailblazer_Male_Eidolon_1.png/revision/latest?cb=20240123200712",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_2.png/revision/latest?cb=20240123200714",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/73/Character_Trailblazer_Male_Eidolon_3.png/revision/latest?cb=20240123200716",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_4.png/revision/latest?cb=20240123200717",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/20/Character_Trailblazer_Male_Eidolon_5.png/revision/latest?cb=20240123200719",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/37/Character_Trailblazer_Male_Eidolon_6.png/revision/latest?cb=20240123200721"
+    ],
+    "8004": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/51/Character_Trailblazer_Female_Eidolon_1.png/revision/latest?cb=20240123200531",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/41/Character_Trailblazer_Female_Eidolon_2.png/revision/latest?cb=20240123200532",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bc/Character_Trailblazer_Female_Eidolon_3.png/revision/latest?cb=20240123200534",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Trailblazer_Female_Eidolon_4.png/revision/latest?cb=20240123200536",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_Trailblazer_Female_Eidolon_5.png/revision/latest?cb=20240123200538",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/db/Character_Trailblazer_Female_Eidolon_6.png/revision/latest?cb=20240123200540"
+    ],
+    "8005": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b6/Character_Trailblazer_Male_Eidolon_1.png/revision/latest?cb=20240123200712",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_2.png/revision/latest?cb=20240123200714",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/73/Character_Trailblazer_Male_Eidolon_3.png/revision/latest?cb=20240123200716",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_4.png/revision/latest?cb=20240123200717",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/20/Character_Trailblazer_Male_Eidolon_5.png/revision/latest?cb=20240123200719",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/37/Character_Trailblazer_Male_Eidolon_6.png/revision/latest?cb=20240123200721"
+    ],
+    "8006": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/51/Character_Trailblazer_Female_Eidolon_1.png/revision/latest?cb=20240123200531",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/41/Character_Trailblazer_Female_Eidolon_2.png/revision/latest?cb=20240123200532",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bc/Character_Trailblazer_Female_Eidolon_3.png/revision/latest?cb=20240123200534",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Trailblazer_Female_Eidolon_4.png/revision/latest?cb=20240123200536",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_Trailblazer_Female_Eidolon_5.png/revision/latest?cb=20240123200538",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/db/Character_Trailblazer_Female_Eidolon_6.png/revision/latest?cb=20240123200540"
+    ],
+    "8007": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b6/Character_Trailblazer_Male_Eidolon_1.png/revision/latest?cb=20240123200712",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_2.png/revision/latest?cb=20240123200714",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/73/Character_Trailblazer_Male_Eidolon_3.png/revision/latest?cb=20240123200716",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_4.png/revision/latest?cb=20240123200717",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/20/Character_Trailblazer_Male_Eidolon_5.png/revision/latest?cb=20240123200719",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/37/Character_Trailblazer_Male_Eidolon_6.png/revision/latest?cb=20240123200721"
+    ],
+    "8008": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/51/Character_Trailblazer_Female_Eidolon_1.png/revision/latest?cb=20240123200531",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/41/Character_Trailblazer_Female_Eidolon_2.png/revision/latest?cb=20240123200532",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bc/Character_Trailblazer_Female_Eidolon_3.png/revision/latest?cb=20240123200534",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Trailblazer_Female_Eidolon_4.png/revision/latest?cb=20240123200536",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_Trailblazer_Female_Eidolon_5.png/revision/latest?cb=20240123200538",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/db/Character_Trailblazer_Female_Eidolon_6.png/revision/latest?cb=20240123200540"
+    ],
+    "8009": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b6/Character_Trailblazer_Male_Eidolon_1.png/revision/latest?cb=20240123200712",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_2.png/revision/latest?cb=20240123200714",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/7/73/Character_Trailblazer_Male_Eidolon_3.png/revision/latest?cb=20240123200716",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/9/96/Character_Trailblazer_Male_Eidolon_4.png/revision/latest?cb=20240123200717",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/20/Character_Trailblazer_Male_Eidolon_5.png/revision/latest?cb=20240123200719",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/3/37/Character_Trailblazer_Male_Eidolon_6.png/revision/latest?cb=20240123200721"
+    ],
+    "8010": [
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/5/51/Character_Trailblazer_Female_Eidolon_1.png/revision/latest?cb=20240123200531",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/4/41/Character_Trailblazer_Female_Eidolon_2.png/revision/latest?cb=20240123200532",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/bc/Character_Trailblazer_Female_Eidolon_3.png/revision/latest?cb=20240123200534",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/2/26/Character_Trailblazer_Female_Eidolon_4.png/revision/latest?cb=20240123200536",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/b/b4/Character_Trailblazer_Female_Eidolon_5.png/revision/latest?cb=20240123200538",
+      "https://static.wikia.nocookie.net/houkai-star-rail/images/d/db/Character_Trailblazer_Female_Eidolon_6.png/revision/latest?cb=20240123200540"
+    ]
+  }
+}
