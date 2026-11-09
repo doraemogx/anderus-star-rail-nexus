@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/sync_game.py'
+      - 'scripts/sync_eidolon_art.py'
       - '.github/workflows/sync-content.yml'
 permissions:
   contents: write
@@ -25,11 +26,13 @@ jobs:
           python-version: '3.12'
       - name: Verificar personagens habilidades e Eidolons
         run: python scripts/sync_game.py
+      - name: Atualizar todas as artes reais dos Eidolons
+        run: python scripts/sync_eidolon_art.py
       - name: Salvar snapshot e publicar
         run: |
           git config user.name "Anderus Catalog Bot"
           git config user.email "catalog-bot@users.noreply.github.com"
-          git add data/live-game.json
+          git add data/live-game.json data/eidolon-art.json
           if ! git diff --cached --quiet; then
             git commit -m "Atualiza catalogo do Pom-Pom [bot]"
             git push origin HEAD:main
