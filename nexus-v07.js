@@ -5,6 +5,22 @@ const OFFICIAL_POMPOM='./assets/official/pompom-hoyoverse.jpg';
 const AHA_ART='https://i.gachabase.net/mZQZSbIAQyJXbDElL_RE2AwSR7C4X0pOBxgQ3ybCNnA/q%3A50/f%3Awebp/plain/hsr/assets/f8b5630e85022ab8b2761e4e3f614b42.png';
 const AHA_FALLBACK='./assets/official/aha-4-7-promo.jpg';
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+let installPromptEvent=null;
+window.addEventListener('beforeinstallprompt',event=>{
+ event.preventDefault();installPromptEvent=event;
+ const button=document.getElementById('v07-install-btn');if(button)button.textContent='Instalar aplicativo ↗';
+});
+window.v07Install=async function(){
+ if(installPromptEvent){
+   const prompt=installPromptEvent;installPromptEvent=null;
+   prompt.prompt();
+   try{await prompt.userChoice;}catch(_){}
+   return;
+ }
+ const instructions='Para instalar o Nexus no Android, abra este endereço diretamente no Chrome (não na janela interna do ChatGPT), toque no menu ⋮ e selecione Instalar aplicativo ou Adicionar à tela inicial. Se a opção não aparecer, atualize a página.';
+ if(typeof showModal==='function')showModal('Instalar o Nexus no celular','<div style="padding:20px;line-height:1.65">'+instructions+'</div>');
+ else window.alert(instructions);
+};
 let betaCache;
 const betaData=()=>betaCache||(betaCache=fetch('./data/beta-editorial.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Catálogo beta indisponível');return r.json();}));
 function specialText(root){
@@ -40,6 +56,12 @@ function enhancePage(){
  specialText(document.getElementById('floatMenu'));
  specialText(document.querySelector('#bottomNav'));
  specialText(document.querySelector('#stage'));
+ const actions=document.querySelector('.v06-home .v06-hero-buttons');
+ if(actions&&!document.getElementById('v07-install-btn')){
+   const install=document.createElement('button');install.id='v07-install-btn';install.type='button';
+   install.className='v07-install';install.textContent='Instalar Nexus ↗';
+   install.addEventListener('click',window.v07Install);actions.appendChild(install);
+ }
  const theme=document.querySelector('.v06-themes');
  if(theme&&!theme.querySelector('.v07-exclusive-card')){
    const card=document.createElement('section');card.className='v07-exclusive-card';
