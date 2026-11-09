@@ -155,6 +155,14 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Warp Math loads first; the planner uses the same sourced rules.
+ if(!document.getElementById('nexus-warp-css')){
+  const style=document.createElement('link');style.id='nexus-warp-css';style.rel='stylesheet';style.href='./nexus-warp-advisor.css';document.head.appendChild(style);
+ }
+ if(!document.getElementById('nexus-warp-math-js')){
+  const math=document.createElement('script');math.id='nexus-warp-math-js';math.src='./nexus-warp-math.js';math.async=false;document.head.appendChild(math);
+  const ui=document.createElement('script');ui.id='nexus-warp-advisor-js';ui.src='./nexus-warp-advisor.js';ui.async=false;document.head.appendChild(ui);
+ }
  // Keep the cinematic Aha variant coherent even inside dialogs attached to body.
  if(!document.getElementById('nexus-theme-overlays-css')){
   const css=document.createElement('link');css.id='nexus-theme-overlays-css';css.rel='stylesheet';css.href='./nexus-theme-overlays.css';document.head.appendChild(css);
