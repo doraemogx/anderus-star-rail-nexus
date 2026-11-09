@@ -130,6 +130,8 @@ try{
   await page.locator('#nexus-search-input').fill('Robin');
   await page.locator('.nexus-search-hit[data-search-type="character"]').first().waitFor({timeout:15000});
   assert.ok(await page.locator('.nexus-search-hit[data-search-type="character"]').count()>0);
+  await page.locator('#nexus-search-input').fill('March 7th');
+  await page.locator('.nexus-search-hit[data-search-type="character"][data-search-id="1001"]').waitFor({timeout:15000});
   await page.locator('#nexus-search-input').fill('Broto Queimado');
   await page.locator('[data-search-category="material"]').click();
   await page.locator('.nexus-search-hit[data-search-type="material"]').first().waitFor({timeout:15000});
