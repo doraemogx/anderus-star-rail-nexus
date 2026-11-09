@@ -188,24 +188,67 @@
   // A local SVG fallback keeps these slots legible without inventing official art.
   const eidoFallback=n=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="21" fill="#1b2434"/><path d="M50 10 60 39 90 50 60 61 50 90 40 61 10 50 40 39Z" fill="none" stroke="#e2c0a0" stroke-width="4"/><text x="50" y="57" font-family="Arial" font-size="22" fill="#e2c0a0" text-anchor="middle">E'+n+'</text></svg>');
+
+  // One PT-BR source of truth for all current AND future playable characters.
+  // gameData.chars comes from the shell; rank descriptions live in the separate
+  // synchronized data/live-game.json bundle, not necessarily in gameData.ranks.
+  let eidolonCatalog=null,eidolonCatalogPromise=null;
   function rankRecord(id,n){
-    const keys=gameData.chars?.[id]?.ranks||[];
-    return gameData.ranks?.[keys[n-1]]||gameData.ranks?.[id+'0'+n]||null;
+    const character=eidolonCatalog?.chars?.[id]||gameData.chars?.[id];
+    const ids=character?.ranks||[];
+    const keys=[ids[n-1],String(id)+'0'+n,String(id)+String(n).padStart(2,'0')].filter(Boolean);
+    for(const key of keys){
+      const record=eidolonCatalog?.ranks?.[key]||gameData.ranks?.[key];
+      if(record?.name||record?.desc)return record;
+    }
+    return null;
+  }
+  function loadEidolonCatalog(){
+    if(eidolonCatalog)return Promise.resolve(eidolonCatalog);
+    if(!eidolonCatalogPromise){
+      eidolonCatalogPromise=fetch('./data/live-game.json',{cache:'no-store'})
+       .then(r=>{if(!r.ok)throw Error('catálogo indisponível ('+r.status+')');return r.json();})
+       .then(data=>{
+         if(!data||!data.chars||!data.ranks)throw Error('catálogo de Eidolons incompleto');
+         eidolonCatalog=data;
+         // Upgrade the already rendered E1-E6 tiles without rebuilding the
+         // whole character screen or losing the user's tab/scroll position.
+         document.querySelectorAll('.v10-eido-tile[data-character][data-eidolon]').forEach(tile=>{
+           const id=tile.dataset.character,n=Number(tile.dataset.eidolon),rank=rankRecord(id,n);
+           if(!rank)return;
+           tile.title=rank.name||'E'+n;
+           tile.setAttribute('aria-label','Abrir E'+n+': '+(rank.name||'Eidolon'));
+           const title=tile.querySelector('small');if(title)title.textContent=rank.name||'Eidolon';
+           const img=tile.querySelector('img');
+           if(img)img.src=eidoArtwork(id,n,rank);
+         });
+         return data;
+       }).catch(error=>{eidolonCatalogPromise=null;throw error;});
+    }
+    return eidolonCatalogPromise;
   }
   const eidoIcon=(rank,n)=>rank?.icon?STR+rank.icon:eidoFallback(n);
+  // Full fragment artwork is preferred. Never substitute another character's
+  // Eidolon for an unavailable asset. Rank icons remain the honest fallback.
+  function eidoArtwork(id,n,rank){
+    const art=EIDO_ART?.[id]?.[n-1];
+    return art||eidoIcon(rank,n);
+  }
   function addEidoStyles(){
     if(document.getElementById('nexus-eido-repair-css'))return;
     const style=document.createElement('style');style.id='nexus-eido-repair-css';
     style.textContent='.v10-eido-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin:18px 0}.v10-eido-tile{min-width:0;border:1px solid rgba(226,192,160,.33);background:rgba(20,27,43,.7);border-radius:14px;padding:7px 3px 8px;color:inherit;display:flex;align-items:center;flex-direction:column;gap:5px;cursor:pointer;position:relative}.v10-eido-tile.owned{border-color:rgba(122,212,181,.7);background:rgba(17,44,45,.66)}.v10-eido-tile img{width:min(100%,64px);height:53px;object-fit:contain;display:block}.v10-eido-tile strong{font-size:12px}.v10-eido-tile small{display:block;font-size:10px;opacity:.78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.v10-eido-modal{display:grid;grid-template-columns:minmax(90px,150px) 1fr;gap:17px;align-items:start}.v10-eido-modal img{width:100%;max-height:230px;object-fit:contain;background:rgba(14,22,39,.5);border:1px solid rgba(226,192,160,.2);border-radius:12px}.v10-eido-modal p{line-height:1.65;white-space:pre-line}.v10-eido-note{font-size:12px;opacity:.8;margin:6px 0 14px}@media(max-width:420px){.v10-eido-grid{gap:4px}.v10-eido-tile{border-radius:10px;padding:6px 1px}.v10-eido-tile img{height:41px}.v10-eido-tile small{display:none}.v10-eido-modal{grid-template-columns:86px 1fr;gap:10px}}';
+    style.textContent += '.v10-eido-detail{display:flex;flex-direction:column;gap:18px;min-width:0}.v10-eido-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px}.v10-eido-toolbar button,.v10-eido-navigation button{border:1px solid rgba(226,192,160,.42);border-radius:12px;background:rgba(20,29,48,.68);color:#f4e2d3;padding:11px 14px;font:inherit;cursor:pointer;min-height:44px}.v10-eido-toolbar span{font-size:12px;letter-spacing:.1em;color:#d9bcae}.v10-eido-art{margin:0;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;min-height:160px}.v10-eido-art img{display:block;width:auto;max-width:100%;height:auto;max-height:min(42vh,390px);object-fit:contain;filter:drop-shadow(0 14px 25px rgba(0,0,0,.18))}.v10-eido-art figcaption{font-size:11px;text-align:center;color:#bcaec4}.v10-eido-content{min-width:0}.v10-eido-eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#dbc6ba}.v10-eido-name{font-size:clamp(21px,5.4vw,30px);font-family:Georgia,serif;line-height:1.22;margin:11px 0 14px}.v10-eido-what{display:inline-block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#c9b7dd}.v10-eido-effect{font-size:clamp(15px,3.8vw,18px);line-height:1.72;white-space:pre-line;overflow-wrap:anywhere;color:#f1e6ea;margin:10px 0 20px}.v10-eido-source{font-size:11px;line-height:1.6;color:#b8aabb}.v10-eido-navigation{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:7px;border-top:1px solid rgba(226,192,160,.22);padding-top:16px}.v10-eido-navigation button:first-child{justify-self:start}.v10-eido-navigation button:last-child{justify-self:end}.v10-eido-navigation .v10-eido-return{background:rgba(80,49,78,.65);font-size:13px}@media(max-width:420px){.v10-eido-detail{gap:14px}.v10-eido-art img{max-height:min(39vh,345px)}.v10-eido-navigation button{padding:10px 8px;font-size:12px}.v10-eido-navigation .v10-eido-return{font-size:11px}}';
     document.head.appendChild(style);
   }
   profileEidolons=function(id,b){
     addEidoStyles();
+    loadEidolonCatalog().catch(error=>console.warn('Catálogo de Eidolons:',error.message));
     const character=gameData.chars?.[id]||{},owned=Number(b?.e||0);
     const tiles=Array.from({length:6},(_,i)=>{
-      const n=i+1,r=rankRecord(id,n),icon=eidoIcon(r,n),fallback=eidoFallback(n);
+      const n=i+1,r=rankRecord(id,n),icon=eidoArtwork(id,n,r),fallback=eidoFallback(n);
       const label=r?.name||'Eidolon ainda não catalogado';
-      return '<button type="button" class="v10-eido-tile '+(b&&n<=owned?'owned':'')+'" title="'+safe(label)+'" onclick="showEido(\''+id+'\','+n+')" aria-label="Abrir E'+n+': '+safe(label)+'"><strong>E'+n+'</strong><img loading="lazy" src="'+safe(icon)+'" alt="Ícone do Eidolon E'+n+'" onerror="this.onerror=null;this.src=\''+fallback+'\'"><small>'+safe(label)+'</small></button>';
+      return '<button type="button" class="v10-eido-tile '+(b&&n<=owned?'owned':'')+'" data-character="'+safe(id)+'" data-eidolon="'+n+'" title="'+safe(label)+'" onclick="showEido(\''+id+'\','+n+')" aria-label="Abrir E'+n+': '+safe(label)+'"><strong>E'+n+'</strong><img loading="lazy" src="'+safe(icon)+'" alt="Ícone do Eidolon E'+n+'" onerror="this.onerror=null;this.src=\''+fallback+'\'"><small>'+safe(label)+'</small></button>';
     }).join('');
     return '<div class="v06-eidolon-intro">'+pomCard('Eidolons verificados por personagem','Os seis Eidolons abaixo usam os registros individuais do catálogo. Os efeitos podem ser abertos para leitura completa; imagens indisponíveis recebem um símbolo legível, não uma imagem quebrada.','EIDOLONS')+'</div>'+
       '<div class="v10-eido-grid">'+tiles+'</div><p class="v10-eido-note">E'+owned+' registrado na sua conta. Toque em cada Eidolon para ver o efeito e a arte disponível.</p>';
@@ -225,13 +268,51 @@
     return base.profileRelics(id,b)+(detail?.length?'<div id="v06-relic-saved">Carregando detalhes do equipamento...</div>':'')+(state.v06Relics?.[id]?.length?'<section class="v06-relic-shots"><h3>Relíquias extraídas do seu print</h3><div>'+state.v06Relics[id].map((src,i)=>'<img loading="lazy" src="'+src+'" alt="Captura da relíquia '+(i+1)+'">').join('')+'</div><p>As imagens estão guardadas neste navegador. Confirme os atributos e o conjunto antes de comparar builds.</p></section>':'')+pomCard('Como priorizar seus subatributos','Um bom conjunto precisa de atributos úteis, velocidade efetiva e sincronização com a equipe. Sem as seis relíquias e os buffs de combate, não existe nota de build definitiva.','RELÍQUIAS');};
 
 
+
+  let eidoModalSequence=0;
+  function eidoModalContent(id,n,rank,loading=false,error=''){
+    const character=eidolonCatalog?.chars?.[id]||gameData.chars?.[id]||lookup(id)||{};
+    const name=rank?.name||'Eidolon '+n;
+    const description=rank?.desc||(loading?'Consultando os efeitos em português no catálogo atualizado…':
+      error?'Não foi possível consultar os efeitos agora. Verifique sua conexão e tente novamente.':
+      'Os efeitos de E'+n+' ainda não foram encontrados no catálogo sincronizado.');
+    const art=eidoArtwork(id,n,rank),fallback=eidoFallback(n);
+    const caption=EIDO_ART?.[id]?.[n-1]?'Arte individual do Eidolon':'Ícone do Eidolon · arte individual indisponível';
+    const change=(n===3||n===5)?'Aprimoramento dos níveis de habilidades, conforme a descrição oficial.':'Efeito do Eidolon no jogo';
+    const previous=n>1?'<button type="button" onclick="showEido(\''+id+'\','+(n-1)+')">← E'+(n-1)+'</button>':'<span></span>';
+    const next=n<6?'<button type="button" onclick="showEido(\''+id+'\','+(n+1)+')">E'+(n+1)+' →</button>':'<span></span>';
+    return '<section class="v10-eido-detail" data-eido-id="'+safe(id)+'" data-eido-level="'+n+'">'+
+      '<div class="v10-eido-toolbar"><button type="button" onclick="closeModal()" aria-label="Voltar para a ficha do personagem">← Voltar à ficha</button><span>E'+n+' / E6</span></div>'+
+      '<figure class="v10-eido-art"><img src="'+safe(art)+'" alt="Eidolon E'+n+' de '+safe(character.name||lookup(id)?.name||'personagem')+'" onerror="this.onerror=null;this.src=\''+fallback+'\'"><figcaption>'+safe(caption)+'</figcaption></figure>'+
+      '<div class="v10-eido-content"><span class="v10-eido-eyebrow">'+safe(character.name&&character.name!=='{NICKNAME}'?character.name:lookup(id)?.name||'Personagem')+' · E'+n+'</span>'+
+      '<h3 class="v10-eido-name">'+safe(name)+'</h3><span class="v10-eido-what">'+safe(change)+'</span>'+
+      '<p class="v10-eido-effect" '+(loading?'aria-live="polite"':'')+'>'+safe(description)+'</p>'+
+      '<p class="v10-eido-source">'+(error?'Não foi possível sincronizar':'Fonte: dados do jogo · PT-BR · catálogo sincronizado')+'</p></div>'+
+      '<nav class="v10-eido-navigation" aria-label="Navegação entre Eidolons">'+previous+
+      '<button type="button" class="v10-eido-return" onclick="closeModal()">← Voltar à ficha</button>'+next+'</nav></section>';
+  }
   showEido=function(id,n){
-    const rank=rankRecord(id,n),c=gameData.chars?.[id]||lookup(id);
-    const name=rank?.name||'Eidolon sem dados publicados';
-    const source=EIDO_ART?.[id]?.[n-1]||eidoIcon(rank,n);
-    const fallback=eidoFallback(n);
-    const desc=rank?.desc||'Este Eidolon ainda não está disponível no catálogo sincronizado. Nenhum efeito foi inventado.';
-    showModal('E'+n+' · '+name,'<div class="v10-eido-modal"><img src="'+safe(source)+'" alt="Imagem do Eidolon E'+n+'" onerror="this.onerror=null;this.src=\''+fallback+'\'"><div><h3>'+safe(c?.name||'Personagem')+'</h3><p>'+safe(desc)+'</p><small>Fonte: catálogo de Eidolons do jogo; imagem ampliada somente quando disponível.</small></div></div>');
+    n=Number(n);
+    if(!id||!Number.isInteger(n)||n<1||n>6)return;
+    addEidoStyles();
+    const sequence=++eidoModalSequence,rank=rankRecord(id,n);
+    showModal('E'+n+' · '+(rank?.name||'Eidolon'),eidoModalContent(id,n,rank,!rank?.desc));
+    // The modal remains visible during sync. Never claim a published effect is
+    // missing until the current PT-BR catalogue has actually been consulted.
+    loadEidolonCatalog().then(()=>{
+      if(sequence!==eidoModalSequence)return;
+      const slot=document.querySelector('.v10-eido-detail[data-eido-id="'+id+'"][data-eido-level="'+n+'"]');
+      if(!slot)return;
+      const updated=rankRecord(id,n);
+      const shell=document.createElement('div');shell.innerHTML=eidoModalContent(id,n,updated);
+      slot.replaceWith(shell.firstElementChild);
+    }).catch(error=>{
+      if(sequence!==eidoModalSequence)return;
+      const slot=document.querySelector('.v10-eido-detail[data-eido-id="'+id+'"][data-eido-level="'+n+'"]');
+      if(!slot)return;
+      const shell=document.createElement('div');shell.innerHTML=eidoModalContent(id,n,rank,false,String(error.message||error));
+      slot.replaceWith(shell.firstElementChild);
+    });
   };
   function v06OpenFuture(){
     showModal('Aeon ★ Aha · 4.7','<div class="v06-future-detail"><div class="v06-banner-art"><img src="'+ahaOfficial+'" alt="Arte de Aeon Aha (Nihilux)"></div><div class="v06-kicker">OFICIAL · VERSÃO 4.7 · 11/11/2026</div><h2>AEON ★ AHA</h2><p>Identidade de Nihilux / Rá. Personagem 5★ de Euforia e elemento Quântico. A versão final do kit entra em vigor com a atualização de 11 de novembro.</p><h3>Mecânicas apresentadas oficialmente</h3><ul><li><strong>Potencialização da Euforia:</strong> fortalece aliados desse Caminho e suas habilidades especiais.</li><li><strong>Instante de Aha:</strong> elemento central das atuações de Euforia.</li><li><strong>Recursos de equipe:</strong> a equipe contribui para a realização de suas habilidades e efeitos especiais.</li><li><strong>Pressão sobre o PV máximo:</strong> efeitos voltados a reduzir os PV máximos dos inimigos.</li></ul><div class="v06-source-note">Resumo do material oficial divulgado em 04/11/2026. A prévia não publica todos os multiplicadores. Números de beta não devem ser tratados como valores finais.</div>'+pomCard('Devo investir?','Se você usa equipes de Euforia, Aha merece avaliação prioritária. Antes de decidir E1/E2 ou cone, compare os ganhos reais com seus recursos e os personagens que já possui.','PRÓXIMO SALTO')+'<button class="v06-primary" onclick="closeModal();route(\'farm\')">Planejar materiais ↗</button></div>');
