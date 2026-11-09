@@ -24,6 +24,7 @@ jobs:
           node --check nexus-v07.js
           node --check nexus-team-lab.js
           node --check nexus-kit-lab.js
+          node --check nexus-search.js
           node --check worker/index.js
       - name: Validar sincronização de dados e rollback
         run: python3 scripts/check-sync-game.py
