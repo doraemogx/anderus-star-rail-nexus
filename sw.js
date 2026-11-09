@@ -1,4 +1,41 @@
-const CACHE='anderus-shell-v14';const CORE=['./','./v06.css','./v06.js','./nexus-v07.css','./nexus-v07.js','./nexus-v09.css','./nexus-v09.js','./manifest.webmanifest','./assets/pwa/icon-192.png'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(()=>{}));self.skipWaiting();});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('anderus-shell-')&&k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==location.origin)return;const u=new URL(e.request.url);if(u.pathname.includes('/data/'))return; if(e.request.mode==='navigate'){e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));}return r;}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./'))));return;}e.respondWith(caches.match(e.request).then(cached=>{const update=fetch(e.request).then(r=>{if(r.ok)caches.open(CACHE).then(c=>c.put(e.request,r.clone()));return r;}).catch(()=>cached);return cached||update;}));});
+/* Nexus PWA v15: predictable updates, offline account/catalogue support. */
+const CACHE='anderus-shell-v15';
+const CORE=[
+ './','./v06.css','./v06.js','./nexus-v07.css','./nexus-v07.js',
+ './nexus-v09.css','./nexus-v09.js','./nexus-account.css','./nexus-account-engine.js',
+ './relic-inspector.js','./relic-auto.js','./illustrated-showcase-import.js',
+ './illustrated-relic-matcher.js','./data/live-game.json',
+ './data/relic-icon-signatures.json','./data/eidolon-art.json',
+ './manifest.webmanifest','./assets/pwa/icon-192.png'
+];
+self.addEventListener('install',event=>{
+ event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(e=>{
+  console.warn('Nexus: partes do catálogo offline indisponíveis',e);
+ }));
+ self.skipWaiting();
+});
+self.addEventListener('activate',event=>{
+ event.waitUntil(caches.keys().then(keys=>Promise.all(
+  keys.filter(k=>k.startsWith('anderus-shell-')&&k!==CACHE).map(k=>caches.delete(k))
+ )));
+ self.clients.claim();
+});
+self.addEventListener('fetch',event=>{
+ const req=event.request;
+ if(req.method!=='GET'||new URL(req.url).origin!==location.origin)return;
+ const url=new URL(req.url),data=url.pathname.includes('/data/');
+ const network=()=>fetch(req).then(response=>{
+  if(response.ok){
+   const copy=response.clone();
+   caches.open(CACHE).then(cache=>cache.put(req,copy)).catch(()=>{});
+  }
+  return response;
+ });
+ if(req.mode==='navigate'||data){
+  // Game content is network-first, but saved catalogue data remain available offline.
+  event.respondWith(network().catch(()=>caches.match(req).then(c=>c||caches.match('./'))));
+  return;
+ }
+ // Script and style assets use the freshly versioned shell cache, then revalidate.
+ event.respondWith(caches.match(req).then(cached=>cached||network()).catch(()=>network()));
+});
