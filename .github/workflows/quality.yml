@@ -47,6 +47,8 @@ jobs:
         run: node scripts/check-warp.mjs
       - name: Metas e custos individuais de rastros
         run: node scripts/check-trace-plan.mjs
+      - name: Relic Optimizer — escalamentos verificáveis
+        run: node scripts/check-relic-optimizer.mjs
       - name: Kit Lab 2.0 — dados, interpolação e imagens
         run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
