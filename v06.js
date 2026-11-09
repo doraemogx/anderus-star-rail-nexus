@@ -5,6 +5,18 @@
     endgame:endgame,radar:radar,themes:themes,settings:settings,render:render,
     applyTheme:applyTheme,showEido:showEido,showSkill:showSkill,showModal:showModal
   };
+  // Reuse the artwork already embedded in v0.5; v0.6 has no broken relative asset paths.
+  const _v06Old = document.createElement('div'); _v06Old.innerHTML = base.home();
+  const _v06OriginalAssets = {};
+  _v06OriginalAssets['caelus-concept'] = _v06Old.querySelector('.astral-character-art img')?.getAttribute('src') || '';
+  _v06OriginalAssets['pompom'] = _v06Old.querySelector('.pom-guide img,.pompom-home .pom-guide img')?.getAttribute('src') || '';
+  for (const k of ['account','build','endgame','farm','warp','beta']){
+    const el = _v06Old.querySelector('.module-tile.tile-'+k+' .module-art');
+    const css = el?.style.backgroundImage || '';
+    const m = css.match(/url\\(["']?(.*)["']?\\)/);
+    _v06OriginalAssets[k] = m ? m[1].replace(/["']$/,'') : '';
+  }
+  const v06Asset=(key)=>_v06OriginalAssets[key] || '';
   const heroOfficial='https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/character_portrait/8001.png';
   const ahaOfficial='https://i.gachabase.net/mZQZSbIAQyJXbDElL_RE2AwSR7C4X0pOBxgQ3ybCNnA/q:50/f:webp/plain/hsr/assets/f8b5630e85022ab8b2761e4e3f614b42.png';
   const safe=s=>esc(s);
@@ -43,10 +55,10 @@
   let uploader={file:null,preview:'',relImages:[],identifiedId:'1503',ocrText:'',eidolon:0,busy:false};
   const pathImage=(id)=>{const c=gameData.chars[id];const path=c?.path||'';return path?'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/'+path+'.png':'';};
   const genCard=(label,value,icon)=>'<div class="v06-metric"><span class="v06-metric-icon">'+icon+'</span><strong>'+safe(value)+'</strong><small>'+safe(label)+'</small></div>';
-  const pomCard=(title,body,meta='CONSELHO DO EXPRESSO')=>'<aside class="v06-pom-tip"><img loading="lazy" src="assets/pompom-face.webp" alt="Pom-Pom" onerror="this.src=\'assets/nexia.webp\'"><div><div class="v06-kicker">✦ '+safe(meta)+'</div><b>'+safe(title)+'</b><p>'+safe(body)+'</p></div></aside>';
+  const pomCard=(title,body,meta='CONSELHO DO EXPRESSO')=>'<aside class="v06-pom-tip"><img loading="lazy" src="'+v06Asset('pompom')+'" alt="Pom-Pom" onerror="this.src=\'assets/nexia.webp\'"><div><div class="v06-kicker">✦ '+safe(meta)+'</div><b>'+safe(title)+'</b><p>'+safe(body)+'</p></div></aside>';
   const subhead=(k,t,p)=>'<header class="v06-pagehead"><span class="v06-kicker">'+safe(k)+'</span><h1>'+safe(t)+'</h1><p>'+safe(p)+'</p></header>';
   const tile=(ico,title,caption,go,kind,index)=>{
-    const art=['assets/module-account.webp','assets/module-build.webp','assets/module-endgame.webp','assets/module-farm.webp','assets/module-warp.webp','assets/module-beta.webp'][index];
+    const art=v06Asset(['account','build','endgame','farm','warp','beta'][index]);
     return '<button class="v06-tile v06-tile-'+kind+'" onclick="'+go+'"><span class="v06-tile-glow"></span><span class="v06-tile-deco">'+(ico.startsWith('image:')?'<img src="'+ico.slice(6)+'" alt="">':ico)+'</span><span class="v06-tile-art" style="background-image:url(\''+art+'\')"></span><strong>'+safe(title)+'</strong><small>'+safe(caption)+'</small><span class="v06-tile-arrow">↗</span></button>';
   };
   function countAccount(){return ownerKeys().reduce((a,id)=>a+Number(state.characters[id]?.e||0),0);}
@@ -58,7 +70,7 @@
     const need=Object.values(state.farm||{}).reduce((a,v)=>a+(Number(v.need)||0),0);
     const have=Object.values(state.farm||{}).reduce((a,v)=>a+Math.min(Number(v.need)||0,Number(v.have)||0),0);
     const progress=need?Math.round(100*have/need):null;
-    const heroArt=isDefault?'assets/caelus-concept.png':(state.v06Art?.[state.theme]==='preview'?imgSrc(state.theme,'preview'):look.art);
+    const heroArt=isDefault?v06Asset('caelus-concept'):(state.v06Art?.[state.theme]==='preview'?imgSrc(state.theme,'preview'):look.art);
     const mod=[
       ['♧','Minha Conta','Personagens, prints e progresso',"libraryFilter='owned';route('library')",'account'],
       ['✦','Build Lab','Relíquias, cones e ajustes','v06RouteBuild()','build'],
