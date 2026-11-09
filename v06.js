@@ -242,9 +242,12 @@
   }
   const prevRender=render;
   render=function(){
+    const priorStage=document.getElementById('stage');
+    if(priorStage)priorStage.classList.remove('v06-entering');
     prevRender();
     const stage=document.getElementById('stage');
     stage?.classList.add('v06-stage');
+    if(stage){void stage.offsetWidth;stage.classList.add('v06-entering');}
     document.querySelector('.app')?.classList.toggle('v06-on-home',page==='home');
     freshUI();
   };
@@ -418,6 +421,13 @@
   window.v06SelectTips=k=>{v06TipTab=k;refresh()};
 
   // Disable stale chat surface and floating mascot even if the 0.5 renderer recreates them.
+  const oldChooseTheme=setTheme;
+  setTheme=function(id){
+    const app=document.querySelector('.app');
+    if(app){app.classList.remove('v06-theme-changing');void app.offsetWidth;app.classList.add('v06-theme-changing');}
+    oldChooseTheme(id);
+    setTimeout(()=>document.querySelector('.app')?.classList.remove('v06-theme-changing'),550);
+  };
   const originalMenu=renderMenu;
   renderMenu=function(){originalMenu();const menu=document.getElementById('floatMenu');if(menu)menu.innerHTML=menu.innerHTML.replace(/Diário do Pom-Pom/g,'Dicas do Pom-Pom');};
   if(window.history&&window.history.replaceState)document.documentElement.dataset.nexusVersion='0.6';
