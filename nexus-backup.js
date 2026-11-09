@@ -34,10 +34,18 @@ function exportBackup(){
 function mergeAccount(current,incoming){
  const output=structuredClone(current);
  for(const [key,value] of Object.entries(incoming)){
-  if(key==='characters'||key==='v06RelicDetails'||key==='v06Relics'||key==='v06Screens'||key==='v06BuildHistory'){
+  if(key==='characters'||key==='v06RelicDetails'||key==='v06Relics'||key==='v06Screens'||key==='v06BuildHistory'||key==='v06MaterialInventory'){
    if(value&&typeof value==='object'&&!Array.isArray(value)){
     output[key]={...(output[key]||{}),...value};
    }
+  }else if(key==='v06TracePlans'&&value&&typeof value==='object'&&!Array.isArray(value)){
+   output.v06TracePlans||={};
+   for(const [id,plan] of Object.entries(value)){
+    if(!plan||typeof plan!=='object'||Array.isArray(plan))continue;
+    output.v06TracePlans[id]={...(output.v06TracePlans[id]||{}),...plan};
+   }
+  }else if(key==='v06WarpPlan'&&value&&typeof value==='object'&&!Array.isArray(value)){
+   output.v06WarpPlan={...(output.v06WarpPlan||{}),...value};
   }else if(key==='v06SavedTeams'&&Array.isArray(value)){
    const keyed=new Map((output.v06SavedTeams||[]).map(t=>[t.id,t]));
    for(const team of value)if(team&&typeof team.id==='string')keyed.set(team.id,team);
