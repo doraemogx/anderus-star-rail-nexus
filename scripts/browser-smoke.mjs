@@ -152,6 +152,16 @@ try{
   assert.equal(await page.locator('.v06-piece-grid figure').count(),0,'Unknown screenshot must not show fabricated relic crops');
   assert.equal(await page.locator('#v06-level').inputValue(),'','Unknown character level must not default to 80');
   assert.equal(await page.locator('.v06-relcard').count(),6,'Manual six-slot editor missing for unknown screenshot');
+  await page.evaluate(async()=>{
+    const canvas=document.createElement('canvas');canvas.width=600;canvas.height=850;
+    canvas.getContext('2d').fillRect(0,0,600,850);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    const dt=new DataTransfer();dt.items.add(new File([blob],'pedaço-1.png',{type:'image/png'}));
+    const input=document.querySelector('#v06-r0-photo');input.files=dt.files;
+    input.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await page.locator('.v06-relcard').first().locator('summary img').waitFor({timeout:10000});
+  assert.match(await page.locator('.v06-relcard').first().locator('summary small').innerText(),/Print individual anexado/);
   await page.screenshot({path:'artifacts/scan-unsupported-'+device.width+'.png'});
   await page.evaluate(()=>window.closeModal());
   // Unsupported screenshots must still yield six editable relic forms.
