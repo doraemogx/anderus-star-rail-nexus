@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+/* Kit Lab 2.0: validate factual interpolation and catalogue coverage. */
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const source=read('nexus-kit-lab.js');
+const window={};
+const context={window,document:{readyState:'loading',addEventListener(){}},Intl,Number,String,Array,Object,Math,Set};
+vm.runInNewContext(source,context,{filename:'nexus-kit-lab.js'});
+assert.equal(typeof window.NexusKitLab?.open,'function');
+assert.equal(typeof window.NexusKitLab?.resolveEffect,'function');
+const effect={desc:'Aumenta #1[i]% de bônus e #2[f1] pontos.',params:[[.12,3],[.24,8]]};
+const first=window.NexusKitLab.resolveEffect(effect,effect.params,1);
+const second=window.NexusKitLab.resolveEffect(effect,effect.params,2);
+assert.match(first.html,/12%/);assert.match(first.html,/3 pontos/);
+assert.match(second.html,/24%/);assert.match(second.html,/8 pontos/);
+assert.equal(second.missing,false);
+const absent=window.NexusKitLab.resolveEffect(effect,effect.params,3);
+assert.equal(absent.missing,true);
+assert.match(absent.html,/valor não disponível/);
+const game=JSON.parse(read('data/live-game.json'));
+const all=Object.values(game.chars||{});
+assert.ok(all.length>=90,'Expected a complete character catalogue');
+const known=all.filter(c=>(c.skills||[]).some(id=>game.skills?.[id]?.desc));
+assert.ok(known.length>=70,'Too few characters with complete descriptions');
+const ranks=all.filter(c=>(c.ranks||[]).filter(id=>game.ranks?.[id]?.desc).length>=6);
+assert.ok(ranks.length>=70,'Too few characters with six Eidolon descriptions');
+const arts=JSON.parse(read('data/eidolon-art.json'));
+assert.ok(Object.keys(arts.characters||{}).length>=70,'Eidolon image catalogue incomplete');
+console.log('PASS Kit Lab interpolation, missing-value safeguards, character skills and Eidolon assets');
