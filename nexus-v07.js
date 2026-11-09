@@ -148,5 +148,8 @@ window.v07OpenFuture=async function(){
  const dest=document.querySelector('#overlay .v07-loading');if(dest)dest.textContent='Não consegui carregar os dados da versão beta. Confira sua conexão.';
  }
 };
+// All future banner / Aha buttons open the same detailed, sourced dossier.
+window.v06OpenFuture=window.v07OpenFuture;
+try{nextBannerModal=window.v07OpenFuture;}catch(_){}
 window.nexusEnhance=enhancePage;
 })();
