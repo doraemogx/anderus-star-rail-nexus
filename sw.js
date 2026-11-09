@@ -1,5 +1,5 @@
 /* Nexus PWA v15: predictable updates, offline account/catalogue support. */
-const CACHE='anderus-shell-v18';
+const CACHE='anderus-shell-v19';
 const CORE=[
  './','./v06.css','./v06.js','./nexus-v07.css','./nexus-v07.js',
  './nexus-v09.css','./nexus-v09.js','./nexus-account.css','./nexus-account-engine.js',
@@ -7,6 +7,7 @@ const CORE=[
  './illustrated-relic-matcher.js','./data/live-game.json',
  './data/relic-icon-signatures.json','./data/eidolon-art.json',
  './nexus-diagnostics.js','./nexus-diagnostics.css',
+ './nexus-kit-lab.js','./nexus-kit-lab.css',
  './manifest.webmanifest','./assets/pwa/icon-192.png'
 ];
 self.addEventListener('install',event=>{
