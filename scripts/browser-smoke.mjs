@@ -39,6 +39,19 @@ try{
     console.error('BROWSER_STAGE_DEBUG',JSON.stringify(dom));
     throw error;
   });
+  // Full-screen dialogs must inherit theme changes from the application shell.
+  await page.waitForFunction(()=>typeof window.NexusThemeBridge?.apply==='function',null,{timeout:15000});
+  const themeState=await page.evaluate(()=>{
+    const app=document.querySelector('.app');
+    const previous=app.classList.contains('aha-theatre');
+    app.classList.add('aha-theatre');
+    window.NexusThemeBridge.apply();
+    const active=document.documentElement.classList.contains('nexus-theme-aeon');
+    if(!previous)app.classList.remove('aha-theatre');
+    window.NexusThemeBridge.apply();
+    return {active,restored:document.documentElement.classList.contains('nexus-theme-aeon')===previous};
+  });
+  assert.ok(themeState.active&&themeState.restored,'Aha theme not propagated to dialogs safely');
   // Account transfer controls should be reachable and show an actual export action.
   await page.locator('#nexus-diagnostics-button').waitFor({timeout:15000});
   await page.locator('#nexus-diagnostics-button').click();
