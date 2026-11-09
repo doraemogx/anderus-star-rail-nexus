@@ -155,6 +155,14 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Local factual inbox: beta revision and catalogue diff alerts, never fake push.
+ if(!document.getElementById('nexus-notifications-css')){
+  const style=document.createElement('link');style.id='nexus-notifications-css';style.rel='stylesheet';style.href='./nexus-notifications.css';document.head.appendChild(style);
+ }
+ if(!document.getElementById('nexus-notifications-js')){
+  const script=document.createElement('script');script.id='nexus-notifications-js';script.src='./nexus-notifications.js';script.defer=true;document.head.appendChild(script);
+ }
+
  // Relic Optimizer: source-backed, not a universal score.
  if(!document.getElementById('nexus-relic-opt-css')){
   const css=document.createElement('link');css.id='nexus-relic-opt-css';css.rel='stylesheet';css.href='./nexus-relic-optimizer.css';document.head.appendChild(css);
