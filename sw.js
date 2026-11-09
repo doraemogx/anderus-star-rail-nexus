@@ -1,5 +1,5 @@
 /* Nexus PWA v15: predictable updates, offline account/catalogue support. */
-const CACHE='anderus-shell-v16';
+const CACHE='anderus-shell-v17';
 const CORE=[
  './','./v06.css','./v06.js','./nexus-v07.css','./nexus-v07.js',
  './nexus-v09.css','./nexus-v09.js','./nexus-account.css','./nexus-account-engine.js',
@@ -44,6 +44,12 @@ self.addEventListener('fetch',event=>{
   event.respondWith(network().catch(()=>caches.match(req).then(c=>c||caches.match('./'))));
   return;
  }
- // Script and style assets use the freshly versioned shell cache, then revalidate.
- event.respondWith(caches.match(req).then(cached=>cached||network()).catch(()=>network()));
+ // Network-first keeps desktop and Android aligned after a deployment.
+ // Previously cache-first returned obsolete JS/CSS indefinitely until the SW
+ // itself updated; use the old asset only if offline or the fetch fails.
+ event.respondWith(network().catch(()=>caches.match(req).then(c=>{
+  if(c)return c;
+  throw new Error('Recurso indisponível offline');
+ })));
+
 });
