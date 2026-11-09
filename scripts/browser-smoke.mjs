@@ -112,6 +112,25 @@ try{
   await page.locator('.nexus-search-hit[data-search-type="material"]').first().waitFor({timeout:15000});
   assert.match(await page.locator('.nexus-search-hit[data-search-type="material"]').first().innerText(),/Broto/);
   await page.locator('#nexus-search-dialog [data-search-close]').click();
+  // Simulated unsupported 400x400 screenshot: manual entry must remain functional.
+  await page.waitForFunction(()=>typeof window.NexusScanInput?.handle==='function');
+  await page.evaluate(()=>window.v06StartImport());
+  await page.locator('#v06-file').waitFor({timeout:10000});
+  await page.evaluate(async()=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=400;canvas.height=400;
+    const ctx=canvas.getContext('2d');ctx.fillStyle='#091525';ctx.fillRect(0,0,400,400);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    const file=new File([blob],'layout-desconhecido.png',{type:'image/png'});
+    if(!window.NexusScanInput.handle(file,'teste de regressão'))throw new Error('NexusScanInput recusou PNG válido');
+  });
+  await page.locator('.v06-import-form').waitFor({timeout:15000});
+  await page.locator('.v06-relcard').first().waitFor({timeout:15000});
+  assert.equal(await page.locator('.v06-piece-grid figure').count(),0,'Unknown screenshot must not show fabricated relic crops');
+  assert.equal(await page.locator('#v06-level').inputValue(),'','Unknown character level must not default to 80');
+  assert.equal(await page.locator('.v06-relcard').count(),6,'Manual six-slot editor missing for unknown screenshot');
+  await page.screenshot({path:'artifacts/scan-unsupported-'+device.width+'.png'});
+  await page.evaluate(()=>window.closeModal());
   // Unsupported screenshots must still yield six editable relic forms.
   const relicEditor=await page.evaluate(async()=>{
     const el=document.createElement('div');el.id='v06-relic-editor';document.body.append(el);
