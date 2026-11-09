@@ -151,6 +151,19 @@ try{
     await page.evaluate(view=>window.route(view),view);
     const rendered=await page.evaluate(()=>Boolean(document.getElementById('stage')?.firstElementChild));
     assert.ok(rendered,'Blank stage after navigating to '+view);
+    if(view==='themes'){
+      const original=await page.evaluate(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}').theme||'8001');
+      await page.evaluate(()=>window.v06PreviewTheme('1512'));
+      await page.locator('.v06-theme-preview .v06-theme-compare article').first().waitFor({timeout:10000});
+      assert.equal(await page.locator('.v06-theme-preview .v06-theme-compare article').count(),2);
+      assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}').theme||'8001'),original,
+        'Preview must not mutate account theme');
+      await page.locator('[data-commit-theme="1512"]').click();
+      await page.waitForFunction(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}').theme==='1512');
+      await page.evaluate(()=>window.v06RestorePreviousTheme());
+      await page.waitForFunction(expected=>(JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}').theme||'8001')===expected,original);
+      assert.ok(await page.locator('.v06-themes').count(),'Theme Studio must remain reachable after undo');
+    }
     if(view==='endgame'){
       await page.locator('.v09-endgame').first().waitFor({timeout:15000});
       await page.locator('.v20-official-rotation').first().waitFor({timeout:15000});
