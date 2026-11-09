@@ -425,6 +425,42 @@
     }
     return out;
   }
+
+  // Retest only missing attribute numbers, with a per-cell OCR pass.
+  async function recoverMissingTotalStats(worker, bitmap, rows, totals) {
+    const ranges={pv:[200,30000],atk:[100,15000],def:[100,15000],spd:[50,400],
+      crit:[0,100],cdmg:[0,1000],break:[0,1000],energy:[0,400]};
+    const missing=rows.filter(row=>!Object.prototype.hasOwnProperty.call(totals,row[1]));
+    if(!missing.length)return totals;
+    await worker.setParameters({tessedit_pageseg_mode:'7',tessedit_char_whitelist:'0123456789.,%'});
+    const getNumber=str=>{
+      const clean=String(str||'').replace(/[Oo]/g,'0').replace(/[lI]/g,'1').replace(/\s/g,'');
+      const m=clean.match(/\d{1,5}(?:[.,]\d{1,2})?/);
+      return m?Number(m[0].replace(',','.')):null;
+    };
+    for(const [label,key,index,col] of missing){
+      const cy=.1535+index*.0315,x0=col==='L'?.61:.902,x1=col==='L'?.671:.978;
+      const cropped=imageRegion(bitmap,x0,cy-.015,x1-x0,.029,4);
+      let reading=await worker.recognize(cropped);
+      let number=getNumber(reading.data?.text);
+      const [low,high]=ranges[key];
+      if(!(Number.isFinite(number)&&number>=low&&number<=high)){
+        const ctx=cropped.getContext('2d',{willReadFrequently:true});
+        const image=ctx.getImageData(0,0,cropped.width,cropped.height);
+        for(let p=0;p<image.data.length;p+=4){
+          const grey=(image.data[p]+image.data[p+1]+image.data[p+2])/3;
+          const v=grey>122?0:255;
+          image.data[p]=v;image.data[p+1]=v;image.data[p+2]=v;image.data[p+3]=255;
+        }
+        ctx.putImageData(image,0,0);
+        reading=await worker.recognize(cropped);
+        number=getNumber(reading.data?.text);
+      }
+      if(Number.isFinite(number)&&number>=low&&number<=high)totals[key]=number;
+    }
+    return totals;
+  }
+
   function editDistance(a,b){
     if(a===b)return 0;
     const v=Array.from({length:b.length+1},(_,i)=>i);
