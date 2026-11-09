@@ -1,0 +1,29 @@
+name: Gerar ícones do aplicativo
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/generate_pwa_icons.py','.github/workflows/pwa-icons.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/generate_pwa_icons.py
+      - name: Publicar ícones
+        run: |
+          git config user.name "Anderus Build"
+          git config user.email "anderus-bot@users.noreply.github.com"
+          git add assets/pwa/icon-192.png assets/pwa/icon-512.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Gera ícones PWA 192 e 512 [bot]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
