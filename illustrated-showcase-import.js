@@ -46,8 +46,8 @@ export function inferStat(label,raw){
  if(/regenera|energia/.test(n))return 'Regeneração de Energia';
  if(/bonus.*cura/.test(n))return 'Bônus de Cura Realizada';
  if(/chance.*crit|taxa.*crit/.test(n))return 'Chance de CRIT';
- if(/dano.*crit/.test(n))return 'Dano CRIT';
- if(/efeito.*quebra|quebra/.test(n))return 'Efeito de Quebra';
+ if(/(?:dano|nanon|nanno).*?(?:crit|cbit)/.test(n))return 'Dano CRIT';
+ if(/efeito.*(?:quebra|ouebra)|(?:quebra|ouebra)/.test(n))return 'Efeito de Quebra';
  if(/acerto.*efeito/.test(n))return 'Taxa de Acerto de Efeito';
  if(/res.*efeito/.test(n))return 'RES a Efeito';
  if(/bonus.*dano.*fisico/.test(n))return 'Bônus de Dano Físico';
@@ -58,9 +58,9 @@ export function inferStat(label,raw){
  if(/bonus.*dano.*quantico/.test(n))return 'Bônus de Dano Quântico';
  if(/bonus.*dano.*imaginario/.test(n))return 'Bônus de Dano Imaginário';
  if(/\bvel\b|velocidade/.test(n))return 'VEL';
- if(/\batq\b|ataque/.test(n))return percent?'ATQ %':'ATQ';
+ if(/\b(?:atq|atg|ato|at0|atk)\b|ataque/.test(n))return percent?'ATQ %':'ATQ';
  if(/\bdef\b|defesa/.test(n))return percent?'DEF %':'DEF';
- if(/\bpv\b|vida/.test(n))return percent?'PV %':'PV';
+ if(/\b(?:pv|pw)\b|vida/.test(n))return percent?'PV %':'PV';
  return '';
 }
 export function parseNumber(text,integer=false){
@@ -166,6 +166,22 @@ export function plausibleRelicValue(stat,value,slot,main){
   'Taxa de Acerto de Efeito':55,'RES a Efeito':55,'Efeito de Quebra':70};
  return Object.hasOwn(ranges,stat)&&value<=ranges[stat];
 }
+// Fixed final 5★ relic main stats, verified against HSR stat tables.
+// Use these only when a piece's visible +15 level is independently recognized.
+// The screenshot's stat label must still be a valid main stat for that slot.
+const MAXED_MAIN={'PV':705,'ATQ':352,'PV %':43.2,'ATQ %':43.2,'DEF %':54,
+ 'VEL':25,'Chance de CRIT':32.4,'Dano CRIT':64.8,
+ 'Taxa de Acerto de Efeito':43.2,'Bônus de Cura Realizada':34.5,
+ 'Regeneração de Energia':19.4,'Efeito de Quebra':64.8,
+ 'Bônus de Dano Físico':38.8,'Bônus de Dano de Gelo':38.8,
+ 'Bônus de Dano de Fogo':38.8,'Bônus de Dano de Raio':38.8,
+ 'Bônus de Dano de Vento':38.8,'Bônus de Dano Quântico':38.8,
+ 'Bônus de Dano Imaginário':38.8};
+export function verifiedMainAt15(stat,slot,level){
+ if(level!==15||!Object.hasOwn(MAXED_MAIN,stat))return null;
+ const value=MAXED_MAIN[stat];
+ return plausibleRelicValue(stat,value,slot,true)?value:null;
+}
 export function relicValueFromText(text,stat,slot,main=false){
  const raw=String(text||'').replace(/\s+/g,' ').trim();
  // An explicit percentage is required when the substat is percentage-based.
@@ -174,11 +190,16 @@ export function relicValueFromText(text,stat,slot,main=false){
  return plausibleRelicValue(stat,value,slot,main)?value:null;
 }
 async function relicRows(worker,bitmap,progress){
- const found=[];
+ const found=[],levels=[];
  await worker.setParameters({tessedit_char_whitelist:''});
  // Complete rows are treated separately: this avoids mixing 3 columns together.
  for(let i=0;i<6;i++){
    const rows=[];
+   const x=COL[i%3],headerY=i<3?1371:1724;
+   const header=await ocr(worker,bitmap,[x+30,headerY,250,49],7,'normal');
+   const levelMatch=header.match(/\+\s*(\d{1,2})\b/);
+   const relicLevel=levelMatch&&Number(levelMatch[1])<=15?Number(levelMatch[1]):null;
+   levels.push(relicLevel);
    for(let j=0;j<5;j++){
      if(j===0&&progress)progress('Lendo relíquia '+(i+1)+'/6…');
      const loc=relicRowCoords(i,j);
@@ -197,11 +218,22 @@ async function relicRows(worker,bitmap,progress){
          if(parsed!==null){amount=retry;value=parsed;break;}
        }
      }
+     // Level +15 fixes main-stat OCR truncations (4.8% vs 64.8%, etc.).
+     // If the label is not recognized, never guess the main stat except
+     // the game-defined fixed HP/ATK slots.
+     if(j===0&&relicLevel===15){
+       if(i===0){stat='PV';value=705;}
+       else if(i===1){stat='ATQ';value=352;}
+       else if(stat){
+         const fixed=verifiedMainAt15(stat,i,relicLevel);
+         if(fixed!==null)value=fixed;
+       }
+     }
      rows.push({stat:stat&&value!==null?stat:'',value:stat&&value!==null?value:null,label:line,raw:amount});
    }
    found.push(rows);
  }
- return found;
+ return {rows:found,levels};
 }
 export async function readIllustratedShowcase(bitmap,worker,{characters=[],coneNames=[],progress=()=>{},includeRelics=true}={}){
  if(!isIllustratedShowcase(bitmap))throw Error('A captura não corresponde ao layout ilustrado.');
@@ -233,7 +265,7 @@ export async function readIllustratedShowcase(bitmap,worker,{characters=[],coneN
     rawSuper.match(/sobreposi\D{0,8}([1-5])/i);
  const e=classifyEidolons(bitmap);
  const level=Number((levelText.match(/\b([1-8]\d)\b/)||[])[1])||80;
- let relics=null,relicSets=null,relicSetError='';
+ let relics=null,relicSets=null,relicSetError='',relicLevels=null;
  if(includeRelics){
    try{
      const matcher=await import('./illustrated-relic-matcher.js?v=1');
@@ -242,11 +274,13 @@ export async function readIllustratedShowcase(bitmap,worker,{characters=[],coneN
      relicSetError=String(error?.message||error);
      console.warn('Reconhecimento de conjuntos:',error);
    }
-   try{relics=await relicRows(worker,bitmap,progress);}
-   catch(error){console.warn('Leitura das relíquias:',error);}
+   try{
+     const extraction=await relicRows(worker,bitmap,progress);
+     relics=extraction.rows;relicLevels=extraction.levels;
+   }catch(error){console.warn('Leitura das relíquias:',error);}
  }
  return {layout:'illustrated-2000x2300',title,character,level,cone,superimposition:nSuper?+nSuper[1]:null,
-     eidolon:e.value,eidolonScores:e.brightRatios,totals,relics,relicSets,relicSetError,
+     eidolon:e.value,eidolonScores:e.brightRatios,totals,relics,relicLevels,relicSets,relicSetError,
      diagnostics:{rawCone,rawSuper,levelText}};
 }
 export function applyShowcaseToForm(report,root=document){
@@ -268,6 +302,8 @@ export function applyShowcaseToForm(report,root=document){
  for(const [key,value] of Object.entries(report.totals||{}))set('v06-'+key,value);
  let stats=0;
  for(let i=0;i<6;i++)for(let j=0;j<5;j++){
+   if(j===0&&report.relicLevels?.[i]!==null&&report.relicLevels?.[i]!==undefined)
+     set('v06-r'+i+'-lv',report.relicLevels[i]);
    const r=report.relics?.[i]?.[j];
    if(!r?.stat||r.value===null)continue;
    const statId='v06-r'+i+'-'+(j===0?'main':'k'+(j-1));
