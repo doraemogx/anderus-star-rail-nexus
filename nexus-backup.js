@@ -72,6 +72,24 @@ function restore(data,mode){
  }
  return {characters:Object.keys(output.characters).length,mode};
 }
+function rollback(){
+ const previousRaw=localStorage.getItem(SAFETY);
+ if(!previousRaw)throw Error('Não há restauração anterior para desfazer.');
+ const previous=validate(JSON.parse(previousRaw));
+ const active=snapshot();
+ const next=JSON.stringify(previous);
+ const backup=JSON.stringify(active);
+ // Use a reversible swap: a second undo returns to the newer version.
+ localStorage.setItem(SAFETY,backup);
+ try{
+  localStorage.setItem(KEY,next);
+  if(localStorage.getItem(KEY)!==next)throw Error('A gravação não foi confirmada.');
+ }catch(error){
+  try{localStorage.setItem(SAFETY,previousRaw);localStorage.setItem(KEY,JSON.stringify(active));}catch(_){}
+  throw error;
+ }
+ return {characters:Object.keys(previous.characters).length};
+}
 function dialog(){
  let dlg=document.getElementById('nexus-backup-dialog');if(dlg)return dlg;
  dlg=document.createElement('dialog');dlg.id='nexus-backup-dialog';dlg.setAttribute('aria-label','Backup e transferência da conta');
@@ -81,6 +99,8 @@ function dialog(){
  '<section><h3>Restaurar</h3><label for="nexus-backup-file">Escolha seu arquivo de backup</label><input id="nexus-backup-file" type="file" accept=".json,application/json">'+
  '<label for="nexus-backup-mode">Como importar?</label><select id="nexus-backup-mode"><option value="merge">Mesclar com esta conta</option><option value="replace">Substituir esta conta</option></select>'+
  '<p class="nexus-backup-preview" role="status">Nenhum arquivo selecionado.</p><button type="button" data-backup-restore disabled>Confirmar restauração</button></section></div>'+
+ '<section class="nexus-backup-undo"><h3>Recuperação</h3><p>Se a última importação substituir dados indevidamente, recupere a conta anterior salva automaticamente neste dispositivo.</p>'+
+ '<button type="button" data-backup-undo '+(localStorage.getItem(SAFETY)?'':'disabled')+'>Desfazer última importação</button></section>'+
  '<p class="nexus-backup-warning">Antes de importar, exporte uma cópia da conta atual. Uma restauração confirmada recarregará o Nexus, mas não alterará os dados dentro do jogo.</p></div>';
  document.body.append(dlg);
  dlg.querySelector('[data-backup-close]').onclick=()=>dlg.close();
@@ -100,6 +120,14 @@ function dialog(){
    dlg.querySelector('[data-backup-restore]').disabled=false;
   }catch(error){dlg.querySelector('.nexus-backup-preview').textContent='Arquivo recusado: '+String(error.message||error);}
  });
+ dlg.querySelector('[data-backup-undo]').onclick=()=>{
+  if(!window.confirm('Recuperar a versão da conta anterior à última importação? A versão atual ficará guardada como cópia de segurança.'))return;
+  try{
+   rollback();location.reload();
+  }catch(error){
+   dlg.querySelector('.nexus-backup-preview').textContent='Falha ao desfazer: '+String(error.message||error);
+  }
+ };
  dlg.querySelector('[data-backup-restore]').onclick=()=>{
   if(!candidate)return;
   const mode=dlg.querySelector('#nexus-backup-mode').value;
@@ -115,5 +143,5 @@ function dialog(){
  return dlg;
 }
 function open(){const dlg=dialog();if(!dlg.open)dlg.showModal();}
-window.NexusBackup={validate,snapshot,restore,mergeAccount,exportBackup,open};
+window.NexusBackup={validate,snapshot,restore,rollback,mergeAccount,exportBackup,open};
 })();
