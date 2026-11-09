@@ -155,6 +155,14 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Pom-Pom 2.0: local, explainable conversations grounded in the account.
+ if(!document.getElementById('nexus-pompom-chat-css')){
+  const css=document.createElement('link');css.id='nexus-pompom-chat-css';css.rel='stylesheet';css.href='./nexus-pompom-chat.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-pompom-chat-js')){
+  const js=document.createElement('script');js.id='nexus-pompom-chat-js';js.src='./nexus-pompom-chat.js';js.defer=true;document.head.appendChild(js);
+ }
+
  // User-provided screenshot handling; default file picker remains available.
  if(!document.getElementById('nexus-scan-input-css')){
   const link=document.createElement('link');link.id='nexus-scan-input-css';link.rel='stylesheet';link.href='./nexus-scan-input.css';document.head.appendChild(link);
