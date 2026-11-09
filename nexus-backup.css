@@ -17,3 +17,9 @@
 #nexus-backup-dialog .nexus-backup-preview{font-size:12px;overflow-wrap:anywhere}
 #nexus-backup-dialog .nexus-backup-warning{color:#efcb96;padding:13px;border-left:3px solid #cfa877;background:#392b35}
 @media(max-width:610px){#nexus-backup-dialog .nexus-backup-grid{grid-template-columns:1fr}}
+
+#nexus-backup-dialog .nexus-backup-undo{border:1px solid #8c7d78;border-radius:12px;padding:16px;margin:16px 0;background:#252d40}
+#nexus-backup-dialog .nexus-backup-undo h3{font-size:17px;color:#f4d9b5;margin:0 0 5px}
+#nexus-backup-dialog .nexus-backup-undo p{font-size:13px;line-height:1.6;color:#d2dce8;margin:0 0 12px}
+#nexus-backup-dialog [data-backup-undo]{background:#263a54;color:#f3e3cf;border-color:#c3aa8a}
+#nexus-backup-dialog [data-backup-undo]:disabled{opacity:.48}
