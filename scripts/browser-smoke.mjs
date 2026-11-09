@@ -91,6 +91,29 @@ try{
     return {active,restored:document.documentElement.classList.contains('nexus-theme-aeon')===previous};
   });
   assert.ok(themeState.active&&themeState.restored,'Aha theme not propagated to dialogs safely');
+  // Real visual validation of the selectable Aha Grand Theatre, not merely its CSS class.
+  await page.evaluate(async()=>{
+    const app=document.querySelector('.app');
+    app.dataset.qaHadAha=app.classList.contains('aha-theatre')?'1':'0';
+    app.classList.add('aha-theatre');
+    window.NexusThemeBridge.apply();
+    await window.NexusPomPom.open('1512');
+  });
+  await page.locator('#nexus-pompom-dialog[open]').waitFor({timeout:15000});
+  const ahaTheme=await page.locator('#nexus-pompom-dialog').evaluate(el=>({
+    background:getComputedStyle(el).backgroundColor,
+    active:document.documentElement.classList.contains('nexus-theme-aeon')
+  }));
+  assert.ok(ahaTheme.active,'Aha theme must reach the Pom-Pom dialog');
+  assert.match(ahaTheme.background,/33, 21, 43|33,21,43/,'Aha modal must use theatrical background');
+  await page.screenshot({path:'artifacts/aha-pompom-'+device.width+'.png'});
+  await page.locator('#nexus-pompom-dialog [data-pompom-close]').click();
+  await page.evaluate(()=>{
+    const app=document.querySelector('.app');
+    if(app.dataset.qaHadAha==='0')app.classList.remove('aha-theatre');
+    delete app.dataset.qaHadAha;
+    window.NexusThemeBridge.apply();
+  });
   // Account transfer controls should be reachable and show an actual export action.
   await page.locator('#nexus-diagnostics-button').waitFor({timeout:15000});
   await page.locator('#nexus-diagnostics-button').click();
