@@ -34,6 +34,8 @@ jobs:
           node --check nexus-relic-optimizer.js
           node --check nexus-notifications.js
           node --check nexus-material-budget.js
+          node --check nexus-scan-layout.js
+          node --check nexus-scan-input.js
           node --check worker/index.js
       - name: Validar sincronização de dados e rollback
         run: python3 scripts/check-sync-game.py
@@ -57,6 +59,8 @@ jobs:
         run: node scripts/check-endgame-official.mjs
       - name: Orçamento único de materiais entre módulos
         run: node scripts/check-material-budget.mjs
+      - name: Nexus Scan — formatos e confiança verificáveis
+        run: node scripts/check-scan-layout.mjs
       - name: Kit Lab 2.0 — dados, interpolação e imagens
         run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
