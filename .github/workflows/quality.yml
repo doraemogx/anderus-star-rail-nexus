@@ -36,6 +36,8 @@ jobs:
         run: node scripts/check-farm.mjs
       - name: Catálogo de rastros e custos verificáveis
         run: node scripts/check-traces.mjs
+      - name: OCR parcial sem perda ou mistura de equipamentos
+        run: node scripts/check-relic-merge.mjs
       - name: Kit Lab 2.0 — dados, interpolação e imagens
         run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
