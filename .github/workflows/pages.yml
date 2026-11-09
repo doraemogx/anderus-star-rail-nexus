@@ -19,6 +19,9 @@ jobs:
     steps:
       - name: Obter arquivos
         uses: actions/checkout@v4
+      - name: Gerar identificação do build publicado
+        run: |
+          printf '{"sha":"%s","publishedAt":"%s"}\\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > build-meta.json
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
         with:
