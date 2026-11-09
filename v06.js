@@ -165,7 +165,17 @@
   profileOverview=function(id,b){return '<div class="v06-overview-actions"><button onclick="v06StartImport(\''+id+'\')">⇧ Atualizar pelo print</button><button onclick="editBuild(\''+id+'\')">⚙ Editar atributos</button></div>'+base.profileOverview(id,b)+pomCard('O que avaliar nesta build',verifiedGuide(id),'FICHA · '+lookup(id).name);};
   profileEidolons=function(id,b){return '<div class="v06-eidolon-intro">'+pomCard('Cada fragmento tem sua própria história','Toque em E1 a E6 para abrir a arte individual disponível, os efeitos originais e o que mudou na rotação. Se a arte estiver indisponível, exibimos apenas o ícone no tamanho original — nunca um ícone borrado ampliado.','EIDOLONS')+'</div>'+base.profileEidolons(id,b);};
   profileKit=function(id){return base.profileKit(id)+pomCard('Como interpretar o kit','O texto do jogo e seus multiplicadores estão acima. Nas explicações práticas, observe gatilho, custo, duração, aliados elegíveis e a ordem das ações. Dados de beta são identificados separadamente.','KIT COMPLETO');};
-  profileRelics=function(id,b){return base.profileRelics(id,b)+(state.v06Relics?.[id]?.length?'<section class="v06-relic-shots"><h3>Relíquias extraídas do seu print</h3><div>'+state.v06Relics[id].map((src,i)=>'<img loading="lazy" src="'+src+'" alt="Captura da relíquia '+(i+1)+'">').join('')+'</div><p>As imagens estão guardadas neste navegador. Confirme os atributos e o conjunto antes de comparar builds.</p></section>':'')+pomCard('Como priorizar seus subatributos','Um bom conjunto precisa de atributos úteis, velocidade efetiva e sincronização com a equipe. Sem as seis relíquias e os buffs de combate, não existe nota de build definitiva.','RELÍQUIAS');};
+  profileRelics=function(id,b){
+    const detail=state.v06RelicDetails?.[id];
+    if(detail?.length){
+      const images=state.v06Relics?.[id]||[];
+      setTimeout(()=>{
+        import('./relic-inspector.js?v=1').then(m=>m.renderRelicSummary(detail,images))
+          .then(html=>{const root=document.getElementById('v06-relic-saved');if(root)root.innerHTML=html;})
+          .catch(err=>console.warn('Não foi possível exibir conjuntos',err));
+      },0);
+    }
+    return base.profileRelics(id,b)+(detail?.length?'<div id="v06-relic-saved">Carregando detalhes do equipamento...</div>':'')+(state.v06Relics?.[id]?.length?'<section class="v06-relic-shots"><h3>Relíquias extraídas do seu print</h3><div>'+state.v06Relics[id].map((src,i)=>'<img loading="lazy" src="'+src+'" alt="Captura da relíquia '+(i+1)+'">').join('')+'</div><p>As imagens estão guardadas neste navegador. Confirme os atributos e o conjunto antes de comparar builds.</p></section>':'')+pomCard('Como priorizar seus subatributos','Um bom conjunto precisa de atributos úteis, velocidade efetiva e sincronização com a equipe. Sem as seis relíquias e os buffs de combate, não existe nota de build definitiva.','RELÍQUIAS');};
 
   const originalEidoModal=base.showEido;
   showEido=function(id,n){
@@ -315,7 +325,7 @@
       '<label>DEF<input type="number" id="v06-def" placeholder="DEF total"></label><label>VEL<input type="number" id="v06-spd" placeholder="VEL"></label>'+
       '<label>Chance CRIT %<input type="number" step=".1" id="v06-crit"></label><label>Dano CRIT %<input type="number" step=".1" id="v06-cdmg"></label>'+
       '<label>Quebra %<input type="number" step=".1" id="v06-break"></label><label>Recuperação de Energia %<input type="number" step=".1" id="v06-energy"></label></div>'+
-      '<div class="v06-kicker">AS SEIS RELÍQUIAS DO PRINT</div><div class="v06-piece-grid">'+uploader.relImages.map((src,i)=>'<figure><img src="'+src+'" alt="Relíquia '+(i+1)+'"><figcaption>'+['Cabeça','Mãos','Corpo','Pés','Esfera','Corda'][i]+'</figcaption></figure>').join('')+'</div>'+
+      '<div class="v06-kicker">AS SEIS RELÍQUIAS DO PRINT</div><div class="v06-piece-grid">'+uploader.relImages.map((src,i)=>'<figure><img src="'+src+'" alt="Relíquia '+(i+1)+'"><figcaption>'+['Cabeça','Mãos','Corpo','Pés','Esfera','Corda'][i]+'</figcaption></figure>').join('')+'</div><div id="v06-relic-editor"></div>'+
       '<div id="v06-import-status" class="v06-import-status" role="status">OCR ainda não executado. Preencha ou confira os atributos totais, nunca os valores das relíquias.</div>'+
       '<label style="display:flex;align-items:flex-start;gap:12px;padding:16px 4px;font-size:13px;line-height:1.45"><input type="checkbox" id="v06-confirm" style="width:22px;height:22px;flex-shrink:0"> Eu conferi personagem, Eidolons, cone e atributos totais no print. Sei que a leitura automática pode errar.</label>'+
       '<button class="v06-primary v06-save-import" onclick="v06SaveImport()">Confirmar e salvar build ✓</button></div>';
@@ -323,6 +333,10 @@
   window.v06ShowImportReview=function(){
     const content=uploadPanel()+showImportReview();
     showModal('Importar build · revisar dados',content);
+    import('./relic-inspector.js?v=1').then(mod=>{
+      window.__nexusRelicInspector=mod;
+      return mod.initializeRelics(uploader.relImages);
+    }).catch(err=>console.warn('Detalhamento das relíquias indisponível',err));
   };
   async function cropRelics(){
     if(!uploader.preview)return;
@@ -703,6 +717,11 @@
     state.characters[id]=prior;state.v06Screens||={};state.v06Relics||={};
     if(uploader.preview){const image=new Image();image.src=uploader.preview;state.v06Screens[id]=uploader.preview;}
     if(uploader.relImages.length)state.v06Relics[id]=uploader.relImages;
+    const relicData=window.__nexusRelicInspector?.collectRelics?.();
+    if(relicData){
+      state.v06RelicDetails ||= {};
+      state.v06RelicDetails[id]=relicData;
+    }
     state.profile=id;save();closeModal();tab='overview';route('profile');showToast('Print e personagem registrados na sua conta');
   };
 
