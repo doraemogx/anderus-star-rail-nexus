@@ -161,6 +161,19 @@ try{
     }
     assert.equal(errors.length,before,'JavaScript exception while navigating to '+view+': '+errors.slice(before).join(' | '));
   }
+  // Contextual Pom-Pom: questions must use registered characters, not static cards.
+  await page.evaluate(()=>window.route('nexia'));
+  await page.waitForFunction(()=>typeof window.NexusPomPom?.open==='function',null,{timeout:15000});
+  await page.locator('.v20-pompom-launch [data-nexus-pompom-open]').click();
+  await page.locator('#nexus-pompom-dialog[open]').waitFor({timeout:15000});
+  await page.locator('#nexus-pompom-character').selectOption('1512');
+  await page.locator('#nexus-pompom-question').fill('Como melhorar minha build?');
+  await page.locator('#nexus-pompom-form button[type="submit"]').click();
+  await page.locator('.nexus-pompom-turn.reply').first().waitFor({timeout:15000});
+  const pompomText=await page.locator('.nexus-pompom-turn.reply').last().innerText();
+  assert.match(pompomText,/Robin|relíquias|peças/i);
+  await page.screenshot({path:'artifacts/pompom-chat-'+device.width+'.png'});
+  await page.locator('#nexus-pompom-dialog [data-pompom-close]').click();
   await page.evaluate(()=>window.openProfile('1512'));
   await page.locator('.v06-profile').waitFor({timeout:15000});
   await page.waitForFunction(()=>Boolean(document.querySelector('.v11-coach-note')),null,{timeout:30000});
