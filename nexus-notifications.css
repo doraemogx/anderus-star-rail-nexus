@@ -1,0 +1,22 @@
+#nexus-notifications-button{position:relative;min-width:40px;min-height:40px;display:grid;place-items:center}
+#nexus-notifications-button[data-unread]:not([data-unread=""])::after{content:"";position:absolute;right:5px;top:4px;width:8px;height:8px;border-radius:50%;background:#f1bb85;box-shadow:0 0 0 2px #182339}
+#nexus-notice-dialog{width:min(780px,calc(100vw - 20px));max-width:780px;max-height:90dvh;overflow:auto;padding:0;border:1px solid #d6b991;border-radius:16px;background:#101e32;color:#eee8dc;box-shadow:0 24px 75px #000c}
+#nexus-notice-dialog::backdrop{background:#020713dd}
+#nexus-notice-dialog .nexus-notice-body{padding:clamp(16px,3vw,30px);font:14px/1.65 system-ui}
+#nexus-notice-dialog header{display:flex;align-items:start;justify-content:space-between;gap:20px}
+#nexus-notice-dialog header span{font-size:10px;letter-spacing:.16em;color:#eed3a5;font-weight:700}
+#nexus-notice-dialog h2{font:500 clamp(29px,5vw,40px) Georgia,serif;margin:4px 0 7px}
+#nexus-notice-dialog header p{color:#c6d3e4;margin:0 0 17px}
+#nexus-notice-dialog button{min-height:44px;padding:10px 14px;border:1px solid #b8a88d;border-radius:9px;background:#293b56;color:#f4e4c9;cursor:pointer;font:600 13px system-ui}
+#nexus-notice-dialog [data-notice-close]{width:44px;height:44px;padding:0;font-size:24px}
+#nexus-notice-dialog button:focus-visible,#nexus-notice-dialog a:focus-visible,#nexus-notifications-button:focus-visible{outline:3px solid #f1d497;outline-offset:3px}
+#nexus-notice-dialog .nexus-notice-tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 17px}
+#nexus-notice-dialog .nexus-notice-item{padding:17px;margin-bottom:10px;border:1px solid #546881;border-radius:11px;background:#1a2a42}
+#nexus-notice-dialog .nexus-notice-item.nexus-notice-unread{border-left:3px solid #f2cf98}
+#nexus-notice-dialog .nexus-notice-item small{color:#e3c497;font-weight:700;font-size:10px;letter-spacing:.08em}
+#nexus-notice-dialog .nexus-notice-item h3{font-size:19px;margin:5px 0 8px;color:#faf0dc}
+#nexus-notice-dialog .nexus-notice-item p{color:#d0dceb;margin:6px 0;font-size:13px;overflow-wrap:anywhere}
+#nexus-notice-dialog .nexus-notice-item .nexus-notice-source{font-size:12px;color:#f0cf9b}
+#nexus-notice-dialog .nexus-notice-item a{color:#ffe0ad}
+#nexus-notice-dialog .nexus-notice-empty{color:#c4d2e1}
+#nexus-notice-dialog .nexus-notice-caveat{border-top:1px solid #62728a;padding-top:15px;margin-top:20px;font-size:12px;color:#becde0}
