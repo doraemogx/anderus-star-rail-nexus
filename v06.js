@@ -290,6 +290,12 @@
     roster:()=>Object.entries(state.characters||{}).filter(([id,c])=>c&&gameData.chars?.[id])
       .map(([id,c])=>({id,name:lookup(id)?.name||gameData.chars[id].name,level:Number(c.level||1)})),
     inventory:()=>JSON.parse(JSON.stringify(state.v06MaterialInventory||{})),
+    traceRead:(id)=>JSON.parse(JSON.stringify(state.v06TracePlans?.[id]||{})),
+    traceWrite:(id,plan)=>{
+      state.v06TracePlans||={};
+      state.v06TracePlans[id]=JSON.parse(JSON.stringify(plan));
+      save();return true;
+    },
     put:(id,have)=>{
       const value=Number(have);
       if(!Number.isInteger(value)||value<0||value>100000000)throw Error('Estoque inválido.');
@@ -323,7 +329,7 @@
     const id=state.profile||'1503', c=lookup(id),b=state.characters[id],look=selectLook(id),pic=state.v06Art?.[id]==='preview'?imgSrc(id,'preview'):look.art;
     const active=tab||'overview';
     const switches=[['overview','Atributos'],['kit','Kit e rastros'],['kitlab','Kit Lab 2.0'],['eidolons','Eidolons'],['cone','Cone de Luz'],['relics','Relíquias'],['teams','Equipes'],['farm','Ascensão'],['history','Histórico']];
-    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='kitlab'?'<section class="v11-kitlab-panel"><span class="v06-kicker">KIT LAB · FONTE PT-BR</span><h2>Habilidades completas e explicação do Pom-Pom</h2><p>Consulte multiplicadores por nível, rastros e Eidolons E1–E6. Dados desconhecidos não são inventados.</p><button type="button" class="v06-primary" data-nexus-kit-for="'+safe(id)+'">Abrir Kit Lab completo</button></section>':active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):active==='farm'?'<section class="v11-team-lab-entry"><h3>Farm Planner 2.0 · Ascensão</h3><p>Veja quantidades reais para elevar esta personagem até a ascensão desejada, com estoque e materiais faltantes.</p><button type="button" data-nexus-farm-for="'+safe(id)+'">Planejar ascensão</button></section>':active==='history'?profileHistory(id,b):profileTeams(id,b)+'<section class="v11-team-lab-entry"><h3>Team Lab 2.0</h3><p>Monte e salve equipes com quatro personagens da sua conta; confira os papéis e as restrições.</p><button type="button" data-nexus-team-lab>Montar equipe</button></section>';
+    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='kitlab'?'<section class="v11-kitlab-panel"><span class="v06-kicker">KIT LAB · FONTE PT-BR</span><h2>Habilidades completas e explicação do Pom-Pom</h2><p>Consulte multiplicadores por nível, rastros e Eidolons E1–E6. Dados desconhecidos não são inventados.</p><button type="button" class="v06-primary" data-nexus-kit-for="'+safe(id)+'">Abrir Kit Lab completo</button></section>':active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):active==='farm'?'<section class="v11-team-lab-entry"><h3>Farm Planner 2.0 · Ascensão</h3><p>Veja quantidades reais para elevar esta personagem até a ascensão desejada, com estoque e materiais faltantes.</p><button type="button" data-nexus-farm-for="'+safe(id)+'">Planejar ascensão</button><button type="button" data-nexus-traces-for="'+safe(id)+'">Planejar rastros e materiais</button></section>':active==='history'?profileHistory(id,b):profileTeams(id,b)+'<section class="v11-team-lab-entry"><h3>Team Lab 2.0</h3><p>Monte e salve equipes com quatro personagens da sua conta; confira os papéis e as restrições.</p><button type="button" data-nexus-team-lab>Montar equipe</button></section>';
     const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
     return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
     '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
