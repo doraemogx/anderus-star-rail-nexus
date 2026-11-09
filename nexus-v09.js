@@ -136,7 +136,8 @@ function renderEndgame(){
   cards.push('<article class="v09-boss"><div class="v09-boss-image">'+art+'<small>'+esc(b.label)+'</small></div>'+
    '<div class="v09-boss-info"><h4>'+esc(b.name)+'</h4>'+
    '<p class="v09-weak">Fraquezas: '+(b.weak.length?b.weak.map(esc).join(' · '):'confira no jogo')+'</p>'+
-   '<p>'+esc(b.detail)+'</p><details class="v09-team-reveal" '+(i===0?'open':'')+'><summary>Composição baseada na minha conta</summary>'+profile+'</details></div></article>');
+   '<p>'+esc(b.detail)+'</p><details class="v09-team-reveal" '+(i===0?'open':'')+'><summary>Composição baseada na minha conta</summary>'+profile+'</details>'+
+   '<button type="button" class="v09-boss-ask" data-nexus-boss-mode="'+esc(key)+'" data-nexus-boss-index="'+i+'">Pom-Pom · Como enfrentar este chefe?</button></div></article>');
  }
  const html='<section class="v09-endgame" aria-label="Guia de mecânicas e equipes">'+
   '<header class="v09-guide-title"><span>STRATEGY DOSSIER · '+esc(data.period)+'</span><h2>'+esc(data.label)+'</h2>'+
@@ -150,6 +151,24 @@ function renderEndgame(){
   '<a target="_blank" rel="noopener noreferrer" href="'+OFFICIAL+'">Mecânicas oficiais da 4.6 ↗</a>'+
   '<p>Recomendações editoriais por sinergia/cobertura; não representam cálculo de dano, velocidade, probabilidade de vitória ou tempo previsto. Imagens provenientes do jogo/HoYoLAB e guias com atribuição; direitos pertencem à HoYoverse.</p></div></section>';
  root.insertAdjacentHTML('afterend',html);
+}
+function bossContext(key,index){
+ const chosen=modes[key]?.arenas?.[Number(index)];
+ if(!chosen)return null;
+ const owned=roster(),best=owned.length?rankFor(chosen,owned,new Set())[0]:null;
+ const real=best?.effective||[];
+ const confirmed=real.length===4&&!(best.overlap||[]).length;
+ return {
+  mode:key,modeName:modes[key].label,phase:chosen.label,
+  name:chosen.name,weaknesses:chosen.weak||[],
+  mechanics:chosen.detail,modifiers:(modes[key].highlights||[]).map(x=>x[0]+': '+x[1]),
+  team:best?{name:best.name,ready:confirmed,
+   members:real.map(id=>owned.find(x=>x.id===id)?.name).filter(Boolean),
+   missing:best.missing||[],overlap:best.overlap||[],note:best.note,
+   coverage:best.coverage||0}:null,
+  source:modes[key].url,
+  provenance:'Estratégia editorial; confira a rotação e os modificadores reais no jogo.'
+ };
 }
 function visualMode(){try{return localStorage.getItem(PREF)==='original'?'original':'chat';}catch(_){return 'chat';}}
 window.v09SetVisualMode=function(value){
@@ -263,6 +282,6 @@ function enhance(){
  }
  renderVariants();renderEndgame();renderVerifiedEndgame();renderOcrTip();enhanceEditorial();
 }
-window.NexusV09={enhance:enhance,visualMode:visualMode,version:'0.9'};
+window.NexusV09={enhance:enhance,visualMode:visualMode,bossContext:bossContext,version:'0.9'};
 enhance();
 })();
