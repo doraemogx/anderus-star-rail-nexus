@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Portable backup and verified transfer between devices.
+ if(!document.getElementById('nexus-backup-css')){
+  const css=document.createElement('link');css.id='nexus-backup-css';css.rel='stylesheet';css.href='./nexus-backup.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-backup-js')){
+  const script=document.createElement('script');script.id='nexus-backup-js';script.src='./nexus-backup.js';script.defer=true;document.head.appendChild(script);
+ }
  // Universal search in the existing header, with Ctrl/Cmd+K shortcut.
  if(!document.getElementById('nexus-search-css')){
   const css=document.createElement('link');css.id='nexus-search-css';css.rel='stylesheet';css.href='./nexus-search.css';document.head.appendChild(css);
