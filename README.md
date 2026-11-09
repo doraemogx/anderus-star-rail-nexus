@@ -1,35 +1,52 @@
 # ANDERUS — STAR RAIL NEXUS
 
-## Versão 0.4 — Expresso Astral
+Hub independente de **Honkai: Star Rail**, com foco em dados reais, usabilidade mobile-first e builds persistentes.
 
-Site mobile-first hospedado no GitHub Pages:
-https://doraemogx.github.io/anderus-star-rail-nexus/
+**Produção (GitHub Pages):** https://doraemogx.github.io/anderus-star-rail-nexus/
 
-A página inicial foi reorganizada a partir do conceito aprovado: Caelus, seis caminhos ilustrados, próximo objetivo, futuros banners e acesso à Nexia.
+**Próxima versão:** Nexus 2.0, em revisão na [pull request #1](https://github.com/doraemogx/anderus-star-rail-nexus/pull/1), **ainda não publicada em `main`**.
 
-**Confirmação de banner:** Aeon ★ Aha, conhecida como Nihilux, estreia em 11 de novembro de 2026 na versão 4.7. Reruns da primeira fase: Loba Prateada Nv. 999, Sparxie, Yao Guang. Fonte: anúncio oficial HoYoverse 30/10/2026 e calendário da versão 4.7. Os dados não são atualizados automaticamente nesta versão.
+> O catálogo e as fichas são um projeto de fã, não afiliado à HoYoverse. O localStorage do navegador não se sincroniza automaticamente entre dispositivos.
 
-## Nexia: modo local ou IA real opcional
+## Nexus 2.0 — módulos na branch de revisão
 
-O modo local responde com dados e regras. **Não é um modelo de IA conversacional.**
+| Área | Funcionalidade | Limitação declarada |
+| --- | --- | --- |
+| Minha Conta | Fichas, imagens, Eidolons, cone, seis relíquias, edição manual e histórico reversível de builds | Dados locais; confirmação por print é responsabilidade da pessoa |
+| Importação | Reconhecimento de dois layouts ilustrados e editor com seis peças editáveis | OCR não reconhece todas as imagens; campos incertos não são preenchidos artificialmente |
+| Kit Lab | Habilidades por nível, descrições, Eidolons, rastros e custos provenientes de catálogos PT-BR | Informações estruturadas de fonte comunitária; números não presentes não são inventados |
+| Pom-Pom | Recomendações determinísticas contextualizadas por build; explicações detalhadas expansíveis | Não calcula DPS real nem inventa composição ideal |
+| Team Lab | Equipes de quatro personagens realmente cadastrados e salvamento no backup local | Papéis por Caminho não substituem simulação de combate |
+| Farm | Ascensão, rastros, níveis e estoque de materiais compartilhado | Não estima drops de runs sem taxa verificada; custos incompletos são sinalizados |
+| Orçamento Global | Soma necessidades de ascensão e rastros, descontando estoque uma única vez | Metas de ascensão precisam ser registradas; níveis desconhecidos ficam de fora |
+| Warp Advisor | Pity, garantias, passes/jades, cenários de até E6 e S5, meta de pior caso | O modelo probabilístico conservador **não inclui soft pity** não publicado |
+| Endgame | Modificadores e datas de 4.6, chefes e recomendações vinculadas ao elenco | Mecanismos oficiais separados de guias editoriais; rotação vencida deve ser conferida |
+| Theme Studio | Versões original e Aha Grand Theatre; tema aplicado também aos diálogos | Pode exigir verificação visual em diferentes navegadores |
+| Pesquisa | Personagens, cones, relíquias e materiais pelo catálogo PT-BR | Não é pesquisa na Internet nem substitui fonte oficial |
+| Notificações | Revisões beta marcadas como não confirmadas e diffs de catálogo | Não são push; dependem dos snapshots disponíveis no repositório |
+| PWA | Cache de arquivos de interface, aviso de nova versão e diagnóstico | Cache e `localStorage` são separados por dispositivo |
+| Backup | JSON de exportação, mesclagem, substituição e salvamento de segurança | A transferência é manual; a nuvem não é sincronizada |
 
-A pasta [`worker/`](./worker) contém o backend opcional Cloudflare Workers AI, usando o modelo `@cf/meta/llama-3.3-70b-instruct-fp8-fast`. Ele **ainda não está implantado**. Após instalar na conta Cloudflare gratuita do proprietário:
+## Testes
 
-1. Criar um Cloudflare Worker (plano Free), por exemplo `nexia-ai-nexus`.
-2. Carregar o código de `worker/index.js`.
-3. Configurar o binding de Workers AI com o nome `AI` (já documentado em `worker/wrangler.jsonc`).
-4. Publicar e obter seu endereço `https://...workers.dev`.
-5. No Nexus, abrir **Menu > Configurações > Conectar uma IA de verdade**, colar a URL HTTPS e salvar.
-6. Abrir Nexia e testar uma pergunta sobre os personagens registrados.
+Na branch, as GitHub Actions executam os testes de sintaxe, integridade de kits, materiais, rastros, Eidolons, backups, metas, importação sem perda de dados, probabilidades de Warp e datas do Endgame.
 
-**Custos:** o Cloudflare Workers AI tem uma franquia gratuita sujeita a limites. Não configure modalidade paga se desejar custo zero. A assinatura ChatGPT é separada da API OpenAI. O código não contém chaves secretas.
+O teste `scripts/browser-smoke.mjs` usa Chromium real em 390 e 1440 pixels, inclui importação parcial, seis peças, edição e persistência, dados do Pom-Pom, busca, Team Lab, Farm, materiais, Warp, tema, notificações e backup; captura também a Home em 320, 360, 390, 430, 768, 1024, 1440 e 1920 pixels. Consulte as execuções e imagens na aba Actions do GitHub. Uma execução bem-sucedida não certifica todos os layouts ou dispositivos reais.
 
-**Segurança:** o exemplo valida origem e usa limitação básica temporária por IP; isso não equivale a autenticação robusta. Configure controles adicionais de taxa no Cloudflare antes de disponibilizar amplamente. Quando a IA estiver conectada, ela receberá a pergunta e um resumo de personagens, Eidolons e atributos registrados; não adicione dados sensíveis.
+## Atualização de dados
 
-## Estado do protótipo
+Os scripts em `scripts/` sincronizam os catálogos estruturados `live-game`, custos de ascensão, rastros, imagens de Eidolons e assinaturas visuais de relíquias. Os scripts de sincronização novos fazem validações de contagem/cobertura e evitam substituir dados íntegros por uma resposta upstream incompleta.
 
-- Implementado: interface, catálogo, fichas, Eidolons, troca de temas, navegação, registros locais, modo local Nexia.
-- Parcial: planejamento de materiais, equipes de Endgame, Radar, conteúdo de kit sob disponibilidade das fontes.
-- Não implementado: atualização automática a cada 3 horas, importação integral de prints, estimativa robusta de ciclos, serviço de IA já ativado.
+As rotações de Endgame confirmadas na nota 4.6 foram registradas com datas, fonte e status de verificação. Bônus da Arbitragem das Anomalias não verificados nessa nota permanecem explicitamente identificados como não confirmados.
 
-Projeto independente de fã, não afiliado à HoYoverse. As imagens e propriedades intelectuais pertencem aos respectivos titulares.
+**Importante:** rotinas de atualização que têm `checkout ref: main` só passam a operar com os scripts novos depois da publicação deles em `main`. A branch de revisão não atualiza a produção automaticamente.
+
+## IA opcional
+
+O Pom-Pom local usa regras e dados estruturados — não é um LLM conversacional. A pasta `worker/` oferece um Worker opcional para IA conversacional com Cloudflare Workers AI. O Worker **não está automaticamente implantado**: é preciso publicar e conectar a URL nas configurações. Antes de enviar dados da conta a um serviço de terceiros, verifique a política de privacidade e os limites da API.
+
+## Documentação de QA
+
+Veja [Auditoria do vídeo de 09/11/2026](./docs/AUDITORIA-VIDEO-2026-11-09.md). A versão pública só deve ser promovida depois de validar os fluxos críticos, os prints de importação que motivaram o projeto e os dois tipos de navegação (celular/desktop).
+
+*Última revisão do conteúdo: 09/11/2026.*
