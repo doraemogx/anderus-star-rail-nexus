@@ -6,21 +6,25 @@ const BASE='https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 let dataPromise=null,query='',category='all';
-const categories={all:'Tudo',character:'Personagens',cone:'Cones de Luz',set:'Conjuntos de relíquias',item:'Relíquias'};
+const categories={all:'Tudo',character:'Personagens',cone:'Cones de Luz',set:'Conjuntos de relíquias',item:'Relíquias',material:'Materiais'};
 function load(){
- if(!dataPromise)dataPromise=fetch('./data/live-game.json',{cache:'no-store'}).then(r=>{
-  if(!r.ok)throw Error('Catálogo indisponível: '+r.status);return r.json();
- }).catch(e=>{dataPromise=null;throw e});
+ if(!dataPromise)dataPromise=Promise.all([
+  fetch('./data/live-game.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Catálogo indisponível: '+r.status);return r.json();}),
+  fetch('./data/ascension-materials.json',{cache:'no-store'}).then(r=>r.ok?r.json():{items:{}}),
+  fetch('./data/character-traces.json',{cache:'no-store'}).then(r=>r.ok?r.json():{items:{}})
+ ]).then(([game,ascension,traces])=>({
+  ...game,materials:{...(traces.items||{}),...(ascension.items||{})}
+ })).catch(e=>{dataPromise=null;throw e});
  return dataPromise;
 }
 function entries(data){
  const list=[];
- const groups=[['character',data.chars||{}],['cone',data.cones||{}],['set',data.relicSets||{}],['item',data.relics||{}]];
+ const groups=[['character',data.chars||{}],['cone',data.cones||{}],['set',data.relicSets||{}],['item',data.relics||{}],['material',data.materials||{}]];
  for(const [type,group] of groups){
   for(const [id,row] of Object.entries(group)){
    if(!row?.name)continue;
    list.push({type,id,name:row.name,icon:row.icon||row.portrait||'',path:row.path||'',rarity:row.rarity||null,
-    setId:row.set_id||null,haystack:norm(row.name+' '+id)});
+    setId:row.set_id||null,haystack:norm(row.name+' '+id+' '+(row.tag||''))});
   }
  }
  return list;
@@ -77,10 +81,10 @@ function openResult(type,id){
  }
  // For catalogue records without a full dossier, show their real structured data.
  load().then(g=>{
-  const row=({cone:g.cones,set:g.relicSets,item:g.relics})[type]?.[id];
+  const row=({cone:g.cones,set:g.relicSets,item:g.relics,material:g.materials})[type]?.[id];
   if(!row)return;
   const out=document.createElement('dialog');out.className='nexus-search-detail';
-  const safeObject=Object.entries(row).filter(([key])=>['name','rarity','path','type','desc','max_level','set_id'].includes(key));
+  const safeObject=Object.entries(row).filter(([key])=>['name','rarity','path','type','desc','max_level','set_id','come_from'].includes(key));
   out.innerHTML='<header><h2>'+esc(row.name)+'</h2><button type="button" aria-label="Fechar">×</button></header>'+
    '<dl>'+safeObject.map(([key,value])=>'<dt>'+esc(key)+'</dt><dd>'+esc(Array.isArray(value)?value.join(' · '):String(value))+'</dd>').join('')+'</dl>'+
    '<p>Fonte: catálogo de dados PT-BR sincronizado. Não há ficha interativa completa desta categoria nesta versão.</p>';
