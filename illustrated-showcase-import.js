@@ -161,7 +161,13 @@ export function plausibleRelicValue(stat,value,slot,main){
      'Bônus de Dano Quântico','Bônus de Dano Imaginário'].includes(stat)&&value<=110;
    return ['PV %','ATQ %','DEF %','Regeneração de Energia','Efeito de Quebra'].includes(stat)&&value<=110;
  }
- const ranges={'PV':650,'ATQ':275,'DEF':275,'VEL':19,'Chance de CRIT':23,
+ if(stat==='ATQ'){
+  const rolls=[[16,23],[32,46],[48,69],[64,92],[80,115],[96,138]];
+  if(!rolls.some(([low,high])=>value>=low&&value<=high))return false;
+ }
+ if(stat==='Chance de CRIT'&&value<2.5)return false;
+ if(stat==='Dano CRIT'&&value<5)return false;
+ const ranges={'PV':650,'ATQ':138,'DEF':275,'VEL':19,'Chance de CRIT':23,
   'Dano CRIT':47,'PV %':54,'ATQ %':54,'DEF %':54,
   'Taxa de Acerto de Efeito':55,'RES a Efeito':55,'Efeito de Quebra':70};
  return Object.hasOwn(ranges,stat)&&value<=ranges[stat];
@@ -184,8 +190,11 @@ export function verifiedMainAt15(stat,slot,level){
 }
 export function relicValueFromText(text,stat,slot,main=false){
  const raw=String(text||'').replace(/\s+/g,' ').trim();
- // An explicit percentage is required when the substat is percentage-based.
  if(!raw)return null;
+ const pct=stat.includes('%')||['Chance de CRIT','Dano CRIT','Efeito de Quebra','RES a Efeito',
+  'Taxa de Acerto de Efeito','Regeneração de Energia','Bônus de Cura Realizada'].includes(stat)
+  ||stat.startsWith('Bônus de Dano');
+ if(!main&&pct&&!/%|\d[.,]\d/.test(raw))return null;
  const value=parseNumber(raw);
  return plausibleRelicValue(stat,value,slot,main)?value:null;
 }
@@ -214,8 +223,9 @@ async function relicRows(worker,bitmap,progress){
      if(value===null&&stat){
        for(const variant of ['high','soft']){
          const retry=await ocr(worker,bitmap,loc.value,7,variant,'0123456789.,%');
-         const parsed=relicValueFromText(retry,stat,i,j===0);
-         if(parsed!==null){amount=retry;value=parsed;break;}
+         const revisedStat=inferStat(line,retry)||stat;
+         const parsed=relicValueFromText(retry,revisedStat,i,j===0);
+         if(parsed!==null){stat=revisedStat;amount=retry;value=parsed;break;}
        }
      }
      // Level +15 fixes main-stat OCR truncations (4.8% vs 64.8%, etc.).
