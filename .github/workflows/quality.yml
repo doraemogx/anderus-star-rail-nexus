@@ -68,6 +68,8 @@ jobs:
         run: node scripts/check-pompom-chat.mjs
       - name: Pesquisa bilíngue com IDs canônicos
         run: node scripts/check-search-aliases.mjs
+      - name: Busca de chefes, mecânicas e proveniência editorial
+        run: node scripts/check-boss-search.mjs
       - name: Kit Lab 2.0 — dados, interpolação e imagens
         run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
