@@ -684,7 +684,7 @@
     if(EIDO_ART[state.theme]?.[5])imgs.push(['eidolon','Fragmento E6',EIDO_ART[state.theme][5]]);
     return '<div class="v06-themes">'+subhead('ATELIÊ DO EXPRESSO','Theme Studio','Transforme o Nexus inteiro — ilustrações, navegação, molduras, ícones, fontes, ornamentos e movimento.')+
       '<div class="v06-theme-stage"><div class="v06-theme-stage-art"><img src="'+safe(art==='eidolon'&&EIDO_ART[state.theme]?.[5]?EIDO_ART[state.theme][5]:art==='preview'?(imgSrc(state.theme,'preview')||look.art):look.art)+'" alt="'+safe(c.name)+'"></div><div class="v06-theme-caption"><span class="v06-kicker">IDENTIDADE ATIVA</span><h2>'+safe(c.name)+'</h2><p>'+look.text+' '+safe(look.group.toUpperCase())+' · '+safe(look.shape)+'</p><span>INTERFACE PERSONALIZADA</span></div></div>'+
-      '<div class="v06-theme-restore"><button onclick="setTheme(\'8001\')">✦ Restaurar tema padrão · Expresso Astral</button></div>'+
+      '<div class="v06-theme-restore"><button onclick="v06PreviewTheme(\'8001\')">✦ Prévia do padrão · Expresso Astral</button><button onclick="v06RestorePreviousTheme()">↶ Restaurar tema anterior</button></div>'+
       '<div class="v06-theme-swatches"><span>TIPOGRAFIA</span><strong style="font-family:'+look.font+'">'+safe(c.name)+'</strong><span>PALETA</span><div class="v06-swatches">'+look.color.map(a=>'<i style="background:'+a+'"></i>').join('')+'</div><span>ÍCONE & MOLDURA</span><strong>'+look.text+' '+safe(look.shape)+'</strong></div>'+
       '<div class="v06-sectionline"><h2>Escolher arte do tema</h2><small>Variações disponíveis</small></div><div class="v06-art-picks">'+imgs.map(([k,label,url])=>'<button class="'+(art===k?'active':'')+'" onclick="v06SetArt(\''+k+'\')"><img src="'+safe(url)+'" loading="lazy" alt=""><span>'+safe(label)+'</span></button>').join('')+'</div>'+
       '<div class="v06-sectionline"><h2>Biblioteca de identidades</h2><small>'+CATALOG.length+' opções</small></div><label class="v06-search">⌕ <input type="search" placeholder="Buscar qualquer personagem…" value="'+safe(themeSearch)+'" oninput="themeSearch=this.value;v06ThemeCards()"></label>'+
@@ -693,9 +693,42 @@
   };
   function v06ThemeItems(){
     const matches=CATALOG.filter(c=>!themeSearch||norm(c.name).includes(norm(themeSearch)));
-    return matches.map(c=>'<button class="'+(c.id===state.theme?'active':'')+'" onclick="setTheme(\''+c.id+'\')"><img src="'+safe(c.id==='future-aha'?ahaOfficial:imgSrc(c.id,'preview'))+'" loading="lazy" alt="'+safe(c.name)+'" onerror="this.style.display=\'none\'"><span>'+safe(c.name)+'</span></button>').join('');
+    return matches.map(c=>'<button class="'+(c.id===state.theme?'active':'')+'" onclick="v06PreviewTheme(\''+c.id+'\')"><img src="'+safe(c.id==='future-aha'?ahaOfficial:imgSrc(c.id,'preview'))+'" loading="lazy" alt="'+safe(c.name)+'" onerror="this.style.display=\'none\'"><span>'+safe(c.name)+'</span><small>Visualizar identidade</small></button>').join('');
   }
   window.v06ThemeCards=()=>{let e=document.getElementById('v06-theme-grid');if(e)e.innerHTML=v06ThemeItems()};
+  // Preview is deliberately independent from state.theme and character inventory.
+  // The current theme is saved as undo history only when the user confirms.
+  window.v06PreviewTheme=function(id){
+    const destination=CATALOG.find(c=>c.id===id);
+    if(!destination)return;
+    const candidate=selectLook(id),previous=selectLook(state.theme);
+    const swatches=look=>'<div class="v06-preview-colors">'+look.color.map(color=>'<i style="background:'+safe(color)+'"></i>').join('')+'</div>';
+    const preview='<section class="v06-theme-preview">'+
+      '<p>Veja a identidade antes de aplicá-la. Suas builds, equipamentos, equipe e progresso não serão alterados.</p>'+
+      '<div class="v06-theme-compare">'+
+       '<article><small>ATUAL</small><img src="'+safe(previous.art)+'" alt="Arte do tema atual" loading="lazy"><h3>'+safe(lookup(state.theme).name)+'</h3>'+swatches(previous)+'</article>'+
+       '<article><small>PRÉVIA · NÃO APLICADA</small><img src="'+safe(candidate.art)+'" alt="Arte da identidade escolhida" loading="lazy"><h3>'+safe(destination.name)+'</h3>'+swatches(candidate)+'</article></div>'+
+      '<p class="v06-theme-preview-notice">A prévia apresenta a arte e os tokens do tema. Layout e efeitos podem depender da seção, e uma identidade de personagem não equivale ao Grand Theatre da Aeon Aha.</p>'+
+      '<div class="v06-theme-preview-actions"><button type="button" class="v06-secondary" onclick="closeModal()">Cancelar</button>'+
+       '<button type="button" class="v06-primary" data-commit-theme="'+safe(id)+'">Aplicar identidade selecionada</button></div></section>';
+    showModal('Prévia de tema · '+destination.name,preview);
+  };
+  window.v06RestorePreviousTheme=function(){
+    const previous=localStorage.getItem('nexus-previous-theme');
+    if(!previous||!CATALOG.some(c=>c.id===previous)){showToast('Ainda não há um tema anterior para restaurar.');return;}
+    const current=state.theme;
+    localStorage.setItem('nexus-previous-theme',current);
+    setTheme(previous);
+  };
+  document.addEventListener('click',event=>{
+    const button=event.target.closest?.('[data-commit-theme]');
+    if(!button)return;
+    const id=button.dataset.commitTheme;
+    if(!CATALOG.some(c=>c.id===id))return;
+    if(state.theme!==id)localStorage.setItem('nexus-previous-theme',state.theme);
+    closeModal();
+    setTheme(id);
+  });
   window.v06SetArt=kind=>{state.v06Art||={};state.v06Art[state.theme]=kind;save();refresh();};
   const originalApply=applyTheme;
   applyTheme=function(){
