@@ -199,8 +199,8 @@
   function profile06(){
     const id=state.profile||'1503', c=lookup(id),b=state.characters[id],look=selectLook(id),pic=state.v06Art?.[id]==='preview'?imgSrc(id,'preview'):look.art;
     const active=tab||'overview';
-    const switches=[['overview','Atributos'],['kit','Kit e rastros'],['eidolons','Eidolons'],['relics','Relíquias'],['teams','Equipes']];
-    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='eidolons'?profileEidolons(id,b):active==='relics'?profileRelics(id,b):profileTeams(id,b);
+    const switches=[['overview','Atributos'],['kit','Kit e rastros'],['eidolons','Eidolons'],['cone','Cone de Luz'],['relics','Relíquias'],['teams','Equipes']];
+    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):profileTeams(id,b);
     const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
     return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
     '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
@@ -336,19 +336,106 @@
   };
 
   profileKit=function(id){return base.profileKit(id)+pomCard('Como interpretar o kit','O texto do jogo e seus multiplicadores estão acima. Nas explicações práticas, observe gatilho, custo, duração, aliados elegíveis e a ordem das ações. Dados de beta são identificados separadamente.','KIT COMPLETO');};
-  profileRelics=function(id,b){
-    const detail=state.v06RelicDetails?.[id];
-    if(detail?.length){
-      const images=state.v06Relics?.[id]||[];
-      setTimeout(()=>{
-        import('./relic-inspector.js?v=3').then(m=>m.renderRelicSummary(detail,images))
-          .then(html=>{const root=document.getElementById('v06-relic-saved');if(root)root.innerHTML=html;})
-          .catch(err=>console.warn('Não foi possível exibir conjuntos',err));
-      },0);
+
+  function accountStatOptions(current){
+    const choices=['',...(nexusAccount?.STATS||[])];
+    return choices.map(value=>'<option value="'+safe(value)+'" '+(current===value?'selected':'')+'>'+safe(value||'Selecione o atributo')+'</option>').join('');
+  }
+  function accountSetOptions(current,slot){
+    const list=Object.values(nexusAccountCatalog?.relicSets||{}).filter(set=>
+      slot<4?Number(set.id)<300:Number(set.id)>=300).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
+    if(current&&!list.some(x=>String(x.id)===String(current)))
+      list.unshift({id:current,name:'Conjunto salvo · '+current});
+    return '<option value="">Selecione o conjunto</option>'+
+      list.map(set=>'<option value="'+safe(set.id)+'" '+(String(set.id)===String(current)?'selected':'')+'>'+safe(set.name)+'</option>').join('');
+  }
+  function renderAccountCoach(id){
+    const b=state.characters?.[id]||{};
+    if(!nexusAccount||!nexusAccountCatalog){
+      readyAccount();
+      return '<div class="v11-coach-loading" role="status">Conferindo a build, os conjuntos e o cone equipado…</div>';
     }
-    return base.profileRelics(id,b)+(detail?.length?'<div id="v06-relic-saved">Carregando detalhes do equipamento...</div>':'')+(state.v06Relics?.[id]?.length?'<section class="v06-relic-shots"><h3>Relíquias extraídas do seu print</h3><div>'+state.v06Relics[id].map((src,i)=>'<img loading="lazy" src="'+src+'" alt="Captura da relíquia '+(i+1)+'">').join('')+'</div><p>As imagens estão guardadas neste navegador. Confirme os atributos e o conjunto antes de comparar builds.</p></section>':'')+pomCard('Como priorizar seus subatributos','Um bom conjunto precisa de atributos úteis, velocidade efetiva e sincronização com a equipe. Sem as seis relíquias e os buffs de combate, não existe nota de build definitiva.','RELÍQUIAS');};
-
-
+    const character=nexusAccountCatalog.chars?.[id]||lookup(id)||{};
+    const cone=accountCone(id),rank=cone?nexusAccountCatalog.coneRanks?.[cone.id]:null;
+    const notes=nexusAccount.buildCoach({
+      character,build:b,records:accountRecords(id),sets:nexusAccountCatalog.relicSets||{},cone,coneRank:rank
+    });
+    return '<section class="v11-coach" aria-label="Análise individual do Pom-Pom"><div class="v11-coach-head"><img src="'+v06Asset('pompom')+'" alt="Pom-Pom" loading="lazy"><div><span class="v06-kicker">LEITURA DA SUA CONTA</span><h3>Pom-Pom analisa sua build</h3><p>Dados registrados · recomendações e verificações, não uma nota genérica</p></div></div>'+
+      '<div class="v11-coach-list">'+notes.map((item,i)=>'<article class="v11-coach-note '+safe(item.kind)+'"><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><div><strong>'+safe(item.title)+'</strong><p>'+safe(item.body)+'</p></div></article>').join('')+'</div>'+
+      '<div class="v11-coach-actions"><button type="button" onclick="v11ProfileTab(\'relics\')">Conferir relíquias</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>';
+  }
+  window.v11ProfileTab=function(key){tab=key;refresh();};
+  function profileCone(id,b){
+    if(!nexusAccount||!nexusAccountCatalog){
+      readyAccount();
+      return '<section class="v11-cone-panel"><p role="status">Carregando a ficha do cone equipado…</p></section>';
+    }
+    const cone=accountCone(id);
+    if(!b?.cone||!cone)return '<section class="v11-cone-panel"><span class="v06-kicker">CONE DE LUZ EQUIPADO</span><h2>'+safe(b?.cone||'Nenhum cone cadastrado')+'</h2><p>Este cone não foi identificado pelo nome salvo. Abra a edição da build para conferir a grafia.</p><button onclick="editBuild(\''+id+'\')">Editar equipamento</button></section>';
+    const rank=nexusAccountCatalog.coneRanks?.[cone.id],effect=nexusAccount.coneEffect(rank,b?.s||1);
+    const artwork=cone.portrait||cone.preview||cone.icon,src=artwork?STR+artwork:'';
+    const compatible=(nexusAccountCatalog.chars?.[id]?.path||gameData.chars?.[id]?.path)===cone.path;
+    const star='★'.repeat(Math.max(1,Math.min(5,Number(cone.rarity||5))));
+    return '<section class="v11-cone-panel"><div class="v11-cone-top"><div class="v11-cone-art">'+(src?'<img loading="lazy" src="'+safe(src)+'" alt="Arte do cone '+safe(cone.name)+'" onerror="this.hidden=true;this.parentElement.classList.add(\'no-art\')">':'')+'</div>'+
+      '<div class="v11-cone-copy"><span class="v06-kicker">CONE DE LUZ EQUIPADO · S'+Number(b?.s||1)+'</span><h2>'+safe(cone.name)+'</h2><p class="v11-cone-stars">'+star+'</p><p>Caminho: '+safe(nexusAccount.PATHS[cone.path]||cone.path||'Não informado')+'</p><p class="v11-cone-path '+(compatible?'good':'warning')+'">'+(compatible?'✓ Caminho compatível com a personagem':'⚠ Caminho diferente; o efeito passivo pode não ativar')+'</p></div></div>'+
+      '<div class="v11-cone-effect"><small>HABILIDADE DO CONE · SOBREPOSIÇÃO S'+Number(b?.s||1)+'</small><h3>'+safe(rank?.skill||'Habilidade de cone')+'</h3><p>'+safe(effect||'A descrição do efeito ainda não está disponível no catálogo sincronizado.')+'</p></div>'+
+      '<div class="v11-cone-foot"><button type="button" onclick="editBuild(\''+id+'\')">Alterar cone ou sobreposição</button><button type="button" onclick="v11ProfileTab(\'overview\')">← Voltar aos atributos</button></div>'+
+      '<p class="v11-source">Fonte: catálogo PT-BR sincronizado do jogo. Os valores foram resolvidos para a sobreposição salva; alterações feitas no jogo precisam de nova importação.</p></section>';
+  }
+  function profileRelicCard(id,index,p,images){
+    const real=nexusAccount,subs=p.subs||[],present=Boolean(p.setId||p.main?.stat),main=p.main?.stat||'Atributo principal pendente';
+    const mainValue=p.main?.value===null||p.main?.value===undefined?'—':real.pretty(main,p.main.value);
+    const warnings=(!p.setId?'Conjunto pendente. ':'')+(subs.filter(s=>!s.stat||s.value===null).length?'Confira os subatributos.':'');
+    const src=images?.[index]||'';
+    return '<article class="v11-relic-card '+(present?'is-saved':'is-pending')+'"><button type="button" class="v11-relic-open" onclick="v11EditRelic(\''+id+'\','+index+')" aria-label="Ver e editar '+safe(p.slot)+'">'+
+      '<span class="v11-relic-image">'+(src?'<img loading="lazy" src="'+safe(src)+'" alt="Recorte da relíquia '+safe(p.slot)+'">':'<span>✦</span>')+'</span>'+
+      '<span class="v11-relic-title"><small>0'+(index+1)+' · '+safe(p.slot)+' '+(p.level!==null?'+'+p.level:'')+'</small><strong>'+safe(p.setId?accountSetName(p):present?'Conjunto não identificado':'Não registrado')+'</strong><em>'+safe(main)+' · '+safe(mainValue)+'</em></span><span class="v11-open-arrow">›</span></button>'+
+      '<div class="v11-relic-subs">'+subs.filter(s=>s.stat&&s.value!==null).map(s=>'<span>'+safe(s.stat)+' <b>'+safe(real.pretty(s.stat,s.value))+'</b></span>').join('')+'</div>'+
+      (warnings?'<p class="v11-relic-warning">'+safe(warnings)+'</p>':'')+'</article>';
+  }
+  profileRelics=function(id,b){
+    if(!nexusAccount){
+      readyAccount();
+      return '<section class="v11-relics"><p role="status">Carregando os equipamentos já salvos na sua conta…</p></section>';
+    }
+    const rows=accountRecords(id),analysis=nexusAccount.examineRelics(rows),images=state.v06Relics?.[id]||[];
+    return '<section class="v11-relics"><div class="v11-section-lead"><span class="v06-kicker">EQUIPAMENTO · SUA CONTA</span><h2>Relíquias equipadas</h2><p>'+analysis.registered+'/6 peças registradas · '+analysis.complete+'/6 completas. Toque em uma peça para revisar conjunto, atributo principal e subatributos.</p></div>'+
+      '<div class="v11-relic-grid">'+rows.map((piece,i)=>profileRelicCard(id,i,piece,images)).join('')+'</div>'+
+      '<div class="v11-actions"><button type="button" onclick="v06StartImport(\''+id+'\')">⇧ Atualizar equipamentos pelo print</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>'+
+      renderAccountCoach(id);
+  };
+  window.v11EditRelic=async function(id,index){
+    await readyAccount();
+    if(!nexusAccount||!state.characters?.[id])return showToast('Não foi possível abrir a edição. Verifique sua conexão.');
+    const r=accountRecords(id)[index];if(!r)return;
+    const main='<div class="v11-edit-row"><label>Principal<select name="main">'+accountStatOptions(r.main?.stat||'')+'</select></label><label>Valor<input name="mainval" inputmode="decimal" value="'+safe(r.main?.value??'')+'"></label></div>';
+    const subs=(r.subs||[]).map((sub,n)=>'<div class="v11-edit-row"><label>Subatributo '+(n+1)+'<select name="sub'+n+'">'+accountStatOptions(sub.stat||'')+'</select></label><label>Valor<input inputmode="decimal" name="value'+n+'" value="'+safe(sub.value??'')+'"></label></div>').join('');
+    const html='<form class="v11-edit-form" onsubmit="v11SaveRelic(event,\''+id+'\','+index+')">'+
+      '<p>Os campos abaixo são os mesmos utilizados no resumo da build e nas dicas do Pom-Pom. Editar aqui atualiza todas as abas.</p>'+
+      '<label>Conjunto equipado<select name="set">'+accountSetOptions(r.setId,index)+'</select></label>'+
+      '<label>Nível da peça<input name="level" type="number" min="0" max="15" value="'+safe(r.level??'')+'"></label>'+
+      main+'<h3>Quatro subatributos</h3>'+subs+
+      '<button class="v06-primary" type="submit">Salvar esta relíquia</button><button type="button" class="v06-secondary" onclick="closeModal()">Cancelar</button></form>';
+    showModal('Equipamento · '+nexusAccount.SLOTS[index],html);
+  };
+  window.v11SaveRelic=function(event,id,index){
+    event.preventDefault();
+    if(!nexusAccount||!state.characters?.[id])return;
+    const fd=new FormData(event.target),num=k=>nexusAccount.numeric(fd.get(k));
+    const records=accountRecords(id),r=records[index];
+    const stat=String(fd.get('main')||''),value=num('mainval'),level=num('level');
+    if(stat&&value===null){showToast('Preencha o valor do atributo principal.');return;}
+    const setId=String(fd.get('set')||'');
+    r.setId=setId;r.setName=nexusAccountCatalog?.relicSets?.[setId]?.name||r.setName||'';
+    r.level=level;r.main={stat,value};
+    r.subs=Array.from({length:4},(_,i)=>({stat:String(fd.get('sub'+i)||''),value:num('value'+i)}));
+    if(r.subs.some(x=>x.stat&&x.value===null)){showToast('Confira os valores dos subatributos escolhidos.');return;}
+    records[index]=r;
+    const corrected=nexusAccount.normalizeRelics(records,null,nexusAccountCatalog?.relicSets||{});
+    state.v06RelicDetails||={};state.v06RelicDetails[id]=corrected;
+    state.characters[id].relics=nexusAccount.toLegacy(corrected,nexusAccountCatalog?.relicSets||{},state.characters[id].relics||{});
+    save();closeModal();tab='relics';refresh();showToast('Relíquia atualizada em todas as abas');
+  };
 
   let eidoModalSequence=0;
   function eidoModalContent(id,n,rank,loading=false,error=''){
