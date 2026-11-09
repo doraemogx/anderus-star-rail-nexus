@@ -8,6 +8,7 @@ on:
       - 'nexus-account.css'
       - 'scripts/browser-smoke.mjs'
       - '.github/workflows/browser-ux.yml'
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
