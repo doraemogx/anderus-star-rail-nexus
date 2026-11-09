@@ -1,0 +1,12 @@
+#nexus-diagnostics-button{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:900;border:1px solid #bda46c;border-radius:999px;padding:9px 14px;color:#f8edcf;background:#172135;box-shadow:0 6px 24px #0007;font:600 12px/1.3 system-ui,sans-serif;cursor:pointer}
+#nexus-diagnostics-button:focus-visible,#nexus-diagnostics-dialog button:focus-visible{outline:3px solid #f3d38f;outline-offset:3px}
+#nexus-diagnostics-dialog{color:#f4eedf;background:#101a2b;border:1px solid #bda46c;border-radius:16px;max-width:min(540px,calc(100vw - 24px));width:100%;max-height:85vh;overflow:auto;padding:24px;box-shadow:0 16px 80px #000b}
+#nexus-diagnostics-dialog::backdrop{background:#000b}
+#nexus-diagnostics-dialog h2{font:700 clamp(19px,4vw,26px)/1.3 system-ui;margin:0}
+#nexus-diagnostics-dialog p{font:400 14px/1.6 system-ui}
+.nexus-diag-head,.nexus-diag-actions{display:flex;justify-content:space-between;gap:12px;align-items:center}
+#nexus-diagnostics-dialog button{background:#273852;color:#fff;border:1px solid #bda46c;border-radius:8px;padding:10px;cursor:pointer}
+#nexus-diag-report dl{display:grid;grid-template-columns:minmax(95px,1fr) minmax(0,2fr);gap:10px;border-top:1px solid #546075;padding-top:14px;font:13px/1.5 system-ui}
+#nexus-diag-report dt{color:#e4d2a6}#nexus-diag-report dd{margin:0;overflow-wrap:anywhere}
+.nexus-diag-actions{justify-content:flex-start;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){#nexus-diagnostics-button{transition:none}}
