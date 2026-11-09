@@ -230,17 +230,20 @@ export async function readIllustratedShowcase(bitmap,worker,{characters=[],coneN
     rawSuper.match(/sobreposi\D{0,8}([1-5])/i);
  const e=classifyEidolons(bitmap);
  const level=Number((levelText.match(/\b([1-8]\d)\b/)||[])[1])||80;
- let relics=null,relicSets=null;
+ let relics=null,relicSets=null,relicSetError='';
  if(includeRelics){
    try{
      const matcher=await import('./illustrated-relic-matcher.js?v=1');
      relicSets=await matcher.recognizeIllustratedRelicSets(bitmap,progress);
-   }catch(error){console.warn('Reconhecimento de conjuntos:',error);}
+   }catch(error){
+     relicSetError=String(error?.message||error);
+     console.warn('Reconhecimento de conjuntos:',error);
+   }
    try{relics=await relicRows(worker,bitmap,progress);}
    catch(error){console.warn('Leitura das relíquias:',error);}
  }
  return {layout:'illustrated-2000x2300',title,character,level,cone,superimposition:nSuper?+nSuper[1]:null,
-     eidolon:e.value,eidolonScores:e.brightRatios,totals,relics,relicSets,
+     eidolon:e.value,eidolonScores:e.brightRatios,totals,relics,relicSets,relicSetError,
      diagnostics:{rawCone,rawSuper,levelText}};
 }
 export function applyShowcaseToForm(report,root=document){
