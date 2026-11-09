@@ -153,3 +153,10 @@ console.log('PASS +15 fixed main stats are corrected only for verified relic lev
 
 
 console.log('PASS assets, all four endgames, variant isolation, lazy theme, PWA');
+
+
+const htmlSource=read('index.html');
+for(const marker of ['function profileRelics(', 'function editBuild(', 'function save(', 'function showModal(', 'function render(', 'let state=', 'const state=', 'function load(', 'function openProfile(', 'function profileOverview(']){
+ const at=htmlSource.indexOf(marker);
+ if(at>=0)console.log('AUDIT_BASE_FUNCTION',marker,'OFFSET',at,htmlSource.slice(at,at+(marker.includes('profileRelics')?4800:marker.includes('editBuild')?2800:1100)).replace(/data:image\\/[^\\\s]+/g,'[inline image]'));
+}
