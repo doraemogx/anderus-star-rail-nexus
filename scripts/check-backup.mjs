@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const source=readFileSync(new URL('../nexus-backup.js',import.meta.url),'utf8');
+const storage=new Map();
+const localStorage={getItem:k=>storage.has(k)?storage.get(k):null,setItem:(k,v)=>storage.set(k,String(v))};
+const window={},context={window,localStorage,structuredClone,JSON,String,Array,Object,Set,Map,Number};
+vm.runInNewContext(source,context,{filename:'nexus-backup.js'});
+const mod=window.NexusBackup;
+assert.ok(mod?.restore&&mod?.validate&&mod?.mergeAccount);
+const original={characters:{'1001':{level:80,e:0}},v06SavedTeams:[],userTheme:'astral'};
+localStorage.setItem('anderus_nexus_v03',JSON.stringify(original));
+const add={kind:'anderus-account-backup',account:{characters:{'1505':{level:80,e:6}},v06SavedTeams:[{id:'team1',members:['1001','1505','1101','1309']}]}};
+const outcome=mod.restore(add,'merge');
+assert.equal(outcome.characters,2);
+const result=JSON.parse(localStorage.getItem('anderus_nexus_v03'));
+assert.equal(result.characters['1001'].level,80);
+assert.equal(result.characters['1505'].e,6);
+assert.equal(result.v06SavedTeams.length,1);
+assert.equal(result.userTheme,'astral');
+assert.equal(JSON.parse(localStorage.getItem('anderus_nexus_backup_before_restore')).characters['1001'].level,80);
+assert.throws(()=>mod.validate({characters:{'1001':{level:1000}}}),/Nível/);
+assert.throws(()=>mod.validate({unknown:1}),/incompatível/);
+console.log('PASS backup validation, non-destructive merge, preserved settings and safety snapshot');
