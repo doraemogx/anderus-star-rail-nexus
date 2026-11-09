@@ -132,6 +132,14 @@ try{
     await page.evaluate(view=>window.route(view),view);
     const rendered=await page.evaluate(()=>Boolean(document.getElementById('stage')?.firstElementChild));
     assert.ok(rendered,'Blank stage after navigating to '+view);
+    if(view==='endgame'){
+      await page.locator('.v09-endgame').first().waitFor({timeout:15000});
+      await page.locator('.v20-official-rotation').first().waitFor({timeout:15000});
+      assert.match(await page.locator('.v20-official-rotation').innerText(),/ROTAÇÃO OFICIAL CONFIRMADA|REGRAS A VERIFICAR/);
+      assert.ok(await page.locator('.v20-official-rotation a[href*="hoyoverse.com"]').count()>0,
+        'Official Endgame modifier must link to source');
+      await page.screenshot({path:'artifacts/endgame-'+device.width+'.png'});
+    }
     assert.equal(errors.length,before,'JavaScript exception while navigating to '+view+': '+errors.slice(before).join(' | '));
   }
   await page.evaluate(()=>window.openProfile('1512'));
