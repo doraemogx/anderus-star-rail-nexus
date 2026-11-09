@@ -1,5 +1,5 @@
 /* Nexus PWA v15: predictable updates, offline account/catalogue support. */
-const CACHE='anderus-shell-v15';
+const CACHE='anderus-shell-v16';
 const CORE=[
  './','./v06.css','./v06.js','./nexus-v07.css','./nexus-v07.js',
  './nexus-v09.css','./nexus-v09.js','./nexus-account.css','./nexus-account-engine.js',
