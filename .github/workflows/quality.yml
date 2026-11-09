@@ -31,6 +31,7 @@ jobs:
           node --check nexus-warp-math.js
           node --check nexus-warp-advisor.js
           node --check nexus-trace-planner.js
+          node --check nexus-relic-optimizer.js
           node --check worker/index.js
       - name: Validar sincronização de dados e rollback
         run: python3 scripts/check-sync-game.py
