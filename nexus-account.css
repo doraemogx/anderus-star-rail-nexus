@@ -103,3 +103,14 @@
 .v11-history-entry li{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;padding:9px;border:1px solid #5b6479;background:#121b2b;border-radius:7px;font-size:12px}
 .v11-history-entry li strong{color:#f4d7ad}
 @media(max-width:520px){.v11-history-entry ul{grid-template-columns:1fr}.v11-history-entry{padding:13px}}
+
+/* Pom-Pom: a concise priority view with disclosure of all secondary findings. */
+.v11-coach-note.v11-coach-collapsed{display:block;padding:0;min-width:0}
+.v11-coach-collapsed>summary{list-style:none;display:flex;align-items:center;gap:11px;padding:12px 13px;min-height:48px;cursor:pointer}
+.v11-coach-collapsed>summary::-webkit-details-marker{display:none}
+.v11-coach-collapsed>summary strong{flex:1;min-width:0;font-size:13px}
+.v11-coach-collapsed>summary:focus-visible{outline:3px solid #ebcf97;outline-offset:-3px}
+.v11-coach-collapsed .v11-coach-expand{color:#f1d6a1;font-size:20px;line-height:1}
+.v11-coach-collapsed[open] .v11-coach-expand{transform:rotate(45deg)}
+.v11-coach-collapsed>p{padding:0 15px 15px 47px;margin:0!important;font-size:13px!important;line-height:1.7!important}
+@media(max-width:680px){.v11-coach-list{grid-template-columns:1fr!important}.v11-coach-note p{font-size:13px;line-height:1.72}}
