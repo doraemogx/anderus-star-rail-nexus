@@ -70,7 +70,7 @@
     const need=Object.values(state.farm||{}).reduce((a,v)=>a+(Number(v.need)||0),0);
     const have=Object.values(state.farm||{}).reduce((a,v)=>a+Math.min(Number(v.need)||0,Number(v.have)||0),0);
     const progress=need?Math.round(100*have/need):null;
-    const heroArt=isDefault?v06Asset('caelus-concept'):(state.v06Art?.[state.theme]==='preview'?imgSrc(state.theme,'preview'):look.art);
+    const heroArt=isDefault?v06Asset('caelus-concept'):(state.v06Art?.[state.theme]==='eidolon'&&EIDO_ART[state.theme]?.[5]?EIDO_ART[state.theme][5]:(state.v06Art?.[state.theme]==='preview'?imgSrc(state.theme,'preview'):look.art));
     const mod=[
       ['♧','Minha Conta','Personagens, prints e progresso',"libraryFilter='owned';route('library')",'account'],
       ['✦','Build Lab','Relíquias, cones e ajustes','v06RouteBuild()','build'],
@@ -112,12 +112,12 @@
       pomCard('Dois arquivos, funções diferentes','Minha Conta contém apenas personagens que você cadastrou. No Catálogo, você pode explorar todos os personagens e os kits futuros sem misturar dicas de investimento com a sua coleção.','SEU PROGRESSO')+'</div>';
   }
   function v06CardList(){
-    let list=CATALOG.filter(c=>c.id!=='future-aha' && !(/stelle/i.test(c.name)&&/800[24680]/.test(c.id)));
+    let list=CATALOG.filter(c=>!(/stelle/i.test(c.name)&&/800[24680]/.test(c.id)));
     if(libraryFilter==='owned')list=list.filter(c=>state.characters[c.id]);
     if(libraryFilter==='favorites')list=list.filter(c=>state.favorites?.includes(c.id));
     if(libSearch)list=list.filter(c=>norm(c.name).includes(norm(libSearch)));
     if(!list.length) return '<div class="v06-empty"><span>✧</span><strong>Nenhum personagem neste filtro.</strong><p>Importe seus primeiros prints ou abra o catálogo completo.</p><button onclick="v06StartImport()">Importar print ＋</button></div>';
-    return list.map(c=>'<button class="v06-char-card" onclick="openProfile(\''+c.id+'\')"><div class="v06-char-art"><img loading="lazy" src="'+safe(imgSrc(c.id,'preview')||imgSrc(c.id,'icon'))+'" alt="'+safe(c.name)+'" onerror="this.src=\''+safe(imgSrc(c.id,'icon'))+'\'"></div><div><small>'+ (state.characters[c.id]?'EM SUA CONTA':'CATÁLOGO') +'</small><strong>'+safe(c.name)+'</strong><span>'+(state.characters[c.id]?'Nv. '+fmt(state.characters[c.id].level||1)+' · E'+fmt(state.characters[c.id].e||0)+' S'+fmt(state.characters[c.id].s||1):'Ver kit, Eidolons e builds')+'</span></div><b>›</b></button>').join('');
+    return list.map(c=>'<button class="v06-char-card" onclick="'+(c.id==='future-aha'?'v06OpenFuture()':'openProfile(\''+c.id+'\')')+'"><div class="v06-char-art"><img loading="lazy" src="'+safe(c.id==='future-aha'?ahaOfficial:(imgSrc(c.id,'preview')||imgSrc(c.id,'icon')))+'" alt="'+safe(c.name)+'" onerror="this.src=\''+safe(imgSrc(c.id,'icon'))+'\'"></div><div><small>'+ (state.characters[c.id]?'EM SUA CONTA':'CATÁLOGO') +'</small><strong>'+safe(c.name)+'</strong><span>'+(state.characters[c.id]?'Nv. '+fmt(state.characters[c.id].level||1)+' · E'+fmt(state.characters[c.id].e||0)+' S'+fmt(state.characters[c.id].s||1):'Ver kit, Eidolons e builds')+'</span></div><b>›</b></button>').join('');
   }
   window.v06RefreshCards=()=>{const el=document.getElementById('v06-library-grid');if(el)el.innerHTML=v06CardList()};
   library=lib06;
@@ -349,6 +349,40 @@
     if(uploader.relImages.length)state.v06Relics[id]=uploader.relImages;
     state.profile=id;save();closeModal();tab='overview';route('profile');showToast('Print e personagem registrados na sua conta');
   };
+
+  // Editorial guidance is contextual and only references characters explicitly in the account.
+  let v06TipTab='owned';
+  const groups=[['owned','Minha conta'],['kits','Como ler kits'],['endgame','Endgame'],['farm','Farm']];
+  function contextualTip(id){
+    const b=state.characters[id],n=lookup(id).name;
+    if(!b)return '';
+    if(id==='1503')return pomCard('Pearl E'+b.e+' · confira os alvos','A Suprema escolhe um Arquétipo Estético. Com E2, o avanço adicional alcança os outros aliados elegíveis de Euforia; rodada extra e duplicação dos recursos dependem das condições do kit.','CONSELHO DA PEARL');
+    if(id==='1505')return pomCard('Evanescia E'+b.e+' · planeje os gatilhos','Controle Energia, Mandou Bem e as ativações de Euforia com os suportes que você tiver realmente cadastrado. Não trate um atributo de tela como desempenho final.','CONSELHO DA EVANESCIA');
+    if(id==='1507')return pomCard('Mortenax Blade E'+b.e+' · alinhe as Supremas','O Campo, as Cargas e Supremas ofensivas da equipe definem o valor dos efeitos de Ataque Extra. Não conte Supremas somente de suporte como ataques.','CONSELHO DO MORTENAX');
+    return pomCard(n+' · ajuste antes de investir','Personagem registrado no nível '+(b.level||1)+', E'+(b.e||0)+'S'+(b.s||1)+'. Revise o conjunto, o cone, a ordem de VEL e a função na equipe antes de novos investimentos.','LEITURA DA SUA CONTA');
+  }
+  function diary06(){
+    const chars=ownerKeys();
+    let blocks='';
+    if(v06TipTab==='owned'){
+      blocks=chars.length?chars.map(contextualTip).join(''):pomCard('Seu arquivo ainda está vazio','Importe um print em Minha Conta para receber dicas específicas dos personagens que você possui.','COMECE AQUI');
+    } else if(v06TipTab==='kits'){
+      blocks=pomCard('Primeiro: leia o gatilho','Em um kit, encontre a condição de ativação, a duração, os alvos elegíveis e o custo da habilidade. O multiplicador sozinho não indica a melhor rotação.','MECÂNICAS')+
+        pomCard('Eidolons não são todos iguais','Um Eidolon pode mudar a rotação, desbloquear uma interação ou apenas subir níveis. O valor depende da equipe e do investimento já feito.','INVESTIMENTO');
+    } else if(v06TipTab==='endgame'){
+      blocks=pomCard('Não existe composição universal','Na Memória do Caos, leia os dois lados e os modificadores da rotação. Na Arbitragem, três equipes dos Cavaleiros não podem ser repetidas.','DESAFIOS')+
+        pomCard('Previsão de ciclos exige dados','Apenas os nomes dos personagens não bastam para prever 0 ou 1 ciclo. Use as builds completas e registre resultados para comparar as estratégias.','ESTIMATIVAS');
+    } else {
+      blocks=pomCard('Calcule primeiro o que falta','No Farm Planner, desconte o estoque e considere as fusões 3:1 antes de estimar runs. Materiais semanais e créditos devem ser rastreados separadamente.','MATERIAIS');
+    }
+    return '<div class="v06-diary">'+subhead('GUIA DO CONDUTOR','Dicas do Pom-Pom','Nada de chat ou perguntas à IA. Conselhos do jogo, separados entre sua conta e o catálogo.')+
+      '<div class="v06-diary-intro">'+pomCard('Pronto para a próxima parada?','Selecione um assunto. Os conselhos de sua conta só usam personagens realmente registrados; o restante são guias gerais.','POM-POM A BORDO')+'</div>'+
+      '<div class="v06-accountfilter">'+groups.map(([k,v])=>'<button class="'+(k===v06TipTab?'active':'')+'" onclick="v06SelectTips(\''+k+'\')">'+v+'</button>').join('')+'</div>'+
+      blocks+'<div class="v06-source-note">Kits e Eidolons são sincronizados a partir do catálogo comunitário. Conselhos de Endgame são editoriais e não recebem selo de validação automaticamente.</div></div>';
+  }
+  nexia=diary06;
+  window.v06SelectTips=k=>{v06TipTab=k;refresh()};
+
   // Disable stale chat surface and floating mascot even if the 0.5 renderer recreates them.
   const originalMenu=renderMenu;
   renderMenu=function(){originalMenu();const menu=document.getElementById('floatMenu');if(menu)menu.innerHTML=menu.innerHTML.replace(/Diário do Pom-Pom/g,'Dicas do Pom-Pom');};
