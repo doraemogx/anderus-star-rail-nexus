@@ -1,6 +1,6 @@
-# Nexia — atualização automática sem copiar código
+# Pom-Pom — implantação do assistente Cloudflare
 
-A Nexia já envia o inventário atual da conta em cada pergunta. **Alterar personagens, níveis ou Eidolons no Nexus não exige deploy do Cloudflare.** O Worker também lê periodicamente dados de habilidades e Eidolons de uma fonte comunitária; ainda não possui sincronização completa de todos os modos/banners.
+O Pom-Pom já envia o inventário atual da conta em cada pergunta. **Alterar personagens, níveis ou Eidolons no Nexus não exige deploy do Cloudflare.** O Worker também lê periodicamente dados de habilidades e Eidolons de uma fonte comunitária; ainda não possui sincronização completa de todos os modos/banners.
 
 ## Conexão única do Cloudflare ao GitHub
 
