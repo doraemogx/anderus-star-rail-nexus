@@ -52,6 +52,31 @@ async function inspect(){
   '</dl>';
  document.getElementById('nexus-diag-copy').onclick=()=>navigator.clipboard?.writeText(JSON.stringify(r,null,2)).catch(()=>{});
 }
+const LAST_BUILD_KEY='anderus-nexus-seen-build';
+async function checkForUpdate(){
+ if(!navigator.onLine)return;
+ try{
+  const response=await fetch(PREFIX+'build-meta.json?check='+Date.now(),{cache:'no-store'});
+  if(!response.ok)return;
+  const latest=await response.json(),sha=String(latest?.sha||'');
+  if(!/^[a-f0-9]{40}$/i.test(sha))return;
+  const previous=localStorage.getItem(LAST_BUILD_KEY);
+  if(!previous){localStorage.setItem(LAST_BUILD_KEY,sha);return;}
+  if(previous===sha||document.getElementById('nexus-update-banner'))return;
+  const bar=document.createElement('aside');bar.id='nexus-update-banner';bar.setAttribute('role','status');
+  bar.innerHTML='<span><strong>Nova versão do Nexus disponível</strong><small>Atualize o aplicativo sem alterar suas builds salvas.</small></span>'+
+   '<button type="button" data-nexus-update>Atualizar agora</button><button type="button" data-nexus-update-later aria-label="Atualizar depois">×</button>';
+  document.body.appendChild(bar);
+  bar.querySelector('[data-nexus-update-later]').onclick=()=>bar.remove();
+  bar.querySelector('[data-nexus-update]').onclick=async()=>{
+   const editing=!!document.querySelector('.v06-import-form,.v11-edit-form,input[type=file]:focus,textarea:focus');
+   if(editing&&!window.confirm('Há uma edição aberta. Atualizar a página pode descartar alterações ainda não salvas. Atualizar mesmo assim?'))return;
+   try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration();await registration?.update();}}catch(error){console.warn('Atualização de Service Worker:',error);}
+   localStorage.setItem(LAST_BUILD_KEY,sha);
+   location.reload();
+  };
+ }catch(error){console.warn('Não foi possível verificar uma nova versão do Nexus',error);}
+}
 function mount(){
  if(!document.querySelector('.app')||document.getElementById('nexus-diagnostics-button'))return;
  const btn=document.createElement('button');
@@ -74,7 +99,9 @@ function mount(){
   dialog.showModal();inspect();
  });
  document.body.appendChild(btn);
+ checkForUpdate();
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkForUpdate();});
 }
-window.NexusDiagnostics={collect,open:()=>document.getElementById('nexus-diagnostics-button')?.click(),mount};
+window.NexusDiagnostics={collect,checkForUpdate,open:()=>document.getElementById('nexus-diagnostics-button')?.click(),mount};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
