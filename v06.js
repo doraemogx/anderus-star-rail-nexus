@@ -235,8 +235,21 @@
   }
   profileOverview=function(id,b){
     loadEidolonCatalog().catch(error=>console.warn('Artes dos Eidolons:',error.message));
-    return '<div class="v06-overview-actions"><button onclick="v06StartImport(\''+id+'\')">⇧ Atualizar pelo print</button><button onclick="editBuild(\''+id+'\')">⚙ Editar atributos</button></div>'+
-      repairOverviewEidolons(base.profileOverview(id,b),id)+pomCard('O que avaliar nesta build',verifiedGuide(id),'FICHA · '+lookup(id).name);
+    const wrapper=document.createElement('div');
+    wrapper.innerHTML=repairOverviewEidolons(base.profileOverview(id,b),id);
+    // The hero already has Edit and Import actions; do not repeat the buttons.
+    const duplicate=wrapper.querySelector('.row.wrap.space-between button');
+    if(duplicate)duplicate.remove();
+    const cards=[...wrapper.querySelectorAll('.card.card-body')];
+    const coneCard=cards.find(card=>b?.cone&&card.textContent.includes(b.cone));
+    if(coneCard){
+      const action=document.createElement('button');action.type='button';
+      action.className='v11-cone-inline-action';
+      action.textContent='Ver arte, Caminho e efeito do cone ›';
+      action.setAttribute('onclick',"v11ProfileTab('cone')");
+      coneCard.appendChild(action);
+    }
+    return wrapper.innerHTML+renderAccountCoach(id);
   };
 
   // Use the live character-rank catalog for every released and future character.
@@ -364,7 +377,10 @@
       '<div class="v11-coach-list">'+notes.map((item,i)=>'<article class="v11-coach-note '+safe(item.kind)+'"><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><div><strong>'+safe(item.title)+'</strong><p>'+safe(item.body)+'</p></div></article>').join('')+'</div>'+
       '<div class="v11-coach-actions"><button type="button" onclick="v11ProfileTab(\'relics\')">Conferir relíquias</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>';
   }
-  window.v11ProfileTab=function(key){tab=key;refresh();};
+  window.v11ProfileTab=function(key){
+    tab=key;refresh();
+    requestAnimationFrame(()=>document.querySelector('.v06-tabs')?.scrollIntoView({block:'start',behavior:'smooth'}));
+  };
   function profileCone(id,b){
     if(!nexusAccount||!nexusAccountCatalog){
       readyAccount();
