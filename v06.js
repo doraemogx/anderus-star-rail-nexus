@@ -333,7 +333,7 @@
   window.v06ShowImportReview=function(){
     const content=uploadPanel()+showImportReview();
     showModal('Importar build · revisar dados',content);
-    import('./relic-inspector.js?v=1').then(mod=>{
+    window.__nexusRelicInspectorPromise=import('./relic-inspector.js?v=2').then(mod=>{
       window.__nexusRelicInspector=mod;
       return mod.initializeRelics(uploader.relImages);
     }).catch(err=>console.warn('Detalhamento das relíquias indisponível',err));
@@ -673,6 +673,18 @@
         (sup?' Cone S'+sup[1]+'.':' Confira S1–S5.')+
         (missing.length?' Pendentes: '+missing.join(', ')+'.':' Valores completos.')+
         ' Confirme tudo antes de salvar.');
+      // Visual matching of the six equipped game relic icons + OCR on each fixed row.
+      // Uses user-uploaded bitmap locally. Inconclusive fields remain editable.
+      try{
+        say('Atributos totais lidos. Identificando os ícones e os 30 atributos das relíquias…');
+        await window.__nexusRelicInspectorPromise;
+        const relicAuto=await import('./relic-auto.js?v=1');
+        const report=await relicAuto.autoDetectRelics(bitmap,worker);
+        say('Personagem '+cname+' · '+(strip.rows.length-missing.length)+'/8 atributos totais · '+report.status+
+            ' Confirme os valores sinalizados antes de salvar.');
+      }catch(relicError){
+        say('Atributos totais lidos; leitura de relíquias incompleta: '+String(relicError.message||relicError)+'. Confira as seis peças manualmente.');
+      }
     }catch(err){
       say('Não foi possível concluir a leitura: '+String(err.message||err)+'. Confira os campos manualmente.');
     }finally{
