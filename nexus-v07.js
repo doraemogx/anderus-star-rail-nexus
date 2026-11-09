@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 const OFFICIAL_POMPOM='./assets/official/pompom-hoyoverse.jpg';
-const AHA_ART='https://i.gachabase.net/mZQZSbIAQyJXbDElL_RE2AwSR7C4X0pOBxgQ3ybCNnA/q%3A50/f%3Awebp/plain/hsr/assets/f8b5630e85022ab8b2761e4e3f614b42.png';
+const AHA_ART='./assets/official/aha-4-7.webp';
 const AHA_FALLBACK='./assets/official/aha-4-7-promo.jpg';
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 let installPromptEvent=null;
