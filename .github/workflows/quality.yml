@@ -15,5 +15,12 @@ jobs:
           node-version: '22'
       - name: Sintaxe, temas, OCR e cobertura de modos
         run: node scripts/check-v09.mjs
+      - name: Preservação de atributos observados
+        run: node scripts/check-relic-integrity.mjs
+      - name: Sintaxe de módulos adicionais
+        run: |
+          node --check sw.js
+          node --check nexus-diagnostics.js
+          node --check nexus-v07.js
       - name: Migração de relíquias, cones S1-S5 e análise de conta
         run: node scripts/check-account.mjs
