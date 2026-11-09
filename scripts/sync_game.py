@@ -8,7 +8,9 @@ KEEP={
  'characters':['id','name','rarity','rank','element','path','tag','skills','ranks','icon','portrait','preview'],
  'character_ranks':['id','name','rank','desc','icon'],
  'character_skills':['id','name','desc','icon','type','type_text','effect','effect_text','params','max_level'],
- 'light_cones':['id','name','rarity','path','icon']
+ 'light_cones':['id','name','rarity','path','icon'],
+ 'relic_sets':['id','name','desc','icon'],
+ 'relics':['id','name','set_id','type','icon','max_level','rarity']
 }
 def get(label):
  req=urllib.request.Request(SOURCE+label+'.json',headers={'User-Agent':'Anderus-Nexus-Catalog-Sync/0.5'})
@@ -26,7 +28,7 @@ def main():
  payload={'checkedAt':datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
           'source':'Mar-7th/StarRailRes · index_min/pt',
           'scope':'Dados estruturados; Endgame e meta exigem revisão editorial',
-          'chars':datasets['characters'],'ranks':datasets['character_ranks'],'skills':datasets['character_skills'],'cones':datasets['light_cones']}
+          'chars':datasets['characters'],'ranks':datasets['character_ranks'],'skills':datasets['character_skills'],'cones':datasets['light_cones'],'relicSets':datasets['relic_sets'],'relics':datasets['relics']}
  output=ROOT/'data'/'live-game.json'
  output.parent.mkdir(parents=True,exist_ok=True)
  output.write_text(json.dumps(payload,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
