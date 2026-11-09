@@ -100,7 +100,7 @@ export async function renderRelicSummary(records,images){
    const name=sets[piece.setId]?.name||'Conjunto não identificado';
    const main=piece.main?.stat?piece.main.stat+': '+(piece.main.value??'pendente'):'Atributo principal pendente';
    const sub=(piece.subs||[]).filter(s=>s.stat&&s.value!==null).map(s=>s.stat+' '+s.value).join(' · ');
-   return '<article class="v06-relic-summary-item"><img alt="" src="'+safe(images?.[i]||'')+'"><div><b>'+safe(SLOT[i])+' · '+safe(name)+'</b><small>'+(piece.level==null?'Nível pendente':'+'+Number(piece.level))+' · '+safe(main)+'</small><p>'+safe(sub||'Secundários ainda não registrados')+'</p></div></article>';
+   return '<article class="v06-relic-summary-item">'+(images?.[i]?'<img alt="Relíquia '+(i+1)+'" src="'+safe(images[i])+'">':'<span class="v06-relic-no-crop" aria-label="Imagem não cadastrada">✦</span>')+'<div><b>'+safe(SLOT[i])+' · '+safe(name)+'</b><small>'+(piece.level==null?'Nível pendente':'+'+Number(piece.level))+' · '+safe(main)+'</small><p>'+safe(sub||'Secundários ainda não registrados')+'</p></div></article>';
  }).join('');
 
  const counts={};
