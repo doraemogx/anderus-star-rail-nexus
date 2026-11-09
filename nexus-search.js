@@ -11,9 +11,10 @@ function load(){
  if(!dataPromise)dataPromise=Promise.all([
   fetch('./data/live-game.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Catálogo indisponível: '+r.status);return r.json();}),
   fetch('./data/ascension-materials.json',{cache:'no-store'}).then(r=>r.ok?r.json():{items:{}}),
-  fetch('./data/character-traces.json',{cache:'no-store'}).then(r=>r.ok?r.json():{items:{}})
- ]).then(([game,ascension,traces])=>({
-  ...game,materials:{...(traces.items||{}),...(ascension.items||{})}
+  fetch('./data/character-traces.json',{cache:'no-store'}).then(r=>r.ok?r.json():{items:{}}),
+  fetch('./data/search-aliases.json',{cache:'no-store'}).then(r=>r.ok?r.json():{})
+ ]).then(([game,ascension,traces,aliases])=>({
+  ...game,materials:{...(traces.items||{}),...(ascension.items||{})},searchAliases:aliases
  })).catch(e=>{dataPromise=null;throw e});
  return dataPromise;
 }
@@ -24,7 +25,8 @@ function entries(data){
   for(const [id,row] of Object.entries(group)){
    if(!row?.name)continue;
    list.push({type,id,name:row.name,icon:row.icon||row.portrait||'',path:row.path||'',rarity:row.rarity||null,
-    setId:row.set_id||null,haystack:norm(row.name+' '+id+' '+(row.tag||''))});
+    setId:row.set_id||null,alias:data.searchAliases?.[type]?.[id]||'',
+    haystack:norm(row.name+' '+id+' '+(row.tag||'')+' '+(data.searchAliases?.[type]?.[id]||''))});
   }
  }
  return list;
@@ -41,10 +43,10 @@ function dialog(){
  dlg=document.createElement('dialog');dlg.id='nexus-search-dialog';
  dlg.setAttribute('aria-label','Pesquisa universal do Nexus');
  dlg.innerHTML='<section class="nexus-search-body"><header><div><span>PESQUISA DO EXPRESSO ASTRAL</span><h2>Encontre no Nexus</h2></div><button type="button" data-search-close aria-label="Fechar pesquisa">×</button></header>'+
- '<label for="nexus-search-input">Pesquisar por nome ou ID</label><input type="search" id="nexus-search-input" placeholder="Personagem, cone, conjunto, equipamento…">'+
+ '<label for="nexus-search-input">Pesquisar por nome, alias ou ID</label><input type="search" id="nexus-search-input" placeholder="Nome PT-BR, inglês, cone, material…">'+
  '<div class="nexus-search-categories" role="group" aria-label="Categorias"></div>'+
  '<div id="nexus-search-results" aria-live="polite">Carregando catálogo…</div>'+
- '<p class="nexus-search-help">Resultados do catálogo local PT-BR, não de uma consulta em tempo real. Use Escape para fechar.</p></section>';
+ '<p class="nexus-search-help">Resultados em PT-BR, com aliases ingleses associados ao mesmo ID canônico. Não é uma consulta em tempo real. Use Escape para fechar.</p></section>';
  document.body.append(dlg);
  dlg.querySelector('[data-search-close]').onclick=()=>dlg.close();
  dlg.querySelector('#nexus-search-input').addEventListener('input',e=>{query=e.target.value;render()});
