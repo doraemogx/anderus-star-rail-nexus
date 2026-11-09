@@ -44,7 +44,7 @@ function dialog(){
  '<label class="nexus-traces-hero-select">Personagem<select id="nexus-traces-character"></select></label>'+
  '<div class="nexus-traces-toolbar"><button type="button" data-traces-zero>Estou começando com todos os rastros no nível 0</button><button type="button" data-traces-reset>Limpar níveis informados</button></div>'+
  '<section id="nexus-traces-nodes" aria-label="Rastros e metas"></section>'+
- '<section id="nexus-traces-report" aria-live="polite"></section>'+
+ '<section id="nexus-traces-report" aria-live="polite"></section><button type="button" data-material-budget>Abrir orçamento global de materiais</button>'+
  '<footer>Fonte: catálogo estruturado PT-BR do jogo, sem inferência de níveis da sua conta. O cálculo mostra somente custos de nós com níveis atuais informados; níveis ainda desconhecidos permanecem pendentes. Não inclui ganhos de eventos nem taxas de drops.</footer></div>';
  document.body.append(dlg);
  dlg.querySelector('[data-traces-close]').onclick=()=>dlg.close();
