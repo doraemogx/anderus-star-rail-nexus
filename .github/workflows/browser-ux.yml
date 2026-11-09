@@ -1,0 +1,40 @@
+name: Validar experiência no celular e desktop
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v06.js'
+      - 'nexus-account-engine.js'
+      - 'nexus-account.css'
+      - 'scripts/browser-smoke.mjs'
+      - '.github/workflows/browser-ux.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nexus-ux-browser
+  cancel-in-progress: true
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar Playwright e Chromium
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Testar conta, cone, relíquias e persistência em 390px e 1440px
+        run: |
+          python3 -m http.server 8787 --bind 127.0.0.1 >/tmp/nexus-browser-server.log 2>&1 &
+          node scripts/browser-smoke.mjs
+      - name: Guardar capturas para auditoria visual
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-browser-ux
+          path: artifacts/*.png
+          if-no-files-found: ignore
