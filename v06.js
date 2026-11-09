@@ -488,7 +488,9 @@
       skills:(nexusAccountCatalog.chars?.[id]?.skills||[]).map(k=>nexusAccountCatalog.skills?.[k]).filter(Boolean)
     });
     return '<section class="v11-coach" aria-label="Análise individual do Pom-Pom"><div class="v11-coach-head"><img src="'+v06Asset('pompom')+'" alt="Pom-Pom" loading="lazy"><div><span class="v06-kicker">LEITURA DA SUA CONTA</span><h3>Pom-Pom analisa sua build</h3><p>Dados registrados · recomendações e verificações, não uma nota genérica</p></div></div>'+
-      '<div class="v11-coach-list">'+notes.map((item,i)=>'<article class="v11-coach-note '+safe(item.kind)+'"><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><div><strong>'+safe(item.title)+'</strong><p>'+safe(item.body)+'</p></div></article>').join('')+'</div>'+
+      '<div class="v11-coach-list">'+notes.map((item,i)=>i<3?
+         '<article class="v11-coach-note '+safe(item.kind)+'"><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><div><strong>'+safe(item.title)+'</strong><p>'+safe(item.body)+'</p></div></article>':
+         '<details class="v11-coach-note v11-coach-collapsed '+safe(item.kind)+'"><summary><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><strong>'+safe(item.title)+'</strong><span aria-hidden="true" class="v11-coach-expand">+</span></summary><p>'+safe(item.body)+'</p></details>').join('')+'</div>'+
       '<div class="v11-coach-actions"><button type="button" onclick="v11ProfileTab(\'relics\')">Conferir relíquias</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>';
   }
   window.v11ProfileTab=function(key){
