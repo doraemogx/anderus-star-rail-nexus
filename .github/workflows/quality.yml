@@ -36,6 +36,7 @@ jobs:
           node --check nexus-material-budget.js
           node --check nexus-scan-layout.js
           node --check nexus-scan-input.js
+          node --check nexus-pompom-chat.js
           node --check worker/index.js
       - name: Validar sincronização de dados e rollback
         run: python3 scripts/check-sync-game.py
