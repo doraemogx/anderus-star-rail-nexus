@@ -113,9 +113,11 @@ export function buildCoach(options={}){
  const kit=(skills||[]).filter(s=>s?.desc&&(s.type_text==='ATQ Básico'||s.type_text==='Perícia'||s.type_text==='Perícia Suprema'||s.type_text==='Talento'));
  const kitText=clean(kit.map(s=>s.desc).join(' '));
  const memo=kit.some(s=>clean(s.desc).includes('memoespirito'));
- const hpScale=kit.some(s=>/(?:dano|cura|restaura|igual).*?(?:dos |da |de seus )?pv maximos/i.test(clean(s.desc)));
- const defScale=kit.some(s=>/(?:dano|cura|restaura|igual).*?da def/i.test(clean(s.desc)));
- const atkScale=kit.some(s=>/(?:dano|cura|restaura|igual).*?do atq/i.test(clean(s.desc)));
+ // Keep scaling checks within the same small phrase after "igual a".
+ // Do not match an unrelated DEF mention hundreds of words later.
+ const hpScale=kit.some(s=>/igual a.{0,100}\bpv maximos\b/.test(clean(s.desc)));
+ const defScale=kit.some(s=>/igual a.{0,100}\bdef\b/.test(clean(s.desc)));
+ const atkScale=kit.some(s=>/igual a.{0,100}\batq\b/.test(clean(s.desc)));
  if(memo){
    const skill=kit.find(s=>clean(s.desc).includes('memoespirito'));
    add('Mecânica do Memoespírito',
