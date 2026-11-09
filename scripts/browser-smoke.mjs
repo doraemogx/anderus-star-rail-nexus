@@ -97,6 +97,15 @@ try{
   await tab('Relíquias').click();
   await page.locator('.v11-relic-card').first().waitFor({timeout:15000});
   assert.match(await page.locator('.v11-relic-card').first().innerText(),/9,1%/,'Edited stat survives reload');
+  await tab('Histórico').click();
+  await page.locator('.v11-history-entry').first().waitFor({timeout:10000});
+  assert.ok(await page.locator('.v11-history-entry').count()>0,'Build History must preserve old versions');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('.v11-history-entry button[data-restore-build]').first().click();
+  await page.waitForFunction(()=>{
+    const data=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'null');
+    return data?.v06RelicDetails?.['1512']?.[0]?.subs?.[0]?.value===8.6;
+  },null,{timeout:12000});
   if(errors.length)console.warn('BROWSER_WARN',device.width,errors.slice(0,8));
   console.log('PASS Chromium',device.width,'px: six saved relics, E1S5 cone, Pom-Pom, persistence, layout, edit flow');
   await context.close();
