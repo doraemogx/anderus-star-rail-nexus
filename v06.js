@@ -1108,13 +1108,18 @@
     if(!document.getElementById('v06-confirm')?.checked){
       showToast('Confira os números e marque a confirmação antes de salvar');return;
     }
+    // Nexus 2.0: never block a character because OCR missed a single stat.
+    // A partial record must be saved and completed later. Blank fields do not
+    // overwrite previously confirmed values; missing Eidolon/cone ranks keep
+    // the old values or sensible E0/S1 defaults in the new account record.
     const important=['pv','atk','def','spd','crit','cdmg'];
-    if(important.some(k=>document.getElementById('v06-'+k)?.value==='')){
-      showToast('Complete os seis atributos principais antes de salvar');return;
+    const pendingStats=important.filter(k=>document.getElementById('v06-'+k)?.value==='');
+    const eField=document.getElementById('v06-e'),sField=document.getElementById('v06-s');
+    if(eField?.value!==''&&eField?.value!=null&&!Number.isInteger(Number(eField.value))){
+      showToast('Confira os Eidolons antes de salvar');return;
     }
-    if(!document.getElementById('v06-e')?.value||!document.getElementById('v06-s')?.value){
-      // E0 equivale à string '0', que é truthy.
-      showToast('Selecione os Eidolons e a sobreposição do cone');return;
+    if(sField?.value!==''&&sField?.value!=null&&!Number.isInteger(Number(sField.value))){
+      showToast('Confira a sobreposição do cone antes de salvar');return;
     }
     if(newCharacter){
       state.v06CustomCharacters ||= {};
@@ -1148,7 +1153,7 @@
         level:r.level
       }]));
     }
-    state.profile=id;const persisted=verifiedAccountSave(id);closeModal();tab='overview';route('profile');showToast(persisted?'Print e personagem registrados na sua conta':'Build visível nesta sessão, mas não foi salva no dispositivo. Exporte um backup!');
+    state.profile=id;const persisted=verifiedAccountSave(id);closeModal();tab='overview';route('profile');showToast(persisted?(pendingStats.length?'Personagem salvo! '+pendingStats.length+' atributo(s) ficam pendentes para completar depois.':'Print e personagem registrados na sua conta'):'Build visível nesta sessão, mas não foi salva no dispositivo. Exporte um backup!');
   };
 
   // Editorial guidance is contextual and only references characters explicitly in the account.
