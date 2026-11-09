@@ -39,6 +39,14 @@ try{
     console.error('BROWSER_STAGE_DEBUG',JSON.stringify(dom));
     throw error;
   });
+  // Search canonical catalogue and verify a playable character result.
+  await page.locator('#nexus-search-button').waitFor({timeout:15000});
+  await page.locator('#nexus-search-button').click();
+  await page.locator('#nexus-search-dialog[open]').waitFor({timeout:15000});
+  await page.locator('#nexus-search-input').fill('Robin');
+  await page.locator('.nexus-search-hit[data-search-type="character"]').first().waitFor({timeout:15000});
+  assert.ok(await page.locator('.nexus-search-hit[data-search-type="character"]').count()>0);
+  await page.locator('#nexus-search-dialog [data-search-close]').click();
   // Exercise all top-level routes before opening the imported character.
   for(const view of ['home','library','endgame','farm','radar','themes','nexia','settings']){
     const before=errors.length;
