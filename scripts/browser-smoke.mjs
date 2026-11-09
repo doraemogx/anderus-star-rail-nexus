@@ -39,6 +39,18 @@ try{
     console.error('BROWSER_STAGE_DEBUG',JSON.stringify(dom));
     throw error;
   });
+  // Top navigation: one search action, and no diagnostic overlay over bottom tabs.
+  assert.equal(await page.locator('#nexus-search-button').count(),1);
+  assert.equal(await page.locator('#nexus-diagnostics-button').count(),1);
+  const controls=await page.evaluate(()=>{
+    const search=document.querySelector('#nexus-search-button')?.getBoundingClientRect();
+    const diag=document.querySelector('#nexus-diagnostics-button')?.getBoundingClientRect();
+    const nav=document.querySelector('.bottom-nav')?.getBoundingClientRect();
+    return {searchRight:search?.right,diagRight:diag?.right,diagBottom:diag?.bottom,navTop:nav?.top,width:innerWidth};
+  });
+  assert.ok(controls.searchRight<=device.width+2,'Search control clipped at '+device.width);
+  assert.ok(controls.diagRight<=device.width+2,'Diagnostics clipped at '+device.width);
+  assert.ok(!controls.navTop || controls.diagBottom<controls.navTop,'Diagnostics overlaps mobile navigation');
   // Verify the Warp calculator is functional, not merely a static panel.
   await page.waitForFunction(()=>typeof window.NexusWarpAdvisor?.open==='function',null,{timeout:15000});
   await page.evaluate(()=>window.NexusWarpAdvisor.open());
