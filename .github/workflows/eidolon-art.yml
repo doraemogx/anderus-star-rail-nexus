@@ -1,0 +1,20 @@
+name: Auditar artes dos Eidolons
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/sync_eidolon_art.py'
+      - '.github/workflows/eidolon-art.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit-art:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verificar fontes de imagens reais
+        run: python scripts/sync_eidolon_art.py --probe
