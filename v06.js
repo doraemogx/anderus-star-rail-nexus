@@ -65,7 +65,7 @@
   state.v06Art||={};state.v06AccountNotes||={};state.v06Goal||={id:'future-aha',target:'E0S1'};
   if(!document.getElementById('nexus-account-css')){
     const link=document.createElement('link');link.id='nexus-account-css';
-    link.rel='stylesheet';link.href='./nexus-account.css?v=1';
+    link.rel='stylesheet';link.href='./nexus-account.css?v=2';
     document.head.appendChild(link);
   }
   // Keep manually added characters across reloads until the catalogue gains them.
@@ -134,7 +134,7 @@
   function readyAccount(){
     if(nexusAccountPromise)return nexusAccountPromise;
     nexusAccountPromise=Promise.all([
-      import('./nexus-account-engine.js?v=1'),
+      import('./nexus-account-engine.js?v=2'),
       fetch('./data/live-game.json',{cache:'no-store'}).then(r=>{
         if(!r.ok)throw Error('Catálogo do jogo indisponível: '+r.status);
         return r.json();
