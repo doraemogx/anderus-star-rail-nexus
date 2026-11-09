@@ -33,3 +33,9 @@
 .v11-team-lab-entry h3{font:500 26px Georgia,serif;margin:0}.v11-team-lab-entry p{font-size:13px}
 .v11-team-lab-entry button{min-height:44px;border-radius:9px;border:1px solid #e5c089;background:#e5c089;color:#152137;padding:10px 17px;font-weight:700}
 @media(max-width:640px){#nexus-team-dialog .teamlab-editor,#nexus-team-dialog .teamlab-members{grid-template-columns:1fr}#nexus-team-dialog .teamlab-saved article{align-items:stretch;flex-direction:column}}
+
+#nexus-team-dialog .teamlab-selected-character{display:flex;gap:11px;align-items:center;min-height:57px;margin:8px 0 12px}
+#nexus-team-dialog .teamlab-selected-character img,#nexus-team-dialog .teamlab-selected-character>span{width:55px;height:55px;object-fit:contain;flex:0 0 55px;background:#111d2f;border:1px solid #887b7c;border-radius:10px}
+#nexus-team-dialog .teamlab-selected-character>span{display:grid;place-items:center;font-size:28px;color:#e5c494}
+#nexus-team-dialog .teamlab-selected-character strong{font:500 clamp(17px,2.3vw,22px)/1.25 Georgia,serif;overflow-wrap:anywhere;color:#fae8d6}
+@media(max-width:390px){#nexus-team-dialog .teamlab-selected-character img,#nexus-team-dialog .teamlab-selected-character>span{width:47px;height:47px;flex-basis:47px}}
