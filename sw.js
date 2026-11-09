@@ -11,7 +11,7 @@ const CORE=[
  './nexus-diagnostics.js','./nexus-diagnostics.css',
  './nexus-kit-lab.js','./nexus-kit-lab.css',
  './nexus-team-lab.js','./nexus-team-lab.css',
- './nexus-search.js','./nexus-search.css',
+ './nexus-search.js','./nexus-search.css','./data/search-aliases.json',
  './nexus-backup.js','./nexus-backup.css',
  './nexus-farm-lab.js','./nexus-farm-lab.css','./data/ascension-materials.json',
  './nexus-theme-bridge.js','./nexus-theme-overlays.css',
