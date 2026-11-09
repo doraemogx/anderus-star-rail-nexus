@@ -524,6 +524,24 @@
     tab=key;refresh();
     requestAnimationFrame(()=>document.querySelector('.v06-tabs')?.scrollIntoView({block:'start',behavior:'smooth'}));
   };
+  window.v11SaveConeLevel=function(event,id){
+    event.preventDefault();
+    const build=state.characters?.[id];
+    if(!build)return showToast('Cadastre a personagem antes de informar o nível do cone.');
+    const raw=String(new FormData(event.target).get('coneLevel')??'').trim();
+    if(raw===''){
+      delete build.coneLevel;
+    }else{
+      const n=Number(raw);
+      if(!Number.isInteger(n)||n<1||n>80){
+        showToast('O nível do cone deve estar entre 1 e 80.');return;
+      }
+      build.coneLevel=n;
+    }
+    const persisted=verifiedAccountSave(id);
+    tab='cone';refresh();
+    showToast(persisted?'Nível do cone salvo na sua conta.':'Alteração não persistida. Exporte um backup.');
+  };
   function profileCone(id,b){
     if(!nexusAccount||!nexusAccountCatalog){
       readyAccount();
@@ -538,6 +556,9 @@
     return '<section class="v11-cone-panel"><div class="v11-cone-top"><div class="v11-cone-art">'+(src?'<img loading="lazy" src="'+safe(src)+'" alt="Arte do cone '+safe(cone.name)+'" onerror="this.hidden=true;this.parentElement.classList.add(\'no-art\')">':'')+'</div>'+
       '<div class="v11-cone-copy"><span class="v06-kicker">CONE DE LUZ EQUIPADO · S'+Number(b?.s||1)+'</span><h2>'+safe(cone.name)+'</h2><p class="v11-cone-stars">'+star+'</p><p>Caminho: '+safe(nexusAccount.PATHS[cone.path]||cone.path||'Não informado')+'</p><p class="v11-cone-path '+(compatible?'good':'warning')+'">'+(compatible?'✓ Caminho compatível com a personagem':'⚠ Caminho diferente; o efeito passivo pode não ativar')+'</p></div></div>'+
       '<div class="v11-cone-effect"><small>HABILIDADE DO CONE · SOBREPOSIÇÃO S'+Number(b?.s||1)+'</small><h3>'+safe(rank?.skill||'Habilidade de cone')+'</h3><p>'+safe(effect||'A descrição do efeito ainda não está disponível no catálogo sincronizado.')+'</p></div>'+
+      '<form class="v11-cone-level-form" onsubmit="v11SaveConeLevel(event,\''+safe(id)+'\')"><div><small>NÍVEL DO CONE EQUIPADO</small><p>'+(Number.isInteger(b?.coneLevel)?'Nível '+b.coneLevel+' / 80':'Ainda não informado. O nível da personagem não determina o nível do cone.')+'</p></div>'+
+      '<label for="v11-cone-level-'+safe(id)+'">Nível<input id="v11-cone-level-'+safe(id)+'" name="coneLevel" type="number" min="1" max="80" step="1" placeholder="Não informado" value="'+(Number.isInteger(b?.coneLevel)?b.coneLevel:'')+'"></label>'+
+      '<button type="submit">Salvar nível</button></form>'+
       '<div class="v11-cone-foot"><button type="button" onclick="editBuild(\''+id+'\')">Alterar cone ou sobreposição</button><button type="button" onclick="v11ProfileTab(\'overview\')">← Voltar aos atributos</button></div>'+
       '<p class="v11-source">Fonte: catálogo PT-BR sincronizado do jogo. Os valores foram resolvidos para a sobreposição salva; alterações feitas no jogo precisam de nova importação.</p></section>';
   }
@@ -548,7 +569,7 @@
     const src=images?.[index]||'';
     return '<article class="v11-relic-card '+(present?'is-saved':'is-pending')+'"><button type="button" class="v11-relic-open" onclick="v11EditRelic(\''+id+'\','+index+')" aria-label="Ver e editar '+safe(p.slot)+'">'+
       '<span class="v11-relic-image">'+(src?'<img loading="lazy" src="'+safe(src)+'" alt="Recorte da relíquia '+safe(p.slot)+'">':'<span>✦</span>')+'</span>'+
-      '<span class="v11-relic-title"><small>0'+(index+1)+' · '+safe(p.slot)+' '+(p.level!==null?'+'+p.level:'')+'</small><strong>'+safe(p.setId?accountSetName(p):present?'Conjunto não identificado':'Não registrado')+'</strong><em>'+safe(main)+' · '+safe(mainValue)+'</em></span><span class="v11-open-arrow">›</span></button>'+
+      '<span class="v11-relic-title"><small>0'+(index+1)+' · '+safe(p.slot)+' '+(p.level!=null?'+'+p.level:'')+'</small><strong>'+safe(p.setId?accountSetName(p):present?'Conjunto não identificado':'Não registrado')+'</strong><em>'+safe(main)+' · '+safe(mainValue)+'</em></span><span class="v11-open-arrow">›</span></button>'+
       '<div class="v11-relic-subs">'+subs.filter(s=>s.stat&&s.value!==null).map(s=>'<span>'+safe(s.stat)+' <b>'+safe(real.pretty(s.stat,s.value))+'</b></span>').join('')+'</div>'+
       (warnings?'<p class="v11-relic-warning">'+safe(warnings)+'</p>':'')+'</article>';
   }
