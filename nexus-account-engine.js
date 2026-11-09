@@ -74,6 +74,8 @@ export function examineRelics(records){
    if(p.setId&&p.main.stat&&p.main.value!==null&&!missing)complete++;
    if(!p.setId)flags.push(label+': falta identificar o conjunto');
    if(!p.main.stat||p.main.value===null)flags.push(label+': atributo principal pendente');
+   if(p.level===15&&p.main.stat&&p.main.value!==null&&Object.hasOwn(MAIN15,p.main.stat)&&Math.abs(p.main.value-MAIN15[p.main.stat])>0.06)
+     flags.push(label+': valor principal '+fmt(p.main.value)+' diverge da referência de nível 15 ('+fmt(MAIN15[p.main.stat])+'); confirme no print antes de corrigir');
    if(missing)flags.push(label+': '+missing+' subatributo(s) pendente(s)');
    for(const sub of p.subs){
      const v=Number(sub.value);
