@@ -27,6 +27,7 @@ function setupRows(sets,images,previous=[]){
   const substats=Array.from({length:4},(_,k)=>'<div class="v06-relstat"><select id="v06-r'+i+'-k'+k+'">'+options(statOptions,existing.subs?.[k]?.stat)+'</select><input id="v06-r'+i+'-v'+k+'" type="number" inputmode="decimal" step="0.1" placeholder="Valor" value="'+safe(existing.subs?.[k]?.value??'')+'"></div>').join('');
   return '<details class="v06-relcard" '+(i===0?'open':'')+'><summary>'+(src?'<img alt="Recorte do equipamento" src="'+safe(src)+'">':'<span class="v06-relic-no-crop" aria-label="Sem recorte do print">✦</span>')+'<span>'+SLOT[i]+'</span><small>'+(src?'Conferir conjunto e atributos':'Sem recorte — preencha manualmente')+'</small></summary>'+
     '<div class="v07-relmatch" id="v06-relmatch-'+i+'"><small>O comparador visual aparecerá após reconhecer o print.</small></div>'+
+    '<div class="nexus-relic-ocr-proposals" id="nexus-relic-proposals-'+i+'" aria-live="polite"></div>'+
     '<label>Conjunto equipado<select id="v06-r'+i+'-set">'+options([{value:'',label:'Não identificado — escolha o conjunto'},...setOptions],existing.setId)+'</select></label>'+
     '<div class="v06-relstat"><select id="v06-r'+i+'-main">'+options(statOptions,existing.main?.stat)+'</select><input id="v06-r'+i+'-mainval" type="number" step=".1" inputmode="decimal" placeholder="Principal" value="'+safe(existing.main?.value??'')+'"></div>'+
     '<p class="v06-relnote">Quatro subatributos · confira pelo print</p>'+substats+
@@ -66,7 +67,56 @@ function setupRows(sets,images,previous=[]){
    if(photo)photo.src=screenshot;
    const label=summary?.querySelector('small');
    if(label)label.textContent='Print individual anexado · confira os atributos';
-   tell('Print individual anexado. Identifique conjunto, nível e atributos antes de salvar.');
+   tell('Print anexado. Analisando linhas legíveis; sugestões não substituem seus valores.');
+   const suggestions=target.querySelector('#nexus-relic-proposals-'+index);
+   if(suggestions){
+    suggestions.textContent='Lendo a imagem no navegador…';
+    try{
+     const generic=await import('./nexus-relic-ocr-generic.js');
+     const result=await generic.scanRelicPhoto(canvas,progress=>{
+      suggestions.textContent='Reconhecendo atributos: '+progress+'%';
+     });
+     if(!result.candidates.length){
+      suggestions.textContent='Não encontrei atributos legíveis. Os campos continuam disponíveis para preenchimento manual.';
+     }else{
+      const values=[
+       ...(result.main?[{name:'Principal',...result.main}]:[]),
+       ...result.subs.map((v,k)=>({name:'Subatributo '+(k+1),...v}))
+      ];
+      suggestions.innerHTML='<p class="nexus-relic-ocr-notice"><strong>'+result.candidates.length+' atributo(s) lido(s) por OCR.</strong> Confiança não calibrada: confira os valores com o print. Não foram identificados conjuntos por texto.</p>'+
+       (result.level!==null?'<p>Nível sugerido: +'+result.level+'</p>':'')+
+       '<ul>'+values.map(v=>'<li>'+safe(v.name)+': '+safe(v.stat)+' '+safe(v.value)+'</li>').join('')+'</ul>'+
+       (result.warnings.length?'<p>'+result.warnings.map(safe).join(' · ')+'</p>':'')+
+       '<button type="button" class="nexus-relic-apply-ocr">Aplicar somente nos campos vazios</button>';
+      const button=suggestions.querySelector('.nexus-relic-apply-ocr');
+      button?.addEventListener('click',()=>{
+       const field=key=>document.getElementById('v06-r'+index+'-'+key);
+       const apply=(key,value)=>{
+        const input=field(key);
+        if(!input||input.value!==''||value===null||value===undefined)return false;
+        input.value=String(value);input.dispatchEvent(new Event('change',{bubbles:true}));
+        input.classList.add('nexus-relic-ocr-pending');return true;
+       };
+       let filled=0;
+       if(result.main&&STATS.includes(result.main.stat)){
+        filled+=Number(apply('main',result.main.stat));
+        filled+=Number(apply('mainval',result.main.value));
+       }
+       result.subs.forEach((item,k)=>{
+        if(!STATS.includes(item.stat))return;
+        filled+=Number(apply('k'+k,item.stat));
+        filled+=Number(apply('v'+k,item.value));
+       });
+       if(result.level!==null)filled+=Number(apply('lv',result.level));
+       const notice=suggestions.querySelector('.nexus-relic-ocr-notice');
+       if(notice)notice.textContent=filled+' campo(s) vazio(s) preenchido(s) com sugestões não verificadas. Confira cada valor antes de salvar.';
+       button.disabled=true;
+      });
+     }
+    }catch(error){
+     suggestions.textContent='OCR individual indisponível: '+String(error.message||error)+'. O print e os campos manuais foram preservados.';
+    }
+   }
   }catch(error){tell('Não foi possível ler o print. Edição manual disponível: '+String(error.message||error));}
  }));
 }
