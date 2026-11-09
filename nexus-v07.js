@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Load independent diagnostics without mutating account state.
+ if(!document.getElementById('nexus-diagnostics-css')){
+  const css=document.createElement('link');css.id='nexus-diagnostics-css';css.rel='stylesheet';css.href='./nexus-diagnostics.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-diagnostics-script')){
+  const js=document.createElement('script');js.id='nexus-diagnostics-script';js.src='./nexus-diagnostics.js';js.defer=true;document.head.appendChild(js);
+ }
  enhancePage();observer.observe(document.querySelector('.app')||document.documentElement,{childList:true,subtree:true});
  if('serviceWorker' in navigator&&location.protocol==='https:'){
   navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>console.warn('Anderus offline',e));
