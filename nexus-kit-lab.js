@@ -6,6 +6,8 @@ const ROOT='https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const paths={Rogue:'Caça',Warrior:'Destruição',Mage:'Erudição',Shaman:'Harmonia',Knight:'Preservação',Warlock:'Inexistência',Priest:'Abundância',Memory:'Reminiscência',Elation:'Euforia'};
 const elements={Ice:'Gelo',Fire:'Fogo',Wind:'Vento',Quantum:'Quântico',Physical:'Físico',Imaginary:'Imaginário',Thunder:'Raio'};
+let artPromise=null;
+function loadArt(){return artPromise||(artPromise=fetch('./data/eidolon-art.json',{cache:'no-store'}).then(r=>r.ok?r.json():{characters:{}}).catch(()=>({characters:{}})));}
 let gamePromise=null,selected='',showSummary=false,activeTab='skills';
 const modalId='nexus-kit-dialog';
 const clean=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
@@ -79,7 +81,7 @@ function compose(c,g){
  else if(activeTab==='ranks')body='<div class="kit-ranks">'+ranks.map(e=>{
   const effect=resolveEffect(e,e.params,1);
   const art=g.eidolonArt?.[c.id]?.[e.n-1]||'';
-  return '<article class="kit-rank">'+(art?'<img src="'+esc(image(art))+'" alt="" loading="lazy">':'<span class="kit-rank-number">E'+e.n+'</span>')+
+  return '<article class="kit-rank">'+(art?'<img src="'+esc(/^https?:/.test(art)?art:image(art))+'" alt="Arte do Eidolon E'+e.n+'" loading="lazy" onerror="this.hidden=true">':'<span class="kit-rank-number">E'+e.n+'</span>')+
    '<div><span class="kit-type">EIDOLON '+e.n+'</span><h3>'+esc(e.name||'Sem título no catálogo')+'</h3><p>'+effect.html+'</p><small>ID '+esc(e.id)+'</small></div></article>';
  }).join('')+'</div>';
  else body='<div class="kit-skills">'+(skills.length?skills.map(cardSkill).join(''):'<div role="status" class="kit-warning">Nenhuma habilidade detalhada disponível para esta personagem no catálogo sincronizado.</div>')+'</div>';
@@ -122,7 +124,7 @@ async function fillSelect(filter=''){
 async function render(){
  const target=document.getElementById('nexus-kit-content');if(!target)return;
  try{
-  const g=await load();const c=g.chars?.[selected];
+  const g=await load();const art=await loadArt();g.eidolonArt=art.characters||{};const c=g.chars?.[selected];
   if(!c){target.innerHTML='<p class="kit-warning">Selecione um personagem válido.</p>';return;}
   const levelCache={};
   target.querySelectorAll('[data-skill-level]').forEach(x=>levelCache[x.dataset.skillLevel]=x.value);
