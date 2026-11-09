@@ -515,17 +515,34 @@
     const select=document.getElementById('v06-id');
     if(select)select.add(new Option('Caelus · '+label,id));
   }
-  function coneName(raw){
-    const first=String(raw||'').split('\n').map(x=>x.trim()).find(x=>x.length>5&&!/^(Nv|Lv)/i.test(x))||'';
-    const aliases=[
-      'Euforia Repleta de Bênçãos','Um Encontro na Próxima Primavera','Cores para o Amanhã'
-    ];
-    const cleaned=norm(first);
-    const found=aliases.map(name=>({name,score:1-editDistance(cleaned,norm(name))/Math.max(cleaned.length,norm(name).length)}))
-      .sort((a,b)=>b.score-a.score)[0];
-    if(found&&found.score>.70)return found.name;
-    return first.length>5&&first.length<75?first.replace(/[^\p{L}\p{N} .,'’–-]/gu,'').trim():'';
+
+  let coneCataloguePromise;
+  async function getLightConeNames(){
+    if(!coneCataloguePromise){
+      coneCataloguePromise=fetch('data/live-game.json',{cache:'no-store'})
+        .then(r=>{if(!r.ok)throw Error('cone catalog unavailable');return r.json()})
+        .then(j=>Object.values(j.cones||{}).map(x=>x.name).filter(Boolean))
+        .catch(()=>[]);
+    }
+    return coneCataloguePromise;
   }
+  function coneName(raw,allNames=[]){
+    const first=String(raw||'').split('\n').map(x=>x.trim())
+      .find(x=>x.length>5&&!/^(Nv|Lv)/i.test(x))||'';
+    const known=[...new Set([...allNames,'Euforia Repleta de Bênçãos',
+      'Um Encontro na Próxima Primavera','Cores para o Amanhã'])];
+    const cleaned=norm(first);
+    const ranked=known.map(name=>{
+      const value=norm(name),distance=editDistance(cleaned,value);
+      return {name,score:1-distance/Math.max(cleaned.length,value.length,1)};
+    }).sort((a,b)=>b.score-a.score);
+    // Never silently assign a different light cone based on a weak fuzzy match.
+    if(ranked[0]?.score>=.82 && (ranked[0].score-(ranked[1]?.score||0))>=.035)
+      return ranked[0].name;
+    return first.length>5&&first.length<75
+      ?first.replace(/[^\p{L}\p{N} .,'’–-]/gu,'').trim():'';
+  }
+
   async function suggestEidolons(bitmap){
     if(!bitmap||!bitmap.width)return null;
     const c=document.createElement('canvas');c.width=bitmap.width;c.height=bitmap.height;
@@ -607,7 +624,7 @@
       if(sup&&document.getElementById('v06-s')){
         document.getElementById('v06-s').value=sup[1];uploader.superimposition=Number(sup[1]);
       }
-      const recognizedCone=coneName(cone);
+      const recognizedCone=coneName(cone,await getLightConeNames());
       if(recognizedCone){
         uploader.cone=recognizedCone;
         const el=document.getElementById('v06-cone');if(el)el.value=recognizedCone;
