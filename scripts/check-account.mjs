@@ -23,12 +23,12 @@ const src=[
  {setId:'308',level:15,main:{stat:'Regeneração de Energia',value:19.4},subs:[{stat:'PV',value:33},{stat:'DEF %',value:10.2},{stat:'Efeito de Quebra',value:10.3},{stat:'PV %',value:10.8}]}
 ];
 const records=a.normalizeRelics(src,{},game.relicSets);
-assert.equal(records[2].main.value,64.8,'Old 4.8 OCR must become 64.8 for +15 body');
+assert.equal(records[2].main.value,4.8,'Unverified OCR values are preserved for manual review');
 assert.equal(a.examineRelics(records).complete,6);
 assert.deepEqual(a.examineRelics(records).counts,{'127':4,'308':2});
 const migrated=a.toLegacy(records,game.relicSets,{});
 assert.equal(migrated[2].main,'Dano CRIT');
-assert.equal(migrated[2].value,'64,8%');
+assert.equal(migrated[2].value,'4,8%');
 assert.equal(migrated[0].set,game.relicSets['127'].name);
 const backward=a.normalizeRelics(null,migrated,game.relicSets);
 assert.equal(backward[0].subs[2].value,11.6);
