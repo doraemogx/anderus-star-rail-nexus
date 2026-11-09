@@ -90,3 +90,7 @@
 .v20-official-rotation li{font:13px/1.8 'DM Sans',system-ui;margin-bottom:8px}
 .v20-official-rotation a{color:#f2d2a4;text-underline-offset:4px;font-weight:700}
 .aha-theatre .v20-official-rotation{background:linear-gradient(120deg,#351c3d,#1a152b);border-color:#dfaaba}
+
+.v09-boss-ask{width:100%;min-height:44px;margin-top:15px;padding:11px 15px;border-radius:9px;border:1px solid #e6c89a;background:#23354f;color:#f4d9af;font:700 12px/1.4 'DM Sans',system-ui;cursor:pointer;text-align:left}
+.v09-boss-ask:focus-visible{outline:3px solid #f4d9af;outline-offset:3px}
+.aha-theatre .v09-boss-ask{background:#38223e;border-color:#efc2b7;color:#f7d6cd}
