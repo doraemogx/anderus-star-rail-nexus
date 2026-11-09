@@ -63,6 +63,11 @@
     return {group,text,font,shape,color,art:id==='future-aha'?ahaOfficial:imgSrc(id,'portrait')||heroOfficial,name:c.name,id};
   };
   state.v06Art||={};state.v06AccountNotes||={};state.v06Goal||={id:'future-aha',target:'E0S1'};
+  if(!document.getElementById('nexus-account-css')){
+    const link=document.createElement('link');link.id='nexus-account-css';
+    link.rel='stylesheet';link.href='./nexus-account.css?v=1';
+    document.head.appendChild(link);
+  }
   // Keep manually added characters across reloads until the catalogue gains them.
   state.v06CustomCharacters ||= {};
   for(const char of Object.values(state.v06CustomCharacters)){
