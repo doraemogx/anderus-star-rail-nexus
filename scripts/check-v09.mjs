@@ -43,7 +43,7 @@ for(const symbol of ['v09SetVisualMode','renderVariants','renderEndgame','enhanc
 assert.ok(loader.includes('anderus-aeon-aha-visual-mode'));
 assert.ok(loader.includes('aha-detail.css'));
 assert.ok(loader.includes('enhanceNexusV09();'));
-assert.match(sw, /anderus-shell-v\\d+/);
+assert.ok(/anderus-shell-v[0-9]+/.test(sw));
 assert.ok(read('v06.js').includes('repairOverviewEidolons'));
 assert.ok(read('v06.js').includes('rankRecord(id,n)'));
 assert.ok(read('v06.js').includes('relic-auto.js?v=3'));
