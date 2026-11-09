@@ -168,7 +168,8 @@ function renderTurns(){
   const a=turn.result;
   return '<article class="nexus-pompom-turn reply"><span>POM-POM · '+esc(a.source)+'</span><h3>'+esc(a.title)+'</h3><p>'+esc(a.body)+'</p>'+
    (a.points.length?'<ul>'+a.points.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+
-   '<div class="nexus-pompom-actions">'+a.actions.map(x=>'<button type="button" data-pompom-action="'+esc(x.action)+'">'+esc(x.label)+'</button>').join('')+'</div></article>';
+   '<div class="nexus-pompom-actions">'+a.actions.map(x=>'<button type="button" data-pompom-action="'+esc(x.action)+'">'+esc(x.label)+'</button>').join('')+'</div>'+
+   (a.sourceUrl&&/^https:\/\//.test(a.sourceUrl)?'<a class="nexus-pompom-source" href="'+esc(a.sourceUrl)+'" target="_blank" rel="noopener noreferrer">Consultar fonte da mecânica</a>':'')+'</article>';
  }).join('');
  const log=dlg.querySelector('#nexus-pompom-dialogue');log.scrollTop=log.scrollHeight;
 }
@@ -209,13 +210,42 @@ async function open(characterId){
  else renderTurns();
  dlg.querySelector('#nexus-pompom-question').focus();
 }
+async function openBoss(mode,index){
+ const context=window.NexusV09?.bossContext?.(mode,index);
+ if(!context)return;
+ await open('');
+ const squad=context.team;
+ const teamStatus=!squad?'Nenhuma equipe disponível: cadastre seus personagens primeiro.':
+  squad.ready?'Quatro personagens cadastrados na composição sugerida.':
+  'Sugestão parcial: '+squad.members.length+'/4 personagens registrados; faltam '+squad.missing.join(', ')+'.';
+ const memberNames=squad?.members?.length?'Equipe considerada: '+squad.members.join(' · ')+'.':'Nenhum integrante disponível.';
+ const points=[
+  'Mecânica registrada: '+context.mechanics,
+  'Fraquezas registradas: '+(context.weaknesses.join(' · ')||'não confirmadas'),
+  memberNames,teamStatus,
+  ...context.modifiers.slice(0,3),
+  ...(mode==='aa'?['Arbitragem: os três Cavaleiros exigem equipes sem repetição de integrantes. Analise os três em conjunto antes de alocar personagens.']:[])
+ ];
+ turns.push({type:'question',text:'Como enfrentar '+context.name+' em '+context.modeName+'?'});
+ turns.push({type:'reply',result:{
+  title:context.name+' · '+context.phase,
+  body:'Passageiro, veja as mecânicas e a cobertura disponível na sua conta. Esta é uma orientação editorial, não uma simulação de vitória.',
+  points,source:'Guia editorial do Endgame e personagens registrados',
+  sourceUrl:context.source,
+  actions:[{label:'Abrir Team Lab',action:'teams'},{label:'Voltar ao Endgame',action:'endgame'}]
+ }});
+ if(turns.length>20)turns.splice(0,2);
+ renderTurns();
+}
 function mount(){
  if(mount.done)return;mount.done=true;
  document.addEventListener('click',e=>{
+  const boss=e.target.closest('[data-nexus-boss-mode][data-nexus-boss-index]');
+  if(boss){openBoss(boss.dataset.nexusBossMode,Number(boss.dataset.nexusBossIndex));return;}
   const action=e.target.closest('[data-nexus-pompom-open]');
   if(action)open(action.dataset.nexusPompomOpen||'');
  });
 }
-window.NexusPomPom={open,ask,answer,mount};
+window.NexusPomPom={open,openBoss,ask,answer,mount};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
