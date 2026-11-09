@@ -166,6 +166,18 @@
       x.replace(/Evanescia E6S1 e Pearl E2S1/g,ownedCount()+' personagem(ns) cadastrados')+
       pomCard('Novos patches, novas decisões','O catálogo de personagens é sincronizado pelo GitHub. Estratégias de Endgame e recomendações de investimento só recebem selo de atualizadas depois de conferidas contra as regras e inimigos da rotação.','RADAR');
   };
+  const mocBosses=[
+    {name:'Muhtar da Guerra dos Borisins: Hoolay',weak:'Físico · Fogo · Vento',side:'Lado 1',desc:'Rocking Rebel e Sombra em Decadência antecedem Hoolay. Atenção às invocações, Fúria Lunar e frequência de ataques.',img:'https://patchwiki.biligame.com/images/sr/d/d3/oredae7oye1iaud47mjkt3p81tvmaf0.png',elements:['Physical','Fire','Wind']},
+    {name:'Sangue do Deus Caído: Yabuli',weak:'Gelo · Quântico · Imaginário',side:'Lado 2',desc:'Pégaso ao Luar e Grifo do Meio-Dia precedem Yabuli. Planeje a quebra da barreira e a transição entre fases.',img:'https://www.gacha.gg/img/honkai-star-rail/dm/monster/mostericon-monster_5034010.webp',elements:['Ice','Quantum','Imaginary']}
+  ];
+  function bossTiles(){
+    if(mode!=='moc'||String(floor)!=='12')return '';
+    return '<div class="v06-sectionline"><h2>Chefes do andar 12</h2><small>2 NOV – 14 DEZ</small></div><div class="v06-boss-grid">'+mocBosses.map((boss,i)=>{
+      const matches=ownerKeys().filter(id=>boss.elements.includes(gameData.chars?.[id]?.element)).slice(0,5);
+      return '<button class="v06-boss-card" onclick="v06BossDetail('+i+')"><div class="v06-boss-art"><img loading="lazy" src="'+boss.img+'" alt="'+safe(boss.name)+'" onerror="this.style.opacity=0"></div><div><small>'+boss.side+'</small><strong>'+boss.name+'</strong><span>Fraquezas: '+boss.weak+'</span><em>'+(matches.length?'Da sua conta: '+matches.map(id=>lookup(id).name).join(', '):'Importe personagens para sugerir sua equipe')+'</em></div></button>';
+    }).join('')+'</div>';
+  }
+  window.v06BossDetail=i=>{const b=mocBosses[i];if(!b)return;showModal(b.side+' · '+b.name,'<div class="v06-future-detail"><div class="v06-banner-art"><img src="'+b.img+'" alt="'+safe(b.name)+'"></div><h2>'+safe(b.name)+'</h2><p>'+safe(b.desc)+'</p><p>Fraquezas recomendadas: '+safe(b.weak)+'.</p>'+pomCard('Não basta uma tier list','Considere os buffs da rotação, os alvos secundários, o dano efetivo da build e a ordem de ação dos seus quatro integrantes.','COMBATE')+'</div>');};
   const modeKeys={moc:{period:'02/11–14/12/2026',summary:'Sobrevivência dos Mais Aptos',boss:'Inimigos e buffs variam por andar e metade.'},
     pf:{period:'19/10–30/11/2026',summary:'Palavras Imaginadas',boss:'Onda de inimigos e pontuação por eliminação.'},
     sa:{period:'05/10–16/11/2026',summary:'Dominação do Esquecimento',boss:'Avalie os chefes separadamente em cada lado.'},
@@ -175,7 +187,7 @@
     return '<section class="v06-endgame-lead">'+subhead('ARBITRAGEM & DESAFIOS','Endgame Intelligence','Cada andar, lado e chefe tem suas próprias condições. Escolha uma equipe da sua conta.')+
       '<div class="v06-endmode">'+Object.keys(MODE).map(k=>'<button class="'+(k===mode?'active':'')+'" onclick="mode=\''+k+'\';floor=\''+(k==='moc'?'12':'4')+'\';refresh()">'+MODE[k].short+'</button>').join('')+'</div>'+
       '<div class="v06-encounter"><small class="v06-kicker">'+safe(m.period)+'</small><h2>'+safe(m.summary)+'</h2><p>'+safe(m.boss)+'</p><span>'+keys.length+' personagens disponíveis na sua conta</span></div></section>'+
-      base.endgame()+
+      bossTiles()+base.endgame()+
       pomCard('Como escolher as equipes','O Pom-Pom só utiliza o inventário que você cadastrou. Um personagem não enviado não entra automaticamente nas recomendações. Estimativas de 0 ou 1 ciclo exigem PV, ondas, buffs, relíquias e rotações mensuráveis.','ESTRATÉGIA DE COMBATE');
   };
   const originalThemes=base.themes;
@@ -250,7 +262,18 @@
     if(file.size>12*1024*1024){showToast('Escolha uma imagem de até 12 MB');return;}
     uploader.file=file;uploader.busy=true;
     const reader=new FileReader();
-    reader.onload=async()=>{uploader.preview=String(reader.result);uploader.busy=false;await cropRelics();v06ShowImportReview();};
+    reader.onload=async()=>{
+      const full=String(reader.result);
+      const img=new Image();
+      await new Promise(done=>{img.onload=done;img.onerror=done;img.src=full;});
+      if(img.naturalWidth){
+        const w=Math.min(960,img.naturalWidth),h=Math.round(w*img.naturalHeight/img.naturalWidth);
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        uploader.preview=c.toDataURL('image/webp',.62);
+      }else uploader.preview=full;
+      uploader.busy=false;await cropRelics();v06ShowImportReview();
+    };
     reader.readAsDataURL(file);
   };
   function showImportReview(){
