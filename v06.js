@@ -368,7 +368,7 @@
       '<div class="v06-fieldgroup"><label>Personagem<select id="v06-id" onchange="document.getElementById(\'v06-custom-name-wrap\').style.display=this.value===\'__custom__\'?\'block\':\'none\'">'+choice+'</select></label>'+
       '<label id="v06-custom-name-wrap" style="display:none;grid-column:1/-1">Nome do personagem ainda não listado<input id="v06-custom-name" maxlength="80" placeholder="Nome como aparece no jogo"></label>'+
       '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="80"></label>'+
-      '<label>Eidolons (confirme os seis ícones)<select id="v06-e"><option value="">Selecione E0–E6</option>'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
+      '<label>Eidolons (sugestão visual — confirme E0–E6)<select id="v06-e"><option value="">Selecione E0–E6</option>'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
       '<label>Sobreposição do cone<select id="v06-s"><option value="">Selecione S1–S5</option>'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===uploader.superimposition?'selected':'')+'>S'+(i+1)+'</option>').join('')+'</select></label>'+
       '<label style="grid-column:1/-1">Nome do cone de luz<input id="v06-cone" value="'+safe(uploader.cone||'')+'" placeholder="Nome do cone de luz"></label>'+
       '<label>PV<input type="number" id="v06-pv" placeholder="PV total"></label><label>ATQ<input type="number" id="v06-atk" placeholder="ATQ total"></label>'+
@@ -625,12 +625,19 @@
     // Calibrated on the user's 3 same-format screenshots:
     // Pearl E2: [0.185,0.193,0.044,...]. Evanescia E6 minimum 0.161.
     // Caelus E6 minimum 0.233.
-    if(ratios.every(v=>v>.135))return 6;
+    // Active artwork differs by character, so require an ordered bright/dark
+    // separation rather than relying on six fixed absolute thresholds.
+    if(ratios.every(v=>v>=.125))return 6;
+    if(ratios.every(v=>v<=.075))return 0;
+    const candidates=[];
     for(let n=1;n<6;n++){
-      if(ratios.slice(0,n).every(v=>v>.13)&&ratios.slice(n).every(v=>v<.085))return n;
+      const lit=ratios.slice(0,n),unlit=ratios.slice(n);
+      const gap=Math.min(...lit)-Math.max(...unlit);
+      if(gap>=.045&&Math.min(...lit)>.09&&Math.max(...unlit)<.12)
+        candidates.push({n,gap});
     }
-    if(ratios.every(v=>v<.08))return 0;
-    return null;
+    candidates.sort((a,b)=>b.gap-a.gap);
+    return candidates[0]?.n??null;
   }
   window.v06AutoRead=async function(){
     const status=document.getElementById('v06-import-status');
