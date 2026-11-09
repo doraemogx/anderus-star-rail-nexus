@@ -231,11 +231,37 @@ function enhanceEditorial(){
   '<p>As dicas sobre personagens usam exclusivamente seu elenco cadastrado. Os guias gerais de mecânica ficam separados da avaliação da sua build.</p>');
 }
 
+let verifiedEndgame=null,endgameLoad=null;
+function renderVerifiedEndgame(){
+ const root=document.querySelector('.v09-endgame');
+ if(!root||root.querySelector('.v20-official-rotation'))return;
+ if(!verifiedEndgame){
+  if(!endgameLoad)endgameLoad=fetch('./data/endgame-verified.json',{cache:'no-store'})
+   .then(r=>{if(!r.ok)throw Error('Rotação não disponível');return r.json()})
+   .then(data=>{verifiedEndgame=data;endgameLoad=null;renderVerifiedEndgame()})
+   .catch(e=>{endgameLoad=null;console.warn('Rotação oficial',e)});
+  return;
+ }
+ let key='moc';try{key=modeKey()}catch(_){}
+ const period=verifiedEndgame.rotations?.find(x=>x.id===key);if(!period)return;
+ const date=verifiedEndgame.verifiedAt;
+ const today=new Date().toISOString().slice(0,10);
+ const expired=period.end&&today>period.end;
+ const badge=expired?'REVISÃO NECESSÁRIA':'ROTACÃO DOCUMENTADA';
+ const panel=document.createElement('section');panel.className='v20-official-rotation';
+ panel.innerHTML='<div class="v20-rotation-head"><span>'+esc(badge)+' · '+esc(verifiedEndgame.version)+'</span><small>Referência '+esc(date)+'</small></div>'+
+  '<h3>'+esc(period.name)+' · '+esc(period.phase)+'</h3>'+
+  '<p>Vigência informada: '+esc(period.start)+' a '+esc(period.end)+' (horário do servidor).'+(expired?' Este registro expirou; confirme a rotação vigente no jogo.':'')+'</p>'+
+  (period.effects?.length?'<ul>'+period.effects.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':
+   '<p>Bônus específicos ainda não validados no snapshot; confira as mecânicas de cada chefe no jogo.</p>')+
+  '<a href="'+esc(period.sourceUrl||verifiedEndgame.sourceUrl)+'" target="_blank" rel="noopener noreferrer">Fonte e regras de referência</a>';
+ root.prepend(panel);
+}
 function enhance(){
  if(!document.querySelector('.app')?.classList.contains('aha-theatre')){
   document.querySelectorAll('.v09-intel').forEach(node=>node.remove());
  }
- renderVariants();renderEndgame();renderOcrTip();enhanceEditorial();
+ renderVariants();renderEndgame();renderVerifiedEndgame();renderOcrTip();enhanceEditorial();
 }
 window.NexusV09={enhance:enhance,visualMode:visualMode,version:'0.9'};
 enhance();
