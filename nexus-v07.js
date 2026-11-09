@@ -34,6 +34,42 @@ function specialText(root){
  }
  return changes;
 }
+
+// Dynamic optional theme: download only when Aeon Aha / future-aha is selected.
+let ahaModuleLoading=false;
+let ahaThemeUnavailable=false;
+function enhanceAhaTheme(){
+ const app=document.querySelector('.app');if(!app)return;
+ const selected=typeof state!=='undefined'&&state.theme==='future-aha';
+ const existing=document.getElementById('aha-theme-css');
+ if(!selected){
+  window.AnderusAha?.cleanup?.();
+  if(existing)existing.remove();
+  return;
+ }
+ if(ahaThemeUnavailable)return; // graceful fallback to the original character theme
+ if(!existing){
+  const link=document.createElement('link');link.id='aha-theme-css';link.rel='stylesheet';
+  link.href='./themes/aha.css?v=1';
+  link.onerror=()=>{ahaThemeUnavailable=true;link.remove();window.AnderusAha?.cleanup?.();};
+  document.head.appendChild(link);
+ }
+ if(window.AnderusAha){window.AnderusAha.paint();return;}
+ if(ahaModuleLoading)return;
+ ahaModuleLoading=true;
+ const script=document.createElement('script');script.src='./themes/aha.js?v=1';script.async=true;
+ script.onload=()=>{
+  ahaModuleLoading=false;
+  if(!ahaThemeUnavailable&&typeof state!=='undefined'&&state.theme==='future-aha')window.AnderusAha?.paint?.();
+ };
+ script.onerror=()=>{
+  ahaModuleLoading=false;ahaThemeUnavailable=true;
+  document.getElementById('aha-theme-css')?.remove();
+  window.AnderusAha?.cleanup?.();
+ };
+ document.head.appendChild(script);
+}
+
 function enhancePage(){
  const root=document.querySelector('.app');if(!root)return;
  document.getElementById('nexFab')?.remove();
@@ -86,6 +122,7 @@ function enhancePage(){
  }
  const app=document.querySelector('.app');
  if(app)app.classList.add('v07-shell');
+ enhanceAhaTheme();
 }
 let lastPending=false;
 const observer=new MutationObserver(()=>{

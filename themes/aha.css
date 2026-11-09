@@ -1,0 +1,130 @@
+/* ANDERUS — Aeon Aha, Grand Theatre. Loaded only for future-aha. */
+.aha-theatre{--v-color:#ffcfdb!important;--v-color2:#d74879!important;--v-deep:#170b23!important;--v-title-font:'Cinzel','Marcellus',Georgia,serif!important;--aha-ivory:#fff0e4;--aha-rose:#ef7ea0;--aha-gold:#e5bd91;background:#130b1c!important;color:#ffeae9}
+.aha-theatre:before{background:radial-gradient(circle at 25% 12%,#c97baa21,transparent 38%),repeating-linear-gradient(120deg,transparent 0 54px,#f1d9c008 55px 56px)!important;opacity:1!important}
+.aha-theatre .masthead{background:linear-gradient(90deg,#190b23f5,#34132df5)!important;border-bottom:1px solid #d9a38a6c!important;box-shadow:0 12px 35px #08060ca8!important}
+.aha-theatre .brand-symbol{color:#efb5ba!important;filter:drop-shadow(0 0 10px #e65b6b75)!important}
+.aha-theatre .brand-title{color:#fff0e8!important;font-family:var(--v-title-font)!important}
+.aha-theatre .mast-actions .i-btn{border-color:#eabb9c56!important}
+.aha-theatre .layout,.aha-theatre .stage{background:transparent}
+.aha-theatre .v06-home{position:relative}
+.aha-theatre .v06-hero,.v07-shell.aha-theatre .v06-hero{height:650px!important;min-height:650px!important;position:relative;isolation:isolate;overflow:hidden;border-radius:16px!important;background:radial-gradient(circle at 72% 24%,#d4577b38,transparent 37%),linear-gradient(135deg,#190e27,#341128 65%,#140c21)!important;border:1px solid #e8c09a99!important;box-shadow:0 22px 65px #07040da6,0 0 0 5px #a54d6a1b!important;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%)!important}
+.aha-theatre .v06-hero>.v06-celestial,.aha-theatre .v06-hero>.v06-hero-art,.aha-theatre .v06-hero>.v06-hero-vignette,.aha-theatre .v06-hero>.v06-hero-top,.aha-theatre .v06-hero>.v06-hero-copy{display:none!important}
+.aha-theatre .aha-show{position:absolute;inset:0;z-index:3;overflow:hidden;pointer-events:none}
+.aha-theatre .aha-show button{pointer-events:auto}
+.aha-theatre .aha-show:before{content:"";position:absolute;inset:0;background-image:radial-gradient(#fff1c99c .75px,transparent 1.3px),radial-gradient(#e772a975 .8px,transparent 1.6px);background-position:0 0,40px 28px;background-size:67px 79px,133px 139px;opacity:.32}
+.aha-theatre .aha-show:after{content:"";position:absolute;inset:8px;z-index:8;pointer-events:none;border:1px solid #e7b5a15a;clip-path:polygon(0 0,90% 0,100% 12%,100% 100%,0 100%)}
+.aha-theatre .aha-show-inner{position:relative;height:100%;width:100%;max-width:1320px;margin:0 auto}
+.aha-theatre .aha-stage-label{position:absolute;z-index:7;left:20px;right:20px;top:19px;display:flex;gap:9px;align-items:center;color:#f9d4bb;font:800 8px/1.4 'DM Sans',sans-serif;letter-spacing:1.2px;text-shadow:0 1px 7px #000a}
+.aha-theatre .aha-stage-label i{height:1px;background:#f9cbb25e;flex:1}
+.aha-theatre .aha-stage-seal{display:grid;place-items:center;width:27px;height:27px;border:1px solid #d9a78b;border-radius:50%;font-size:17px;color:#ffe9c2}
+.aha-theatre .aha-spotlight{position:absolute;top:-160px;width:60%;height:83%;filter:blur(19px);opacity:.4;transform-origin:top center;pointer-events:none;clip-path:polygon(30% 0,70% 0,100% 100%,0 100%)}
+.aha-theatre .aha-light-one{left:-17%;background:linear-gradient(#ffb8e28c,transparent);transform:rotate(-23deg);animation:aha-beam 9s ease-in-out infinite alternate}
+.aha-theatre .aha-light-two{right:-15%;background:linear-gradient(#f9c99479,transparent);transform:rotate(19deg);animation:aha-beam 11s ease-in-out infinite alternate-reverse}
+.aha-theatre .aha-orbit{position:absolute;left:48%;top:7%;width:350px;aspect-ratio:1;border:1px solid #efb6aa3d;border-radius:50%;box-shadow:0 0 0 23px #e1a1bd0b,0 0 0 58px #cfa1a30a;animation:aha-orbit 40s linear infinite}
+.aha-theatre .aha-orbit span{position:absolute;color:#f8d5b3;font-size:26px}
+.aha-theatre .aha-orbit span:nth-child(1){top:3%;left:19%}.aha-theatre .aha-orbit span:nth-child(2){right:-9%;top:48%}.aha-theatre .aha-orbit span:nth-child(3){left:25%;bottom:0}
+.aha-theatre .aha-curtain{position:absolute;inset:0;z-index:1;opacity:.54;background:repeating-linear-gradient(92deg,#15091b90 0 14px,#7b2e5366 28px,#270d31a8 44px,transparent 57px);mask-image:linear-gradient(90deg,#000,transparent 32%,transparent 72%,#000);pointer-events:none}
+.aha-theatre .aha-portrait{position:absolute;z-index:3;inset:53px 0 auto;height:340px;display:flex;justify-content:center;align-items:center}
+.aha-theatre .aha-portrait-halo{position:absolute;width:min(80vw,345px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#f4b5c04b 0 24%,#d54c7770 26%,#330e3d33 55%,transparent 73%);box-shadow:0 0 82px #c04e9d44}
+.aha-theatre .aha-portrait img{position:relative;width:min(88%,390px);height:340px;object-fit:contain;object-position:center;filter:drop-shadow(0 12px 23px #0e0715c5);mask-image:linear-gradient(to bottom,#000 82%,transparent)}
+.aha-theatre .aha-portrait-serial{position:absolute;right:18px;top:43%;writing-mode:vertical-rl;font:700 8px 'DM Sans',sans-serif;letter-spacing:2px;color:#ffd6bb91}
+.aha-theatre .aha-intro{position:absolute;z-index:5;left:23px;right:21px;bottom:26px}
+.aha-theatre .aha-overline{display:flex;align-items:center;gap:7px;color:#f5d5b2;font:800 9px 'DM Sans',sans-serif;letter-spacing:1.3px}
+.aha-theatre .aha-overline img{width:19px;height:19px;object-fit:contain}.aha-theatre .aha-diamond{color:#f1abc9}.aha-theatre .aha-sep{width:1px;height:14px;background:#dba7b7;margin:0 3px}
+.aha-theatre .aha-chapter{font:700 9px 'DM Sans',sans-serif;letter-spacing:2px;color:#d9b6b8;margin:12px 0 7px}
+.aha-theatre .aha-intro h1{font:600 clamp(44px,13vw,68px)/.98 var(--v-title-font)!important;letter-spacing:-1.5px;margin:0!important;color:#fff4e9;text-shadow:0 3px 24px #0c0614}
+.aha-theatre .aha-intro h1 span,.aha-theatre .aha-intro h1 em{display:block}
+.aha-theatre .aha-intro h1 em{font-style:italic;color:#ffbdcb;text-shadow:0 0 20px #e9517d47}
+.aha-theatre .aha-leading{font:500 12px/1.55 'DM Sans',sans-serif;color:#f2dce1;margin:12px 0 18px;max-width:340px}
+.aha-theatre .aha-hero-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.aha-theatre .aha-hero-actions button{cursor:pointer;border-radius:4px;min-height:43px;padding:10px 13px;font:800 11px/1.2 'DM Sans',sans-serif;transition:transform .2s,background .2s;box-shadow:none}
+.aha-theatre .aha-hero-actions button:hover{transform:translateY(-2px)}
+.aha-theatre .aha-main-action{border:1px solid #f8e0c1;background:linear-gradient(125deg,#ffe2c6,#f69aaf);color:#381329}
+.aha-theatre .aha-quiet-action{border:1px solid #dca7b39c;background:#1b0d26c7;color:#ffe3e0}
+.aha-theatre .aha-side-mark{display:none}
+.aha-theatre .aha-marquee{display:flex;justify-content:center;align-items:center;gap:12px;white-space:nowrap;overflow:hidden;padding:14px 3px;border-bottom:1px solid #f1c4a241;color:#d9b8bc;font:700 9px 'DM Sans',sans-serif;letter-spacing:1.25px}
+.aha-theatre .aha-marquee b{color:#fff0de}.aha-theatre .aha-marquee>span:nth-child(n+4){display:none}
+.aha-theatre .v06-divider{color:#e3a8bb!important}.aha-theatre .v06-divider span{color:#d799a8}
+.aha-theatre .aha-actline{display:flex;flex-direction:column;gap:13px;margin:8px 0 16px;padding-bottom:14px;border-bottom:1px solid #e2ac9855}
+.aha-theatre .aha-micro{font:800 9px/1.5 'DM Sans',sans-serif;letter-spacing:2px;color:#f1bfc2}
+.aha-theatre .aha-actline h2,.aha-theatre .aha-gallery h2{font:500 clamp(23px,7vw,35px)/1.15 var(--v-title-font);margin:5px 0 0;color:#fff0e8}
+.aha-theatre .aha-quicklinks{display:flex;gap:7px;flex-wrap:wrap}
+.aha-theatre .aha-quicklinks button{min-height:35px;padding:8px 12px;cursor:pointer;background:#4e1c397a;border:1px solid #e1a3b07a;border-radius:4px;color:#f6d4d4;font:700 10px 'DM Sans',sans-serif}
+.aha-theatre .v06-brief .v06-sectionline{display:none}
+.aha-theatre .v06-tile-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;counter-reset:aha-act}
+.aha-theatre .v06-tile{min-width:0!important;height:175px!important;min-height:0!important;border:1px solid #f4c4a460!important;border-radius:5px!important;background:linear-gradient(155deg,#4b203ad9,#180e29f5)!important;box-shadow:0 12px 30px #09061089!important;clip-path:polygon(0 0,calc(100% - 13px) 0,100% 13px,100% 100%,0 100%)!important;transition:transform .2s,box-shadow .2s}
+.aha-theatre .v06-tile:hover{transform:translateY(-3px);box-shadow:0 20px 35px #06020b8c!important}
+.aha-theatre .v06-tile:nth-child(1){grid-column:span 2;height:180px!important;background:linear-gradient(115deg,#52233d,#1d122d 75%)!important}
+.aha-theatre .v06-tile:nth-child(4){background:linear-gradient(150deg,#50315a,#1e112d)!important}
+.aha-theatre .v06-tile:nth-child(6){background:linear-gradient(150deg,#662238,#200e29)!important}
+.aha-theatre .v06-tile:before{content:"ACT / 0" counter(aha-act);counter-increment:aha-act;position:absolute;right:14px;top:12px;color:#fbd9cf9a;font:800 8px 'DM Sans',sans-serif;letter-spacing:1px}
+.aha-theatre .v06-tile strong{font-family:var(--v-title-font)!important;color:#fff0e7!important;font-size:clamp(17px,4.5vw,24px)!important;max-width:88%!important}
+.aha-theatre .v06-tile small{color:#f2d9dd!important;font-size:10px!important;max-width:89%!important}
+.aha-theatre .v06-tile .v06-tile-art{background-size:cover!important;background-position:center!important;opacity:.25!important;mask-image:linear-gradient(to right,transparent 15%,#000)!important}
+.aha-theatre .v06-sectionline h2,.aha-theatre .v06-pagehead h1{font-family:var(--v-title-font)!important;color:#fff0e4!important}
+.aha-theatre .v06-snapshot,.aha-theatre .v06-goal,.aha-theatre .v06-future{border-color:#d6a0ae78!important}
+.aha-theatre .v06-stats .v06-metric,.aha-theatre .v06-metric{background:#25162d!important;border:1px solid #d6a0ae5e!important}
+.aha-theatre .v06-feature-panel{background:linear-gradient(135deg,#421e38,#1a1129)!important;border-radius:6px!important;overflow:hidden}
+.aha-theatre .v06-feature-body img,.aha-theatre .v06-banner-strip img{object-fit:contain!important}
+.aha-theatre .v06-radar-banner,.aha-theatre .v06-banner-strip{background:linear-gradient(125deg,#3e1e38,#1a1129)!important;border-color:#e6b1a68c!important}
+.aha-theatre .v06-pom-tip{background:linear-gradient(110deg,#2e1a32,#1d122e)!important;border:1px solid #e7b7a26f!important}
+.aha-theatre .v06-pom-tip b{color:#ffecda!important}
+.aha-theatre .aha-credit{margin:26px 12px 12px;color:#bfaab8;font:10px/1.7 'DM Sans',sans-serif;text-align:center}
+.aha-theatre .aha-credit a,.aha-theatre .aha-gallery a{color:#f9c7a8}
+.aha-theatre .v06-themes .v06-theme-stage{background:linear-gradient(125deg,#32162f,#110c21)!important;border-radius:6px;border-color:#e8ababb0!important}
+.aha-theatre .v06-theme-stage-art img{object-fit:contain!important}
+.aha-theatre .aha-gallery{margin:20px 0 22px;border:1px solid #e1b0a16e;border-radius:7px;padding:17px 13px;background:linear-gradient(140deg,#391a35,#1a0e2b)}
+.aha-theatre .aha-gallery-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.aha-theatre .aha-gallery-head p{font:12px/1.6 'DM Sans',sans-serif;color:#e9d4d9;max-width:570px;margin:9px 0 16px}
+.aha-theatre .aha-gallery-crest{font-size:44px;line-height:1;color:#f1bfc0}
+.aha-theatre .aha-eidolon-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.aha-theatre .aha-eidolon-grid>a{display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden;min-width:0;border:1px solid #ebc3a57e;background:#180e27;border-radius:4px;padding:8px 5px 9px;text-decoration:none;transition:background .2s,transform .2s}
+.aha-theatre .aha-eidolon-grid>a:hover{background:#52243c;transform:translateY(-2px)}
+.aha-theatre .aha-eidolon-mark{align-self:flex-start;color:#ffe0c7;font:700 10px 'DM Sans',sans-serif}
+.aha-theatre .aha-eidolon-grid img{width:100%;height:92px;object-fit:contain}
+.aha-theatre .aha-eidolon-open{font:800 8px 'DM Sans',sans-serif;letter-spacing:1px;color:#efc5b0}
+.aha-theatre .aha-gallery-source{font:10px/1.6 'DM Sans',sans-serif;color:#d5b7c4;margin:14px 0 0}
+.aha-theatre .desktop-sidebar{background:linear-gradient(180deg,#241027,#150d22)!important;border-right:1px solid #bd6b8099!important}
+.aha-theatre #sidebarLinks button,.aha-theatre #sidebarLinks a{border-radius:4px!important}
+.aha-theatre #sidebarLinks button:hover,.aha-theatre #sidebarLinks a:hover{background:#ef7aa71b!important}
+.aha-theatre .v06-bottom{background:#211125f0!important;border-top:1px solid #d5989d88!important}
+.aha-theatre :is(button,a,input,select,textarea):focus-visible{outline:3px solid #b1f7e4!important;outline-offset:3px!important}
+@media(min-width:720px){
+ .aha-theatre .v06-hero,.v07-shell.aha-theatre .v06-hero{height:570px!important;min-height:570px!important;border-radius:12px!important}
+ .aha-theatre .aha-stage-label{left:35px;right:35px;top:25px;font-size:9px;letter-spacing:2px}
+ .aha-theatre .aha-portrait{inset:35px 2% 0 42%;height:500px}
+ .aha-theatre .aha-portrait img{width:100%;max-width:650px;height:500px}
+ .aha-theatre .aha-portrait-halo{width:min(36vw,440px)}
+ .aha-theatre .aha-orbit{left:59%;top:7%;width:430px}
+ .aha-theatre .aha-intro{left:clamp(35px,5vw,78px);right:auto;bottom:65px;max-width:53%}
+ .aha-theatre .aha-intro h1{font-size:clamp(46px,5.7vw,87px)!important}
+ .aha-theatre .aha-leading{font-size:14px;line-height:1.65;max-width:400px}
+ .aha-theatre .aha-side-mark{display:block;position:absolute;z-index:5;right:16px;bottom:32px;writing-mode:vertical-rl;font:800 8px 'DM Sans',sans-serif;letter-spacing:2px;color:#efd4c9a8}
+ .aha-theatre .aha-marquee{justify-content:space-between;padding:18px 25px;letter-spacing:2px}
+ .aha-theatre .aha-marquee>span:nth-child(n+4){display:inline}
+ .aha-theatre .aha-actline{flex-direction:row;justify-content:space-between;align-items:end;margin:15px 0 22px}
+ .aha-theatre .v06-tile-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}
+ .aha-theatre .v06-tile{height:225px!important}
+ .aha-theatre .v06-tile:nth-child(1){grid-column:span 2;height:225px!important}
+ .aha-theatre .aha-eidolon-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+ .aha-theatre .aha-eidolon-grid img{height:115px}
+ .aha-theatre .aha-gallery{padding:23px}
+}
+@media(min-width:1200px){
+ .v07-shell.aha-theatre .v06-hero{height:615px!important;min-height:615px!important}
+ .aha-theatre .aha-portrait{height:565px}
+ .aha-theatre .aha-portrait img{height:565px}
+ .aha-theatre .aha-intro{bottom:85px}
+}
+@media(max-width:380px){
+ .aha-theatre .v06-hero,.v07-shell.aha-theatre .v06-hero{height:675px!important;min-height:675px!important}
+ .aha-theatre .aha-intro h1{font-size:42px!important}
+ .aha-theatre .aha-main-action{flex:1}
+ .aha-theatre .aha-install{display:none}
+}
+@keyframes aha-orbit{to{transform:rotate(360deg)}}
+@keyframes aha-beam{to{transform:rotate(-5deg)}}
+@media(prefers-reduced-motion:reduce){
+ .aha-theatre .aha-orbit,.aha-theatre .aha-spotlight{animation:none!important}
+ .aha-theatre .aha-hero-actions button,.aha-theatre .v06-tile,.aha-theatre .aha-eidolon-grid>a{transition:none!important;transform:none!important}
+}
