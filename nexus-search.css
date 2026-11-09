@@ -1,0 +1,24 @@
+#nexus-search-button{min-height:42px;min-width:74px;background:#222d41;border:1px solid #d6b681;border-radius:10px;padding:8px 12px;color:#f1ddc1;font:700 12px system-ui;cursor:pointer}
+#nexus-search-button:focus-visible,#nexus-search-dialog button:focus-visible,#nexus-search-dialog input:focus-visible,.nexus-search-detail button:focus-visible{outline:3px solid #f7d495;outline-offset:3px}
+#nexus-search-dialog,.nexus-search-detail{max-width:min(790px,calc(100vw - 20px));width:100%;max-height:85dvh;overflow:auto;border:1px solid #d6b681;border-radius:16px;background:#101d31;color:#eee6da;box-shadow:0 20px 80px #000c;padding:0}
+#nexus-search-dialog::backdrop,.nexus-search-detail::backdrop{background:#020711dd}
+#nexus-search-dialog .nexus-search-body,.nexus-search-detail{padding:clamp(15px,3vw,28px);font:14px/1.65 system-ui}
+#nexus-search-dialog header,.nexus-search-detail header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#nexus-search-dialog header span{font-size:10px;letter-spacing:2px;color:#edc68b}
+#nexus-search-dialog h2,.nexus-search-detail h2{font:500 clamp(26px,5vw,38px) Georgia,serif;margin:3px 0 15px}
+#nexus-search-dialog header button,.nexus-search-detail header button{min-width:44px;height:44px;border:1px solid #8f8175;border-radius:9px;background:#283750;color:#fff;font-size:24px}
+#nexus-search-dialog label{display:block;font-size:12px;color:#e3c9a4;margin-bottom:6px}
+#nexus-search-dialog input{width:100%;min-height:48px;padding:12px;border-radius:10px;border:1px solid #a3aabc;background:#1e2d44;color:#fff;font:16px system-ui}
+#nexus-search-dialog .nexus-search-categories{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0}
+#nexus-search-dialog .nexus-search-categories button{min-height:40px;border:1px solid #747f91;background:#22334a;color:#e8d9c8;padding:9px 12px;border-radius:999px;font:600 12px system-ui}
+#nexus-search-dialog .nexus-search-categories button[aria-pressed=true]{background:#e7c993;color:#132035;border-color:#eedca8}
+#nexus-search-dialog .nexus-search-items{display:grid;gap:6px}
+#nexus-search-dialog .nexus-search-hit{min-height:62px;width:100%;display:flex;align-items:center;text-align:left;gap:12px;border:1px solid #485c77;background:#1a2b44;color:#fff;border-radius:10px;padding:9px 13px;cursor:pointer}
+#nexus-search-dialog .nexus-search-hit>img{width:46px;height:46px;object-fit:contain;flex:0 0 46px}
+#nexus-search-dialog .nexus-search-hit>span:nth-last-child(2){flex:1;min-width:0}
+#nexus-search-dialog .nexus-search-hit strong,#nexus-search-dialog .nexus-search-hit small{display:block;overflow-wrap:anywhere}
+#nexus-search-dialog .nexus-search-hit strong{font-size:14px}#nexus-search-dialog .nexus-search-hit small{color:#c2cddd;font-size:11px}
+#nexus-search-dialog .nexus-search-help{font-size:11px;color:#a9b7c8;margin-top:20px}
+.nexus-search-detail dl{display:grid;grid-template-columns:minmax(100px,1fr) minmax(0,2fr);gap:12px}
+.nexus-search-detail dt{color:#eac799}.nexus-search-detail dd{margin:0;overflow-wrap:anywhere}
+@media(max-width:390px){#nexus-search-button{min-width:44px;font-size:11px;padding:6px}#nexus-search-dialog .nexus-search-categories{gap:4px}}
