@@ -76,8 +76,10 @@ export function examineRelics(records){
    for(const sub of p.subs){
      const v=Number(sub.value);
      if(sub.stat&&sub.value!==null&&(
-       (sub.stat==='Chance de CRIT'&&v>25)||(sub.stat==='Dano CRIT'&&v>50)||
-       (sub.stat==='VEL'&&v>20)||(sub.stat==='ATQ'&&v>160)||
+       (sub.stat==='Chance de CRIT'&&(v<2.5||v>25))||
+       (sub.stat==='Dano CRIT'&&(v<5||v>50))||
+       (sub.stat==='VEL'&&v>20)||
+       (sub.stat==='ATQ'&&![[16,23],[32,46],[48,69],[64,92],[80,115],[96,138]].some(([lo,hi])=>v>=lo&&v<=hi))||
        (sub.stat==='Taxa de Acerto de Efeito'&&v>55)))
          flags.push(label+': verificar '+sub.stat+' '+fmt(v));
    }
