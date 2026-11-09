@@ -88,3 +88,18 @@
 .v11-storage-warning strong{font:700 14px/1.45 'DM Sans',sans-serif}
 .v11-storage-warning p{font:12px/1.6 'DM Sans',sans-serif}
 .v11-coach-loading{padding:15px;border:1px solid #bbab9c70;border-radius:9px;background:#182237;color:#eee0d2}
+
+/* 2.0: readable, reversible build history without screenshot blobs. */
+.v11-history{max-width:960px;margin:18px 0 30px;color:#e7e6f0}
+.v11-history>h2{font:500 clamp(27px,6vw,38px)/1.2 var(--v-title-font,Georgia,serif);margin:6px 0 12px;color:#f2d4bb}
+.v11-history>p{font:14px/1.7 'DM Sans',system-ui,sans-serif;color:#ccd6e6}
+.v11-history-entry{padding:18px;margin:12px 0;border:1px solid #c9b09977;border-radius:15px;background:linear-gradient(135deg,#1a293d,#201e33)}
+.v11-history-entry header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.v11-history-entry header span{font-weight:700;color:#edcba9}
+.v11-history-entry header button{min-height:44px;border:1px solid #d8b487;border-radius:9px;background:#394158;color:#f7e7d2;padding:10px 16px;cursor:pointer}
+.v11-history-entry header button:focus-visible{outline:3px solid #f6d597;outline-offset:3px}
+.v11-history-entry p{color:#d2d8e4;font-size:13px}
+.v11-history-entry ul{list-style:none;margin:15px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.v11-history-entry li{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;padding:9px;border:1px solid #5b6479;background:#121b2b;border-radius:7px;font-size:12px}
+.v11-history-entry li strong{color:#f4d7ad}
+@media(max-width:520px){.v11-history-entry ul{grid-template-columns:1fr}.v11-history-entry{padding:13px}}
