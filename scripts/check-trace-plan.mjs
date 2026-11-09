@@ -12,7 +12,7 @@ assert.ok(basic,'Missing Robin Summeretto basic attack trace');
 assert.equal(calc.maximum(basic),6);
 const pending=calc.calculate([basic],{});
 assert.equal(pending.pending.length,1);
-assert.deepEqual(pending.needed,{});
+assert.equal(Object.keys(pending.needed).length,0);
 const start=calc.calculate([basic],{'1512001':{current:0,target:2}});
 assert.equal(start.needed['2'],3500);
 assert.equal(start.needed['110251'],2);
