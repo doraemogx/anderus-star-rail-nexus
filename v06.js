@@ -71,6 +71,61 @@
       gameData.chars[char.id]={id:char.id,name:char.name,skills:[],ranks:[]};
     }
   }
+
+  // Shared account source. The old UI stored relics in build.relics, while
+  // imports stored them separately in v06RelicDetails. Merge without deletion.
+  let nexusAccount=null,nexusAccountCatalog=null,nexusAccountPromise=null;
+  function accountRecords(id){
+    const detail=state.v06RelicDetails?.[id],legacy=state.characters?.[id]?.relics;
+    if(nexusAccount)return nexusAccount.normalizeRelics(detail,legacy,nexusAccountCatalog?.relicSets||{});
+    return Array.isArray(detail)?detail:[];
+  }
+  function accountSetName(piece){
+    return nexusAccountCatalog?.relicSets?.[piece.setId]?.name||piece.setName||'Conjunto não identificado';
+  }
+  function accountCone(id){
+    return nexusAccount?.matchCone(state.characters?.[id]?.cone,nexusAccountCatalog?.cones||{})||null;
+  }
+  function migrateAccountRelics(){
+    if(!nexusAccount||!nexusAccountCatalog)return;
+    let changed=false;
+    state.v06RelicDetails||={};
+    for(const [id,b] of Object.entries(state.characters||{})){
+      if(!b)continue;
+      const detail=state.v06RelicDetails[id],legacy=b.relics;
+      if(!detail&&!legacy)continue;
+      const records=nexusAccount.normalizeRelics(detail,legacy,nexusAccountCatalog.relicSets||{});
+      const nextLegacy=nexusAccount.toLegacy(records,nexusAccountCatalog.relicSets||{},legacy||{});
+      if(JSON.stringify(detail||null)!==JSON.stringify(records)){
+        state.v06RelicDetails[id]=records;changed=true;
+      }
+      if(JSON.stringify(legacy||{})!==JSON.stringify(nextLegacy)){
+        b.relics=nextLegacy;changed=true;
+      }
+    }
+    if(changed)save();
+  }
+  function readyAccount(){
+    if(nexusAccountPromise)return nexusAccountPromise;
+    nexusAccountPromise=Promise.all([
+      import('./nexus-account-engine.js?v=1'),
+      fetch('./data/live-game.json',{cache:'no-store'}).then(r=>{
+        if(!r.ok)throw Error('Catálogo do jogo indisponível: '+r.status);
+        return r.json();
+      })
+    ]).then(([engine,game])=>{
+      nexusAccount=engine;nexusAccountCatalog=game;
+      migrateAccountRelics();
+      if(page==='profile'||page==='nexia')refresh();
+      return engine;
+    }).catch(error=>{
+      console.warn('Dados da conta indisponíveis:',error);
+      nexusAccountPromise=null;
+      return null;
+    });
+    return nexusAccountPromise;
+  }
+  readyAccount();
   let uploader={file:null,preview:'',relImages:[],identifiedId:'',ocrText:'',eidolon:null,superimposition:null,cone:'',busy:false,sourceValid:false};
   const pathImage=(id)=>{const c=gameData.chars[id];const path=c?.path||'';return path?'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/'+path+'.png':'';};
   const genCard=(label,value,icon)=>'<div class="v06-metric"><span class="v06-metric-icon">'+icon+'</span><strong>'+safe(value)+'</strong><small>'+safe(label)+'</small></div>';
