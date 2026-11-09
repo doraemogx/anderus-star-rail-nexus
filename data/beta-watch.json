@@ -1,0 +1,54 @@
+{
+  "version": "v4.6.54",
+  "revision": "16932918",
+  "source": "https://hsr.gachabase.net/changelog/beta?lang=en",
+  "checkedAt": "2026-11-09T10:17:55.168785+00:00",
+  "status": "MONITOR — changes indicate a new revision, not confirmed final kit",
+  "changes": {
+    "Characters": [
+      {
+        "type": "UPDATED",
+        "name": "Aventurine • Waveflair"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Aeon ★ Aha"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Silver Wolf LV.999"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Evanescia"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Pearl"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Yao Guang"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Acheron"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Dan Heng • Imbibitor Lunae"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Jing Yuan"
+      }
+    ],
+    "Planar Ornaments": [
+      {
+        "type": "UPDATED",
+        "name": "Subspace ASC Center"
+      }
+    ]
+  },
+  "history": []
+}
