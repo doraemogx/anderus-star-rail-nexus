@@ -601,6 +601,13 @@
       const strip=totalStatStrip(bitmap);
       const parsed=await worker.recognize(strip.canvas);
       const totals=await recoverMissingTotalStats(worker,bitmap,strip.rows,parseTotalStatLines(parsed,strip.rows));
+      let verification={confirmed:[],corrections:[],uncertain:['pv','atk','def','spd','crit','cdmg']};
+      try{
+        const module=await import('./digit-audit.js?v=2');
+        verification=module.auditFixedTotals(bitmap,totals);
+      }catch(error){
+        console.warn('Conferência de dígitos indisponível',error);
+      }
       uploader.ocrText=['Título: '+title,'Dano: '+damage,'Cone: '+cone,'Atributos:\n'+(parsed.data.text||'')].join('\n');
       const identifiedId=getIdFromTitle(title,damage);
       if(identifiedId)ensureTrailblazer(identifiedId);
@@ -634,8 +641,20 @@
         document.getElementById('v06-e').value=String(e);uploader.eidolon=e;
       }
       const missing=strip.rows.map(x=>x[1]).filter(k=>!Object.hasOwn(totals,k));
+      for(const key of ['pv','atk','def','spd','crit','cdmg']){
+        const field=document.getElementById('v06-'+key);
+        if(field){
+          const uncertain=verification.uncertain.includes(key);
+          field.title=uncertain?'Leitura automática sem confirmação independente: confira no print.':
+            'Verificado comparando com os caracteres do print.';
+          field.style.borderColor=uncertain?'#f4c67a':'#4b9a90';
+        }
+      }
       const cname=identifiedId?(identifiedId==='8009'?'Caelus · Euforia':lookup(identifiedId).name):'não confirmado';
-      say('Personagem: '+cname+' | '+(strip.rows.length-missing.length)+'/8 atributos totais.'+
+      say('Personagem: '+cname+' | '+(strip.rows.length-missing.length)+'/8 valores lidos (confira antes de aceitar).'+
+        (verification.corrections.length?' OCR divergente corrigido: '+
+          verification.corrections.map(x=>x.key+' '+x.ocr+' → '+x.value).join(', ')+'.':'')+
+        (verification.uncertain.length?' Sem dupla verificação: '+verification.uncertain.join(', ')+'.':'')+
         (e===null?' Confira os seis Eidolons.':' E'+e+' sugerido.')+
         (sup?' Cone S'+sup[1]+'.':' Confira S1–S5.')+
         (missing.length?' Pendentes: '+missing.join(', ')+'.':' Valores completos.')+
