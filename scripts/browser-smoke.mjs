@@ -136,7 +136,13 @@ try{
   await page.locator('[data-search-category="material"]').click();
   await page.locator('.nexus-search-hit[data-search-type="material"]').first().waitFor({timeout:15000});
   assert.match(await page.locator('.nexus-search-hit[data-search-type="material"]').first().innerText(),/Broto/);
-  await page.locator('#nexus-search-dialog [data-search-close]').click();
+  await page.locator('#nexus-search-input').fill('Hemovoria');
+  await page.locator('[data-search-category="boss"]').click();
+  await page.locator('.nexus-search-hit[data-search-type="boss"]').first().waitFor({timeout:15000});
+  await page.locator('.nexus-search-hit[data-search-type="boss"]').first().click();
+  await page.locator('.nexus-search-detail[open]').waitFor({timeout:15000});
+  assert.match(await page.locator('.nexus-search-detail').innerText(),/Fonte: guia editorial/);
+  await page.locator('.nexus-search-detail [data-search-open-endgame]').click();
   // Simulated unsupported 400x400 screenshot: manual entry must remain functional.
   await page.waitForFunction(()=>typeof window.NexusScanInput?.handle==='function');
   await page.evaluate(()=>window.v06StartImport());
