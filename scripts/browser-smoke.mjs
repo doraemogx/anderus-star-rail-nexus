@@ -38,6 +38,14 @@ try{
     console.error('BROWSER_STAGE_DEBUG',JSON.stringify(dom));
     throw error;
   });
+  // Exercise all top-level routes before opening the imported character.
+  for(const view of ['home','library','endgame','farm','radar','themes','nexia','settings']){
+    const before=errors.length;
+    await page.evaluate(view=>window.route(view),view);
+    const rendered=await page.evaluate(()=>Boolean(document.getElementById('stage')?.firstElementChild));
+    assert.ok(rendered,'Blank stage after navigating to '+view);
+    assert.equal(errors.length,before,'JavaScript exception while navigating to '+view+': '+errors.slice(before).join(' | '));
+  }
   await page.evaluate(()=>window.openProfile('1512'));
   await page.locator('.v06-profile').waitFor({timeout:15000});
   await page.waitForFunction(()=>Boolean(document.querySelector('.v11-coach-note')),null,{timeout:30000});
