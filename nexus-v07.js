@@ -1,9 +1,9 @@
 /* Anderus v0.7 — PWA, editorial Pom-Pom, immersive theme and beta dossiers. */
 (function(){
 'use strict';
-const OFFICIAL_POMPOM='https://webstatic.hoyoverse.com/upload/op-public/2023/02/10/b6265906953e1c7d56fd495e714aee05_2995041360877409546.jpg';
+const OFFICIAL_POMPOM='./assets/official/pompom-hoyoverse.jpg';
 const AHA_ART='https://i.gachabase.net/mZQZSbIAQyJXbDElL_RE2AwSR7C4X0pOBxgQ3ybCNnA/q%3A50/f%3Awebp/plain/hsr/assets/f8b5630e85022ab8b2761e4e3f614b42.png';
-const AHA_FALLBACK='https://cimg.kgl-systems.io/camion/files/87996/ogp_zdhP.jpg?x=1280';
+const AHA_FALLBACK='./assets/official/aha-4-7-promo.jpg';
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 let betaCache;
 const betaData=()=>betaCache||(betaCache=fetch('./data/beta-editorial.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Catálogo beta indisponível');return r.json();}));
@@ -32,6 +32,10 @@ function enhancePage(){
    el.onerror=()=>{if(el.dataset.ahaFallback)return;el.dataset.ahaFallback='1';el.src=AHA_FALLBACK;};
    el.src=AHA_ART;
  });
+ // The art is hosted in the Nexus repository to avoid broken external hotlinks.
+ document.querySelectorAll('.v06-pom-tip img,.pom-guide img,.pom-tip img').forEach(img=>{
+   img.onerror=()=>{img.onerror=null;img.src='https://webstatic.hoyoverse.com/upload/op-public/2023/02/10/b6265906953e1c7d56fd495e714aee05_2995041360877409546.jpg';};
+ });
  specialText(document.getElementById('sidebarLinks'));
  specialText(document.getElementById('floatMenu'));
  specialText(document.querySelector('#bottomNav'));
@@ -47,6 +51,16 @@ function enhancePage(){
    const box=document.createElement('div');box.id='v07-beta-dossier';box.className='v07-beta-intro';
    box.innerHTML='<span class="v07-eyebrow">BETA MONITOR · FONTES E DIFERENÇAS</span><h3>Kits completos em uma só tela</h3><p>Habilidades, multiplicadores, rastros, E1–E6 com fragmentos e mudanças identificadas entre fontes. Dados beta são separados dos anúncios oficiais.</p><button type="button" onclick="v07OpenFuture()">Abrir arquivo de Aha · 4.7 ↗</button>';
    radar.insertAdjacentElement('afterend',box);
+   fetch('./data/beta-watch.json',{cache:'no-store'}).then(r=>r.json()).then(w=>{
+      if(!document.getElementById('v07-beta-dossier'))return;
+      const detail=document.createElement('div');detail.className='v07-latest-beta';
+      const updates=Object.values(w.changes||{}).flat().slice(0,9);
+      detail.innerHTML='<b>Última revisão detectada: '+escapeHTML(w.version)+' · '+escapeHTML(w.revision)+'</b>'+
+        '<small>Monitoramento a cada três horas. Atualização de fonte não significa kit final verificado.</small>'+
+        (updates.length?'<p>'+updates.map(x=>escapeHTML(x.name)+' ('+escapeHTML(x.type)+')').join(' · ')+'</p>':'<p>Sem alterações listadas nesta revisão.</p>');
+      document.getElementById('v07-beta-dossier')?.appendChild(detail);
+   }).catch(()=>{});
+
  }
  const app=document.querySelector('.app');
  if(app)app.classList.add('v07-shell');
