@@ -441,6 +441,7 @@
       '<p class="v06-source-note">O OCR analisa o cabeçalho, atributos totais, cone e as seis relíquias (conjunto, atributo principal e subatributos). Valores incertos ficam editáveis. Confirme personagem, E0–E6, S1–S5 e cada valor antes de salvar; o processamento acontece no navegador.</p></div>';
   }
   window.v06StartImport=function(id){
+    uploader.hintId=id||'';
     if(id)uploader.identifiedId=id;
     else uploader.identifiedId='';
     uploader.preview='';uploader.file=null;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.sourceValid=false;
@@ -788,7 +789,12 @@
         });
         await window.__nexusRelicInspectorPromise;
         const applied=module.applyShowcaseToForm(report);
-        uploader.identifiedId=report.character?.id||'';
+        if(!report.character&&uploader.hintId){
+          const select=document.getElementById('v06-id');
+          if(select&&[...select.options].some(o=>o.value===uploader.hintId))select.value=uploader.hintId;
+          say('A identificação por texto ficou incerta. Mantive o personagem da ficha de origem apenas como sugestão — confira.');
+        }
+        uploader.identifiedId=report.character?.id||uploader.hintId||'';
         uploader.eidolon=report.eidolon;
         uploader.superimposition=report.superimposition;
         uploader.cone=report.cone;
