@@ -6,27 +6,29 @@ const BASE='https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 let dataPromise=null,query='',category='all';
-const categories={all:'Tudo',character:'Personagens',cone:'Cones de Luz',set:'Conjuntos de relíquias',item:'Relíquias',material:'Materiais'};
+const categories={all:'Tudo',character:'Personagens',cone:'Cones de Luz',set:'Conjuntos de relíquias',item:'Relíquias',material:'Materiais',boss:'Chefes e mecânicas'};
 function load(){
  if(!dataPromise)dataPromise=Promise.all([
   fetch('./data/live-game.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Catálogo indisponível: '+r.status);return r.json();}),
   fetch('./data/ascension-materials.json',{cache:'no-store'}).then(r=>r.ok?r.json():{items:{}}),
   fetch('./data/character-traces.json',{cache:'no-store'}).then(r=>r.ok?r.json():{items:{}}),
-  fetch('./data/search-aliases.json',{cache:'no-store'}).then(r=>r.ok?r.json():{})
- ]).then(([game,ascension,traces,aliases])=>({
-  ...game,materials:{...(traces.items||{}),...(ascension.items||{})},searchAliases:aliases
+  fetch('./data/search-aliases.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}),
+  fetch('./data/boss-index.json',{cache:'no-store'}).then(r=>r.ok?r.json():{bosses:{}})
+ ]).then(([game,ascension,traces,aliases,bossIndex])=>({
+  ...game,materials:{...(traces.items||{}),...(ascension.items||{})},
+  searchAliases:aliases,bosses:bossIndex.bosses||{}
  })).catch(e=>{dataPromise=null;throw e});
  return dataPromise;
 }
 function entries(data){
  const list=[];
- const groups=[['character',data.chars||{}],['cone',data.cones||{}],['set',data.relicSets||{}],['item',data.relics||{}],['material',data.materials||{}]];
+ const groups=[['character',data.chars||{}],['cone',data.cones||{}],['set',data.relicSets||{}],['item',data.relics||{}],['material',data.materials||{}],['boss',data.bosses||{}]];
  for(const [type,group] of groups){
   for(const [id,row] of Object.entries(group)){
    if(!row?.name)continue;
    list.push({type,id,name:row.name,icon:row.icon||row.portrait||'',path:row.path||'',rarity:row.rarity||null,
     setId:row.set_id||null,alias:data.searchAliases?.[type]?.[id]||'',
-    haystack:norm(row.name+' '+id+' '+(row.tag||'')+' '+(data.searchAliases?.[type]?.[id]||''))});
+    haystack:norm(row.name+' '+id+' '+(row.tag||'')+' '+(row.detail||'')+' '+(data.searchAliases?.[type]?.[id]||''))});
   }
  }
  return list;
@@ -83,14 +85,18 @@ function openResult(type,id){
  }
  // For catalogue records without a full dossier, show their real structured data.
  load().then(g=>{
-  const row=({cone:g.cones,set:g.relicSets,item:g.relics,material:g.materials})[type]?.[id];
+  const row=({cone:g.cones,set:g.relicSets,item:g.relics,material:g.materials,boss:g.bosses})[type]?.[id];
   if(!row)return;
   const out=document.createElement('dialog');out.className='nexus-search-detail';
-  const safeObject=Object.entries(row).filter(([key])=>['name','rarity','path','type','desc','max_level','set_id','come_from'].includes(key));
+  const safeObject=Object.entries(row).filter(([key])=>['name','rarity','path','type','desc','max_level','set_id','come_from','stage','mode','weak','detail','sourceType'].includes(key));
   out.innerHTML='<header><h2>'+esc(row.name)+'</h2><button type="button" aria-label="Fechar">×</button></header>'+
    '<dl>'+safeObject.map(([key,value])=>'<dt>'+esc(key)+'</dt><dd>'+esc(Array.isArray(value)?value.join(' · '):String(value))+'</dd>').join('')+'</dl>'+
-   '<p>Fonte: catálogo de dados PT-BR sincronizado. Não há ficha interativa completa desta categoria nesta versão.</p>';
+   '<p>'+(type==='boss'?'Fonte: guia editorial versionado do Endgame; detalhes não são confirmação oficial.':'Fonte: catálogo de dados PT-BR sincronizado. Não há ficha interativa completa desta categoria nesta versão.')+'</p>'+
+   (type==='boss'?'<button type="button" data-search-open-endgame>Consultar Endgame</button>':'');
   document.body.append(out);out.querySelector('button').onclick=()=>{out.close();out.remove()};
+  out.querySelector('[data-search-open-endgame]')?.addEventListener('click',()=>{
+    out.close();window.route?.('endgame');
+   });
   out.addEventListener('close',()=>out.remove(),{once:true});out.showModal();
  }).catch(()=>{});
 }
