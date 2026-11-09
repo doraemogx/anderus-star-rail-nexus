@@ -1,0 +1,35 @@
+name: Monitor beta e vazamentos
+on:
+  schedule:
+    - cron: '17 */3 * * *'
+  push:
+    branches: [main]
+    paths: ['scripts/watch_beta.py','.github/workflows/watch-beta.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: beta-watch
+  cancel-in-progress: false
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pesquisar revisões de beta
+        run: python scripts/watch_beta.py
+      - name: Publicar atualizações detectadas
+        run: |
+          git config user.name "Anderus Radar Bot"
+          git config user.email "anderus-bot@users.noreply.github.com"
+          git add data/beta-watch.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Radar: detecta nova revisão beta [bot]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
