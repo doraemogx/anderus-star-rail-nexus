@@ -62,6 +62,8 @@ jobs:
         run: node scripts/check-material-budget.mjs
       - name: Nexus Scan — formatos e confiança verificáveis
         run: node scripts/check-scan-layout.mjs
+      - name: Pom-Pom conversacional — respostas baseadas na conta
+        run: node scripts/check-pompom-chat.mjs
       - name: Kit Lab 2.0 — dados, interpolação e imagens
         run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
