@@ -603,6 +603,13 @@
   render=function(){
     const priorStage=document.getElementById('stage');
     if(priorStage)priorStage.classList.remove('v06-entering');
+    // v0.5 still writes into #nexFab even though the modern shell no longer
+    // renders the old chat mascot. Preserve the expected DOM target, hidden.
+    if(!document.getElementById('nexFab')){
+      const legacy=document.createElement('div');
+      legacy.id='nexFab';legacy.hidden=true;legacy.setAttribute('aria-hidden','true');
+      document.body.appendChild(legacy);
+    }
     prevRender();
     const stage=document.getElementById('stage');
     stage?.classList.add('v06-stage');
