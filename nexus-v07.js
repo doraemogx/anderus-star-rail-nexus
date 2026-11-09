@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Universal search in the existing header, with Ctrl/Cmd+K shortcut.
+ if(!document.getElementById('nexus-search-css')){
+  const css=document.createElement('link');css.id='nexus-search-css';css.rel='stylesheet';css.href='./nexus-search.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-search-js')){
+  const script=document.createElement('script');script.id='nexus-search-js';script.src='./nexus-search.js';script.defer=true;document.head.appendChild(script);
+ }
  // Team Lab 2.0: accountable four-character team builder.
  if(!document.getElementById('nexus-team-css')){
   const link=document.createElement('link');link.id='nexus-team-css';link.rel='stylesheet';link.href='./nexus-team-lab.css';document.head.appendChild(link);
