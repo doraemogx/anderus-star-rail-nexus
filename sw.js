@@ -31,8 +31,16 @@ self.addEventListener('fetch',event=>{
   }
   return response;
  });
- if(req.mode==='navigate'||data){
-  // Game content is network-first, but saved catalogue data remain available offline.
+ if(data){
+  // Never return an HTML shell for a JSON request: a missing offline catalogue
+  // must raise an error rather than silently break all the card parsers.
+  event.respondWith(network().catch(()=>caches.match(req).then(c=>{
+    if(c)return c;
+    throw new Error('O catálogo ainda não foi salvo para uso offline');
+  })));
+  return;
+ }
+ if(req.mode==='navigate'){
   event.respondWith(network().catch(()=>caches.match(req).then(c=>c||caches.match('./'))));
   return;
  }
