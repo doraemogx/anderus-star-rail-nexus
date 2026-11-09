@@ -63,6 +63,14 @@
     return {group,text,font,shape,color,art:id==='future-aha'?ahaOfficial:imgSrc(id,'portrait')||heroOfficial,name:c.name,id};
   };
   state.v06Art||={};state.v06AccountNotes||={};state.v06Goal||={id:'future-aha',target:'E0S1'};
+  // Keep manually added characters across reloads until the catalogue gains them.
+  state.v06CustomCharacters ||= {};
+  for(const char of Object.values(state.v06CustomCharacters)){
+    if(char?.id && char?.name && !CATALOG.some(c=>c.id===char.id)) CATALOG.push(char);
+    if(char?.id && char?.name && !gameData.chars?.[char.id]){
+      gameData.chars[char.id]={id:char.id,name:char.name,skills:[],ranks:[]};
+    }
+  }
   let uploader={file:null,preview:'',relImages:[],identifiedId:'',ocrText:'',eidolon:null,superimposition:null,cone:'',busy:false,sourceValid:false};
   const pathImage=(id)=>{const c=gameData.chars[id];const path=c?.path||'';return path?'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/path/'+path+'.png':'';};
   const genCard=(label,value,icon)=>'<div class="v06-metric"><span class="v06-metric-icon">'+icon+'</span><strong>'+safe(value)+'</strong><small>'+safe(label)+'</small></div>';
@@ -293,10 +301,12 @@
   function showImportReview(){
     if(!CATALOG.some(c=>c.id==='8009') && gameData.chars?.['8009']) CATALOG.push({...gameData.chars['8009'],name:'Desbravador · Euforia (Caelus)'});
     const names=CATALOG.filter(c=>c.id!=='future-aha' && !/^80(?:02|04|06|08|10)$/.test(c.id));
-    const choice='<option value="">Selecione o personagem correto</option>'+names.map(c=>'<option value="'+c.id+'" '+(c.id===uploader.identifiedId?'selected':'')+'>'+safe(c.id==='8009'?'Caelus · Desbravador da Euforia':c.name)+'</option>').join('');
+    const choice='<option value="">Selecione o personagem correto</option>'+names.map(c=>'<option value="'+c.id+'" '+(c.id===uploader.identifiedId?'selected':'')+'>'+safe(c.id==='8009'?'Caelus · Desbravador da Euforia':c.name)+'</option>').join('')+
+      '<option value="__custom__">Personagem não listado — cadastrar nome</option>';
     return '<div class="v06-import-form"><div class="v06-import-image"><img src="'+uploader.preview+'" alt="Print enviado"></div>'+
       '<div class="v06-action-row"><button class="v06-primary" onclick="v06AutoRead()">✧ Reconhecer dados do print</button><button class="v06-secondary" onclick="document.getElementById(\'v06-file\').click()">Trocar imagem</button></div>'+
-      '<div class="v06-fieldgroup"><label>Personagem<select id="v06-id">'+choice+'</select></label>'+
+      '<div class="v06-fieldgroup"><label>Personagem<select id="v06-id" onchange="document.getElementById(\'v06-custom-name-wrap\').style.display=this.value===\'__custom__\'?\'block\':\'none\'">'+choice+'</select></label>'+
+      '<label id="v06-custom-name-wrap" style="display:none;grid-column:1/-1">Nome do personagem ainda não listado<input id="v06-custom-name" maxlength="80" placeholder="Nome como aparece no jogo"></label>'+
       '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="80"></label>'+
       '<label>Eidolons (confirme os seis ícones)<select id="v06-e"><option value="">Selecione E0–E6</option>'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
       '<label>Sobreposição do cone<select id="v06-s"><option value="">Selecione S1–S5</option>'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===uploader.superimposition?'selected':'')+'>S'+(i+1)+'</option>').join('')+'</select></label>'+
