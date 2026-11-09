@@ -13,8 +13,8 @@
   for (const k of ['account','build','endgame','farm','warp','beta']){
     const el = _v06Old.querySelector('.module-tile.tile-'+k+' .module-art');
     const css = el?.style.backgroundImage || '';
-    const m = css.match(/url\\(["']?(.*)["']?\\)/);
-    _v06OriginalAssets[k] = m ? m[1].replace(/["']$/,'') : '';
+    const pos=css.indexOf('('),end=css.lastIndexOf(')');
+    _v06OriginalAssets[k] = pos>=0 && end>pos ? css.slice(pos+1,end).replace(/^['\"]|['\"]$/g,'') : '';
   }
   const v06Asset=(key)=>_v06OriginalAssets[key] || '';
   const heroOfficial='https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/character_portrait/8001.png';
