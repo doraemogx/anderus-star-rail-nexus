@@ -106,4 +106,38 @@ assert.ok(read('v06.js').includes('Promise.resolve().then(()=>window.v06AutoRead
 assert.ok(read('v06.js').includes('const illustrated=ratio>=.82&&ratio<=.95'));
 console.log('PASS 2000x2300 Robin Summeretto import, OCR number sanitation and automatic recognition');
 
+const relicModule=read('illustrated-relic-matcher.js').replaceAll('export ','');
+new Function(relicModule);
+const choose=new Function(relicModule+';return decideRelicSets;')();
+const visualFixture=[
+ [{setId:'127',score:.124},{setId:'102',score:.132}],
+ [{setId:'127',score:.088},{setId:'122',score:.123}],
+ [{setId:'127',score:.112},{setId:'122',score:.129}],
+ [{setId:'127',score:.074},{setId:'125',score:.116}],
+ [{setId:'308',score:.124},{setId:'305',score:.131}],
+ [{setId:'308',score:.062},{setId:'310',score:.114}]
+];
+const chosen=choose(visualFixture);
+assert.deepEqual(chosen.map(x=>x?.setId),['127','127','127','127','308','308'],
+ 'Family cross-match failed for the Robin Summeretto screenshot');
+assert.ok(chosen.every(x=>x.confidence!=='probable'));
+assert.ok(choose(Array.from({length:6},()=>[])).every(x=>x===null),
+ 'Must not invent sets without source evidence');
+assert.ok(read('v06.js').includes('matcher.fillRelicSetFields(report.relicSets)'),
+ 'Illustrated screenshot path ignores identified icon sets');
+assert.ok(read('.github/workflows/sync-content.yml').includes('python scripts/generate_relic_signatures.py'),
+ 'Future released relics must refresh icon reference database');
+const relicCheck=new Function(illustrated+';return {relicValueFromText,plausibleRelicValue};')();
+assert.equal(relicCheck.relicValueFromText('211,6','Taxa de Acerto de Efeito',0,false),null,
+ 'Invalid value from x2 enhancement badge must be rejected');
+assert.equal(relicCheck.relicValueFromText('11,6%','Taxa de Acerto de Efeito',0,false),11.6);
+assert.equal(relicCheck.relicValueFromText('705','PV',0,true),705);
+assert.equal(relicCheck.relicValueFromText('352','ATQ',1,true),352);
+assert.equal(relicCheck.relicValueFromText('43,2%','PV %',4,true),43.2);
+assert.equal(relicCheck.relicValueFromText('19,4%','Regeneração de Energia',5,true),19.4);
+assert.ok(read('illustrated-showcase-import.js').includes('value:[x+305,y-24,76,49]'),
+ 'Numeric crop must exclude the upgrade badge');
+console.log('PASS 6/6 relic icon set decisions, fail-closed missing sets and numeric sanity bounds');
+
+
 console.log('PASS assets, all four endgames, variant isolation, lazy theme, PWA');
