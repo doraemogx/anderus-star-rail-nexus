@@ -274,11 +274,33 @@
     showToast(persisted?'Build anterior restaurada; versão substituída preservada no histórico.':'Não foi possível confirmar a gravação. Exporte um backup!');
   };
 
+  // Persistent Team Lab bridge: all teams travel with the Nexus JSON backup.
+  window.NexusTeamLabBridge={
+    roster:()=>Object.entries(state.characters||{}).filter(([id,data])=>data&&gameData.chars?.[id])
+      .map(([id,data])=>({id,name:lookup(id)?.name||gameData.chars[id]?.name||id,
+        path:gameData.chars[id]?.path||'',element:gameData.chars[id]?.element||'',
+        level:Number(data.level||1),e:Number(data.e||0),s:Number(data.s||1)})),
+    list:()=>JSON.parse(JSON.stringify(state.v06SavedTeams||[])),
+    save:(team)=>{
+      const ids=team?.members||[];
+      if(ids.length!==4||new Set(ids).size!==4||!ids.every(id=>state.characters?.[id]))
+        throw Error('A equipe precisa de quatro personagens diferentes cadastrados nesta conta.');
+      state.v06SavedTeams||=[];
+      const entry={id:String(team.id||'team-'+Date.now()),name:String(team.name||'Equipe').slice(0,70),
+        purpose:String(team.purpose||'geral'),members:[...ids],
+        updatedAt:new Date().toISOString()};
+      const i=state.v06SavedTeams.findIndex(x=>x.id===entry.id);
+      if(i<0)state.v06SavedTeams.push(entry);else state.v06SavedTeams[i]=entry;
+      save();return entry;
+    },
+    delete:(id)=>{state.v06SavedTeams=(state.v06SavedTeams||[]).filter(x=>x.id!==id);save();}
+  };
+
   function profile06(){
     const id=state.profile||'1503', c=lookup(id),b=state.characters[id],look=selectLook(id),pic=state.v06Art?.[id]==='preview'?imgSrc(id,'preview'):look.art;
     const active=tab||'overview';
     const switches=[['overview','Atributos'],['kit','Kit e rastros'],['kitlab','Kit Lab 2.0'],['eidolons','Eidolons'],['cone','Cone de Luz'],['relics','Relíquias'],['teams','Equipes'],['history','Histórico']];
-    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='kitlab'?'<section class="v11-kitlab-panel"><span class="v06-kicker">KIT LAB · FONTE PT-BR</span><h2>Habilidades completas e explicação do Pom-Pom</h2><p>Consulte multiplicadores por nível, rastros e Eidolons E1–E6. Dados desconhecidos não são inventados.</p><button type="button" class="v06-primary" data-nexus-kit-for="'+safe(id)+'">Abrir Kit Lab completo</button></section>':active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):active==='history'?profileHistory(id,b):profileTeams(id,b);
+    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='kitlab'?'<section class="v11-kitlab-panel"><span class="v06-kicker">KIT LAB · FONTE PT-BR</span><h2>Habilidades completas e explicação do Pom-Pom</h2><p>Consulte multiplicadores por nível, rastros e Eidolons E1–E6. Dados desconhecidos não são inventados.</p><button type="button" class="v06-primary" data-nexus-kit-for="'+safe(id)+'">Abrir Kit Lab completo</button></section>':active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):active==='history'?profileHistory(id,b):profileTeams(id,b)+'<section class="v11-team-lab-entry"><h3>Team Lab 2.0</h3><p>Monte e salve equipes com quatro personagens da sua conta; confira os papéis e as restrições.</p><button type="button" data-nexus-team-lab>Montar equipe</button></section>';
     const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
     return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
     '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
