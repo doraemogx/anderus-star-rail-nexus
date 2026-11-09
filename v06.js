@@ -300,6 +300,7 @@
       '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="80"></label>'+
       '<label>Eidolons (confirme os seis ícones)<select id="v06-e"><option value="">Selecione E0–E6</option>'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
       '<label>Sobreposição do cone<select id="v06-s"><option value="">Selecione S1–S5</option>'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===uploader.superimposition?'selected':'')+'>S'+(i+1)+'</option>').join('')+'</select></label>'+
+      '<label style="grid-column:1/-1">Nome do cone de luz<input id="v06-cone" value="'+safe(uploader.cone||'')+'" placeholder="Nome do cone de luz"></label>'+
       '<label>PV<input type="number" id="v06-pv" placeholder="PV total"></label><label>ATQ<input type="number" id="v06-atk" placeholder="ATQ total"></label>'+
       '<label>DEF<input type="number" id="v06-def" placeholder="DEF total"></label><label>VEL<input type="number" id="v06-spd" placeholder="VEL"></label>'+
       '<label>Chance CRIT %<input type="number" step=".1" id="v06-crit"></label><label>Dano CRIT %<input type="number" step=".1" id="v06-cdmg"></label>'+
@@ -339,11 +340,9 @@
 
   // Importação v0.6.8: lê apenas regiões conhecidas do layout do registro de batalha.
   // Abaixo dessas regiões ficam as seis relíquias, que NUNCA entram no OCR de atributos totais.
-  function importNumber(raw){
-    const parts=String(raw||'').replace(/[^0-9.,]/g,'').replace(',', '.');
-    const m=parts.match(/\d+(?:\.\d+)?/);
-    return m ? Number(m[0]) : null;
-  }
+
+  // Enka/StarRail screenshot template v0.6.9: consistent 2000x1826 composition.
+  // We never run numeric OCR over the relic grid or its stat lines.
   function imageRegion(bitmap,x,y,w,h,mul=2){
     const c=document.createElement('canvas');
     c.width=Math.max(1,Math.round(bitmap.width*w*mul));
@@ -351,141 +350,230 @@
     c.getContext('2d').drawImage(bitmap,x*bitmap.width,y*bitmap.height,w*bitmap.width,h*bitmap.height,0,0,c.width,c.height);
     return c;
   }
-  function makeTotalStatStrip(bitmap) {
-    const rows=[['PV','pv',0,'L'],['ATQ','atk',1,'L'],['DEF','def',2,'L'],
-      ['VEL','spd',3,'L'],['CRIT','crit',4,'L'],['DCRIT','cdmg',5,'L'],
-      ['QUEBRA','break',0,'R'],['ENERGIA','energy',3,'R']];
-    const out=document.createElement('canvas');out.width=475;out.height=rows.length*95;
-    const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);
-    ctx.textBaseline='middle';ctx.fillStyle='#000';ctx.font='bold 23px Arial, sans-serif';
-    for(let i=0;i<rows.length;i++){
-      const [label,key,index,col]=rows[i],cy=.151+index*.03055;
-      ctx.fillText(label,8,i*95+48);
-      const x0=col==='L'?.618:.909,x1=col==='L'?.672:.976;
-      const tile=document.createElement('canvas');
-      tile.width=Math.max(1,Math.round(bitmap.width*(x1-x0)));
-      tile.height=Math.max(1,Math.round(bitmap.height*.025));
-      const t=tile.getContext('2d',{willReadFrequently:true});
-      t.drawImage(bitmap,bitmap.width*x0,bitmap.height*(cy-.0125),bitmap.width*(x1-x0),bitmap.height*.025,0,0,tile.width,tile.height);
-      const pix=t.getImageData(0,0,tile.width,tile.height);
-      for(let p=0;p<pix.data.length;p+=4){
-        const rgb=(pix.data[p]+pix.data[p+1]+pix.data[p+2])/3;
-        const bw=rgb>123?0:255;
-        pix.data[p]=bw;pix.data[p+1]=bw;pix.data[p+2]=bw;pix.data[p+3]=255;
-      }
-      t.putImageData(pix,0,0);ctx.imageSmoothingEnabled=false;
-      ctx.drawImage(tile,160,i*95+14,295,68);
+  function titleMask(bitmap){
+    const x=.027,y=.04,w=.338,h=.043;
+    const src=imageRegion(bitmap,x,y,w,h,1);
+    const ctx=src.getContext('2d',{willReadFrequently:true});
+    const pix=ctx.getImageData(0,0,src.width,src.height);
+    for(let p=0;p<pix.data.length;p+=4){
+      const r=pix.data[p],g=pix.data[p+1],b=pix.data[p+2];
+      const bright=(r+g+b)/3>190 && Math.max(r,g,b)-Math.min(r,g,b)<62;
+      const v=bright?0:255;
+      pix.data[p]=v;pix.data[p+1]=v;pix.data[p+2]=v;pix.data[p+3]=255;
     }
-    return {canvas:out,rows};
+    ctx.putImageData(pix,0,0);
+    const out=document.createElement('canvas');out.width=1250;out.height=160;
+    const cc=out.getContext('2d');cc.imageSmoothingEnabled=false;
+    cc.drawImage(src,0,0,out.width,out.height);
+    return out;
   }
-  function parseTotalStatLines(text,rows){
-    const result={};
-    const aliases={'PV':'pv','ATQ':'atk','DEF':'def','VEL':'spd','CRIT':'crit',
-                   'DCRIT':'cdmg','QUEBRA':'break','ENERGIA':'energy'};
-    const lines=String(text||'').split(/\n+/);
-    for(const line of lines){
-      const cleaned=line.trim().replace(/\s+/g,' ');
-      const label=Object.keys(aliases).sort((a,b)=>b.length-a.length).find(a=>new RegExp('^'+a+'\\b','i').test(cleaned));
-      if(!label)continue;
-      const k=aliases[label];
-      let value=importNumber(cleaned.slice(label.length));
-      if(value===null)continue;
-      // In the source: PV 3209, ATQ 2597, DEF 1357, VEL 137, 72.7% / 91.1%.
-      const range={pv:[250,20000],atk:[100,10000],def:[100,10000],spd:[55,400],
-        crit:[0,100],cdmg:[0,700],break:[0,600],energy:[50,300]}[k];
-      if(value>=range[0]&&value<=range[1])result[k]=value;
+  function totalStatStrip(bitmap){
+    const rows=[
+      ['PV','pv',0,'L'],['ATQ','atk',1,'L'],['DEF','def',2,'L'],
+      ['VEL','spd',3,'L'],['CRIT','crit',4,'L'],['DCRIT','cdmg',5,'L'],
+      ['QUEBRA','break',0,'R'],['ENERGIA','energy',3,'R']
+    ];
+    const output=document.createElement('canvas');output.width=500;output.height=rows.length*105;
+    const ctx=output.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,output.width,output.height);
+    ctx.textBaseline='middle';ctx.fillStyle='#000';ctx.font='bold 23px Arial, sans-serif';
+    rows.forEach(([label,key,index,col],i)=>{
+      const cy=.1535+index*.0315;
+      const x0=col==='L'?.61:.902,x1=col==='L'?.671:.978;
+      const tile=document.createElement('canvas');tile.width=280;tile.height=70;
+      const t=tile.getContext('2d',{willReadFrequently:true});
+      t.drawImage(bitmap,bitmap.width*x0,bitmap.height*(cy-.015),
+        bitmap.width*(x1-x0),bitmap.height*.029,0,0,280,70);
+      const px=t.getImageData(0,0,280,70);
+      for(let p=0;p<px.data.length;p+=4){
+        const grey=(px.data[p]+px.data[p+1]+px.data[p+2])/3;
+        const v=grey<117?255:0; // light glyphs become BLACK on white
+        px.data[p]=v;px.data[p+1]=v;px.data[p+2]=v;px.data[p+3]=255;
+      }
+      t.putImageData(px,0,0);
+      ctx.fillStyle='#000';ctx.fillText(label,10,i*105+47);
+      ctx.drawImage(tile,150,i*105+12);
+    });
+    return {canvas:output,rows};
+  }
+  function parseTotalStatLines(result,rows){
+    const bounds={
+      pv:[200,30000],atk:[100,15000],def:[100,15000],spd:[50,400],
+      crit:[5,100],cdmg:[50,1000],break:[0,1000],energy:[50,400]
+    };
+    const out={},rowH=105;
+    function nval(raw){
+      const clean=String(raw||'').replace(/[Oo]/g,'0').replace(/[lI]/g,'1');
+      const m=clean.match(/\d{1,5}(?:[.,]\d{1,2})?/);
+      return m?Number(m[0].replace(',','.')):null;
     }
-    return result;
+    function add(i,str){
+      if(i<0||i>=rows.length)return;
+      const key=rows[i][1],value=nval(str),b=bounds[key];
+      if(Number.isFinite(value)&&value>=b[0]&&value<=b[1])out[key]=value;
+    }
+    const lines=String(result?.data?.text||'').split(/\n+/).filter(l=>l.trim());
+    if(lines.length===rows.length)lines.forEach((line,i)=>{
+      // Parse only the numeric portion after the row label.
+      const cleaned=line.replace(/^[^\d]*/,'');
+      add(i,cleaned);
+    });
+    // OCR sometimes groups or drops lines; use token bounding positions in that case.
+    for(const word of result?.data?.words||[]){
+      const box=word.bbox||{},yy=Number(box.y0);
+      const i=Math.floor((yy||0)/rowH);
+      if(word.text && Number.isFinite(yy)&&yy>0)add(i,word.text);
+    }
+    return out;
+  }
+  function editDistance(a,b){
+    if(a===b)return 0;
+    const v=Array.from({length:b.length+1},(_,i)=>i);
+    for(let i=1;i<=a.length;i++){
+      let before=v[0];v[0]=i;
+      for(let j=1;j<=b.length;j++){
+        const last=v[j];
+        v[j]=Math.min(v[j]+1,v[j-1]+1,before+(a[i-1]===b[j-1]?0:1));
+        before=last;
+      }
+    }
+    return v[b.length];
+  }
+  function getIdFromTitle(title,damage){
+    const name=norm(title).replace(/\bnv\s*\d{1,2}\b.*$/,'').trim();
+    const el=norm(damage);
+    if(/desbrav|trailblaz/.test(name)){
+      if(/raio|thunder|lightning/.test(el))return '8009';
+      if(/fisico|physical/.test(el))return '8001';
+      if(/fogo|fire/.test(el))return '8003';
+      if(/imaginario|imaginary/.test(el))return '8005';
+      if(/gelo|ice/.test(el))return '8007';
+      return '';
+    }
+    const candidates=CATALOG.filter(c=>c.id!=='future-aha'&&c.name&&norm(c.name).length>=4);
+    for(const c of candidates){
+      const n=norm(c.name);
+      if(name===n||name.startsWith(n+' '))return c.id;
+    }
+    const ranked=candidates.map(c=>{
+      const n=norm(c.name),piece=name.split(' ').slice(0,n.split(' ').length).join(' ');
+      const d=editDistance(piece,n);
+      const score=1-d/Math.max(n.length,piece.length);
+      return {id:c.id,score,d,n};
+    }).sort((a,b)=>b.score-a.score);
+    return ranked[0]&&ranked[0].score>=.79&&ranked[0].d<=2?ranked[0].id:'';
+  }
+  function ensureTrailblazer(id){
+    if(!/^800[13579]$/.test(id)||CATALOG.some(c=>c.id===id))return;
+    const label={8001:'Físico',8003:'Preservação',8005:'Harmonia',8007:'Reminiscência',8009:'Euforia'}[id]||'';
+    CATALOG.push({...gameData.chars?.[id],id,name:'Caelus · Desbravador da '+label,path:gameData.chars?.[id]?.path||'Elation'});
+    const select=document.getElementById('v06-id');
+    if(select)select.add(new Option('Caelus · '+label,id));
+  }
+  function coneName(raw){
+    const first=String(raw||'').split('\n').map(x=>x.trim()).find(x=>x.length>5&&!/^(Nv|Lv)/i.test(x))||'';
+    const aliases=[
+      'Euforia Repleta de Bênçãos','Um Encontro na Próxima Primavera','Cores para o Amanhã'
+    ];
+    const cleaned=norm(first);
+    const found=aliases.map(name=>({name,score:1-editDistance(cleaned,norm(name))/Math.max(cleaned.length,norm(name).length)}))
+      .sort((a,b)=>b.score-a.score)[0];
+    if(found&&found.score>.70)return found.name;
+    return first.length>5&&first.length<75?first.replace(/[^\p{L}\p{N} .,'’–-]/gu,'').trim():'';
+  }
+  async function suggestEidolons(bitmap){
+    if(!bitmap||!bitmap.width)return null;
+    const c=document.createElement('canvas');c.width=bitmap.width;c.height=bitmap.height;
+    const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(bitmap,0,0);
+    const ratios=[];
+    for(let i=0;i<6;i++){
+      const cx=bitmap.width*(.084+.0405*i),cy=bitmap.height*.57;
+      const r=Math.max(7,Math.round(bitmap.width*.012));
+      const x=Math.max(0,Math.floor(cx-r)),y=Math.max(0,Math.floor(cy-r));
+      const pixels=ctx.getImageData(x,y,Math.round(r*2),Math.round(r*2)).data;
+      let bright=0;
+      for(let p=0;p<pixels.length;p+=4)
+        if((pixels[p]+pixels[p+1]+pixels[p+2])/3>175)bright++;
+      ratios.push(bright/(pixels.length/4));
+    }
+    // Calibrated on the user's 3 same-format screenshots:
+    // Pearl E2: [0.185,0.193,0.044,...]. Evanescia E6 minimum 0.161.
+    // Caelus E6 minimum 0.233.
+    if(ratios.every(v=>v>.135))return 6;
+    for(let n=1;n<6;n++){
+      if(ratios.slice(0,n).every(v=>v>.13)&&ratios.slice(n).every(v=>v<.085))return n;
+    }
+    if(ratios.every(v=>v<.08))return 0;
+    return null;
   }
   window.v06AutoRead=async function(){
     const status=document.getElementById('v06-import-status');
-    const update=s=>{if(status)status.textContent=s;};
-    if(!uploader.file)return update('Escolha primeiro um print para analisar.');
-    let worker=null, bitmap=null;
+    const say=msg=>{if(status)status.textContent=msg;};
+    if(!uploader.file)return say('Selecione um print.');
+    let worker=null,bitmap=null;
     try{
-      update('Preparando a leitura isolada do personagem e dos atributos totais...');
+      say('Lendo o modelo fixo do registro de batalha...');
       const ocr=await getLang();
       bitmap=await createImageBitmap(uploader.file);
       const ratio=bitmap.width/bitmap.height;
-      if(ratio<.94||ratio>1.26)throw Error('Formato diferente do registro de batalha conhecido. Preencha os campos manualmente, sem confiar em OCR de outra tela.');
-      worker=await ocr.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text')update('Reconhecendo campos: '+Math.round(m.progress*100)+'%');}});
-      await worker.setParameters({tessedit_pageseg_mode:'6'});
-      const header=(await worker.recognize(imageRegion(bitmap,.018,.024,.34,.084,2.5))).data.text||'';
-      const fullPanel=(await worker.recognize(imageRegion(bitmap,.367,.122,.61,.24,1.6))).data.text||'';
-      const cone=(await worker.recognize(imageRegion(bitmap,.045,.602,.315,.146,2.2))).data.text||'';
-      const valueStrip=makeTotalStatStrip(bitmap);
-      const numeric=(await worker.recognize(valueStrip.canvas)).data.text||'';
-      uploader.ocrText=['PERSONAGEM',header,'ATRIBUTOS',fullPanel,'CONE',cone,'NÚMEROS',numeric].join('\n');
-      const h=norm(header), panel=norm(fullPanel);
-      let identifiedId='';
-      if(h.includes('desbrav')||h.includes('trailblaz')){
-        if(panel.includes('raio')||panel.includes('lightning')||panel.includes('thunder'))identifiedId='8009';
-      }else{
-        const found=CATALOG.filter(c=>c.id!=='future-aha'&&c.name&&norm(c.name).length>=4)
-          .sort((a,b)=>b.name.length-a.name.length).find(c=>h.includes(norm(c.name)));
-        if(found)identifiedId=found.id;
+      if(ratio<1.02||ratio>1.18)throw Error('Este print não corresponde ao formato padronizado. Corrija manualmente.');
+      worker=await ocr.createWorker('eng',1,{logger:m=>{
+        if(m.status==='recognizing text')say('Lendo o print: '+Math.round(m.progress*100)+'%');
+      }});
+      const mode=async num=>worker.setParameters({tessedit_pageseg_mode:String(num)});
+      await mode(7);
+      const title=(await worker.recognize(titleMask(bitmap))).data.text||'';
+      const damage=(await worker.recognize(imageRegion(bitmap,.377,.327,.249,.031,3))).data.text||'';
+      await mode(6);
+      const cone=(await worker.recognize(imageRegion(bitmap,.095,.652,.267,.085,2.6))).data.text||'';
+      const strip=totalStatStrip(bitmap);
+      const parsed=await worker.recognize(strip.canvas);
+      const totals=parseTotalStatLines(parsed,strip.rows);
+      uploader.ocrText=['Título: '+title,'Dano: '+damage,'Cone: '+cone,'Atributos:\n'+(parsed.data.text||'')].join('\n');
+      const identifiedId=getIdFromTitle(title,damage);
+      if(identifiedId)ensureTrailblazer(identifiedId);
+      const select=document.getElementById('v06-id');
+      if(select&&identifiedId){
+        let choice=[...select.options].find(o=>o.value===identifiedId);
+        if(!choice&&CATALOG.find(c=>c.id===identifiedId)){
+          const c=CATALOG.find(c=>c.id===identifiedId);
+          select.add(new Option(c.name,identifiedId));
+        }
+        select.value=identifiedId;uploader.identifiedId=identifiedId;
       }
-      if(identifiedId && !CATALOG.find(c=>c.id===identifiedId) && identifiedId==='8009' && gameData.chars?.['8009']){
-        CATALOG.push({...gameData.chars['8009'],name:'Desbravador · Euforia (Caelus)'});
-        const select=document.getElementById('v06-id');
-        if(select)select.add(new Option('Caelus · Desbravador da Euforia','8009'));
+      for(const [k,value] of Object.entries(totals)){
+        const el=document.getElementById('v06-'+k);
+        if(el)el.value=String(value);
       }
-      if(identifiedId&&document.getElementById('v06-id')){
-        uploader.identifiedId=identifiedId;document.getElementById('v06-id').value=identifiedId;
+      const h=title.match(/(?:Nv|Lv)\W{0,3}(\d{1,2})/i);
+      if(h&&document.getElementById('v06-level'))document.getElementById('v06-level').value=h[1];
+      const sup=cone.match(/(?:Nv|Lv)\W*([1-5])\s+de\s+(?:sobreposi|superimposi)/i)
+        ||cone.match(/(?:sobreposi|superimposi)[^\n]{0,16}([1-5])/i);
+      if(sup&&document.getElementById('v06-s')){
+        document.getElementById('v06-s').value=sup[1];uploader.superimposition=Number(sup[1]);
       }
-      const totals=parseTotalStatLines(numeric,valueStrip.rows);
-      for(const [key,value] of Object.entries(totals)){
-        const field=document.getElementById('v06-'+key);
-        if(field)field.value=String(value);
+      const recognizedCone=coneName(cone);
+      if(recognizedCone){
+        uploader.cone=recognizedCone;
+        const el=document.getElementById('v06-cone');if(el)el.value=recognizedCone;
       }
-      const levelMatch=header.match(/(?:Nv|Lv)\W{0,3}(\d{1,2})/i);
-      if(levelMatch){const el=document.getElementById('v06-level');if(el)el.value=levelMatch[1];}
-      const supMatch=cone.match(/(?:Nv|Lv)\W*([1-5])\s+de\s+(?:sobreposi|superimposi)/i)
-                  || cone.match(/(?:sobreposi|superimposi)[^\n]{0,12}([1-5])/i);
-      if(supMatch){uploader.superimposition=Number(supMatch[1]);const el=document.getElementById('v06-s');if(el)el.value=supMatch[1];}
-      if(/euforia\s+repleta/i.test(cone))uploader.cone='Euforia Repleta de Bênçãos';
-      const e=await suggestEidolons();
-      if(e!==null){uploader.eidolon=e;const el=document.getElementById('v06-e');if(el)el.value=String(e);}
-      const found=Object.keys(totals).length;
-      const missing=['pv','atk','def','spd','crit','cdmg','break','energy'].filter(k=>!Object.hasOwn(totals,k));
-      update('Identificação: '+(identifiedId==='8009'?'Caelus · Euforia':identifiedId?lookup(identifiedId).name:'não confirmada')+
-        ' · '+found+'/8 atributos totais detectados.'+
-        (e!==null?' Eidolons sugeridos: E'+e+'.':' Verifique manualmente os Eidolons.')+
-        (supMatch?' Cone S'+supMatch[1]+'.':' Confira a sobreposição do cone.')+
-        (missing.length?' Confira/preencha: '+missing.join(', ')+'.':'')+
-        ' Confira todos os dados antes de salvar.');
+      const e=await suggestEidolons(bitmap);
+      if(e!==null&&document.getElementById('v06-e')){
+        document.getElementById('v06-e').value=String(e);uploader.eidolon=e;
+      }
+      const missing=strip.rows.map(x=>x[1]).filter(k=>!Object.hasOwn(totals,k));
+      const cname=identifiedId?(identifiedId==='8009'?'Caelus · Euforia':lookup(identifiedId).name):'não confirmado';
+      say('Personagem: '+cname+' | '+(strip.rows.length-missing.length)+'/8 atributos totais.'+
+        (e===null?' Confira os seis Eidolons.':' E'+e+' sugerido.')+
+        (sup?' Cone S'+sup[1]+'.':' Confira S1–S5.')+
+        (missing.length?' Pendentes: '+missing.join(', ')+'.':' Valores completos.')+
+        ' Confirme tudo antes de salvar.');
     }catch(err){
-      update('Reconhecimento indisponível: '+String(err.message||err)+'. Não preenchi valores de relíquias como atributos totais; confira os campos manualmente.');
+      say('Não foi possível concluir a leitura: '+String(err.message||err)+'. Confira os campos manualmente.');
     }finally{
       try{await worker?.terminate()}catch(_){}
       try{bitmap?.close()}catch(_){}
     }
   };
-  async function suggestEidolons(){
-    if(!uploader.preview)return null;
-    const img=new Image();
-    await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=uploader.preview;});
-    if(!img.naturalWidth)return null;
-    const canvas=document.createElement('canvas');
-    canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
-    const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0);
-    const ratios=[];
-    for(let i=0;i<6;i++){
-      const cx=img.width*(.084+.0405*i),cy=img.height*.572,r=Math.max(7,Math.round(img.width*.012));
-      const pix=ctx.getImageData(Math.max(0,Math.floor(cx-r)),Math.max(0,Math.floor(cy-r)),Math.round(r*2),Math.round(r*2)).data;
-      let bright=0;
-      for(let j=0;j<pix.length;j+=4)if((pix[j]+pix[j+1]+pix[j+2])/3>175)bright++;
-      ratios.push(bright/(pix.length/4));
-    }
-    // Só sugere valores quando há seis símbolos claramente iluminados ou contraste forte.
-    // Um E0 sugerido incorretamente é pior do que pedir confirmação manual.
-    if(ratios.every(v=>v>.19))return 6;
-    for(let n=1;n<=5;n++){
-      const lit=ratios.slice(0,n),unlit=ratios.slice(n);
-      if(Math.min(...lit)>.18 && Math.max(...unlit)<.095)return n;
-    }
-    return null;
-  }
 
   window.v06SaveImport=function(){
     const id=document.getElementById('v06-id')?.value;
@@ -505,7 +593,8 @@
     const read=k=>{const v=document.getElementById('v06-'+k)?.value;return v===''||v==null?null:Number(v);};
     const keys=['level','e','s','pv','atk','def','spd','crit','cdmg','break','energy'];
     for(const k of keys){const n=read(k);if(Number.isFinite(n))prior[k]=n;}
-    if(uploader.cone)prior.cone=uploader.cone;
+    const coneField=document.getElementById('v06-cone')?.value.trim();
+    if(coneField)prior.cone=coneField;
     state.characters[id]=prior;state.v06Screens||={};state.v06Relics||={};
     if(uploader.preview){const image=new Image();image.src=uploader.preview;state.v06Screens[id]=uploader.preview;}
     if(uploader.relImages.length)state.v06Relics[id]=uploader.relImages;
