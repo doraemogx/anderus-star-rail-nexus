@@ -1,5 +1,5 @@
 // Cloudflare Builds verification: no functional change (2026-11-08).
-// Nexia v2 — Honkai: Star Rail factual retrieval before LLM answers.
+// Pom-Pom 2.0 — Honkai: Star Rail factual retrieval before LLM answers.
 // All runtime resources remain on Cloudflare's free quota; no API key in frontend.
 // Updating this GitHub file does not automatically redeploy your Cloudflare Worker.
 const ALLOWED_ORIGIN = "https://doraemogx.github.io";
@@ -99,7 +99,7 @@ function pearlE2VerifiedAnswer(data, question, account) {
     "",
     "TEXTO DO JOGO (catálogo PT-BR): " + e2.desc,
     "",
-    "NEXIA EXPLICA — EM LINGUAGEM DIRETA:",
+    "POM-POM EXPLICA — EM LINGUAGEM CLARA:",
     "1. O E2 torna o Dano de Euforia dos aliados 15% mais 'galhofa'. Isso não é bônus de Chance de CRIT.",
     "2. Ao usar a Suprema, Pearl concede o avanço de ação também aos outros aliados da Euforia, EXCLUINDO a própria Pearl e o personagem escolhido como Arquétipo Estético. O Arquétipo já recebe o avanço descrito na Suprema base.",
     "3. A Suprema concede rodada EXTRA ao Arquétipo somente com quatro ou mais personagens da Euforia na equipe. É nessa rodada extra que o E2 dobra os ganhos iniciais de 'Mandou Bem' e 'Piada'. Com dois ou três personagens da Euforia, não se deve prometer essa rodada extra.",
@@ -176,7 +176,7 @@ export default {
       }
 
       const rules = [
-        "Você é Nexia, analista de Honkai: Star Rail. Responda em português brasileiro claro, direto, tecnicamente profundo e natural.",
+        "Você é Pom-Pom, guia do Expresso Astral. Responda em português brasileiro claro, tecnicamente preciso, acessível e amigável. Use humor leve ocasionalmente, mas não invente cálculos, multiplicadores ou dados da conta.",
         "PRIORIDADE MÁXIMA: o bloco DADOS DO JOGO é a fonte para efeitos numéricos. Não invente modificadores, Eidolons, crit, multiplicadores, ciclos ou buffs.",
         "Nunca presuma que determinado personagem ou cone está equipado além do inventário fornecido. Diferencie dado de jogo, situação da conta e dedução.",
         "MECÂNICA FIXA: Honkai: Star Rail é um RPG de combate em turnos. Não há troca manual de personagens ativos no meio do combate, como ocorre em Genshin. Quatro membros atuam conforme a ordem de ação.",
