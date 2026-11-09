@@ -278,3 +278,8 @@
 .v06-boss-card em{font:normal 10px/1.4 'DM Sans',sans-serif;color:#a7c9d5}
 .v06-diary .v06-diary-intro{margin-bottom:14px}
 .v06-diary .v06-accountfilter{margin:17px 0}
+
+.v06-tile-deco img{height:41px;width:41px;object-fit:contain;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--v-color) 67%,transparent));opacity:.96}
+.v06-app[data-v06-look=forge] .v06-tile-deco img{filter:sepia(.55) saturate(1.3) hue-rotate(309deg) drop-shadow(0 0 9px #ed5c5c)}
+.v06-app[data-v06-look=bloom] .v06-tile-deco img{filter:sepia(.32) saturate(.9) hue-rotate(286deg) drop-shadow(0 0 9px #f6a2cb)}
+.v06-app[data-v06-look=hacker] .v06-tile-deco img{filter:sepia(.25) saturate(2) hue-rotate(130deg) drop-shadow(0 0 9px #5fd8c8)}
