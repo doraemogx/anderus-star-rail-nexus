@@ -794,6 +794,10 @@
           const matcher=await import('./illustrated-relic-matcher.js?v=1');
           const selected=matcher.fillRelicSetFields(report.relicSets);
           setCount=selected.selected;
+        }else if(report.relicSetError){
+          document.querySelectorAll('[id^="v06-relmatch-"]').forEach(el=>{
+            el.textContent='Não foi possível acessar as referências visuais: '+report.relicSetError+'. Você pode escolher o conjunto manualmente.';
+          });
         }
         if(!report.character&&uploader.hintId){
           const select=document.getElementById('v06-id');
