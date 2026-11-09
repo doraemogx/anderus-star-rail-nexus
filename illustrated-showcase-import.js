@@ -165,9 +165,14 @@ async function relicRows(worker,bitmap,progress){
 export async function readIllustratedShowcase(bitmap,worker,{characters=[],coneNames=[],progress=()=>{},includeRelics=true}={}){
  if(!isIllustratedShowcase(bitmap))throw Error('A captura não corresponde ao layout ilustrado.');
  progress('Identificando a personagem…');
- const title=await ocr(worker,bitmap,[40,65,520,88],7,'normal');
+ let title=await ocr(worker,bitmap,[40,65,520,88],7,'normal');
  const levelText=await ocr(worker,bitmap,[488,65,110,90],7,'normal','0123456789Nv.Lv ');
- const character=matchCharacter(title,characters);
+ let character=matchCharacter(title,characters);
+ if(!character){
+   const enhanced=await ocr(worker,bitmap,[40,65,520,88],7,'high');
+   const alternate=matchCharacter(enhanced,characters);
+   if(alternate){character=alternate;title=enhanced;}
+ }
  progress('Conferindo os atributos totais…');
  const totals={};
  for(const stat of STATS){
