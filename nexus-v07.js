@@ -155,6 +155,14 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // User-provided screenshot handling; default file picker remains available.
+ if(!document.getElementById('nexus-scan-input-css')){
+  const link=document.createElement('link');link.id='nexus-scan-input-css';link.rel='stylesheet';link.href='./nexus-scan-input.css';document.head.appendChild(link);
+ }
+ if(!document.getElementById('nexus-scan-input-js')){
+  const script=document.createElement('script');script.id='nexus-scan-input-js';script.src='./nexus-scan-input.js';script.defer=true;document.head.appendChild(script);
+ }
+
  // Shared materials budget: one inventory for ascension and all trace goals.
  if(!document.getElementById('nexus-material-budget-css')){
   const css=document.createElement('link');css.id='nexus-material-budget-css';css.rel='stylesheet';css.href='./nexus-material-budget.css';document.head.appendChild(css);
