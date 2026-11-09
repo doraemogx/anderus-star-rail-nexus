@@ -56,6 +56,20 @@ try{
   await page.locator('.nexus-search-hit[data-search-type="character"]').first().waitFor({timeout:15000});
   assert.ok(await page.locator('.nexus-search-hit[data-search-type="character"]').count()>0);
   await page.locator('#nexus-search-dialog [data-search-close]').click();
+  // Unsupported screenshots must still yield six editable relic forms.
+  const relicEditor=await page.evaluate(async()=>{
+    const el=document.createElement('div');el.id='v06-relic-editor';document.body.append(el);
+    const inspector=await import('./relic-inspector.js?v=3');
+    await inspector.initializeRelics([]);
+    const forms=el.querySelectorAll('.v06-relcard').length;
+    const inferredLevel=el.querySelector('#v06-r0-lv')?.value;
+    const records=inspector.collectRelics();
+    el.remove();
+    return {forms,inferredLevel,records};
+  });
+  assert.equal(relicEditor.forms,6,'Unknown screenshot must still present six relic inputs');
+  assert.equal(relicEditor.inferredLevel,'','Missing relic level must not be guessed as +15');
+  assert.equal(relicEditor.records[0].level,null,'An unknown relic level is null');
   // Exercise all top-level routes before opening the imported character.
   for(const view of ['home','library','endgame','farm','radar','themes','nexia','settings']){
     const before=errors.length;
