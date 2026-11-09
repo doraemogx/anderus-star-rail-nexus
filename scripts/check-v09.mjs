@@ -61,7 +61,7 @@ for(const [id,char] of present)for(let n=1;n<=6;n++){
  assert.ok(rank?.name&&rank?.desc,'Missing E'+n+' or effect for '+id+' · '+char.name);
 }
 assert.ok(eidoSrc.includes('loadEidolonCatalog().then('),'Modal not rehydrated after catalog fetch');
-assert.ok(eidoSrc.includes('eidoArtwork(id,n,rank)'),'Character-specific artwork preference missing');
+assert.ok(eidoSrc.includes('eidoArtwork(id,n)'),'Character-specific artwork preference missing');
 assert.ok(eidoSrc.includes('Voltar à ficha'),'Modal back navigation missing');
 assert.ok(eidoSrc.includes('v10-eido-navigation'),'Previous/next Eidolon buttons missing');
 console.log('PASS all '+present.length+' characters × 6 PT-BR Eidolon descriptions and modal navigation');
