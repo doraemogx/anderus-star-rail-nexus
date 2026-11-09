@@ -39,6 +39,16 @@ try{
     console.error('BROWSER_STAGE_DEBUG',JSON.stringify(dom));
     throw error;
   });
+  // Real update inbox must disclose the source and show a read state.
+  await page.locator('#nexus-notifications-button').waitFor({timeout:15000});
+  await page.locator('#nexus-notifications-button').click();
+  await page.locator('#nexus-notice-dialog[open]').waitFor({timeout:15000});
+  await page.locator('#nexus-notice-list .nexus-notice-item').first().waitFor({timeout:15000});
+  assert.match(await page.locator('#nexus-notice-list').innerText(),/NÃO CONFIRMADO/);
+  await page.locator('#nexus-notice-dialog [data-notice-read]').click();
+  assert.equal(await page.locator('#nexus-notice-list .nexus-notice-unread').count(),0);
+  await page.screenshot({path:'artifacts/notifications-'+device.width+'.png'});
+  await page.locator('#nexus-notice-dialog [data-notice-close]').click();
   // Top navigation: one search action, and no diagnostic overlay over bottom tabs.
   assert.equal(await page.locator('#nexus-search-button').count(),1);
   assert.equal(await page.locator('#nexus-diagnostics-button').count(),1);
