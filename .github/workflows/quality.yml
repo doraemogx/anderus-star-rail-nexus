@@ -25,9 +25,12 @@ jobs:
           node --check nexus-team-lab.js
           node --check nexus-kit-lab.js
           node --check nexus-search.js
+          node --check nexus-backup.js
           node --check worker/index.js
       - name: Validar sincronização de dados e rollback
         run: python3 scripts/check-sync-game.py
+      - name: Backup e restauração sem perda de dados
+        run: node scripts/check-backup.mjs
       - name: Kit Lab 2.0 — dados, interpolação e imagens
         run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
