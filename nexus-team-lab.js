@@ -2,6 +2,7 @@
 (function(){
 'use strict';
 if(window.NexusTeamLab)return;
+const ART='https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const roles={Rogue:'Dano / alvo único',Warrior:'Dano / versatilidade',Mage:'Dano em área',Shaman:'Amplificação',Warlock:'Debuffs / efeitos',Knight:'Proteção',Priest:'Cura',Memory:'Mecânicas de Memoespírito',Elation:'Mecânicas de Euforia'};
 const paths={Rogue:'Caça',Warrior:'Destruição',Mage:'Erudição',Shaman:'Harmonia',Warlock:'Inexistência',Knight:'Preservação',Priest:'Abundância',Memory:'Reminiscência',Elation:'Euforia'};
@@ -61,7 +62,11 @@ function render(){
   list.innerHTML=choices.map((id,index)=>{
    const available=chars.map(c=>'<option value="'+esc(c.id)+'" '+(c.id===id?'selected':'')+'>'+esc(c.name)+' · E'+c.e+'S'+c.s+'</option>').join('');
    const selected=chars.find(c=>c.id===id);
-   return '<article class="teamlab-member"><span>POSIÇÃO 0'+(index+1)+'</span><label for="teamlab-slot-'+index+'">Integrante</label>'+
+   return '<article class="teamlab-member"><span>POSIÇÃO 0'+(index+1)+'</span>'+
+    '<div class="teamlab-selected-character">'+
+    (selected?.icon?'<img src="'+esc(ART+selected.icon)+'" alt="" loading="lazy" onerror="this.hidden=true">':'<span aria-hidden="true">✦</span>')+
+    '<strong>'+esc(selected?.name||'Aguardando integrante')+'</strong></div>'+
+    '<label for="teamlab-slot-'+index+'">Integrante</label>'+
     '<select id="teamlab-slot-'+index+'" data-team-slot="'+index+'"><option value="">Selecione</option>'+available+'</select>'+
     '<p>'+(selected?esc(paths[selected.path]||selected.path||'Caminho não informado')+' · '+esc(roles[selected.path]||'Papel a verificar'):'Aguardando seleção')+'</p></article>';
   }).join('');
