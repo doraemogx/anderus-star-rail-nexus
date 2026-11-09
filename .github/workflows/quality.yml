@@ -22,5 +22,7 @@ jobs:
           node --check sw.js
           node --check nexus-diagnostics.js
           node --check nexus-v07.js
+      - name: Kit Lab 2.0 — dados, interpolação e imagens
+        run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
         run: node scripts/check-account.mjs
