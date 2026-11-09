@@ -21,3 +21,12 @@ for title in examples:
  ]
  print('===',title,'MD5',digest,flush=True)
  for url in urls:print(get(url),flush=True)
+
+print('=== Verify original image responses ===',flush=True)
+for title in examples:
+ req='https://honkai-star-rail.fandom.com/api.php?'+urlencode({'action':'query','format':'json','prop':'imageinfo','iiprop':'url','titles':'File:'+title})
+ try:
+  res=json.loads(urllib.request.urlopen(urllib.request.Request(req,headers=HEAD),timeout=12).read())
+  image=next(iter(res['query']['pages'].values()))['imageinfo'][0]['url']
+  print(title, get(image),flush=True)
+ except Exception as e:print('PROBE ERROR',title,type(e).__name__,str(e)[:150],flush=True)
