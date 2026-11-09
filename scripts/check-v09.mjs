@@ -15,7 +15,9 @@ const fixtures=[
  ['PV','12,5%','PV %',12.5,false],
  ['VEL','7','VEL',7,false],
  ['Bônus de Dano Quântico','38,8%','Bônus de Dano Quântico',38.8,true],
- ['ATQ','352','ATQ',352,true]
+ ['ATQ','352','ATQ',352,true],
+ ['PV','257','PV',257,false],
+ ['PV','5,8','PV %',5.8,false]
 ];
 for(const [name,raw,expected,n,main] of fixtures){
  const stat=helper.inferStat(name,raw),v=helper.parseValue(raw);
@@ -41,6 +43,11 @@ for(const symbol of ['v09SetVisualMode','renderVariants','renderEndgame','enhanc
 assert.ok(loader.includes('anderus-aeon-aha-visual-mode'));
 assert.ok(loader.includes('aha-detail.css'));
 assert.ok(loader.includes('enhanceNexusV09();'));
-assert.ok(sw.includes('anderus-shell-v09'));
+assert.ok(sw.includes('anderus-shell-v10'));
+assert.ok(read('v06.js').includes('repairOverviewEidolons'));
+assert.ok(read('v06.js').includes('rankRecord(id,n)'));
+assert.ok(read('v06.js').includes('relic-auto.js?v=3'));
+assert.ok(read('relic-auto.js').includes('makeTextCrop'));
+console.log('PASS resilient Eidolon icons, per-character rank metadata, and OCR retries');
 assert.ok(!sw.includes("'./themes/aha.css'"));
 console.log('PASS assets, all four endgames, variant isolation, lazy theme, PWA');
