@@ -163,25 +163,26 @@
     return 'Na sua conta, '+name+' está no nível '+fmt(owned.level||1)+', E'+fmt(owned.e||0)+'S'+fmt(owned.s||1)+stat+'. Antes de ajustar a rotação, compare os outros três integrantes e os gatilhos do kit. A recomendação não pressupõe um cone ou relíquia que ainda não foi cadastrado.';
   }
 
+  // Keep the six illustrated fragments in the overview synchronized with the modal.
   function repairOverviewEidolons(markup,id){
-    const host=document.createElement('div');host.innerHTML=markup;
-    const images=[...host.querySelectorAll('img')],used=new Set();
-    for(let n=1;n<=6;n++){
-      const icon=rankRecord(id,n)?.icon||'';
-      const img=images.find(x=>!used.has(x)&&icon&&String(x.getAttribute('src')||'').includes(icon))
-       ||images.find(x=>!used.has(x)&&String(x.closest('[onclick]')?.getAttribute('onclick')||'').includes('showEido')&&new RegExp('[, ]'+n+'[)]').test(x.closest('[onclick]')?.getAttribute('onclick')||''));
-      if(!img)continue;
-      used.add(img);
-      img.setAttribute('onerror',"this.onerror=null;this.src='"+eidoFallback(n)+"'");
-      img.setAttribute('alt','Ícone do Eidolon E'+n);
+    const holder=document.createElement('div');holder.innerHTML=markup;
+    const raw=[...holder.querySelectorAll('[onclick*="showEido"] img,img[onclick*="showEido"]')];
+    const images=[...new Set(raw)];
+    for(let i=0;i<Math.min(6,images.length);i++){
+      const img=images[i],n=i+1,art=eidoArtwork(id,n);
+      img.classList.add('nexus-eidolon-fragment');
+      img.dataset.character=id;img.dataset.eidolon=String(n);
+      img.alt='Fragmento ilustrado E'+n+' de '+lookup(id).name;
+      img.setAttribute('onerror',"this.onerror=null;this.hidden=true;this.parentElement.classList.add('nexus-fragment-unavailable');");
+      if(art)img.src=art;
     }
-    return host.innerHTML;
+    return holder.innerHTML;
   }
   profileOverview=function(id,b){
+    loadEidolonCatalog().catch(error=>console.warn('Artes dos Eidolons:',error.message));
     return '<div class="v06-overview-actions"><button onclick="v06StartImport(\''+id+'\')">⇧ Atualizar pelo print</button><button onclick="editBuild(\''+id+'\')">⚙ Editar atributos</button></div>'+
       repairOverviewEidolons(base.profileOverview(id,b),id)+pomCard('O que avaliar nesta build',verifiedGuide(id),'FICHA · '+lookup(id).name);
   };
-
 
   // Use the live character-rank catalog for every released and future character.
   // E3/E5 frequently reuse skill icons and their upstream filenames can vanish.
@@ -192,7 +193,7 @@
   // One PT-BR source of truth for all current AND future playable characters.
   // gameData.chars comes from the shell; rank descriptions live in the separate
   // synchronized data/live-game.json bundle, not necessarily in gameData.ranks.
-  let eidolonCatalog=null,eidolonCatalogPromise=null;
+  let eidolonCatalog=null,eidolonCatalogPromise=null,eidolonImages={};
   function rankRecord(id,n){
     const character=eidolonCatalog?.chars?.[id]||gameData.chars?.[id];
     const ids=character?.ranks||[];
@@ -203,36 +204,60 @@
     }
     return null;
   }
+  const eidoIcon=(rank,n)=>rank?.icon?STR+rank.icon:eidoFallback(n);
+  function eidoArtwork(id,n){
+    return eidolonImages[String(id)]?.[n-1]||EIDO_ART?.[id]?.[n-1]||'';
+  }
+  function updateEidolonArtInPage(){
+    document.querySelectorAll('img.nexus-eidolon-fragment[data-character][data-eidolon]').forEach(img=>{
+      const art=eidoArtwork(img.dataset.character,Number(img.dataset.eidolon));
+      if(art){
+        img.hidden=false;img.parentElement?.classList.remove('nexus-fragment-unavailable');
+        if(img.getAttribute('src')!==art)img.src=art;
+      }
+    });
+    document.querySelectorAll('.v10-eido-tile[data-character][data-eidolon]').forEach(tile=>{
+      const id=tile.dataset.character,n=Number(tile.dataset.eidolon),r=rankRecord(id,n);
+      tile.title=r?.name||'E'+n;
+      tile.setAttribute('aria-label','Abrir E'+n+': '+(r?.name||'Eidolon'));
+      const title=tile.querySelector('small');if(title)title.textContent=r?.name||'Eidolon';
+      const art=eidoArtwork(id,n);
+      if(art){
+        const old=tile.querySelector('img'),img=old||document.createElement('img');
+        img.alt='Fragmento ilustrado E'+n;
+        img.onerror=()=>{img.hidden=true;tile.classList.add('nexus-fragment-unavailable');};
+        if(!old)tile.insertBefore(img,title);
+        img.hidden=false;tile.classList.remove('nexus-fragment-unavailable');
+        if(img.getAttribute('src')!==art)img.src=art;
+        tile.querySelector('.nexus-fragment-loading')?.remove();
+      }else{
+        tile.querySelector('img')?.setAttribute('hidden','');
+        tile.classList.add('nexus-fragment-unavailable');
+        const pending=tile.querySelector('.nexus-fragment-loading');if(pending)pending.textContent='Arte indisponível';
+      }
+    });
+  }
   function loadEidolonCatalog(){
     if(eidolonCatalog)return Promise.resolve(eidolonCatalog);
     if(!eidolonCatalogPromise){
-      eidolonCatalogPromise=fetch('./data/live-game.json',{cache:'no-store'})
-       .then(r=>{if(!r.ok)throw Error('catálogo indisponível ('+r.status+')');return r.json();})
-       .then(data=>{
-         if(!data||!data.chars||!data.ranks)throw Error('catálogo de Eidolons incompleto');
-         eidolonCatalog=data;
-         // Upgrade the already rendered E1-E6 tiles without rebuilding the
-         // whole character screen or losing the user's tab/scroll position.
-         document.querySelectorAll('.v10-eido-tile[data-character][data-eidolon]').forEach(tile=>{
-           const id=tile.dataset.character,n=Number(tile.dataset.eidolon),rank=rankRecord(id,n);
-           if(!rank)return;
-           tile.title=rank.name||'E'+n;
-           tile.setAttribute('aria-label','Abrir E'+n+': '+(rank.name||'Eidolon'));
-           const title=tile.querySelector('small');if(title)title.textContent=rank.name||'Eidolon';
-           const img=tile.querySelector('img');
-           if(img)img.src=eidoArtwork(id,n,rank);
-         });
-         return data;
-       }).catch(error=>{eidolonCatalogPromise=null;throw error;});
+      const fetchJSON=path=>fetch(path,{cache:'no-store'}).then(r=>{
+        if(!r.ok)throw Error('catálogo indisponível: '+path+' ('+r.status+')');
+        return r.json();
+      });
+      eidolonCatalogPromise=Promise.all([
+        fetchJSON('./data/live-game.json'),
+        fetchJSON('./data/eidolon-art.json').catch(error=>{
+          console.warn('Catálogo ilustrado indisponível:',error.message);
+          return {characters:{}};
+        })
+      ]).then(([game,art])=>{
+        if(!game?.chars||!game?.ranks)throw Error('catálogo de Eidolons incompleto');
+        eidolonCatalog=game;eidolonImages=art?.characters||{};
+        updateEidolonArtInPage();
+        return game;
+      }).catch(error=>{eidolonCatalogPromise=null;throw error;});
     }
     return eidolonCatalogPromise;
-  }
-  const eidoIcon=(rank,n)=>rank?.icon?STR+rank.icon:eidoFallback(n);
-  // Full fragment artwork is preferred. Never substitute another character's
-  // Eidolon for an unavailable asset. Rank icons remain the honest fallback.
-  function eidoArtwork(id,n,rank){
-    const art=EIDO_ART?.[id]?.[n-1];
-    return art||eidoIcon(rank,n);
   }
   function addEidoStyles(){
     if(document.getElementById('nexus-eido-repair-css'))return;
