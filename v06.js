@@ -91,6 +91,27 @@
   function accountCone(id){
     return nexusAccount?.matchCone(state.characters?.[id]?.cone,nexusAccountCatalog?.cones||{})||null;
   }
+  let nexusStorageWarning=false;
+  function verifiedAccountSave(id){
+    save();
+    try{
+      const snapshot=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'null');
+      if(!snapshot?.characters?.[id])throw Error('Personagem ausente na cópia persistente');
+      if(JSON.stringify(snapshot.characters[id])!==JSON.stringify(state.characters[id]))
+        throw Error('Dados do personagem não correspondem ao que foi gravado');
+      if(state.v06RelicDetails?.[id]&&JSON.stringify(snapshot.v06RelicDetails?.[id])!==JSON.stringify(state.v06RelicDetails[id]))
+        throw Error('As relíquias não foram gravadas corretamente');
+      nexusStorageWarning=false;
+      return true;
+    }catch(error){
+      nexusStorageWarning=true;
+      console.warn('Falha na gravação da conta:',error);
+      return false;
+    }
+  }
+  function accountStorageNotice(){
+    return nexusStorageWarning?'<div class="v11-storage-warning" role="alert"><strong>⚠ Alterações ainda não foram salvas no dispositivo</strong><p>O armazenamento do navegador pode estar cheio. Não feche a aba antes de exportar um backup nas Configurações.</p><button type="button" onclick="route(\'settings\')">Abrir configurações</button></div>':'';
+  }
   function migrateAccountRelics(){
     if(!nexusAccount||!nexusAccountCatalog)return;
     let changed=false;
@@ -211,7 +232,7 @@
     '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
     '<div class="v06-profile-controls"><button class="v06-primary" onclick="'+(b?'editBuild(\''+id+'\')':'addOwned(\''+id+'\')')+'">'+(b?'Editar minha build':'＋ Adicionar à conta')+'</button><button class="v06-secondary" onclick="v06StartImport(\''+id+'\')">⇧ Importar print</button></div>'+
     '<nav class="v06-tabs">'+switches.map(([key,title])=>'<button class="'+(active===key?'active':'')+'" onclick="tab=\''+key+'\';refresh()">'+title+'</button>').join('')+'</nav>'+
-    '<div class="v06-profile-body">'+body+'</div>'+((b&&state.v06Screens?.[id])?'<section class="v06-upload-reference"><h3>Seu print de referência</h3><img loading="lazy" src="'+state.v06Screens[id]+'" alt="Print importado por você"><button onclick="v06StartImport(\''+id+'\')">Atualizar print</button></section>':'')+
+    accountStorageNotice()+'<div class="v06-profile-body">'+body+'</div>'+((b&&state.v06Screens?.[id])?'<section class="v06-upload-reference"><h3>Seu print de referência</h3><img loading="lazy" src="'+state.v06Screens[id]+'" alt="Print importado por você"><button onclick="v06StartImport(\''+id+'\')">Atualizar print</button></section>':'')+
     '</div>';
   }
   profile=profile06;
@@ -455,7 +476,7 @@
     const corrected=nexusAccount.normalizeRelics(records,null,nexusAccountCatalog?.relicSets||{});
     state.v06RelicDetails||={};state.v06RelicDetails[id]=corrected;
     state.characters[id].relics=nexusAccount.toLegacy(corrected,nexusAccountCatalog?.relicSets||{},state.characters[id].relics||{});
-    save();closeModal();tab='relics';refresh();showToast('Relíquia atualizada em todas as abas');
+    const persisted=verifiedAccountSave(id);closeModal();tab='relics';refresh();showToast(persisted?'Relíquia atualizada e salva em todas as abas':'Relíquia atualizada nesta sessão, mas não persistiu. Exporte um backup!');
   };
 
   let eidoModalSequence=0;
@@ -1119,7 +1140,7 @@
         level:r.level
       }]));
     }
-    state.profile=id;save();closeModal();tab='overview';route('profile');showToast('Print e personagem registrados na sua conta');
+    state.profile=id;const persisted=verifiedAccountSave(id);closeModal();tab='overview';route('profile');showToast(persisted?'Print e personagem registrados na sua conta':'Build visível nesta sessão, mas não foi salva no dispositivo. Exporte um backup!');
   };
 
   // Editorial guidance is contextual and only references characters explicitly in the account.
