@@ -8,6 +8,7 @@ on:
     paths:
       - 'scripts/sync_game.py'
       - 'scripts/sync_ascension.py'
+      - 'scripts/sync_traces.py'
       - 'scripts/sync_eidolon_art.py'
       - 'scripts/generate_relic_signatures.py'
       - '.github/workflows/sync-content.yml'
@@ -32,6 +33,8 @@ jobs:
         run: python scripts/sync_game.py
       - name: Sincronizar materiais de ascensão para o Farm Planner
         run: python scripts/sync_ascension.py
+      - name: Sincronizar rastros e materiais dos personagens
+        run: python scripts/sync_traces.py
       - name: Atualizar todas as artes reais dos Eidolons
         run: python scripts/sync_eidolon_art.py
       - name: Sincronizar assinaturas dos novos conjuntos de relíquias
