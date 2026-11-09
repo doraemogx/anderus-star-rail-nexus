@@ -43,7 +43,8 @@ assert.match(passive,/24%/);
 assert.ok(!passive.includes('#1['));
 const advice=a.buildCoach({
  character:game.chars['1512'],build:{level:80,e:1,s:5,cone:cone.name,pv:6284,spd:138,crit:31.3,cdmg:127.1},
- records,sets:game.relicSets,cone,coneRank:game.coneRanks[cone.id]
+ records,sets:game.relicSets,cone,coneRank:game.coneRanks[cone.id],
+ skills:(game.chars['1512'].skills||[]).map(k=>game.skills[k]).filter(Boolean)
 });
 const text=advice.map(x=>x.title+' '+x.body).join(' ');
 assert.match(text,/Portador da Reconstrução do Mundo/);
@@ -51,6 +52,20 @@ assert.match(text,/Vonwacq Vivaz/);
 assert.match(text,/S5/);
 assert.match(text,/138 VEL/);
 assert.ok(advice.some(x=>x.title.includes('Cone')));
+assert.match(text,/Memoespírito/);
+assert.match(text,/Vibrações/);
+assert.match(text,/PV máximos/);
+assert.doesNotMatch(advice.find(x=>x.title.includes('Escalamento'))?.body||'',/indicam DEF/);
+for(const [id,expected] of [['1503','DEF'],['1505','ATQ']]){
+ const character=game.chars[id],notes=a.buildCoach({
+   character,build:{level:80,e:0,s:1,pv:4800,def:2500,atk:1900,spd:135},
+   skills:(character.skills||[]).map(k=>game.skills[k]).filter(Boolean)
+ });
+ assert.ok(notes.some(n=>n.title==='Escalamento identificado no kit'&&n.body.includes('indicam '+expected)),
+   character.name+' did not receive a source-backed scaling insight');
+}
+assert.ok(read('v06.js').includes('skills:(nexusAccountCatalog.chars?.[id]?.skills||[])'),
+ 'Pom-Pom no longer receives actual skills');
 const review=a.examineRelics(a.normalizeRelics([{setId:'127',main:{stat:'PV',value:705},subs:[{stat:'Taxa de Acerto de Efeito',value:211.6}]}]));
 assert.ok(review.flags.some(x=>x.includes('211,6')),'Flag impossible old OCR substat');
 const v06=read('v06.js');
@@ -61,4 +76,14 @@ assert.ok(v06.includes("['cone','Cone de Luz']"),'Cone tab missing');
 const css=read('nexus-account.css');
 assert.ok(css.includes('@media(max-width:360px)'));
 assert.ok(css.includes('min-height:46px'));
+const img=read('illustrated-showcase-import.js').replaceAll('export ','');
+const ocr=new Function(img+';return {relicValueFromText};')();
+assert.equal(ocr.relicValueFromText('29','ATQ',0,false),null);
+assert.equal(ocr.relicValueFromText('170','ATQ',3,false),null);
+assert.equal(ocr.relicValueFromText('2','Chance de CRIT',2,false),null);
+assert.equal(ocr.relicValueFromText('211,6','Taxa de Acerto de Efeito',0,false),null);
+assert.equal(ocr.relicValueFromText('3,4%','ATQ %',0,false),3.4);
+assert.equal(ocr.relicValueFromText('3,2%','Chance de CRIT',2,false),3.2);
+assert.ok(a.examineRelics(a.normalizeRelics([{main:{stat:'PV',value:705},subs:[{stat:'ATQ',value:29}]}])).flags.some(x=>x.includes('ATQ 29')),
+ 'Previously imported invalid ATQ 29 must be flagged');
 console.log('PASS 170 S5 cone effects and artwork, reversible 6-piece migration, equipped cone viewer, 4+2 set analysis, accessibility and mobile styles');
