@@ -18,7 +18,7 @@
   }
   const v06Asset=(key)=>_v06OriginalAssets[key] || '';
   const heroOfficial='https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/character_portrait/8001.png';
-  const ahaOfficial='https://i.gachabase.net/mZQZSbIAQyJXbDElL_RE2AwSR7C4X0pOBxgQ3ybCNnA/q:50/f:webp/plain/hsr/assets/f8b5630e85022ab8b2761e4e3f614b42.png';
+  const ahaOfficial='./assets/official/aha-4-7.webp';
   const safe=s=>esc(s);
   const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
   const fmt=n=>Number(n||0).toLocaleString('pt-BR',{maximumFractionDigits:1});
