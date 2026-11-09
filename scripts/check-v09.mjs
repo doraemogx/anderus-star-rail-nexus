@@ -89,4 +89,21 @@ assert.ok(read('.github/workflows/sync-content.yml').includes('python scripts/sy
 console.log('PASS '+artCount+'/'+(present.length*6)+' verified original Eidolon art URLs across overview, detail and future sync');
 
 assert.ok(!sw.includes("'./themes/aha.css'"));
+const illustrated=read('illustrated-showcase-import.js').replaceAll('export ','');
+new Function(illustrated);
+const screenshot=new Function(illustrated+';return {isIllustratedShowcase,clean,matchCharacter,parseNumber,inferStat};')();
+const names=[{id:'1309',name:'Robin'},{id:'1512',name:'Robin • Summeretto'}];
+assert.ok(screenshot.isIllustratedShowcase({width:2000,height:2300}), 'Screenshot 2000x2300 must be supported');
+assert.ok(!screenshot.isIllustratedShowcase({width:2000,height:1826}), 'Old template must not be misidentified');
+assert.equal(screenshot.matchCharacter('Robin - Summeretto',names)?.id,'1512');
+assert.equal(screenshot.matchCharacter('Robin - Summeretto Nv. 80',names)?.id,'1512');
+assert.equal(screenshot.matchCharacter('Robin',names)?.id,'1309');
+assert.equal(screenshot.parseNumber('6.284',true),6284);
+assert.equal(screenshot.parseNumber('124,4%',false),124.4);
+assert.equal(screenshot.inferStat('Dano CRIT','64,8%'),'Dano CRIT');
+assert.ok(read('v06.js').includes("illustrated-showcase-import.js?v=1"));
+assert.ok(read('v06.js').includes('Promise.resolve().then(()=>window.v06AutoRead())'),'Auto recognize not wired');
+assert.ok(read('v06.js').includes('const illustrated=ratio>=.82&&ratio<=.95'));
+console.log('PASS 2000x2300 Robin Summeretto import, OCR number sanitation and automatic recognition');
+
 console.log('PASS assets, all four endgames, variant isolation, lazy theme, PWA');
