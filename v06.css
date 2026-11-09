@@ -288,3 +288,27 @@
 .v06-app .stage.v06-stage.v06-entering{animation:v06-enter .42s cubic-bezier(.2,.72,.2,1) both}
 .v06-app.v06-theme-changing:after{z-index:79;inset:0;top:0;right:0;left:0;height:100%;width:100%;opacity:0;pointer-events:none;animation:v06-theme-flash .54s ease-out both;background:radial-gradient(ellipse at 70% 30%,color-mix(in srgb,var(--v-color) 35%,transparent),transparent 70%)}
 @keyframes v06-theme-flash{0%{opacity:0}22%{opacity:.9}100%{opacity:0}}
+
+
+/* Structured relic catalogue and review. */
+.v06-relic-review{margin:22px 0 10px;padding:18px 13px;background:linear-gradient(150deg,#0b2035,#17192e);border:1px solid #8191b254;border-radius:20px}
+.v06-relic-review h3{font:600 22px/1.2 var(--v-title-font);margin:0 0 9px;color:#fff5eb}
+.v06-rel-explain{color:#bfd5e4;font-size:13px;line-height:1.55;margin:0 0 16px}
+.v06-relcard{border:1px solid #b7b2bd55;border-radius:14px;margin:10px 0;background:#0d182b;overflow:hidden;color:#f5eef3}
+.v06-relcard>summary{display:grid;grid-template-columns:66px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;cursor:pointer;list-style:none;padding:11px;min-height:77px}
+.v06-relcard>summary::-webkit-details-marker{display:none}
+.v06-relcard>summary img{grid-row:span 2;width:66px;height:68px;object-fit:cover;border-radius:10px}
+.v06-relcard>summary span{font:600 15px/1.2 'DM Sans',sans-serif}
+.v06-relcard>summary small{color:#adc5d4;font:11px/1.4 'DM Sans',sans-serif}
+.v06-relcard>label{display:flex;flex-direction:column;gap:5px;margin:10px 13px;font:12px 'DM Sans',sans-serif}
+.v06-relcard select,.v06-relcard input{box-sizing:border-box;min-width:0;width:100%;padding:11px 9px;border-radius:10px;border:1px solid #c0aab055;background:#091427;color:#fff;font:13px 'DM Sans',sans-serif}
+.v06-relstat{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,.7fr);gap:8px;margin:8px 13px}
+.v06-relnote{font:11px 'DM Sans',sans-serif;color:#a9c0d6;padding:0 13px}
+.v06-relic-summary{margin:15px 0;padding:16px 12px;border-radius:18px;background:#0b1c2c;border:1px solid #a5b4d251}
+.v06-relic-summary>h3{font:600 20px var(--v-title-font);margin:0 0 8px}
+.v06-relic-summary>p{color:#c8d7df;font:12px/1.6 'DM Sans',sans-serif}
+.v06-relic-summary-item{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid #9caec22c}
+.v06-relic-summary-item img{width:64px;height:68px;object-fit:cover;border-radius:8px}
+.v06-relic-summary-item>div{min-width:0;flex:1}
+.v06-relic-summary-item b{font:600 13px/1.4 'DM Sans',sans-serif;color:#f3e8da}
+.v06-relic-summary-item small,.v06-relic-summary-item p{display:block;font:12px/1.4 'DM Sans',sans-serif;margin:4px 0;color:#c0cbdf}
