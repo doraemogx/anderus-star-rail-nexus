@@ -163,6 +163,13 @@ try{
   await tab('Relíquias').click();
   await page.locator('.v11-relic-card').first().waitFor({timeout:15000});
   assert.equal(await page.locator('.v11-relic-card').count(),6);
+  await page.locator('[data-nexus-relic-optimizer="1512"]').click();
+  await page.locator('#nexus-relic-optimizer[open]').waitFor({timeout:15000});
+  await page.locator('.nexus-relic-opt-row').first().waitFor({timeout:15000});
+  assert.equal(await page.locator('.nexus-relic-opt-row').count(),6);
+  assert.match(await page.locator('.nexus-relic-opt-overview').innerText(),/Robin/);
+  await page.screenshot({path:'artifacts/relic-optimizer-'+device.width+'.png'});
+  await page.locator('#nexus-relic-optimizer [data-relic-opt-close]').click();
   assert.match(await page.locator('.v11-relic-card').nth(2).innerText(),/4,8/,'Uncertain +15 OCR value must remain unchanged until confirmed');
   assert.match(await page.locator('.v11-relic-card').first().innerText(),/Portador da Reconstrução do Mundo/);
   assert.match(await page.locator('.v11-relic-card').nth(5).innerText(),/Vonwacq Vivaz/);
