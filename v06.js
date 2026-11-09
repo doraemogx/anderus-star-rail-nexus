@@ -436,7 +436,7 @@
   window.v06QuickFilter=q=>{const e=document.getElementById('v06-quick-list');if(e)e.innerHTML=quickList(q)};
 
   function uploadPanel(){
-    return '<div class="v06-import"><div class="v06-import-drop"><label for="v06-file">⇧<strong>Escolher print de build</strong><small>PNG, JPG ou WEBP · até 12 MB</small></label><input id="v06-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="v06ReadPrint(this.files[0])"></div>'+
+    return '<div class="v06-import"><div class="v06-import-drop"><label for="v06-file">⇧<strong>Escolher print de build</strong><small>PNG, JPG ou WEBP · incluindo o cartão ilustrado 2000×2300</small></label><input id="v06-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="v06ReadPrint(this.files[0])"></div>'+
       '<div id="v06-import-preview" class="v06-import-preview"></div>'+
       '<p class="v06-source-note">O OCR analisa o cabeçalho, atributos totais, cone e as seis relíquias (conjunto, atributo principal e subatributos). Valores incertos ficam editáveis. Confirme personagem, E0–E6, S1–S5 e cada valor antes de salvar; o processamento acontece no navegador.</p></div>';
   }
@@ -462,6 +462,8 @@
         uploader.preview=c.toDataURL('image/webp',.62);
       }else uploader.preview=full;
       uploader.busy=false;await cropRelics();v06ShowImportReview();
+      // Auto-start extraction; retain editable review and explicit save confirmation.
+      Promise.resolve().then(()=>window.v06AutoRead()).catch(error=>console.warn('OCR automático:',error));
     };
     reader.readAsDataURL(file);
   };
@@ -502,7 +504,11 @@
     if(!img.naturalWidth)return;
     const ratio=img.naturalWidth/img.naturalHeight;
     if(ratio<0.8 || ratio>1.6){uploader.relImages=[];return;}
-    const regions=[
+    const illustrated=ratio>=.82&&ratio<=.95;
+    const regions=illustrated?[
+      [.369,.591,.195,.157],[.571,.591,.195,.157],[.773,.591,.195,.157],
+      [.369,.745,.195,.157],[.571,.745,.195,.157],[.773,.745,.195,.157]
+    ]:[
       [0.366,0.468,0.194,0.214],[0.57,0.468,0.194,0.214],[0.775,0.468,0.194,0.214],
       [0.366,0.683,0.194,0.214],[0.57,0.683,0.194,0.214],[0.775,0.683,0.194,0.214]
     ];
@@ -766,10 +772,34 @@
       const ocr=await getLang();
       bitmap=await createImageBitmap(uploader.file);
       const ratio=bitmap.width/bitmap.height;
-      if(ratio<1.02||ratio>1.18)throw Error('Este print não corresponde ao formato padronizado. Corrija manualmente.');
+      const illustrated=ratio>=.82&&ratio<=.95;
+      if(!illustrated&&(ratio<1.02||ratio>1.18))throw Error('Formato ainda não reconhecido. Use uma captura de build ilustrada ou o relatório padrão.');
       worker=await ocr.createWorker('eng',1,{logger:m=>{
         if(m.status==='recognizing text')say('Lendo o print: '+Math.round(m.progress*100)+'%');
       }});
+      if(illustrated){
+        const module=await import('./illustrated-showcase-import.js?v=1');
+        say('Reconhecendo o cartão ilustrado e comparando com o catálogo de personagens…');
+        const roster=[...CATALOG.map(c=>({id:c.id,name:c.name})),
+          ...Object.values(gameData.chars||{}).filter(c=>c?.name&&c.name!=='{NICKNAME}').map(c=>({id:c.id,name:c.name}))];
+        const report=await module.readIllustratedShowcase(bitmap,worker,{
+          characters:roster,coneNames:await getLightConeNames(),
+          progress:message=>say(message),includeRelics:true
+        });
+        await window.__nexusRelicInspectorPromise;
+        const applied=module.applyShowcaseToForm(report);
+        uploader.identifiedId=report.character?.id||'';
+        uploader.eidolon=report.eidolon;
+        uploader.superimposition=report.superimposition;
+        uploader.cone=report.cone;
+        uploader.ocrText=JSON.stringify({title:report.title,totals:report.totals,diagnostics:report.diagnostics});
+        const name=report.character?.name||'não identificado com segurança';
+        say('Cartão ilustrado: '+name+' · '+applied.main+'/8 atributos principais e '+applied.relicStats+'/30 atributos das relíquias preenchidos.'+
+            (report.eidolon!==null?' E'+report.eidolon+' sugerido.':' Confirme E0–E6.')+
+            (report.superimposition!==null?' Cone S'+report.superimposition+'.':' Confirme a sobreposição do cone.')+
+            ' Confira os campos antes de salvar.');
+        return;
+      }
       const mode=async num=>worker.setParameters({tessedit_pageseg_mode:String(num)});
       await mode(7);
       const title=(await worker.recognize(titleMask(bitmap))).data.text||'';
