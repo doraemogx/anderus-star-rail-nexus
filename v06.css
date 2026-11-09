@@ -352,3 +352,9 @@
 .v06-theme-restore button{min-height:44px}
 .v06-theme-grid button small{display:block;font-size:10px;color:#c8d4e7}
 @media(max-width:390px){.v06-theme-preview .v06-theme-compare{gap:7px}.v06-theme-preview .v06-theme-compare article{padding:7px}.v06-theme-preview .v06-theme-compare img{height:135px}.v06-theme-preview .v06-preview-colors i{width:23px;height:23px}}
+
+/* Six-piece review: optional original image per slot for unsupported formats. */
+.v06-relcard .v06-relic-photo-label{display:block;margin:14px 0 4px;padding:11px 12px;border:1px dashed #c7ac81;border-radius:10px;color:#ecd4b0;font-size:12px}
+.v06-relcard .v06-relic-photo-label input{display:block;max-width:100%;width:100%;margin-top:8px;min-height:44px;padding:8px;border:1px solid #627b96;background:#17233a;border-radius:8px;color:#fff}
+.v06-relcard .v06-relic-photo-label input:focus-visible{outline:3px solid #f4d9a1;outline-offset:2px}
+.v06-relic-summary-item .v06-relic-no-crop{display:grid;place-items:center;width:58px;height:70px;flex:0 0 58px;background:#212e48;color:#e9cba1;border:1px solid #7c7e86;border-radius:9px;font-size:24px}
