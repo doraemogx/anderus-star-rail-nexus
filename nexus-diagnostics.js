@@ -80,7 +80,9 @@ async function checkForUpdate(){
 function mount(){
  if(!document.querySelector('.app')||document.getElementById('nexus-diagnostics-button'))return;
  const btn=document.createElement('button');
- btn.id='nexus-diagnostics-button';btn.type='button';btn.textContent='Diagnóstico do Nexus';
+ btn.id='nexus-diagnostics-button';btn.type='button';
+ btn.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"></circle></svg>';
+ btn.setAttribute('aria-label','Diagnóstico do Nexus');btn.title='Diagnóstico do Nexus';
  btn.setAttribute('aria-haspopup','dialog');
  btn.addEventListener('click',()=>{
   let dialog=document.getElementById('nexus-diagnostics-dialog');
@@ -99,7 +101,7 @@ function mount(){
   }
   dialog.showModal();inspect();
  });
- document.body.appendChild(btn);
+ (document.querySelector('.mast-actions')||document.querySelector('.masthead')||document.body).appendChild(btn);
  checkForUpdate();
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkForUpdate();});
 }
