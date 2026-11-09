@@ -137,6 +137,20 @@ try{
   console.log('PASS Chromium',device.width,'px: six saved relics, E1S5 cone, Pom-Pom, persistence, layout, edit flow');
   await context.close();
  }
+ // Responsive regression across all mandatory product breakpoints.
+ const context=await browser.newContext({viewport:{width:360,height:800},deviceScaleFactor:1});
+ const page=await context.newPage();
+ await page.goto('http://127.0.0.1:8787/',{waitUntil:'domcontentloaded',timeout:45000});
+ await page.waitForFunction(()=>Boolean(document.querySelector('.app')&&document.getElementById('stage')),{timeout:20000});
+ for(const width of [320,360,390,430,768,1024,1440,1920]){
+  await page.setViewportSize({width,height:900});
+  await page.waitForTimeout(180);
+  const dims=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));
+  assert.ok(dims.scrollWidth<=width+4,'Unexpected horizontal overflow at '+width+': '+JSON.stringify(dims));
+  await page.screenshot({path:'artifacts/nexus-home-'+width+'.png'});
+ }
+ await context.close();
+ console.log('PASS responsive smoke at 320, 360, 390, 430, 768, 1024, 1440 and 1920 pixels');
 }catch(error){failures++;console.error('BROWSER_SMOKE_FAIL',error.stack||String(error))}
 finally{await browser.close();}
 if(failures)process.exit(1);
