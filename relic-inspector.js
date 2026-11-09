@@ -24,6 +24,7 @@ function setupRows(sets,images,previous=[]){
   const statOptions=STATS.map(v=>({value:v,label:v||'Escolha o atributo'}));
   const substats=Array.from({length:4},(_,k)=>'<div class="v06-relstat"><select id="v06-r'+i+'-k'+k+'">'+options(statOptions,existing.subs?.[k]?.stat)+'</select><input id="v06-r'+i+'-v'+k+'" type="number" inputmode="decimal" step="0.1" placeholder="Valor" value="'+safe(existing.subs?.[k]?.value??'')+'"></div>').join('');
   return '<details class="v06-relcard" '+(i===0?'open':'')+'><summary><img alt="" src="'+src+'"><span>'+SLOT[i]+'</span><small>Selecionar conjunto e atributos</small></summary>'+
+    '<div class="v07-relmatch" id="v06-relmatch-'+i+'"><small>O comparador visual aparecerá após reconhecer o print.</small></div>'+
     '<label>Conjunto equipado<select id="v06-r'+i+'-set">'+options([{value:'',label:'Não identificado — escolha o conjunto'},...setOptions],existing.setId)+'</select></label>'+
     '<div class="v06-relstat"><select id="v06-r'+i+'-main">'+options(statOptions,existing.main?.stat)+'</select><input id="v06-r'+i+'-mainval" type="number" step=".1" inputmode="decimal" placeholder="Principal" value="'+safe(existing.main?.value??'')+'"></div>'+
     '<p class="v06-relnote">Quatro subatributos · confira pelo print</p>'+substats+
@@ -72,9 +73,23 @@ export async function renderRelicSummary(records,images){
    return ['<div class="v06-set-bonus"><b>'+safe(set?.name||'Conjunto '+id)+' · '+unlocked+' peças</b>'+
      effects.filter(Boolean).map(v=>'<p>'+safe(v)+'</p>').join('')+'</div>'];
  }).join('');
+ const pieceRecommendations=(records||[]).map((r,i)=>{
+    const problems=[];
+    if(r.level<15)problems.push('peça no nível +'+r.level+' (máximo usual +15)');
+    if(!r.setId)problems.push('conjunto sem identificação');
+    if(!r.main?.stat||r.main.value===null)problems.push('atributo principal não confirmado');
+    if((r.subs||[]).filter(s=>s.stat&&s.value!==null).length<4)problems.push('secundários incompletos');
+    const positive=['Chance de CRIT','Dano CRIT','VEL'].filter(stat=>(r.subs||[]).some(s=>s.stat===stat&&s.value!==null));
+    return {slot:SLOT[i],problems,positive};
+  });
+  const advice=pieceRecommendations.map(r=>'<article class="v07-piece-advice"><b>'+safe(r.slot)+'</b>'+
+    (r.problems.length?'<span>Revisar: '+safe(r.problems.join(' · '))+'</span>':
+       '<span>Dados completos; pronto para comparação com a build recomendada.</span>')+
+    (r.positive.length?'<small>Subatributos ofensivos/de VEL presentes: '+safe(r.positive.join(' · '))+'</small>':'')+
+    '</article>').join('');
  const complete=(records||[]).length===6&&records.every(r=>!!r.setId&&!!r.main?.stat&&r.main.value!==null);
  return '<section class="v06-relic-summary"><h3>Equipamento detalhado</h3><p>'+(
  complete?'Seis conjuntos e atributos principais identificados e registrados.':'Análise de conjuntos pendente: confirme nomes e atributos de todas as peças.'
- )+'</p>'+rows+(bonuses?'<h4>Bônus de conjunto ativados</h4>'+bonuses:'')+
+ )+'</p>'+rows+'<h4>O que conferir em cada peça</h4><div class="v07-relic-advice">'+advice+'</div>'+(bonuses?'<h4>Bônus de conjunto ativados</h4>'+bonuses:'')+
  (complete?'<p class="v06-rel-note">Pom-Pom: confira as combinações, os atributos principais e as rolagens secundárias em relação ao kit deste personagem. Evite trocar peças apenas por notas genéricas.</p>':'')+'</section>';
 }
