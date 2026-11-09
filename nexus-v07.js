@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Kit Lab 2.0: isolated data-driven character dossier expansion.
+ if(!document.getElementById('nexus-kit-css')){
+  const css=document.createElement('link');css.id='nexus-kit-css';css.rel='stylesheet';css.href='./nexus-kit-lab.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-kit-js')){
+  const script=document.createElement('script');script.id='nexus-kit-js';script.src='./nexus-kit-lab.js';script.defer=true;document.head.appendChild(script);
+ }
  // Load independent diagnostics without mutating account state.
  if(!document.getElementById('nexus-diagnostics-css')){
   const css=document.createElement('link');css.id='nexus-diagnostics-css';css.rel='stylesheet';css.href='./nexus-diagnostics.css';document.head.appendChild(css);
