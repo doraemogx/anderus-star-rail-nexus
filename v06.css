@@ -264,3 +264,17 @@
 @keyframes v06-parallax{from{transform:scale(1.02) translateY(0)}to{transform:scale(1.065) translateY(-4px)}}
 @keyframes v06-twinkle{from{opacity:.27}to{opacity:.59}}
 @media(prefers-reduced-motion:reduce){.v06-app *, .v06-app *:before,.v06-app *:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* 4.6 Memory of Chaos boss identification and in-account element matching */
+.v06-boss-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:8px 0 19px}
+.v06-boss-card{display:flex;flex-direction:column;align-items:stretch;text-align:left;min-width:0;background:linear-gradient(140deg,#182843ef,#12172dde);border:1px solid color-mix(in srgb,var(--v-color) 43%,transparent);border-radius:12px;overflow:hidden;padding:0;transition:transform .2s,box-shadow .2s}
+.v06-boss-card:active{transform:scale(.98)}.v06-boss-card:hover{box-shadow:0 0 18px color-mix(in srgb,var(--v-color) 18%,transparent)}
+.v06-boss-art{height:140px;background:radial-gradient(circle at 50% 65%,#536e9895,transparent 66%),#0a1827;overflow:hidden}
+.v06-boss-art img{height:100%;width:100%;object-fit:contain;object-position:center;filter:drop-shadow(0 7px 12px #0007)}
+.v06-boss-card>div:last-child{display:flex;flex-direction:column;gap:6px;padding:10px}
+.v06-boss-card small{font:bold 9px 'DM Sans',sans-serif;letter-spacing:1.4px;color:var(--v-color)}
+.v06-boss-card strong{font:600 16px/1.1 var(--v-title-font);color:#f5f1f0}
+.v06-boss-card span{font:500 10px/1.45 'DM Sans',sans-serif;color:#d4e4e8}
+.v06-boss-card em{font:normal 10px/1.4 'DM Sans',sans-serif;color:#a7c9d5}
+.v06-diary .v06-diary-intro{margin-bottom:14px}
+.v06-diary .v06-accountfilter{margin:17px 0}
