@@ -90,11 +90,12 @@ function mount(){
    dialog.innerHTML='<div class="nexus-diag-head"><h2>Diagnóstico do Nexus</h2><button type="button" id="nexus-diag-close" aria-label="Fechar diagnóstico">×</button></div>'+
      '<p>Verifique a versão publicada, o funcionamento offline e os dados locais. Nenhuma informação da sua conta é enviada.</p>'+
      '<div id="nexus-diag-report" aria-live="polite"></div>'+
-     '<div class="nexus-diag-actions"><button type="button" id="nexus-diag-refresh">Verificar novamente</button><button type="button" id="nexus-diag-copy">Copiar relatório</button></div>'+
+     '<div class="nexus-diag-actions"><button type="button" id="nexus-diag-refresh">Verificar novamente</button><button type="button" id="nexus-diag-copy">Copiar relatório</button><button type="button" id="nexus-diag-backup">Transferir conta</button></div>'+
      '<p class="nexus-diag-note">Importante: atualizar o aplicativo não sincroniza personagens entre celular e desktop.</p>';
    document.body.appendChild(dialog);
    dialog.querySelector('#nexus-diag-close').onclick=()=>dialog.close();
    dialog.querySelector('#nexus-diag-refresh').onclick=inspect;
+   dialog.querySelector('#nexus-diag-backup').onclick=()=>window.NexusBackup?.open();
   }
   dialog.showModal();inspect();
  });
