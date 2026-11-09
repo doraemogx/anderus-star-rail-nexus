@@ -44,7 +44,9 @@ export function normalizeRelics(details,legacy,sets={}){
    const mainStat=String(detailed?d.main?.stat||old.main?.stat||old.main||'':old.main?.stat||old.main||'');
    const mainValue=numeric(detailed?d.main?.value??old.main?.value??old.value:old.main?.value??old.value);
    const level=numeric(detailed?d.level??old.level:old.level);
-   const corrected=level===15&&Object.hasOwn(MAIN15,mainStat)?MAIN15[mainStat]:mainValue;
+   // Preserve observed OCR and manually entered values. Reference level-15 values
+   // are not a substitute for evidence; missing fields remain explicitly null.
+   const corrected=mainValue;
    const subs=(detailed&&Array.isArray(d.subs)?d.subs:legacySubs(old.subs)).slice(0,4)
       .map(x=>({stat:String(x?.stat||''),value:numeric(x?.value)}));
    while(subs.length<4)subs.push({stat:'',value:null});
