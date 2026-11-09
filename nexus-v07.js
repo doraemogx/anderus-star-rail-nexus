@@ -155,6 +155,14 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Shared materials budget: one inventory for ascension and all trace goals.
+ if(!document.getElementById('nexus-material-budget-css')){
+  const css=document.createElement('link');css.id='nexus-material-budget-css';css.rel='stylesheet';css.href='./nexus-material-budget.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-material-budget-js')){
+  const js=document.createElement('script');js.id='nexus-material-budget-js';js.src='./nexus-material-budget.js';js.defer=true;document.head.appendChild(js);
+ }
+
  // Local factual inbox: beta revision and catalogue diff alerts, never fake push.
  if(!document.getElementById('nexus-notifications-css')){
   const style=document.createElement('link');style.id='nexus-notifications-css';style.rel='stylesheet';style.href='./nexus-notifications.css';document.head.appendChild(style);
