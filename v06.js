@@ -1038,7 +1038,17 @@
     if(!uploader.file)return say('Selecione um print.');
     let worker=null,bitmap=null;
     try{
-      say('Lendo o modelo fixo do registro de batalha...');
+      bitmap=await createImageBitmap(uploader.file);
+      const ratio=bitmap.width/bitmap.height;
+      const illustrated=ratio>=.82&&ratio<=.95&&bitmap.width>=700&&bitmap.height>=900;
+      const standard=ratio>=1.02&&ratio<=1.18&&bitmap.width>=700&&bitmap.height>=600;
+      if(!illustrated&&!standard){
+        say('Formato ainda não suportado pelo reconhecimento automático ('+bitmap.width+' × '+bitmap.height+
+          '). Você pode cadastrar o personagem e preencher as seis relíquias manualmente. Nenhum atributo foi alterado.');
+        return;
+      }
+      say('Layout identificado: '+(illustrated?'cartão ilustrado':'registro de batalha')+
+          ' · '+bitmap.width+' × '+bitmap.height+'. Lendo somente os campos visíveis…');
       // Avoid carrying previously OCR-filled fields over into a new screenshot.
       for(const key of ['pv','atk','def','spd','crit','cdmg','break','energy']){
         const el=document.getElementById('v06-'+key);
@@ -1050,10 +1060,6 @@
         if(el)el.value='';
       }
       const ocr=await getLang();
-      bitmap=await createImageBitmap(uploader.file);
-      const ratio=bitmap.width/bitmap.height;
-      const illustrated=ratio>=.82&&ratio<=.95;
-      if(!illustrated&&(ratio<1.02||ratio>1.18))throw Error('Formato ainda não reconhecido. Use uma captura de build ilustrada ou o relatório padrão.');
       worker=await ocr.createWorker('eng',1,{logger:m=>{
         if(m.status==='recognizing text')say('Lendo o print: '+Math.round(m.progress*100)+'%');
       }});
