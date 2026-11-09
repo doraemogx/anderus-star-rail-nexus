@@ -1,0 +1,32 @@
+/* Nexus 2.0 — equipment ledger, not a universal point-scoring dashboard. */
+#nexus-relic-optimizer{width:min(1050px,calc(100vw - 20px));max-width:1050px;max-height:92dvh;overflow:auto;padding:0;background:#101d2d;color:#f7ede0;border:1px solid #cdb28c;border-radius:16px;box-shadow:0 25px 80px #000c}
+#nexus-relic-optimizer::backdrop{background:#01050ee0}
+#nexus-relic-optimizer .nexus-relic-opt-body{padding:clamp(16px,3vw,30px);font:14px/1.65 system-ui}
+#nexus-relic-optimizer header{display:flex;justify-content:space-between;gap:14px;align-items:start}
+#nexus-relic-optimizer header span{font-size:10px;color:#e7c899;letter-spacing:.17em;font-weight:800}
+#nexus-relic-optimizer h2{font:500 clamp(29px,5vw,44px) Georgia,serif;margin:4px 0 7px}
+#nexus-relic-optimizer header p{margin:0 0 17px;color:#cad6e3}
+#nexus-relic-optimizer button{min-height:44px;padding:10px 14px;background:#2b3b55;border:1px solid #baa584;color:#f7e5c7;border-radius:9px;cursor:pointer;font:700 12px system-ui}
+#nexus-relic-optimizer [data-relic-opt-close]{width:44px;height:44px;font-size:24px;padding:0}
+#nexus-relic-optimizer button:focus-visible,#nexus-relic-optimizer summary:focus-visible{outline:3px solid #edcd92;outline-offset:3px}
+#nexus-relic-optimizer .nexus-relic-opt-overview{padding:17px;border-left:3px solid #efcc95;background:#1e2e43;margin:0 0 18px}
+#nexus-relic-optimizer .nexus-relic-opt-overview strong{font:500 26px Georgia,serif;display:block}
+#nexus-relic-optimizer .nexus-relic-opt-overview span{display:block;color:#f1d2a0}
+#nexus-relic-optimizer .nexus-relic-opt-overview p{color:#c6d4e2;font-size:12px;margin:7px 0 0}
+#nexus-relic-optimizer .nexus-relic-opt-list{display:grid;gap:11px}
+#nexus-relic-optimizer .nexus-relic-opt-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;align-items:center;gap:15px;border-bottom:1px solid #64738a;padding:13px 3px}
+#nexus-relic-optimizer .nexus-relic-opt-title{display:flex;align-items:center;gap:12px;min-width:0}
+#nexus-relic-optimizer .nexus-relic-opt-title img,#nexus-relic-optimizer .nexus-relic-opt-title>span{width:69px;height:74px;flex:0 0 69px;object-fit:contain;background:#172137;border:1px solid #59657a;border-radius:9px}
+#nexus-relic-optimizer .nexus-relic-opt-title>span{display:grid;place-items:center;font-size:34px;color:#e5c49f}
+#nexus-relic-optimizer .nexus-relic-opt-title small{color:#efcdad;font-size:10px}
+#nexus-relic-optimizer .nexus-relic-opt-title h3{font:500 20px/1.2 Georgia,serif;margin:4px 0 6px;overflow-wrap:anywhere}
+#nexus-relic-optimizer .nexus-relic-opt-title p{font-size:12px;margin:0;color:#d8e1ec;overflow-wrap:anywhere}
+#nexus-relic-optimizer .nexus-relic-opt-signal strong{color:#f2d5a1;font-size:13px}
+#nexus-relic-optimizer .nexus-relic-opt-signal p{font-size:12px;color:#cdd7e7}
+#nexus-relic-optimizer .nexus-relic-opt-signal ul{margin:5px 0 8px;padding-left:20px;font-size:12px;color:#e0e5ec}
+#nexus-relic-optimizer .nexus-relic-opt-signal .nexus-relic-opt-warning{color:#ffc99e}
+#nexus-relic-optimizer .nexus-relic-opt-signal .nexus-relic-opt-complete{color:#a7e4cb}
+#nexus-relic-optimizer details summary{cursor:pointer;min-height:40px;display:flex;align-items:center;color:#efd19c;font-size:12px}
+#nexus-relic-optimizer footer{font-size:12px;color:#b6c4d7;border-top:1px solid #5a6a82;padding-top:16px;margin-top:24px}
+@media(max-width:780px){#nexus-relic-optimizer .nexus-relic-opt-row{grid-template-columns:1fr}#nexus-relic-optimizer .nexus-relic-opt-row>button{justify-self:start}}
+@media(max-width:390px){#nexus-relic-optimizer .nexus-relic-opt-title img,#nexus-relic-optimizer .nexus-relic-opt-title>span{width:56px;height:62px;flex-basis:56px}}
