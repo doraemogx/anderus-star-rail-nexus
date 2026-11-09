@@ -10,3 +10,12 @@
 #nexus-diag-report dt{color:#e4d2a6}#nexus-diag-report dd{margin:0;overflow-wrap:anywhere}
 .nexus-diag-actions{justify-content:flex-start;flex-wrap:wrap}
 @media(prefers-reduced-motion:reduce){#nexus-diagnostics-button{transition:none}}
+
+#nexus-update-banner{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:1100;max-width:min(720px,calc(100vw - 24px));width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;background:#1d2b42;color:#f4e9da;border:1px solid #e6c18f;border-radius:14px;box-shadow:0 12px 40px #000a;padding:16px;font-family:system-ui,sans-serif}
+#nexus-update-banner span{display:flex;flex-direction:column;flex:1;min-width:155px;gap:4px}
+#nexus-update-banner strong{font-size:14px}
+#nexus-update-banner small{font-size:12px;color:#c3cbdf}
+#nexus-update-banner button{min-height:44px;border:1px solid #c8ac85;background:#f0cd98;border-radius:9px;padding:8px 15px;font:700 12px system-ui;color:#1e2634;cursor:pointer}
+#nexus-update-banner [data-nexus-update-later]{width:44px;padding:7px;background:transparent;color:#f0d4b1;font-size:24px}
+#nexus-update-banner button:focus-visible{outline:3px solid #f3ddbb;outline-offset:3px}
+@media(max-width:430px){#nexus-update-banner{gap:9px}#nexus-update-banner span{flex-basis:100%}}
