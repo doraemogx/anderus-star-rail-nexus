@@ -421,7 +421,7 @@
     for(const word of result?.data?.words||[]){
       const box=word.bbox||{},yy=Number(box.y0);
       const i=Math.floor((yy||0)/rowH);
-      if(word.text && Number.isFinite(yy)&&yy>0)add(i,word.text);
+      if(word.text && Number.isFinite(yy)&&yy>0 && !Object.prototype.hasOwnProperty.call(out,rows[i]?.[1]))add(i,word.text);
     }
     return out;
   }
@@ -527,7 +527,7 @@
       const cone=(await worker.recognize(imageRegion(bitmap,.095,.652,.267,.085,2.6))).data.text||'';
       const strip=totalStatStrip(bitmap);
       const parsed=await worker.recognize(strip.canvas);
-      const totals=parseTotalStatLines(parsed,strip.rows);
+      const totals=await recoverMissingTotalStats(worker,bitmap,strip.rows,parseTotalStatLines(parsed,strip.rows));
       uploader.ocrText=['Título: '+title,'Dano: '+damage,'Cone: '+cone,'Atributos:\n'+(parsed.data.text||'')].join('\n');
       const identifiedId=getIdFromTitle(title,damage);
       if(identifiedId)ensureTrailblazer(identifiedId);
