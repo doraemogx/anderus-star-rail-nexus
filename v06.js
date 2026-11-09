@@ -193,7 +193,7 @@
       ['image:'+STR+'icon/path/Harmony.png','Build Lab','Relíquias, cones e ajustes','v06RouteBuild()','build'],
       ['image:'+STR+'icon/path/Destruction.png','Endgame','MOC, PF, AS e Arbitragem',"route('endgame')",'endgame'],
       ['image:'+STR+'icon/path/Abundance.png','Farm Planner','Materiais, rastros e ascensão',"route('farm')",'farm'],
-      ['image:'+STR+'icon/path/Elation.png','Warp Advisor','Banners e prioridades',"route('radar')",'warp'],
+      ['image:'+STR+'icon/path/Elation.png','Warp Advisor','Pity, jades e garantias',"window.NexusWarpAdvisor?.open()",'warp'],
       ['image:'+STR+'icon/path/Nihility.png','Beta & Kits','Novidades e multiplicadores',"v06OpenFuture()",'beta']
     ];
     return '<div class="v06-home">'+
@@ -276,6 +276,16 @@
 
   // Persistent Team Lab bridge: all teams travel with the Nexus JSON backup.
   // Farm planner state shares the Nexus backup and does not invent item stocks.
+  // The planner is an estimate and does not mutate real Warp history.
+  window.NexusWarpBridge={
+    read:()=>JSON.parse(JSON.stringify(state.v06WarpPlan||{})),
+    save:plan=>{
+      state.v06WarpPlan=JSON.parse(JSON.stringify(plan));
+      save();
+      return true;
+    }
+  };
+
   window.NexusFarmBridge={
     roster:()=>Object.entries(state.characters||{}).filter(([id,c])=>c&&gameData.chars?.[id])
       .map(([id,c])=>({id,name:lookup(id)?.name||gameData.chars[id].name,level:Number(c.level||1)})),
