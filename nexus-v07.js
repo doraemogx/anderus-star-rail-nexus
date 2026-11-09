@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Relic Optimizer: source-backed, not a universal score.
+ if(!document.getElementById('nexus-relic-opt-css')){
+  const css=document.createElement('link');css.id='nexus-relic-opt-css';css.rel='stylesheet';css.href='./nexus-relic-optimizer.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-relic-opt-js')){
+  const js=document.createElement('script');js.id='nexus-relic-opt-js';js.src='./nexus-relic-optimizer.js';js.defer=true;document.head.appendChild(js);
+ }
  // Trace Planner uses shared account material inventory and optional levels.
  if(!document.getElementById('nexus-trace-plan-css')){
   const link=document.createElement('link');link.id='nexus-trace-plan-css';link.rel='stylesheet';link.href='./nexus-trace-planner.css';document.head.appendChild(link);
