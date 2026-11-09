@@ -118,6 +118,15 @@ try{
   const ovButtons=await page.locator('.v06-profile-controls button').count();
   assert.equal(ovButtons,2,'Overview must have one Edit and one Import control');
   const tab=key=>page.locator('.v06-tabs button').filter({hasText:key}).first();
+  await tab('Ascensão').click();
+  await page.locator('[data-nexus-traces-for="1512"]').click();
+  await page.locator('#nexus-traces-dialog[open]').waitFor({timeout:15000});
+  await page.locator('[data-traces-node="1512001"][data-traces-field="current"]').selectOption('0');
+  await page.locator('.nexus-traces-materials .nexus-trace-material').first().waitFor({timeout:15000});
+  const tracePlan=await page.evaluate(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}').v06TracePlans?.['1512']?.['1512001']);
+  assert.equal(tracePlan?.current,0,'Trace progress must persist');
+  await page.screenshot({path:'artifacts/trace-planner-'+device.width+'.png'});
+  await page.locator('#nexus-traces-dialog [data-traces-close]').click();
   await tab('Equipes').click();
   await page.locator('[data-nexus-team-lab]').click();
   await page.locator('#nexus-team-dialog[open]').waitFor({timeout:15000});
