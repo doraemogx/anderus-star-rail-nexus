@@ -1099,8 +1099,20 @@
     if(uploader.relImages.length)state.v06Relics[id]=uploader.relImages;
     const relicData=window.__nexusRelicInspector?.collectRelics?.();
     if(relicData){
-      state.v06RelicDetails ||= {};
-      state.v06RelicDetails[id]=relicData;
+      state.v06RelicDetails||={};
+      // One canonical record for all import paths, with legacy adapter for
+      // older character screens and manual edits. Do not erase prior values.
+      const unified=nexusAccount?nexusAccount.normalizeRelics(
+        relicData,prior.relics||{},nexusAccountCatalog?.relicSets||{}):relicData;
+      state.v06RelicDetails[id]=unified;
+      if(nexusAccount)prior.relics=nexusAccount.toLegacy(
+        unified,nexusAccountCatalog?.relicSets||{},prior.relics||{});
+      else prior.relics=Object.fromEntries(relicData.map((r,i)=>[i,{
+        set:r.setName||r.setId||'',setId:r.setId||'',
+        main:r.main?.stat||'',value:r.main?.value??'',
+        subs:(r.subs||[]).filter(x=>x.stat).map(x=>x.stat+' '+x.value).join('\n'),
+        level:r.level
+      }]));
     }
     state.profile=id;save();closeModal();tab='overview';route('profile');showToast('Print e personagem registrados na sua conta');
   };
