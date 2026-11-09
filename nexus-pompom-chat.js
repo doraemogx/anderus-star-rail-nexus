@@ -55,7 +55,7 @@ function answer(question,characterId,account,g,engine){
     'O pior cenário depende de quantas cópias você pretende obter. O modelo não inventa taxas de soft pity.'],
    [{label:'Abrir Warp Advisor',action:'warp'}],'Plano manual de banners salvo no navegador');
  }
- if(/farm|material|rastro|credito|recurso|cultiv|calice/.test(q)){
+ if(/farm|materia(?:l|is)|rastro|credito|recurso|cultiv|calice/.test(q)){
   const plans=window.NexusFarmBridge?.allPlans?.()||{},invent=window.NexusFarmBridge?.inventory?.()||{};
   const number=Object.keys(plans.ascension||{}).length+Object.keys(plans.traces||{}).length;
   return reply('Recursos da sua conta',
