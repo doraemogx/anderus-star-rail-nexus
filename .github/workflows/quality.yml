@@ -50,6 +50,8 @@ jobs:
         run: node scripts/check-trace-plan.mjs
       - name: Relic Optimizer — escalamentos verificáveis
         run: node scripts/check-relic-optimizer.mjs
+      - name: Notificações reais de beta e catálogo
+        run: node scripts/check-notifications.mjs
       - name: Kit Lab 2.0 — dados, interpolação e imagens
         run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
