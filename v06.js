@@ -93,6 +93,23 @@
   }
   let nexusStorageWarning=false;
   function verifiedAccountSave(id){
+    // Capture the previously persisted build before replacing it. Snapshots
+    // omit screenshot blobs and are capped, protecting browser storage space.
+    try{
+      const persisted=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'null');
+      const previousBuild=persisted?.characters?.[id]||null;
+      const previousRelics=persisted?.v06RelicDetails?.[id]||null;
+      const latestBuild=state.characters?.[id]||null;
+      const latestRelics=state.v06RelicDetails?.[id]||null;
+      if(previousBuild && latestBuild && JSON.stringify({previousBuild,previousRelics})!==
+        JSON.stringify({previousBuild:latestBuild,previousRelics:latestRelics})){
+        state.v06BuildHistory||={};
+        const entries=state.v06BuildHistory[id]||[];
+        entries.unshift({recordedAt:new Date().toISOString(),build:JSON.parse(JSON.stringify(previousBuild)),
+          relics:previousRelics?JSON.parse(JSON.stringify(previousRelics)):null});
+        state.v06BuildHistory[id]=entries.slice(0,20);
+      }
+    }catch(error){console.warn('Não foi possível registrar o histórico anterior:',error);}
     save();
     try{
       const snapshot=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'null');
@@ -222,11 +239,42 @@
   window.v06RefreshCards=()=>{const el=document.getElementById('v06-library-grid');if(el)el.innerHTML=v06CardList()};
   library=lib06;
 
+  function profileHistory(id,b){
+    const entries=state.v06BuildHistory?.[id]||[];
+    const columns=['pv','atk','def','spd','crit','cdmg','e','s'];
+    const names={pv:'PV',atk:'ATQ',def:'DEF',spd:'VEL',crit:'Chance CRIT',cdmg:'Dano CRIT',e:'Eidolons',s:'Sobreposição'};
+    const current=b||{};
+    const records=entries.map((snapshot,i)=>{
+      const old=snapshot.build||{},date=new Date(snapshot.recordedAt);
+      const stamp=Number.isFinite(date.getTime())?date.toLocaleString('pt-BR'):'Data não informada';
+      const diffs=columns.filter(key=>old[key]!==current[key]).map(key=>
+        '<li><strong>'+safe(names[key])+'</strong><span>'+safe(old[key]??'—')+' → '+safe(current[key]??'—')+'</span></li>').join('');
+      const oldRelics=(snapshot.relics||[]).filter(r=>r?.setId||r?.main?.stat).length;
+      return '<article class="v11-history-entry"><header><span>Versão anterior · '+safe(stamp)+'</span><button type="button" data-restore-build="'+i+'" data-character="'+safe(id)+'">Restaurar</button></header>'+
+        '<p>Relíquias registradas anteriormente: '+oldRelics+'/6 · Cone: '+safe(old.cone||'não informado')+'</p>'+
+        '<ul>'+(diffs||'<li>Sem diferenças nos atributos gerais; equipamentos ou outros campos podem ter mudado.</li>')+'</ul></article>';
+    }).join('');
+    return '<section class="v11-history"><span class="v06-kicker">BUILD HISTORY · MINHA CONTA</span><h2>Histórico de builds</h2>'+
+      '<p>As últimas 20 alterações importadas ou editadas são preservadas neste navegador, sem incluir imagens grandes. A restauração não modifica a conta do jogo.</p>'+
+      (entries.length?records:'<p>Nenhuma versão anterior registrada. As próximas alterações da build ficarão disponíveis aqui.</p>')+'</section>';
+  }
+  window.v11RestoreBuildHistory=function(id,index){
+    const entry=state.v06BuildHistory?.[id]?.[index];if(!entry)return;
+    if(!window.confirm('Restaurar esta build anterior? A build atual será guardada no histórico antes da troca.'))return;
+    state.characters[id]=JSON.parse(JSON.stringify(entry.build||{}));
+    state.v06RelicDetails||={};
+    if(entry.relics)state.v06RelicDetails[id]=JSON.parse(JSON.stringify(entry.relics));
+    else delete state.v06RelicDetails[id];
+    const persisted=verifiedAccountSave(id);
+    tab='history';refresh();
+    showToast(persisted?'Build anterior restaurada; versão substituída preservada no histórico.':'Não foi possível confirmar a gravação. Exporte um backup!');
+  };
+
   function profile06(){
     const id=state.profile||'1503', c=lookup(id),b=state.characters[id],look=selectLook(id),pic=state.v06Art?.[id]==='preview'?imgSrc(id,'preview'):look.art;
     const active=tab||'overview';
-    const switches=[['overview','Atributos'],['kit','Kit e rastros'],['kitlab','Kit Lab 2.0'],['eidolons','Eidolons'],['cone','Cone de Luz'],['relics','Relíquias'],['teams','Equipes']];
-    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='kitlab'?'<section class="v11-kitlab-panel"><span class="v06-kicker">KIT LAB · FONTE PT-BR</span><h2>Habilidades completas e explicação do Pom-Pom</h2><p>Consulte multiplicadores por nível, rastros e Eidolons E1–E6. Dados desconhecidos não são inventados.</p><button type="button" class="v06-primary" data-nexus-kit-for="'+safe(id)+'">Abrir Kit Lab completo</button></section>':active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):profileTeams(id,b);
+    const switches=[['overview','Atributos'],['kit','Kit e rastros'],['kitlab','Kit Lab 2.0'],['eidolons','Eidolons'],['cone','Cone de Luz'],['relics','Relíquias'],['teams','Equipes'],['history','Histórico']];
+    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='kitlab'?'<section class="v11-kitlab-panel"><span class="v06-kicker">KIT LAB · FONTE PT-BR</span><h2>Habilidades completas e explicação do Pom-Pom</h2><p>Consulte multiplicadores por nível, rastros e Eidolons E1–E6. Dados desconhecidos não são inventados.</p><button type="button" class="v06-primary" data-nexus-kit-for="'+safe(id)+'">Abrir Kit Lab completo</button></section>':active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):active==='history'?profileHistory(id,b):profileTeams(id,b);
     const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
     return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
     '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
