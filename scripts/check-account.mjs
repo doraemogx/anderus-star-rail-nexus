@@ -69,7 +69,7 @@ assert.ok(read('v06.js').includes('skills:(nexusAccountCatalog.chars?.[id]?.skil
 const review=a.examineRelics(a.normalizeRelics([{setId:'127',main:{stat:'PV',value:705},subs:[{stat:'Taxa de Acerto de Efeito',value:211.6}]}]));
 assert.ok(review.flags.some(x=>x.includes('211,6')),'Flag impossible old OCR substat');
 const v06=read('v06.js');
-for(const needed of ["accountRecords(id)","migrateAccountRelics()","state.v06RelicDetails[id]=corrected","state.characters[id].relics=nexusAccount.toLegacy","state.v06RelicDetails[id]=unified","function profileCone(id,b)","window.v11EditRelic=","window.v11SaveRelic=","renderAccountCoach(id)","function contextualTip(id)","'./nexus-account.css?v=1'"]){
+for(const needed of ["accountRecords(id)","migrateAccountRelics()","state.v06RelicDetails[id]=corrected","state.characters[id].relics=nexusAccount.toLegacy","state.v06RelicDetails[id]=unified","function profileCone(id,b)","window.v11EditRelic=","window.v11SaveRelic=","renderAccountCoach(id)","function contextualTip(id)","'./nexus-account.css?v=2'"]){
  assert.ok(v06.includes(needed),'Missing UI/storage integration: '+needed);
 }
 assert.ok(v06.includes("['cone','Cone de Luz']"),'Cone tab missing');
