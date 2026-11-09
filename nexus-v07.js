@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Team Lab 2.0: accountable four-character team builder.
+ if(!document.getElementById('nexus-team-css')){
+  const link=document.createElement('link');link.id='nexus-team-css';link.rel='stylesheet';link.href='./nexus-team-lab.css';document.head.appendChild(link);
+ }
+ if(!document.getElementById('nexus-team-js')){
+  const script=document.createElement('script');script.id='nexus-team-js';script.src='./nexus-team-lab.js';script.defer=true;document.head.appendChild(script);
+ }
  // Kit Lab 2.0: isolated data-driven character dossier expansion.
  if(!document.getElementById('nexus-kit-css')){
   const css=document.createElement('link');css.id='nexus-kit-css';css.rel='stylesheet';css.href='./nexus-kit-lab.css';document.head.appendChild(css);
