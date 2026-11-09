@@ -23,10 +23,10 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           s=Path('index.html').read_text(encoding='utf-8')
-          for term in ('function profileOverview(', 'profileOverview=function(', 'function showEido(', 'showEido=function('):
+          for term in ('function eidoButton(', 'function eidoVisual(', 'function rankInfo('):
               at=s.find(term)
               if at>=0:
                   print('BASE_FRAGMENT',term,'OFFSET',at)
-                  print(s[at:at+4500])
+                  print(s[at:at+2200])
           PY
 
