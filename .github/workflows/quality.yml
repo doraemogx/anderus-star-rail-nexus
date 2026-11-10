@@ -29,6 +29,8 @@ jobs:
           npm install --no-audit --no-fund
           npx wrangler deploy --dry-run --outdir /tmp/nexus-worker-build
         working-directory: worker
+      - name: Confirmar login Anderus no Cloudflare publicado
+        run: node scripts/check-login-deployment.mjs
       - name: Fase 2 — cadastro, login e recuperação segura
         run: |
           node --check worker/login-room.js
