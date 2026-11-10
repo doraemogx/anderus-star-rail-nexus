@@ -79,6 +79,8 @@ await desktop.screenshot({path:"artifacts/sync-desktop-joined.png"});
 await phone.evaluate(()=>window.NexusCloudSync.sync()).catch(()=>{});
 await phone.waitForFunction(()=>Object.keys(JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters||{}).length===3,
  null,{timeout:25000});
+await phone.waitForLoadState("domcontentloaded");
+await phone.waitForFunction(()=>!!window.NexusCloudSync?.sync,null,{timeout:15000});
 await phone.evaluate(()=>{
  const a=JSON.parse(localStorage.getItem("anderus_nexus_v03"));
  a.characters["1001"]={level:80,e:0};
@@ -87,7 +89,12 @@ await phone.evaluate(()=>{
 await phone.evaluate(()=>window.NexusCloudSync.sync()).catch(e=>console.log("PHONE_SYNC_RELOAD",e.message));
 console.log("SYNC_PHONE_STATE",await phone.evaluate(()=>({status:window.NexusCloudSync?.status(),
  characters:Object.keys(JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters)})));
+const deadline=Date.now()+22000;
+while(Date.now()<deadline && ![...remote.values()].some(x=>x.revision>=4))
+ await new Promise(resolve=>setTimeout(resolve,350));
 console.log("SYNC_REMOTE_REVISIONS",Array.from(remote.values()).map(x=>x.revision));
+assert.ok([...remote.values()].some(x=>x.revision>=4),"The additional character must reach cloud before device 2 pulls it");
+await desktop.waitForFunction(()=>!!window.NexusCloudSync?.sync,null,{timeout:15000});
 await desktop.evaluate(()=>window.NexusCloudSync.sync()).catch(e=>console.log("DESKTOP_SYNC_RELOAD",e.message));
 await desktop.waitForLoadState("domcontentloaded");
 await desktop.waitForFunction(()=>!!JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters["1001"],
