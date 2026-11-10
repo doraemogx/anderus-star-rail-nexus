@@ -1,0 +1,25 @@
+#nexus-backup-dialog{width:min(860px,calc(100vw - 20px));max-width:860px;max-height:90dvh;overflow:auto;border:1px solid #ddc08c;border-radius:18px;padding:0;background:#121f34;color:#f4ecdf;box-shadow:0 24px 80px #000b}
+#nexus-backup-dialog::backdrop{background:#01050ddd}
+#nexus-backup-dialog .nexus-backup-body{padding:clamp(16px,3vw,30px);font:14px/1.6 system-ui}
+#nexus-backup-dialog header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+#nexus-backup-dialog header span{font-size:10px;letter-spacing:2px;color:#e3c28d}
+#nexus-backup-dialog h2{font:500 clamp(27px,5vw,40px) Georgia,serif;margin:0 0 12px}
+#nexus-backup-dialog h3{margin:0 0 9px;font-size:18px}
+#nexus-backup-dialog button{min-height:44px;border:1px solid #d4b68d;background:#e6c896;color:#172236;border-radius:10px;padding:10px 15px;font:700 12px system-ui;cursor:pointer}
+#nexus-backup-dialog button:disabled{opacity:.5;cursor:not-allowed}
+#nexus-backup-dialog button:focus-visible,#nexus-backup-dialog input:focus-visible,#nexus-backup-dialog select:focus-visible{outline:3px solid #ffdb9a;outline-offset:3px}
+#nexus-backup-dialog [data-backup-close]{background:#2b344b;color:#fff;font-size:23px;width:44px}
+#nexus-backup-dialog .nexus-backup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+#nexus-backup-dialog .nexus-backup-grid section{min-width:0;border:1px solid #60718c;border-radius:14px;background:#1a2b44;padding:18px}
+#nexus-backup-dialog .nexus-backup-grid section p{color:#d2dce9}
+#nexus-backup-dialog label{display:block;color:#e5ccab;font-size:12px;margin-top:13px}
+#nexus-backup-dialog select,#nexus-backup-dialog input[type=file]{display:block;width:100%;margin-top:5px;max-width:100%;padding:10px;background:#172437;border:1px solid #687995;color:#fff;border-radius:8px}
+#nexus-backup-dialog .nexus-backup-preview{font-size:12px;overflow-wrap:anywhere}
+#nexus-backup-dialog .nexus-backup-warning{color:#efcb96;padding:13px;border-left:3px solid #cfa877;background:#392b35}
+@media(max-width:610px){#nexus-backup-dialog .nexus-backup-grid{grid-template-columns:1fr}}
+
+#nexus-backup-dialog .nexus-backup-undo{border:1px solid #8c7d78;border-radius:12px;padding:16px;margin:16px 0;background:#252d40}
+#nexus-backup-dialog .nexus-backup-undo h3{font-size:17px;color:#f4d9b5;margin:0 0 5px}
+#nexus-backup-dialog .nexus-backup-undo p{font-size:13px;line-height:1.6;color:#d2dce8;margin:0 0 12px}
+#nexus-backup-dialog [data-backup-undo]{background:#263a54;color:#f3e3cf;border-color:#c3aa8a}
+#nexus-backup-dialog [data-backup-undo]:disabled{opacity:.48}

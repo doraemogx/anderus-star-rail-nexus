@@ -6,6 +6,7 @@ const CORE=[
  './relic-inspector.js','./relic-auto.js','./illustrated-showcase-import.js',
  './illustrated-relic-matcher.js','./data/live-game.json',
  './data/relic-icon-signatures.json','./data/eidolon-art.json',
+ './nexus-backup.js','./nexus-backup.css','./nexus-diagnostics.js','./nexus-diagnostics.css',
  './manifest.webmanifest','./assets/pwa/icon-192.png'
 ];
 self.addEventListener('install',event=>{
