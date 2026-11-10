@@ -124,7 +124,7 @@ try{
   await tab('Relíquias').click();
   await page.locator('.v11-relic-card').first().waitFor({timeout:15000});
   assert.equal(await page.locator('.v11-relic-card').count(),6);
-  assert.match(await page.locator('.v11-relic-card').nth(2).innerText(),/64,8/,'Corrected +15 Crit body');
+  assert.match(await page.locator('.v11-relic-card').nth(2).innerText(),/4,8/,'Uncertain OCR must remain visible, never silently changed to theoretical +15');
   assert.match(await page.locator('.v11-relic-card').first().innerText(),/Portador da Reconstrução do Mundo/);
   assert.match(await page.locator('.v11-relic-card').nth(5).innerText(),/Vonwacq Vivaz/);
   const body=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));

@@ -5,6 +5,9 @@ on:
     paths:
       - 'v06.js'
       - 'nexus-account-engine.js'
+      - 'relic-inspector.js'
+      - 'illustrated-showcase-import.js'
+      - 'scripts/browser-scan-safety.mjs'
       - 'nexus-account.css'
       - 'scripts/browser-smoke.mjs'
       - 'scripts/browser-login-join.mjs'
@@ -42,6 +45,7 @@ jobs:
           node scripts/browser-offline.mjs
           node scripts/browser-sync.mjs
           node scripts/browser-login-join.mjs
+          node scripts/browser-scan-safety.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4

@@ -247,8 +247,9 @@ export async function autoDetectRelics(bitmap,worker,progress=()=>{}){
     const chosen=first.score<.235&&(second.score-first.score)>.025;
     const name=game.relicSets?.[first.setId]?.name||'Conjunto '+first.setId;
     const id='v06-r'+i+'-set',field=document.getElementById(id);
-    if(chosen&&field&&[...field.options].some(x=>x.value===first.setId)){
-      field.value=first.setId;report.sets++;
+    if(chosen&&field&&[...field.options].some(x=>x.value===first.setId)&&
+      (field.value===''||field.dataset.iconSuggestion==='1')){
+      field.value=first.setId;field.dataset.iconSuggestion='1';report.sets++;
       field.title='Sugestão automática por comparação da arte: '+name+'; confira o ícone.';
       field.style.borderColor='#6ec4ae';
     }else{
@@ -270,7 +271,10 @@ export async function autoDetectRelics(bitmap,worker,progress=()=>{}){
     const statId=j===0?'main':'k'+(j-1),valId=j===0?'mainval':'v'+(j-1);
     const field=document.getElementById('v06-r'+i+'-'+statId);
     const valField=document.getElementById('v06-r'+i+'-'+valId);
-    if(stat&&plausible(stat,value,j===0)&&field&&valField&&[...field.options].some(o=>o.value===stat)){
+    if(stat&&plausible(stat,value,j===0)&&field&&valField&&
+      (field.value===''||field.dataset.ocrSuggestion==='1')&&
+      (valField.value===''||valField.dataset.ocrSuggestion==='1')&&
+      [...field.options].some(o=>o.value===stat)){
       field.value=stat;valField.value=String(value);
       field.style.borderColor='#e7bd74';valField.style.borderColor='#e7bd74';
       field.title='Sugerido por OCR — confirme no print antes de salvar';
@@ -284,7 +288,7 @@ export async function autoDetectRelics(bitmap,worker,progress=()=>{}){
  }catch(e){report.uncertain.push('Leitura dos atributos secundários falhou: '+String(e.message||e));}
  document.querySelectorAll('.v07-rel-option').forEach(btn=>btn.addEventListener('click',()=>{
   const i=btn.dataset.ridx;const el=document.getElementById('v06-r'+i+'-set');
-  if(el){el.value=btn.dataset.setid;el.style.borderColor='#78c5ac';}
+  if(el){el.value=btn.dataset.setid;delete el.dataset.iconSuggestion;el.style.borderColor='#78c5ac';}
  }));
  report.status=report.sets+' / 6 conjuntos sugeridos; '+report.recognized+' / 30 atributos de relíquias preenchidos pelo OCR. '+report.uncertain.length+' campos requerem revisão.';
  return report;

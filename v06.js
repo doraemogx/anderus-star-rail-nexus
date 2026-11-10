@@ -229,10 +229,12 @@
     const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):profileTeams(id,b);
     const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
     return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
-    '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
+    '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?(b.level==null?'Nv. não informado':'Nv. '+b.level):'Não registrado')+'</span><span>E'+(b?.e==null?'?':fmt(b.e))+' · S'+(b?.s==null?'?':fmt(b.s))+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
     '<div class="v06-profile-controls"><button class="v06-primary" onclick="'+(b?'editBuild(\''+id+'\')':'addOwned(\''+id+'\')')+'">'+(b?'Editar minha build':'＋ Adicionar à conta')+'</button><button class="v06-secondary" onclick="v06StartImport(\''+id+'\')">⇧ Importar print</button></div>'+
     '<nav class="v06-tabs">'+switches.map(([key,title])=>'<button class="'+(active===key?'active':'')+'" onclick="tab=\''+key+'\';refresh()">'+title+'</button>').join('')+'</nav>'+
-    accountStorageNotice()+'<div class="v06-profile-body">'+body+'</div>'+((b&&state.v06Screens?.[id])?'<section class="v06-upload-reference"><h3>Seu print de referência</h3><img loading="lazy" src="'+state.v06Screens[id]+'" alt="Print importado por você"><button onclick="v06StartImport(\''+id+'\')">Atualizar print</button></section>':'')+
+    accountStorageNotice()+
+     ((b?.importPending?.length)?'<div class="v06-import-pending" role="status"><strong>Importação precisa de revisão</strong><p>'+b.importPending.length+' campo(s) pendente(s). O que já estava salvo foi mantido.</p><button type="button" onclick="v06StartImport(\''+id+'\')">Revisar pelo print</button></div>':'')+
+     '<div class="v06-profile-body">'+body+'</div>'+((b&&state.v06Screens?.[id])?'<section class="v06-upload-reference"><h3>Seu print de referência</h3><img loading="lazy" src="'+state.v06Screens[id]+'" alt="Print importado por você"><button onclick="v06StartImport(\''+id+'\')">Atualizar print</button></section>':'')+
     '</div>';
   }
   profile=profile06;
@@ -669,7 +671,7 @@
       '<div class="v06-action-row"><button class="v06-primary" onclick="v06AutoRead()">✧ Reconhecer dados do print</button><button class="v06-secondary" onclick="document.getElementById(\'v06-file\').click()">Trocar imagem</button></div>'+
       '<div class="v06-fieldgroup"><label>Personagem<select id="v06-id" onchange="document.getElementById(\'v06-custom-name-wrap\').style.display=this.value===\'__custom__\'?\'block\':\'none\'">'+choice+'</select></label>'+
       '<label id="v06-custom-name-wrap" style="display:none;grid-column:1/-1">Nome do personagem ainda não listado<input id="v06-custom-name" maxlength="80" placeholder="Nome como aparece no jogo"></label>'+
-      '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="80"></label>'+
+      '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="" placeholder="Informe o nível se aparecer no print"></label>'+
       '<label>Eidolons (sugestão visual — confirme E0–E6)<select id="v06-e"><option value="">Selecione E0–E6</option>'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
       '<label>Sobreposição do cone<select id="v06-s"><option value="">Selecione S1–S5</option>'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===uploader.superimposition?'selected':'')+'>S'+(i+1)+'</option>').join('')+'</select></label>'+
       '<label style="grid-column:1/-1">Nome do cone de luz<input id="v06-cone" value="'+safe(uploader.cone||'')+'" placeholder="Nome do cone de luz"></label>'+
@@ -685,6 +687,13 @@
   window.v06ShowImportReview=function(){
     const content=uploadPanel()+showImportReview();
     showModal('Importar build · revisar dados',content);
+    const review=document.querySelector('.v06-import-form');
+    for(const kind of ['input','change'])review?.addEventListener(kind,event=>{
+      if(event.isTrusted&&event.target?.dataset){
+        delete event.target.dataset.ocrSuggestion;
+        delete event.target.dataset.iconSuggestion;
+      }
+    });
     window.__nexusRelicInspectorPromise=import('./relic-inspector.js?v=3').then(mod=>{
       window.__nexusRelicInspector=mod;
       return mod.initializeRelics(uploader.relImages);
@@ -696,8 +705,10 @@
     await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=uploader.preview});
     if(!img.naturalWidth)return;
     const ratio=img.naturalWidth/img.naturalHeight;
-    if(ratio<0.8 || ratio>1.6){uploader.relImages=[];return;}
     const illustrated=ratio>=.82&&ratio<=.95;
+    const standard=ratio>=1.02&&ratio<=1.18;
+    // Unsupported layouts cannot be cropped using unrelated coordinates.
+    if(!illustrated&&!standard){uploader.relImages=[];return;}
     const regions=illustrated?[
       [.369,.591,.195,.157],[.571,.591,.195,.157],[.773,.591,.195,.157],
       [.369,.745,.195,.157],[.571,.745,.195,.157],[.773,.745,.195,.157]
@@ -952,21 +963,19 @@
     let worker=null,bitmap=null;
     try{
       say('Lendo o modelo fixo do registro de batalha...');
-      // Avoid carrying previously OCR-filled fields over into a new screenshot.
-      for(const key of ['pv','atk','def','spd','crit','cdmg','break','energy']){
+      // OCR may fill blanks or revise its own guesses; never replace manual edits.
+      const suggest=(key,value)=>{
         const el=document.getElementById('v06-'+key);
-        if(el)el.value='';
-      }
-      uploader.identifiedId='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';
-      for(const key of ['id','e','s','cone']){
-        const el=document.getElementById('v06-'+key);
-        if(el)el.value='';
-      }
-      const ocr=await getLang();
+        if(!el||value===null||value===undefined||value==='')return false;
+        if(el.value!==''&&el.dataset.ocrSuggestion!=='1')return false;
+        el.value=String(value);el.dataset.ocrSuggestion='1';return true;
+      };
       bitmap=await createImageBitmap(uploader.file);
       const ratio=bitmap.width/bitmap.height;
       const illustrated=ratio>=.82&&ratio<=.95;
-      if(!illustrated&&(ratio<1.02||ratio>1.18))throw Error('Formato ainda não reconhecido. Use uma captura de build ilustrada ou o relatório padrão.');
+      if(!illustrated&&(ratio<1.02||ratio>1.18))
+        throw Error('Layout ainda sem OCR calibrado. Revise os seis equipamentos manualmente; não vamos adivinhar números.');
+      const ocr=await getLang();
       worker=await ocr.createWorker('eng',1,{logger:m=>{
         if(m.status==='recognizing text')say('Lendo o print: '+Math.round(m.progress*100)+'%');
       }});
@@ -1034,27 +1043,27 @@
           const c=CATALOG.find(c=>c.id===identifiedId);
           select.add(new Option(c.name,identifiedId));
         }
-        select.value=identifiedId;uploader.identifiedId=identifiedId;
+        suggest('id',identifiedId);uploader.identifiedId=identifiedId;
       }
       for(const [k,value] of Object.entries(totals)){
         const el=document.getElementById('v06-'+k);
-        if(el)el.value=String(value);
+        suggest(k,value);
       }
       const h=title.match(/(?:Nv|Lv)\W{0,3}(\d{1,2})/i);
-      if(h&&document.getElementById('v06-level'))document.getElementById('v06-level').value=h[1];
+      if(h)suggest('level',h[1]);
       const sup=cone.match(/(?:Nv|Lv)\W*([1-5])\s+de\s+(?:sobreposi|superimposi)/i)
         ||cone.match(/(?:sobreposi|superimposi)[^\n]{0,16}([1-5])/i);
       if(sup&&document.getElementById('v06-s')){
-        document.getElementById('v06-s').value=sup[1];uploader.superimposition=Number(sup[1]);
+        suggest('s',sup[1]);uploader.superimposition=Number(sup[1]);
       }
       const recognizedCone=coneName(cone,await getLightConeNames());
       if(recognizedCone){
         uploader.cone=recognizedCone;
-        const el=document.getElementById('v06-cone');if(el)el.value=recognizedCone;
+        suggest('cone',recognizedCone);
       }
       const e=await suggestEidolons(bitmap);
       if(e!==null&&document.getElementById('v06-e')){
-        document.getElementById('v06-e').value=String(e);uploader.eidolon=e;
+        suggest('e',e);uploader.eidolon=e;
       }
       const missing=strip.rows.map(x=>x[1]).filter(k=>!Object.hasOwn(totals,k));
       for(const key of ['pv','atk','def','spd','crit','cdmg']){
@@ -1095,7 +1104,7 @@
     }
   };
 
-  window.v06SaveImport=function(){
+  window.v06SaveImport=async function(){
     let id=document.getElementById('v06-id')?.value;
     if(!id){showToast('Escolha o personagem correto antes de salvar');return;}
     let newCharacter=null;
@@ -1108,13 +1117,15 @@
     if(!document.getElementById('v06-confirm')?.checked){
       showToast('Confira os números e marque a confirmação antes de salvar');return;
     }
-    const important=['pv','atk','def','spd','crit','cdmg'];
-    if(important.some(k=>document.getElementById('v06-'+k)?.value==='')){
-      showToast('Complete os seis atributos principais antes de salvar');return;
-    }
-    if(!document.getElementById('v06-e')?.value||!document.getElementById('v06-s')?.value){
-      // E0 equivale à string '0', que é truthy.
-      showToast('Selecione os Eidolons e a sobreposição do cone');return;
+    // A reviewed partial scan may be saved. Missing fields stay pending.
+    // Never persist a scan through a fallback path that would replace all six
+    // previously confirmed relics with unverified empty editor rows.
+    if(!nexusAccount){
+      await readyAccount();
+      if(!nexusAccount){
+        showToast('Não consegui carregar a proteção das relíquias. Tente salvar novamente com conexão.');
+        return;
+      }
     }
     if(newCharacter){
       state.v06CustomCharacters ||= {};
@@ -1122,7 +1133,7 @@
       if(!CATALOG.some(c=>c.id===id)) CATALOG.push(newCharacter);
       gameData.chars[id]={id,name:newCharacter.name,skills:[],ranks:[]};
     }
-    const prior=state.characters[id]||{level:1,e:0,s:1,cone:''};
+    const prior=state.characters[id]||{level:null,e:null,s:null,cone:''};
     const read=k=>{const v=document.getElementById('v06-'+k)?.value;return v===''||v==null?null:Number(v);};
     const keys=['level','e','s','pv','atk','def','spd','crit','cdmg','break','energy'];
     for(const k of keys){const n=read(k);if(Number.isFinite(n))prior[k]=n;}
@@ -1136,8 +1147,9 @@
       state.v06RelicDetails||={};
       // One canonical record for all import paths, with legacy adapter for
       // older character screens and manual edits. Do not erase prior values.
-      const unified=nexusAccount?nexusAccount.normalizeRelics(
-        relicData,prior.relics||{},nexusAccountCatalog?.relicSets||{}):relicData;
+      const unified=nexusAccount?nexusAccount.mergeRelicImport(
+        relicData,state.v06RelicDetails?.[id]||[],prior.relics||{},
+        nexusAccountCatalog?.relicSets||{}):relicData;
       state.v06RelicDetails[id]=unified;
       if(nexusAccount)prior.relics=nexusAccount.toLegacy(
         unified,nexusAccountCatalog?.relicSets||{},prior.relics||{});
@@ -1148,7 +1160,15 @@
         level:r.level
       }]));
     }
-    state.profile=id;const persisted=verifiedAccountSave(id);closeModal();tab='overview';route('profile');showToast(persisted?'Print e personagem registrados na sua conta':'Build visível nesta sessão, mas não foi salva no dispositivo. Exporte um backup!');
+    const required=['level','e','s','pv','atk','def','spd','crit','cdmg','cone'];
+    const missing=required.filter(key=>prior[key]===null||prior[key]===undefined||prior[key]==='');
+    const relicMissing=nexusAccount&&state.v06RelicDetails?.[id]?
+      nexusAccount.pendingRelicFields(state.v06RelicDetails[id]):[];
+    prior.importPending=[...missing.map(key=>'Atributo: '+key),...relicMissing];
+    if(!prior.importPending.length)delete prior.importPending;
+    state.profile=id;const persisted=verifiedAccountSave(id);closeModal();tab='overview';route('profile');
+    showToast(persisted?(prior.importPending?.length?'Build salva com '+prior.importPending.length+' campo(s) pendente(s); nada foi apagado.':'Build salva e revisada na sua conta'):
+      'Build visível nesta sessão, mas não foi salva no dispositivo. Exporte um backup!');
   };
 
   // Editorial guidance is contextual and only references characters explicitly in the account.
