@@ -60,8 +60,8 @@ assert.ok(ui.includes('mergeRelicImport('),'New scanner must preserve known reli
 assert.ok(ui.includes('immutableSnapshot('),'New scanner must back up old data first');
 assert.ok(ui.includes('window.NexusCloudSync?.sync?.()'),'Scan must sync to the same account');
 assert.ok(shell.includes("import('./nexus-scan-v3-ui.js?v=1')"),'All import actions must open new scanner');
-for(const file of ['core.js','reader.js','ui.js','.css']){
- const ref='./nexus-scan-v3-'+file;
+for(const file of ['core.js','reader.js','ui.js','css']){
+ const ref=file==='css'?'./nexus-scan-v3.css':'./nexus-scan-v3-'+file;
  assert.ok(pwa.includes(ref),'PWA must include '+ref);
 }
 console.log('PASS 5 HoYoLab image layouts/titles, 30 geometry cells, no invented relic values and safe account handoff');
