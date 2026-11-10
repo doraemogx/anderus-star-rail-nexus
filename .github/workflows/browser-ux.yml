@@ -7,6 +7,9 @@ on:
       - 'nexus-account-engine.js'
       - 'nexus-account.css'
       - 'scripts/browser-smoke.mjs'
+      - 'scripts/browser-login-join.mjs'
+      - 'nexus-login.js'
+      - 'nexus-cloud-sync.js'
       - 'scripts/browser-offline.mjs'
       - 'scripts/stamp-release.mjs'
       - 'sw.js'
@@ -38,6 +41,7 @@ jobs:
           node scripts/browser-smoke.mjs
           node scripts/browser-offline.mjs
           node scripts/browser-sync.mjs
+          node scripts/browser-login-join.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4
