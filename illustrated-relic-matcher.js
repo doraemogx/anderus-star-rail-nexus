@@ -44,7 +44,9 @@ function compareColor(sample,reference){
 }
 function rankCandidates(bitmap,refs,index){
   const [cx,cy]=CENTERS[index],samples=[];
-  for(const size of [66,78,90])for(const dx of [-6,0,6])for(const dy of [-6,0,6]){
+  // HoYoLab's equipment art shifts slightly between relic models and
+  // resolutions. Search around the icon, not a single fixed pixel center.
+  for(const size of [64,78,92])for(const dx of [-20,-10,0,10,20])for(const dy of [-15,0,15]){
     samples.push(sampleRGBA(bitmap,cx,cy,size,dx,dy));
   }
   return refs.filter(r=>r.type===TYPES[index]).map(ref=>{
