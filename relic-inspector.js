@@ -17,29 +17,29 @@ const options=(items,chosen='')=>items.map(item=>
 function setupRows(sets,images,previous=[]){
  const target=document.getElementById('v06-relic-editor');
  if(!target)return;
- const cards=images.map((src,i)=>{
+ const cards=SLOT.map((slot,i)=>{const src=images?.[i]||'';
   const existing=previous[i]||{};
   const appropriate=sets.filter(s=>i<4?Number(s.id)<300:Number(s.id)>=300);
   const setOptions=appropriate.map(s=>({value:s.id,label:s.name}));
   const statOptions=STATS.map(v=>({value:v,label:v||'Escolha o atributo'}));
   const substats=Array.from({length:4},(_,k)=>'<div class="v06-relstat"><select id="v06-r'+i+'-k'+k+'">'+options(statOptions,existing.subs?.[k]?.stat)+'</select><input id="v06-r'+i+'-v'+k+'" type="number" inputmode="decimal" step="0.1" placeholder="Valor" value="'+safe(existing.subs?.[k]?.value??'')+'"></div>').join('');
-  return '<details class="v06-relcard" '+(i===0?'open':'')+'><summary><img alt="" src="'+src+'"><span>'+SLOT[i]+'</span><small>Selecionar conjunto e atributos</small></summary>'+
+  return '<details class="v06-relcard" '+(i===0?'open':'')+'><summary>'+(src?'<img alt="" src="'+safe(src)+'">':'<span class="v06-rel-placeholder" aria-hidden="true">◇</span>')+'<span>'+SLOT[i]+'</span><small>'+(src?'Conferir conjunto e atributos':'Sem recorte confiável · preencher manualmente')+'</small></summary>'+
     '<div class="v07-relmatch" id="v06-relmatch-'+i+'"><small>O comparador visual aparecerá após reconhecer o print.</small></div>'+
     '<label>Conjunto equipado<select id="v06-r'+i+'-set">'+options([{value:'',label:'Não identificado — escolha o conjunto'},...setOptions],existing.setId)+'</select></label>'+
     '<div class="v06-relstat"><select id="v06-r'+i+'-main">'+options(statOptions,existing.main?.stat)+'</select><input id="v06-r'+i+'-mainval" type="number" step=".1" inputmode="decimal" placeholder="Principal" value="'+safe(existing.main?.value??'')+'"></div>'+
     '<p class="v06-relnote">Quatro subatributos · confira pelo print</p>'+substats+
-    '<label>Nível da peça<input type="number" id="v06-r'+i+'-lv" min="0" max="15" value="'+safe(existing.level??15)+'"></label></details>';
+    '<label>Nível da peça<input type="number" id="v06-r'+i+'-lv" min="0" max="15" value="'+safe(existing.level??'')+'" placeholder="Pendente"></label></details>';
  }).join('');
  target.innerHTML='<div class="v06-relic-review"><h3>Identificação das 6 relíquias</h3><p class="v06-rel-explain">Os ícones do print são preservados. O nome exato do conjunto não está escrito na imagem: escolha o conjunto real pelo ícone, sem adivinhação. A avaliação completa só será ativada após conferir os seis.</p>'+cards+'</div>';
 }
 export async function initializeRelics(images,previous=[]){
  const target=document.getElementById('v06-relic-editor');
- if(!target||!images?.length)return;
+ if(!target)return;
  target.textContent='Carregando catálogo de relíquias…';
  try{
    const j=await data();
-   setupRows(Object.values(j.relicSets||{}).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')),images,previous);
- }catch(e){target.textContent='Não foi possível carregar os nomes de conjuntos. Os seis recortes foram preservados.'}
+   setupRows(Object.values(j.relicSets||{}).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')),images||[],previous);
+ }catch(e){target.textContent='Não foi possível carregar o catálogo de conjuntos. Confira sua conexão antes de salvar as relíquias.'}
 }
 export function collectRelics(){
  if(!document.getElementById('v06-r0-set'))return null;
