@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Obter arquivos
         uses: actions/checkout@v4
+      - name: Carimbar Service Worker e manifesto com SHA do commit
+        run: node scripts/stamp-release.mjs "$GITHUB_SHA"
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
         with:
