@@ -192,6 +192,13 @@ export function plausibleRelicValue(stat,value,slot,main){
  // 5-star flat HP cannot roll +3; a clipped '33' must be rejected.
  if(stat==='PV'&&value<30)return false;
  if(stat==='DEF'&&value<15)return false;
+ if(stat==='VEL'&&value<2)return false;
+ // Minimum 5-star relic secondary rolls: exclude clipped OCR digits such as
+ // 0.3% instead of 10.3%, without guessing replacement values.
+ const minimum={'PV %':3.4,'ATQ %':3.4,'DEF %':4.3,
+  'RES a Efeito':3.4,'Taxa de Acerto de Efeito':3.4,
+  'Efeito de Quebra':5.1,'Dano CRIT':5.1};
+ if(Object.hasOwn(minimum,stat)&&value+0.001<minimum[stat])return false;
  if(stat==='Chance de CRIT'&&value<2.5)return false;
  if(stat==='Dano CRIT'&&value<5)return false;
  const ranges={'PV':650,'ATQ':138,'DEF':275,'VEL':19,'Chance de CRIT':23,
