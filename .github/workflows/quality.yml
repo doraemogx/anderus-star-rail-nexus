@@ -19,6 +19,10 @@ jobs:
         run: |
           node --check sw.js
           node scripts/check-release-stamp.mjs
+      - name: Fase 3.2 — conferência do cartão HoYoLab da Robin
+        run: |
+          node --check illustrated-showcase-import.js
+          node scripts/check-hoyolab-robin.mjs
       - name: Fase 3 — scanner não destrutivo e seis relíquias
         run: |
           node --check nexus-account-engine.js
