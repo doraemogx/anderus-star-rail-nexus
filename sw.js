@@ -9,6 +9,7 @@ const CORE=[
  './nexus-backup.js','./nexus-backup.css','./nexus-diagnostics.js','./nexus-diagnostics.css',
  './nexus-cloud-sync.js','./nexus-cloud-sync.css','./nexus-sync-core.js',
  './nexus-login.js','./nexus-login.css','./nexus-login-core.js',
+ './nexus-scan-v3-core.js','./nexus-scan-v3-reader.js','./nexus-scan-v3-ui.js','./nexus-scan-v3.css',
  './manifest.webmanifest','./assets/pwa/icon-192.png'
 ];
 self.addEventListener('install',event=>{

@@ -5,6 +5,11 @@ on:
     paths:
       - 'v06.js'
       - 'nexus-account-engine.js'
+      - 'nexus-scan-v3-core.js'
+      - 'nexus-scan-v3-reader.js'
+      - 'nexus-scan-v3-ui.js'
+      - 'nexus-scan-v3.css'
+      - 'scripts/browser-scan-v3.mjs'
       - 'relic-inspector.js'
       - 'illustrated-showcase-import.js'
       - 'scripts/browser-scan-safety.mjs'
@@ -45,7 +50,9 @@ jobs:
           node scripts/browser-offline.mjs
           node scripts/browser-sync.mjs
           node scripts/browser-login-join.mjs
-          node scripts/browser-scan-safety.mjs
+
+      - name: Nexus Scan 3 — testar importação real no navegador com dados simulados
+        run: node scripts/browser-scan-v3.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4

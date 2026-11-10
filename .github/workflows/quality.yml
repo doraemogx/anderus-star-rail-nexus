@@ -19,6 +19,12 @@ jobs:
         run: |
           node --check sw.js
           node scripts/check-release-stamp.mjs
+      - name: Nexus Scan 3 — dois formatos e novo importador
+        run: |
+          node --check nexus-scan-v3-core.js
+          node --check nexus-scan-v3-reader.js
+          node --check nexus-scan-v3-ui.js
+          node scripts/check-scan-v3.mjs
       - name: Fase 3.2 — conferência do cartão HoYoLab da Robin
         run: |
           node --check illustrated-showcase-import.js

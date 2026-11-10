@@ -634,12 +634,20 @@
       '<div id="v06-import-preview" class="v06-import-preview"></div>'+
       '<p class="v06-source-note">Use o cartão completo de atributos da HoYoLab, como o da Robin • Summeretto. O Nexus lê as seis relíquias e compara os números duas vezes; campos incertos continuam editáveis. O processamento é local, no seu navegador. Confira os dados antes de salvar.</p></div>';
   }
-  window.v06StartImport=function(id){
-    uploader.hintId=id||'';
-    if(id)uploader.identifiedId=id;
-    else uploader.identifiedId='';
-    uploader.preview='';uploader.file=null;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.sourceValid=false;
-    showModal('Importar build pelo print',uploadPanel());
+  window.v06StartImport=async function(id){
+    // Nexus Scan 3 owns the whole HoYoLab import. The previous v06 uploader
+    // remains uninvoked for a safe rollback, but is no longer user-facing.
+    if(!document.getElementById('nexus-scan-v3-style')){
+      const css=document.createElement('link');css.id='nexus-scan-v3-style';
+      css.rel='stylesheet';css.href='./nexus-scan-v3.css';document.head.append(css);
+    }
+    try{
+      const mod=await import('./nexus-scan-v3-ui.js?v=1');
+      await mod.openScanner(id||'');
+    }catch(error){
+      console.error('Nexus Scan 3:',error);
+      showToast('Não consegui abrir o novo importador. Recarregue o Nexus; nenhuma build foi alterada.');
+    }
   };
   window.v06ReadPrint=async function(file){
     if(!file)return;
