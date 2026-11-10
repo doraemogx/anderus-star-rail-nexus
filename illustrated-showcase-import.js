@@ -25,21 +25,44 @@ export function clean(s){
  return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
  .replace(/[•·–—_-]/g,' ').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
 }
+// OCR can confuse I/l/1, O/0 and accented letters in HoYoLab titles.
+function titleDistance(a,b){
+ const p=Array.from({length:b.length+1},(_,i)=>i);
+ for(let i=1;i<=a.length;i++){
+  let prev=p[0];p[0]=i;
+  for(let j=1;j<=b.length;j++){
+   const old=p[j];
+   p[j]=Math.min(p[j]+1,p[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));
+   prev=old;
+  }
+ }
+ return p[b.length];
+}
 export function matchCharacter(title,entries){
- const name=clean(String(title||'').replace(/\b(nv|lv|level)\s*\.?\s*\d{1,2}.*/i,''));
+ const name=clean(String(title||'').replace(/\b(nv|lv|level)\s*\.?\s*\d{1,2}.*/i,''))
+  .replace(/\b(nv|lv|level)\b.*$/,'').trim();
  if(name.length<3)return null;
  const matches=entries.map(row=>{
-   const n=clean(row.name),alias=clean(row.alias||'');
-   let score=0;
-   if(n===name||alias===name)score=1;
-   else if(n && name.startsWith(n+' '))score=.84+Math.min(.12,n.length/200);
-   else if(alias && name.startsWith(alias+' '))score=.84+Math.min(.12,alias.length/200);
-   else if(n && n.startsWith(name+' ')&&name.length>=8)score=.78;
-   return {id:String(row.id),name:row.name,score};
+  const aliases=[clean(row.name),clean(row.alias||'')].filter(Boolean);
+  let score=0;
+  for(const n of aliases){
+   if(n===name)score=Math.max(score,1);
+   else if(name.startsWith(n+' '))score=Math.max(score,.82+Math.min(.12,n.length/200));
+   else if(n.startsWith(name+' ')&&name.length>=8)score=Math.max(score,.78);
+   // Tolerate a few real OCR mistakes, but only on sufficiently long names
+   // to avoid confusing "Robin" with "Robin • Summeretto".
+   else if(name.length>=8&&n.length>=8){
+    const distance=titleDistance(name,n);
+    const max=Math.max(name.length,n.length);
+    if(distance<=Math.max(2,Math.floor(max*.16)))
+     score=Math.max(score,1-distance/max);
+   }
+  }
+  return {id:String(row.id),name:row.name,score};
  }).filter(x=>x.score>=.78).sort((a,b)=>b.score-a.score||b.name.length-a.name.length);
  if(!matches[0])return null;
- if(matches[1]&&matches[0].score===matches[1].score)return null;
- return matches[0].score>=.88||matches[0].score-(matches[1]?.score||0)>=.03?matches[0]:null;
+ if(matches[1]&&Math.abs(matches[0].score-matches[1].score)<.025)return null;
+ return matches[0].score>=.88||matches[0].score-(matches[1]?.score||0)>=.035?matches[0]:null;
 }
 export function inferStat(label,raw){
  const n=clean(label),v=String(raw||''),percent=/%/.test(v)||/\d[.,]\d/.test(v);
@@ -145,7 +168,7 @@ function relicRowCoords(i,j){
  // Begin after the small status pictogram, which previously polluted OCR text.
  // Rope's main energy-regeneration label wraps onto two physical lines.
  return {label:i===5&&j===0?[x+49,y-32,249,66]:[x+49,y-24,250,49],
-   value:[x+305,y-24,76,49]};
+   value:[x+274,y-26,118,53]};
 }
 export function plausibleRelicValue(stat,value,slot,main){
  if(!stat||!Number.isFinite(value)||value<=0)return false;
@@ -159,12 +182,23 @@ export function plausibleRelicValue(stat,value,slot,main){
      'Bônus de Dano Físico','Bônus de Dano de Fogo','Bônus de Dano de Gelo',
      'Bônus de Dano de Vento','Bônus de Dano de Raio',
      'Bônus de Dano Quântico','Bônus de Dano Imaginário'].includes(stat)&&value<=110;
+   if(stat==='Regeneração de Energia'&&value<3)return false;
    return ['PV %','ATQ %','DEF %','Regeneração de Energia','Efeito de Quebra'].includes(stat)&&value<=110;
  }
  if(stat==='ATQ'){
   const rolls=[[16,23],[32,46],[48,69],[64,92],[80,115],[96,138]];
   if(!rolls.some(([low,high])=>value>=low&&value<=high))return false;
  }
+ // 5-star flat HP cannot roll +3; a clipped '33' must be rejected.
+ if(stat==='PV'&&value<30)return false;
+ if(stat==='DEF'&&value<15)return false;
+ if(stat==='VEL'&&value<2)return false;
+ // Minimum 5-star relic secondary rolls: exclude clipped OCR digits such as
+ // 0.3% instead of 10.3%, without guessing replacement values.
+ const minimum={'PV %':3.4,'ATQ %':3.4,'DEF %':4.3,
+  'RES a Efeito':3.4,'Taxa de Acerto de Efeito':3.4,
+  'Efeito de Quebra':5.1,'Dano CRIT':5.1};
+ if(Object.hasOwn(minimum,stat)&&value+0.001<minimum[stat])return false;
  if(stat==='Chance de CRIT'&&value<2.5)return false;
  if(stat==='Dano CRIT'&&value<5)return false;
  const ranges={'PV':650,'ATQ':138,'DEF':275,'VEL':19,'Chance de CRIT':23,
@@ -188,6 +222,27 @@ export function verifiedMainAt15(stat,slot,level){
  const value=MAXED_MAIN[stat];
  return plausibleRelicValue(stat,value,slot,true)?value:null;
 }
+/** Pure checker for the 2000×2300 HoYoLab layout.
+ * An observed +15 piece with a recognized main-stat label has a fixed,
+ * game-defined main value. Other numbers must pass plausibility checks.
+ */
+export function reconcileHoYoLabRelicRead({stat,slot,level=null,main=false,readings=[]}={}){
+ const valid=readings.map(raw=>relicValueFromText(raw,stat,slot,main))
+  .filter(v=>v!==null);
+ const unique=[...new Set(valid)];
+ if(main&&level===15){
+  const expected=verifiedMainAt15(stat,slot,level);
+  if(expected!==null)return {value:expected,
+   confidence:unique.some(v=>Math.abs(v-expected)<.11)?'verified':'verified-level-15',
+   candidates:unique};
+ }
+ for(const n of unique){
+  if(valid.filter(x=>Math.abs(x-n)<.11).length>=2)
+   return {value:n,confidence:'double-read',candidates:unique};
+ }
+ if(unique.length===1)return {value:unique[0],confidence:'single-read',candidates:unique};
+ return {value:null,confidence:'pending',candidates:unique};
+}
 export function relicValueFromText(text,stat,slot,main=false){
  const raw=String(text||'').replace(/\s+/g,' ').trim();
  if(!raw)return null;
@@ -205,31 +260,41 @@ async function relicRows(worker,bitmap,progress){
  for(let i=0;i<6;i++){
    const rows=[];
    const x=COL[i%3],headerY=i<3?1371:1724;
-   const header=await ocr(worker,bitmap,[x+30,headerY,250,49],7,'normal');
-   const levelMatch=header.match(/\+\s*(\d{1,2})\b/);
+   const header=await ocr(worker,bitmap,[x+30,headerY,270,54],7,'normal');
+   let levelMatch=header.match(/\+\s*(\d{1,2})\b/);
+   if(!levelMatch){
+    // The +15 badge is independently visible in every HoYoLab relic header.
+    const badge=await ocr(worker,bitmap,[x+28,headerY,278,54],6,'high','0123456789+');
+    levelMatch=badge.match(/\+\s*(\d{1,2})\b/);
+   }
    const relicLevel=levelMatch&&Number(levelMatch[1])<=15?Number(levelMatch[1]):null;
    levels.push(relicLevel);
    for(let j=0;j<5;j++){
      if(j===0&&progress)progress('Lendo relíquia '+(i+1)+'/6…');
      const loc=relicRowCoords(i,j);
      let line=await ocr(worker,bitmap,loc.label,i===5&&j===0?6:7,'normal');
-     let amount=await ocr(worker,bitmap,loc.value,7,'normal','0123456789.,%');
-     let stat=inferStat(line,amount),value=relicValueFromText(amount,stat,i,j===0);
+     const readings=[await ocr(worker,bitmap,loc.value,7,'normal','0123456789.,%')];
+     let stat=inferStat(line,readings[0]);
      if(!stat){
-       const alternate=await ocr(worker,bitmap,loc.label,7,'high');
-       const guess=inferStat(alternate,amount);
-       if(guess){stat=guess;line=alternate;value=relicValueFromText(amount,stat,i,j===0);}
+      const alternate=await ocr(worker,bitmap,loc.label,7,'high');
+      const guess=inferStat(alternate,readings[0]);
+      if(guess){stat=guess;line=alternate;}
      }
-     if(value===null&&stat){
-       for(const variant of ['high','soft']){
-         const retry=await ocr(worker,bitmap,loc.value,7,variant,'0123456789.,%');
-         const revisedStat=inferStat(line,retry)||stat;
-         const parsed=relicValueFromText(retry,revisedStat,i,j===0);
-         if(parsed!==null){stat=revisedStat;amount=retry;value=parsed;break;}
-       }
+     if(stat){
+      readings.push(await ocr(worker,bitmap,loc.value,7,'high','0123456789.,%'));
+      const provisional=reconcileHoYoLabRelicRead({stat,slot:i,level:relicLevel,main:j===0,readings});
+      if(provisional.confidence==='pending'||provisional.confidence==='verified-level-15'){
+       // Retry a wider crop when the OCR is truncated or still ambiguous.
+       const extended=[loc.value[0]-10,loc.value[1]-3,loc.value[2]+17,loc.value[3]+6];
+       readings.push(await ocr(worker,bitmap,extended,7,'soft','0123456789.,%'));
+      }
      }
-     // Values not independently read stay pending; +15 references only aid review.
-     rows.push({stat:stat&&value!==null?stat:'',value:stat&&value!==null?value:null,label:line,raw:amount});
+     const result=stat?reconcileHoYoLabRelicRead({stat,slot:i,level:relicLevel,main:j===0,readings}):
+      {value:null,confidence:'pending'};
+     const value=result.value;
+     // Low-confidence values are explicit OCR suggestions until user confirms.
+     rows.push({stat:stat&&value!==null?stat:'',value:stat&&value!==null?value:null,
+      label:line,raw:readings.join(' | '),confidence:result.confidence});
    }
    found.push(rows);
  }
@@ -314,7 +379,18 @@ export function applyShowcaseToForm(report,root=document){
    const field=root.getElementById(statId);
    if(field&&[...field.options].some(o=>o.value===r.stat)){
      if(set(statId,r.stat)&&set(valId,r.value)){
-       stats++;field.dataset.ocrSuggestion='1';field.title='Lido da imagem; confira antes de salvar.';
+       stats++;field.dataset.ocrSuggestion='1';
+       const validation=r.confidence==='verified-level-15'?
+        'Atributo principal calculado pelo nível +15 visível na peça. Confira o rótulo.':
+        r.confidence==='double-read'||r.confidence==='verified'?
+        'Conferido em duas leituras do cartão HoYoLab.':
+        'Leitura automática única; confira o valor no print.';
+       field.title=validation;
+       const amount=root.getElementById(valId);
+       if(amount){
+        amount.title=validation;
+        amount.style.borderColor=r.confidence==='single-read'?'#e7bd74':'#6ec4ae';
+       }
      }
    }
  }
