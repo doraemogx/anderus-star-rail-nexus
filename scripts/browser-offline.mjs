@@ -9,6 +9,11 @@ try{
  const app='http://127.0.0.1:8787/';
  await page.goto(app,{waitUntil:'domcontentloaded',timeout:45000});
  await page.waitForFunction(()=>typeof window.route==='function'&&!!document.querySelector('.app'),null,{timeout:20000});
+ // Production registers only on HTTPS. On localhost we register explicitly for QA,
+ // without changing application behavior or the live account.
+ await page.evaluate(async()=>{
+  if('serviceWorker' in navigator)await navigator.serviceWorker.register('./sw.js',{scope:'./'});
+ });
  const controlled=await page.evaluate(async()=>{
   if(!('serviceWorker'in navigator))return false;
   const r=await navigator.serviceWorker.ready;
