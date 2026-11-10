@@ -25,21 +25,44 @@ export function clean(s){
  return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
  .replace(/[•·–—_-]/g,' ').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
 }
+// OCR can confuse I/l/1, O/0 and accented letters in HoYoLab titles.
+function titleDistance(a,b){
+ const p=Array.from({length:b.length+1},(_,i)=>i);
+ for(let i=1;i<=a.length;i++){
+  let prev=p[0];p[0]=i;
+  for(let j=1;j<=b.length;j++){
+   const old=p[j];
+   p[j]=Math.min(p[j]+1,p[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));
+   prev=old;
+  }
+ }
+ return p[b.length];
+}
 export function matchCharacter(title,entries){
- const name=clean(String(title||'').replace(/\b(nv|lv|level)\s*\.?\s*\d{1,2}.*/i,''));
+ const name=clean(String(title||'').replace(/\b(nv|lv|level)\s*\.?\s*\d{1,2}.*/i,''))
+  .replace(/\b(nv|lv|level)\b.*$/,'').trim();
  if(name.length<3)return null;
  const matches=entries.map(row=>{
-   const n=clean(row.name),alias=clean(row.alias||'');
-   let score=0;
-   if(n===name||alias===name)score=1;
-   else if(n && name.startsWith(n+' '))score=.84+Math.min(.12,n.length/200);
-   else if(alias && name.startsWith(alias+' '))score=.84+Math.min(.12,alias.length/200);
-   else if(n && n.startsWith(name+' ')&&name.length>=8)score=.78;
-   return {id:String(row.id),name:row.name,score};
+  const aliases=[clean(row.name),clean(row.alias||'')].filter(Boolean);
+  let score=0;
+  for(const n of aliases){
+   if(n===name)score=Math.max(score,1);
+   else if(name.startsWith(n+' '))score=Math.max(score,.82+Math.min(.12,n.length/200));
+   else if(n.startsWith(name+' ')&&name.length>=8)score=Math.max(score,.78);
+   // Tolerate a few real OCR mistakes, but only on sufficiently long names
+   // to avoid confusing "Robin" with "Robin • Summeretto".
+   else if(name.length>=8&&n.length>=8){
+    const distance=titleDistance(name,n);
+    const max=Math.max(name.length,n.length);
+    if(distance<=Math.max(2,Math.floor(max*.16)))
+     score=Math.max(score,1-distance/max);
+   }
+  }
+  return {id:String(row.id),name:row.name,score};
  }).filter(x=>x.score>=.78).sort((a,b)=>b.score-a.score||b.name.length-a.name.length);
  if(!matches[0])return null;
- if(matches[1]&&matches[0].score===matches[1].score)return null;
- return matches[0].score>=.88||matches[0].score-(matches[1]?.score||0)>=.03?matches[0]:null;
+ if(matches[1]&&Math.abs(matches[0].score-matches[1].score)<.025)return null;
+ return matches[0].score>=.88||matches[0].score-(matches[1]?.score||0)>=.035?matches[0]:null;
 }
 export function inferStat(label,raw){
  const n=clean(label),v=String(raw||''),percent=/%/.test(v)||/\d[.,]\d/.test(v);
