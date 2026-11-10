@@ -265,9 +265,6 @@ async function signOut(){
  if(!navigator.onLine)throw Error("Conecte-se à internet antes de sair, para não perder alterações pendentes.");
  await sync();
  if(pendingConflict)throw Error("Resolva as alterações pendentes antes de sair.");
- const snapshot=syncable(localAccount());
- if(JSON.stringify(snapshot)!==observed)
-  throw Error("A conta ainda está sendo sincronizada. Tente novamente.");
  const db=await database();
  await new Promise((resolve,reject)=>{
   const tx=db.transaction("records","readwrite");
