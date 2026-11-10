@@ -84,8 +84,13 @@ await phone.evaluate(()=>{
  a.characters["1001"]={level:80,e:0};
  localStorage.setItem("anderus_nexus_v03",JSON.stringify(a));
 });
-await phone.evaluate(()=>window.NexusCloudSync.sync()).catch(()=>{});
-await desktop.evaluate(()=>window.NexusCloudSync.sync()).catch(()=>{});
+await phone.evaluate(()=>window.NexusCloudSync.sync()).catch(e=>console.log("PHONE_SYNC_RELOAD",e.message));
+console.log("SYNC_PHONE_STATE",await phone.evaluate(()=>({status:window.NexusCloudSync?.status(),
+ characters:Object.keys(JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters)})));
+console.log("SYNC_REMOTE_REVISIONS",Array.from(remote.values()).map(x=>x.revision));
+await desktop.evaluate(()=>window.NexusCloudSync.sync()).catch(e=>console.log("DESKTOP_SYNC_RELOAD",e.message));
+console.log("SYNC_DESKTOP_STATE",await desktop.evaluate(()=>({status:window.NexusCloudSync?.status(),
+ characters:Object.keys(JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters)})));
 await desktop.waitForFunction(()=>!!JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters["1001"],
  null,{timeout:25000});
 assert.equal(errors.length,0,errors.join(" | "));
