@@ -32,9 +32,27 @@ try{
     if(!localStorage.getItem('anderus_nexus_v03'))
       localStorage.setItem('anderus_nexus_v03',JSON.stringify(data));
   },fixture);
-  await context.route('https://nexia-ai-nexus.andrediascrm.workers.dev/api/login/v1/status',route=>
-    route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:8787','Content-Type':'application/json'},
-     body:JSON.stringify({configured:false,username:'Anderus',iterations:480000})}));
+  // Local API simulation: no test credentials or account data leave GitHub Actions.
+  await context.route('https://nexia-ai-nexus.andrediascrm.workers.dev/api/sync/v1/**',route=>
+   route.fulfill({status:503,headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:8787'},
+    body:'{"error":"Test isolated from live cloud"}'}));
+  await context.route('https://nexia-ai-nexus.andrediascrm.workers.dev/api/login/v1/**',route=>{
+   const req=route.request(),path=new URL(req.url()).pathname;
+   const headers={'Access-Control-Allow-Origin':'http://127.0.0.1:8787',
+    'Access-Control-Allow-Methods':'GET,POST,OPTIONS',
+    'Access-Control-Allow-Headers':'content-type,authorization','Content-Type':'application/json'};
+   if(req.method()==='OPTIONS')return route.fulfill({status:204,headers,body:''});
+   if(path.endsWith('/status'))return route.fulfill({status:200,headers,
+    body:JSON.stringify({configured:false,username:'Anderus',iterations:480000})});
+   if(path.endsWith('/setup')){
+    const body=JSON.parse(req.postData()||'{}');
+    assert.equal(body.username,'Anderus');
+    assert.ok(body.passwordVault?.data&&body.recoveryVault?.data);
+    assert.ok(!req.postData().includes('TesteDeSenhaForte'));
+    return route.fulfill({status:201,headers,body:'{"configured":true}'});
+   }
+   return route.fulfill({status:404,headers,body:'{"error":"Mock action unavailable"}'});
+  });
   await page.goto('http://127.0.0.1:8787/',{waitUntil:'domcontentloaded',timeout:45000});
   await page.waitForFunction(()=>typeof window.openProfile==='function'&&typeof window.v11ProfileTab==='function'&&!!document.getElementById('stage'),null,{timeout:20000}).catch(async error=>{
     const dom=await page.evaluate(()=>({ready:document.readyState,stage:!!document.querySelector('#stage'),app:!!document.querySelector('.app'),ids:[...document.querySelectorAll('[id]')].slice(0,80).map(e=>e.id),bodyTail:document.body?.innerHTML?.slice(-800)}));
@@ -67,6 +85,19 @@ try{
   await page.locator('#nexus-login-dialog .nexus-login-state strong').filter({hasText:'Primeiro acesso'}).waitFor({timeout:15000});
   await page.screenshot({path:'artifacts/phase2-login-'+device.width+'.png'});
   await page.locator('#nexus-login-dialog [data-login-close]').click();
+  const mockPair={id:'a'.repeat(32),secret:'A'.repeat(43)};
+  await page.evaluate(pair=>localStorage.setItem('anderus_nexus_sync_pair_v1',JSON.stringify(pair)),mockPair);
+  await page.locator('#nexus-sync-trigger').click();
+  await page.locator('#nexus-sync-dialog[open] [data-nexus-login-open]').click();
+  await page.locator('#nexus-login-dialog[open] [data-login-form=register]').waitFor({timeout:15000});
+  await page.locator('#nexus-login-password').fill('TesteDeSenhaForte#2026');
+  await page.locator('#nexus-login-repeat').fill('TesteDeSenhaForte#2026');
+  await page.locator('[data-login-form=register] button[type=submit]').click();
+  await page.locator('#nexus-login-recovery-code').waitFor({timeout:20000});
+  const recovery=await page.locator('#nexus-login-recovery-code').innerText();
+  assert.match(recovery,/^[A-Za-z0-9_-]{43}$/);
+  await page.locator('#nexus-login-dialog [data-login-close]').click();
+  await page.evaluate(()=>localStorage.removeItem('anderus_nexus_sync_pair_v1'));
   // Exercise all top-level routes before opening the imported character.
   for(const view of ['home','library','endgame','farm','radar','themes','nexia','settings']){
     const before=errors.length;
