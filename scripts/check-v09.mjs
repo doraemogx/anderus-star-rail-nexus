@@ -135,7 +135,7 @@ assert.equal(relicCheck.relicValueFromText('705','PV',0,true),705);
 assert.equal(relicCheck.relicValueFromText('352','ATQ',1,true),352);
 assert.equal(relicCheck.relicValueFromText('43,2%','PV %',4,true),43.2);
 assert.equal(relicCheck.relicValueFromText('19,4%','Regeneração de Energia',5,true),19.4);
-assert.ok(read('illustrated-showcase-import.js').includes('value:[x+305,y-24,76,49]'),
+assert.ok(read('illustrated-showcase-import.js').includes('value:[x+274,y-26,118,53]'),
  'Numeric crop must exclude the upgrade badge');
 console.log('PASS 6/6 relic icon set decisions, fail-closed missing sets and numeric sanity bounds');
 const mainAt15=new Function(illustrated+';return {verifiedMainAt15,inferStat};')();
