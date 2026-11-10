@@ -155,11 +155,24 @@ async function connect(pair){
  const existing=JSON.parse(localStorage.getItem("anderus_nexus_v03")||'{"characters":{}}');
  const amount=Object.keys(existing.characters||{}).length;
  if(amount>0&&!localPair()){
-  if(!window.confirm("Este dispositivo tem "+amount+" personagem(ns) salvos. Deseja juntá-los à conta Anderus, sem apagar os personagens exclusivos?"))return;
+  if(!window.confirm("Este dispositivo tem "+amount+" personagem(ns) salvos. Deseja juntá-los à conta Anderus, sem apagar os personagens exclusivos?"))
+   throw Error("Conexão cancelada. Nenhum personagem foi alterado. Você pode tentar novamente quando quiser.");
  }
  const connector=window.NexusCloudSync?.connectWithPair;
  if(typeof connector!=="function")throw Error("Atualize a página para carregar o recurso de sincronização.");
- await connector(pair);
+ // The synchronizer protects builds from being overwritten while an edit dialog is
+ // open. The LOGIN dialog is not an edit: close it before applying cloud data.
+ const loginDialog=document.getElementById("nexus-login-dialog");
+ if(loginDialog?.open)loginDialog.close();
+ try{
+  await connector(pair);
+  // A change to the roster reloads the page; otherwise show the confirmed
+  // connection state in the existing cloud panel, not a hidden login dialog.
+  window.NexusCloudSync?.open?.();
+ }catch(error){
+  if(loginDialog&&!loginDialog.open)loginDialog.showModal();
+  throw error;
+ }
 }
 async function submit(e){
  const form=e.target.closest("form[data-login-form]");
