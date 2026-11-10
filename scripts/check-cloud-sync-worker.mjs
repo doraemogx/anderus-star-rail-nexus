@@ -5,7 +5,7 @@ import {readFileSync} from "node:fs";
 import {webcrypto} from "node:crypto";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 const source=read("worker/sync-room.js")
- .replace(/^import .*\n/,"").replace("export class NexusSyncRoom","class NexusSyncRoom");
+ .replace(/^import .*\n/m,"").replace("export class NexusSyncRoom","class NexusSyncRoom");
 const fake=class DurableObject{constructor(ctx,env){this.ctx=ctx;this.env=env}};
 const klass=vm.runInNewContext(source+"\nNexusSyncRoom;",{
  DurableObject:fake,Response,Request,TextEncoder,crypto:webcrypto,
