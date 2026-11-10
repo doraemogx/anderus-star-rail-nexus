@@ -70,6 +70,25 @@ try{
    "An unknown screenshot cannot overwrite confirmed relic stats");
   assert.equal(result.v06RelicDetails["1512"][0].subs[0].value,8.6);
   assert.equal(result.v06RelicDetails["1512"].length,6);
+  // Partial first-time registration must not fabricate Lv80, E0, S1 or +15.
+  await page.evaluate(()=>window.v06StartImport());
+  await page.locator("#v06-file").setInputFiles(sample);
+  await page.locator("#v06-r0-set").waitFor({timeout:20000});
+  await page.locator("#v06-id").selectOption("1505");
+  await page.locator("#v06-confirm").check();
+  await page.locator(".v06-save-import").click();
+  await page.waitForFunction(()=>{
+   const a=JSON.parse(localStorage.getItem("anderus_nexus_v03")||"{}");
+   return !!a.characters?.["1505"]&&Array.isArray(a.v06RelicDetails?.["1505"]);
+  },null,{timeout:15000});
+  const newcomer=await page.evaluate(()=>JSON.parse(localStorage.getItem("anderus_nexus_v03")));
+  assert.equal(newcomer.characters["1505"].level,null,"Unknown level must remain pending");
+  assert.equal(newcomer.characters["1505"].e,null,"Unknown Eidolon must not become E0");
+  assert.equal(newcomer.characters["1505"].s,null,"Unknown superimposition must not become S1");
+  assert.equal(newcomer.v06RelicDetails["1505"].length,6);
+  assert.equal(newcomer.v06RelicDetails["1505"][0].level,null);
+  assert.ok(newcomer.characters["1505"].importPending.length>=6);
+  await page.locator(".v06-import-pending").waitFor({timeout:15000});
   assert.equal(errors.length,0,errors.join(" | "));
   console.log("PASS Scan safe unknown layout, all six relics, and existing account intact at "+device.width+"px");
   await context.close();
