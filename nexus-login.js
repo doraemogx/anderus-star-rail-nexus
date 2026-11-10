@@ -6,7 +6,7 @@ import {USERNAME,registerPayload,loginProof,unlockPassword,recoveryProof,unlockR
 import {bearer,validatePair} from "./nexus-sync-core.js";
 const API="https://nexia-ai-nexus.andrediascrm.workers.dev/api/login/v1";
 const PAIR_KEY="anderus_nexus_sync_pair_v1";
-let statusCache=null,loading=false,shownRecovery="",bound=false;
+let statusCache=null,loading=false,shownRecovery="",pendingRecoveredPair=null,bound=false;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const localPair=()=>{
  try{const stored=localStorage.getItem(PAIR_KEY);return stored?validatePair(JSON.parse(stored)):null;}
@@ -129,7 +129,14 @@ async function click(e){
  if(act==="back"||act==="retry"){await render();return}
  if(act==="copy"){try{await copy(shownRecovery);alert("Código copiado.");}catch(err){alert(err.message)}return}
  if(act==="download"){download(shownRecovery);alert("Arquivo de recuperação salvo.");return}
- if(act==="done"){shownRecovery="";await render();return}
+ if(act==="done"){
+  shownRecovery="";
+  if(pendingRecoveredPair){
+   const pair=pendingRecoveredPair;pendingRecoveredPair=null;
+   try{await connect(pair);}catch(error){alert(error.message||"Não foi possível conectar neste aparelho.");}
+  }else await render();
+  return
+ }
  if(act==="instructions"){alert("No outro aparelho, abra o mesmo Nexus, toque em Conectar aparelhos e selecione Entrar como Anderus.");}
 }
 async function connect(pair){
@@ -181,8 +188,8 @@ async function submit(e){
    await request("reset",{...item.payload,mode:"recovery",proof:proof.proof});
    dialog().querySelector("#nexus-login-content").innerHTML=recoveryResult(item.recovery);
    alert("Acesso recuperado. Salve o novo código antes de entrar.");
-   // Access is restored locally using the same encrypted account, with no data loss.
-   await connect(pair);
+   // Do not reload during recovery: first let the user copy or save the NEW code.
+   pendingRecoveredPair=pair;
   }
  }catch(err){alert(err.message||"Não foi possível acessar a conta.");}
  finally{
