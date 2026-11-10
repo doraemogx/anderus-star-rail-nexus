@@ -151,6 +151,7 @@ function dialog(){
  dlg.innerHTML='<section class="nexus-sync-inner"><header><div><small>ANDERUS · UMA ÚNICA CONTA</small><h2>Conectar meus aparelhos</h2><p>Os personagens ficam disponíveis no celular e no computador, com atualizações automáticas enquanto o Nexus estiver aberto e online.</p></div><button type="button" data-sync-close aria-label="Fechar">×</button></header>'+
  '<div class="nexus-sync-state"><span>Status</span><strong id="nexus-sync-status" aria-live="polite"></strong></div>'+
  '<div class="nexus-sync-intro"><strong>Uma conexão só.</strong><p>Os personagens dos dois aparelhos são reunidos, e cada aparelho guarda uma cópia. Fotografias originais dos prints permanecem apenas no dispositivo onde foram enviadas.</p></div>'+
+ '<div class="nexus-login-quick"><strong>Entrar com usuário e senha</strong><p>Seu usuário já está definido como Anderus. Você pode cadastrar sua senha em um aparelho conectado ou entrar em um novo.</p><button type="button" data-nexus-login-open>Entrar ou cadastrar senha</button></div>'+
  '<div id="nexus-sync-new"><button type="button" data-sync-create>Criar minha conta sincronizada</button>'+
  '<label for="nexus-sync-link">Ou cole o link recebido de outro aparelho</label>'+
  '<input id="nexus-sync-link" type="text" placeholder="Cole o link de conexão" autocomplete="off" spellcheck="false">'+
@@ -259,6 +260,26 @@ function extractHash(){
   dlg.querySelector("#nexus-sync-link").value=hash;
  }
 }
+async function signOut(){
+ if(!pair)return;
+ if(!navigator.onLine)throw Error("Conecte-se à internet antes de sair, para não perder alterações pendentes.");
+ await sync();
+ if(pendingConflict)throw Error("Resolva as alterações pendentes antes de sair.");
+ const db=await database();
+ await new Promise((resolve,reject)=>{
+  const tx=db.transaction("records","readwrite");
+  tx.objectStore("records").clear();
+  tx.oncomplete=()=>resolve();
+  tx.onerror=()=>reject(tx.error||Error("Não foi possível proteger o encerramento."));
+  tx.onabort=()=>reject(tx.error||Error("Não foi possível proteger o encerramento."));
+ });
+ // Only known Nexus account keys. GitHub Pages may host unrelated sites on the same origin.
+ localStorage.removeItem(ACCOUNT_KEY);
+ localStorage.removeItem(PAIR_KEY);
+ localStorage.removeItem("anderus_nexus_backup_before_restore");
+ pair=null;pendingConflict=null;observed="";
+ location.reload();
+}
 function mount(){
  if(initialized)return;initialized=true;
  try{pair=localStorage.getItem(PAIR_KEY)?validatePair(JSON.parse(localStorage.getItem(PAIR_KEY))):null;}
@@ -286,6 +307,6 @@ function mount(){
   });
  }
 }
-window.NexusCloudSync={open,sync:()=>sync(),status:()=>({connected:!!pair,message:latestStatus}),getPair:()=>pair?.id||null};
+window.NexusCloudSync={open,sync:()=>sync(),connectWithPair:join,signOut,status:()=>({connected:!!pair,message:latestStatus}),getPair:()=>pair?.id||null};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});
 else mount();

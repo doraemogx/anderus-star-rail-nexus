@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Fase 2 — login portátil e recuperação, sem substituir a conta sincronizada.
+ if(!document.getElementById('nexus-login-css')){
+  const css=document.createElement('link');css.id='nexus-login-css';css.rel='stylesheet';css.href='./nexus-login.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-login-js')){
+  const js=document.createElement('script');js.id='nexus-login-js';js.type='module';js.src='./nexus-login.js';document.head.appendChild(js);
+ }
  // Sincronização real: a versão local permanece utilizável quando o backend estiver offline.
  if(!document.getElementById('nexus-cloud-sync-css')){
   const css=document.createElement('link');css.id='nexus-cloud-sync-css';css.rel='stylesheet';css.href='./nexus-cloud-sync.css';document.head.appendChild(css);

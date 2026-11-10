@@ -24,6 +24,10 @@ jobs:
       - name: Verificar se o Cloudflare já publicou o novo serviço
         continue-on-error: true
         run: node scripts/check-cloud-sync-deployment.mjs
+      - name: Fase 2 — conferir login publicado antes de liberar a tela
+        run: |
+          node --check nexus-login.js
+          node scripts/check-login-deployment.mjs
       - name: Fase 2 — validar acesso criptografado
         run: |
           node --check worker/login-room.js

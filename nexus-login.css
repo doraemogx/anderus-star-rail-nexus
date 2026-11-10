@@ -1,0 +1,41 @@
+/* Fase 2: minimal login as a companion to the same cloud-sync panel. */
+#nexus-login-dialog{width:min(580px,calc(100vw - 16px));max-width:580px;max-height:94dvh;overflow:auto;padding:0;border:1px solid #d8b88e;border-radius:17px;background:#121e30;color:#f6eddf;box-shadow:0 24px 75px #000c}
+#nexus-login-dialog::backdrop{background:#010610e0}
+#nexus-login-dialog .nexus-login-inner{padding:clamp(17px,3vw,31px);font:14px/1.65 system-ui}
+#nexus-login-dialog header{display:flex;align-items:start;justify-content:space-between;gap:13px}
+#nexus-login-dialog header>div{flex:1}
+#nexus-login-dialog header span{display:block;font-size:10px;letter-spacing:.16em;font-weight:800;color:#eacda3}
+#nexus-login-dialog h2{font:500 clamp(29px,5vw,43px) Georgia,serif;margin:7px 0}
+#nexus-login-dialog header p{color:#cbd7e7;margin:0 0 19px}
+#nexus-login-dialog button{min-height:45px;padding:10px 15px;border:1px solid #c6ae90;border-radius:9px;background:#e9c993;color:#18273f;cursor:pointer;font:700 13px system-ui}
+#nexus-login-dialog button:focus-visible,#nexus-login-dialog input:focus-visible{outline:3px solid #e9cb91;outline-offset:3px}
+#nexus-login-dialog [data-login-close]{width:44px;height:44px;flex:0 0 44px;padding:0;border-color:#998a83;background:#24344b;color:#f5e1c8;font-size:25px}
+#nexus-login-dialog label{display:block;margin:15px 0 6px;font-size:12px;font-weight:700;color:#e9d0a6}
+#nexus-login-dialog input{display:block;width:100%;min-height:47px;box-sizing:border-box;padding:10px 12px;border:1px solid #657b93;border-radius:9px;background:#1c2c42;color:#f8ebd9;font-size:15px}
+#nexus-login-dialog input[readonly]{border-color:#8a7680;background:#29283b;font-weight:800}
+#nexus-login-dialog .nexus-login-info{margin:4px 0 18px}
+#nexus-login-dialog .nexus-login-info p{font-size:12px;color:#c7d3e3;margin:8px 0}
+#nexus-login-dialog .nexus-login-state{background:#1d2f44;border-left:3px solid #eacb9b;border-radius:8px;padding:15px;margin:11px 0 14px}
+#nexus-login-dialog .nexus-login-state strong{font:500 21px Georgia,serif}
+#nexus-login-dialog .nexus-login-state p{margin:7px 0 0;color:#d4deea;font-size:13px}
+#nexus-login-dialog form>button{display:block;width:100%;margin-top:18px}
+#nexus-login-dialog .nexus-login-content>button{margin:5px 8px 9px 0}
+#nexus-login-dialog .nexus-login-link{background:transparent;color:#f2d3a6;border:1px solid #74859a}
+#nexus-login-dialog #nexus-login-alert{min-height:12px;color:#f1cca0;font-size:12px;overflow-wrap:anywhere}
+#nexus-login-dialog footer{border-top:1px solid #576780;padding-top:14px;margin-top:17px;color:#b8c8d8;font-size:11px}
+#nexus-login-dialog .nexus-login-recovery-result{border:1px solid #ddbd8e;border-radius:10px;padding:17px;background:#24344b}
+#nexus-login-dialog .nexus-login-recovery-result>strong{font:500 23px Georgia,serif}
+#nexus-login-dialog .nexus-login-recovery-result p{font-size:12px;color:#e5d6c7}
+#nexus-login-dialog #nexus-login-recovery-code{display:block;padding:13px;margin:12px 0;overflow-wrap:anywhere;background:#0d1b2e;color:#f9ddb0;border:1px solid #beac90;border-radius:9px;user-select:all;font-size:14px;letter-spacing:.035em}
+#nexus-login-dialog .nexus-login-recovery-actions{display:flex;flex-wrap:wrap;gap:9px;margin:11px 0}
+#nexus-login-dialog [data-login-action=done]{width:100%}
+#nexus-login-dialog [data-login-action=change]{width:100%}
+#nexus-sync-dialog [data-nexus-login-open]{background:#edcf9f;border-color:#f1d7b6;color:#1b283e;font-weight:800}
+#nexus-sync-dialog .nexus-login-quick{padding:13px;border:1px solid #9b8a91;border-radius:9px;background:#2a2a40;margin:0 0 14px}
+#nexus-sync-dialog .nexus-login-quick p{margin:5px 0 11px;color:#dce6ef;font-size:12px}
+#nexus-sync-dialog .nexus-login-quick button{width:100%}
+html.nexus-theme-aeon #nexus-login-dialog{background:#25172e;border-color:#e2b8bd}
+html.nexus-theme-aeon #nexus-login-dialog :is(.nexus-login-state,.nexus-login-recovery-result){background:#38243e}
+@media(max-width:390px){#nexus-login-dialog .nexus-login-recovery-actions button{width:100%}}
+
+#nexus-login-dialog .nexus-login-signout{width:100%;margin-top:10px;background:#263346;color:#f1d5c3;border-color:#b9a29a}
