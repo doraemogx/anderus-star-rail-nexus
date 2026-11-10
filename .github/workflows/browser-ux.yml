@@ -17,7 +17,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: nexus-ux-browser
+  group: nexus-ux-browser-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   browser:
