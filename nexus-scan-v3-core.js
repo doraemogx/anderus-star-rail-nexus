@@ -9,7 +9,7 @@ export const STATS=['PV','PV %','ATQ','ATQ %','DEF','DEF %','VEL','Chance de CRI
  'Dano CRIT','Efeito de Quebra','RES a Efeito','Taxa de Acerto de Efeito',
  'Regeneração de Energia','Bônus de Cura Realizada','Bônus de Dano Físico',
  'Bônus de Dano de Fogo','Bônus de Dano de Gelo','Bônus de Dano de Raio',
- 'Bônus de Dano de Vento','Bônus de Dano Quântico','Bônus de Dano de Imaginário'];
+ 'Bônus de Dano de Vento','Bônus de Dano Quântico','Bônus de Dano Imaginário'];
 export const MAIN15={
  'PV':705,'ATQ':352,'PV %':43.2,'ATQ %':43.2,'DEF %':54,'VEL':25,
  'Chance de CRIT':32.4,'Dano CRIT':64.8,'Taxa de Acerto de Efeito':43.2,
@@ -113,7 +113,7 @@ export function recognizeCharacter(raw,catalog=[],hintId=''){
   const matching=map.find(x=>String(x.id)===String(hintId)&&/^800[13579]$/.test(String(hintId)));
   if(matching)return {id:String(matching.id),name:matching.name,confidence:'profile'};
   const caelus=map.find(x=>String(x.id)==='8009');
-  return caelus?{id:'8009',name:'Caelus · Euforia',confidence:'suggestion'}:null;
+  return {id:'8009',name:caelus?.name||'Caelus · Euforia',confidence:'suggestion'};
  }
  const candidates=map.map(entry=>{
   const names=[entry.name,entry.alias].filter(Boolean).map(normalize);
