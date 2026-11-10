@@ -155,6 +155,20 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Etapa 1: versão do site e proteção da conta, sem modificar registros existentes.
+ if(!document.getElementById('nexus-stability-css')){
+  for(const name of ['nexus-backup.css','nexus-diagnostics.css']){
+   const style=document.createElement('link');
+   style.rel='stylesheet';style.href='./'+name;document.head.appendChild(style);
+  }
+  const marker=document.createElement('meta');marker.id='nexus-stability-css';marker.name='nexus-stability-phase';marker.content='1';document.head.appendChild(marker);
+ }
+ if(!document.getElementById('nexus-stability-js')){
+  const marker=document.createElement('meta');marker.id='nexus-stability-js';document.head.appendChild(marker);
+  const backup=document.createElement('script');backup.src='./nexus-backup.js';backup.async=false;
+  const diagnostics=document.createElement('script');diagnostics.src='./nexus-diagnostics.js';diagnostics.async=false;
+  document.head.append(backup,diagnostics);
+ }
  enhancePage();observer.observe(document.querySelector('.app')||document.documentElement,{childList:true,subtree:true});
  if('serviceWorker' in navigator&&location.protocol==='https:'){
   navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>console.warn('Anderus offline',e));
