@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 import {mkdir,readFile} from 'node:fs/promises';
-const URL='http://127.0.0.1:8787/';
+const BASE_URL='http://127.0.0.1:8787/';
 const mockReader=await readFile(new URL('./fixtures/nexus-scan-v3-reader-mock.js',import.meta.url),'utf8');
 const initial={
  characters:{
@@ -40,11 +40,11 @@ try{
   await context.route('**/nexus-scan-v3-reader.js',route=>
    route.fulfill({status:200,contentType:'text/javascript',body:mockReader}));
   await context.route('https://nexia-ai-nexus.andrediascrm.workers.dev/**',route=>
-   route.fulfill({status:503,headers:{'Access-Control-Allow-Origin':URL.slice(0,-1),
+   route.fulfill({status:503,headers:{'Access-Control-Allow-Origin':BASE_URL.slice(0,-1),
     'Content-Type':'application/json'},body:'{"error":"Browser test is isolated"}'}));
   const page=await context.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(URL,{waitUntil:'domcontentloaded',timeout:45000});
+  await page.goto(BASE_URL,{waitUntil:'domcontentloaded',timeout:45000});
   await page.waitForFunction(()=>typeof window.v06StartImport==='function',null,{timeout:20000});
   await page.evaluate(()=>window.v06StartImport('1512'));
   await page.locator('#nexus-scan-v3[open]').waitFor({timeout:15000});
