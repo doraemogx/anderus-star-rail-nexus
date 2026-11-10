@@ -32,6 +32,9 @@ try{
     if(!localStorage.getItem('anderus_nexus_v03'))
       localStorage.setItem('anderus_nexus_v03',JSON.stringify(data));
   },fixture);
+  await context.route('https://nexia-ai-nexus.andrediascrm.workers.dev/api/login/v1/status',route=>
+    route.fulfill({status:200,headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:8787','Content-Type':'application/json'},
+     body:JSON.stringify({configured:false,username:'Anderus',iterations:480000})}));
   await page.goto('http://127.0.0.1:8787/',{waitUntil:'domcontentloaded',timeout:45000});
   await page.waitForFunction(()=>typeof window.openProfile==='function'&&typeof window.v11ProfileTab==='function'&&!!document.getElementById('stage'),null,{timeout:20000}).catch(async error=>{
     const dom=await page.evaluate(()=>({ready:document.readyState,stage:!!document.querySelector('#stage'),app:!!document.querySelector('.app'),ids:[...document.querySelectorAll('[id]')].slice(0,80).map(e=>e.id),bodyTail:document.body?.innerHTML?.slice(-800)}));
@@ -55,6 +58,15 @@ try{
   await page.screenshot({path:'artifacts/stability-stage1-'+device.width+'.png'});
   await page.locator('#nexus-backup-dialog [data-backup-close]').click();
   await page.locator('#nexus-diagnostics-dialog #nexus-diag-close').click();
+  // Fase 2: o acesso pelo mesmo botão de sincronização deve abrir usuário Anderus.
+  await page.waitForFunction(()=>!!window.NexusLogin?.open,null,{timeout:15000});
+  await page.locator('#nexus-sync-trigger').click();
+  await page.locator('#nexus-sync-dialog[open] [data-nexus-login-open]').click();
+  await page.locator('#nexus-login-dialog[open] #nexus-login-username').waitFor({timeout:15000});
+  assert.equal(await page.locator('#nexus-login-username').inputValue(),'Anderus');
+  assert.match(await page.locator('#nexus-login-dialog').innerText(),/Primeiro acesso/);
+  await page.screenshot({path:'artifacts/phase2-login-'+device.width+'.png'});
+  await page.locator('#nexus-login-dialog [data-login-close]').click();
   // Exercise all top-level routes before opening the imported character.
   for(const view of ['home','library','endgame','farm','radar','themes','nexia','settings']){
     const before=errors.length;
