@@ -23,6 +23,7 @@ jobs:
         run: |
           node --check illustrated-showcase-import.js
           node scripts/check-hoyolab-robin.mjs
+          node scripts/check-hoyolab-one-character-import.mjs
       - name: Fase 3 — scanner não destrutivo e seis relíquias
         run: |
           node --check nexus-account-engine.js
