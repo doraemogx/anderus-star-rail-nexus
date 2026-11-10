@@ -275,8 +275,12 @@ async function relicRows(worker,bitmap,progress){
      }
      if(stat){
       readings.push(await ocr(worker,bitmap,loc.value,7,'high','0123456789.,%'));
-      const extended=[loc.value[0]-10,loc.value[1]-3,loc.value[2]+17,loc.value[3]+6];
-      readings.push(await ocr(worker,bitmap,extended,7,'soft','0123456789.,%'));
+      const provisional=reconcileHoYoLabRelicRead({stat,slot:i,level:relicLevel,main:j===0,readings});
+      if(provisional.confidence==='pending'||provisional.confidence==='verified-level-15'){
+       // Retry a wider crop when the OCR is truncated or still ambiguous.
+       const extended=[loc.value[0]-10,loc.value[1]-3,loc.value[2]+17,loc.value[3]+6];
+       readings.push(await ocr(worker,bitmap,extended,7,'soft','0123456789.,%'));
+      }
      }
      const result=stat?reconcileHoYoLabRelicRead({stat,slot:i,level:relicLevel,main:j===0,readings}):
       {value:null,confidence:'pending'};
