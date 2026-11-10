@@ -64,7 +64,7 @@ try{
   await page.locator('#nexus-sync-dialog[open] [data-nexus-login-open]').click();
   await page.locator('#nexus-login-dialog[open] #nexus-login-username').waitFor({timeout:15000});
   assert.equal(await page.locator('#nexus-login-username').inputValue(),'Anderus');
-  assert.match(await page.locator('#nexus-login-dialog').innerText(),/Primeiro acesso/);
+  await page.locator('#nexus-login-dialog .nexus-login-state strong').filter({hasText:'Primeiro acesso'}).waitFor({timeout:15000});
   await page.screenshot({path:'artifacts/phase2-login-'+device.width+'.png'});
   await page.locator('#nexus-login-dialog [data-login-close]').click();
   // Exercise all top-level routes before opening the imported character.
