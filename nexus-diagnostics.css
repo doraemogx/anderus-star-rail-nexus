@@ -21,3 +21,11 @@
 @media(max-width:430px){#nexus-update-banner{gap:9px}#nexus-update-banner span{flex-basis:100%}}
 
 @media(max-width:390px){#nexus-diagnostics-button{width:38px;height:38px;min-width:38px;min-height:38px;flex-basis:38px}}
+
+#nexus-diagnostics-dialog .nexus-diag-friendly{border:1px solid #71819b;border-radius:12px;padding:15px;background:#1b2c43;margin:15px 0}
+#nexus-diagnostics-dialog .nexus-diag-friendly strong{color:#f3d9ad;font-size:15px}
+#nexus-diagnostics-dialog .nexus-diag-friendly p{margin:7px 0;line-height:1.55}
+#nexus-diagnostics-dialog .nexus-diag-advanced{margin-bottom:18px;border:1px solid #5d6d85;border-radius:10px;padding:10px}
+#nexus-diagnostics-dialog .nexus-diag-advanced summary{cursor:pointer;color:#f2d5a4;font-size:13px;min-height:36px;display:flex;align-items:center}
+#nexus-diagnostics-dialog .nexus-diag-actions #nexus-diag-backup{background:#e9c895;color:#172536;font-weight:700}
+@media(max-width:440px){#nexus-diagnostics-dialog .nexus-diag-actions button{width:100%}}
