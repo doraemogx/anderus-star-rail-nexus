@@ -41,15 +41,17 @@ async function inspect(){
  output.textContent='Consultando os componentes do Nexus…';
  const r=await collect();
  const build=r.build?escape(r.build.sha?.slice(0,12)||'indisponível'):'Não identificado';
- output.innerHTML='<dl>'+
-  '<dt>Publicado</dt><dd>'+build+' · '+escape(stamp(r.build?.publishedAt))+'</dd>'+
-  '<dt>Conexão</dt><dd>'+(r.online?'Online':'Offline')+'</dd>'+
+ output.innerHTML='<div class="nexus-diag-friendly"><strong>Versão disponível no site</strong><p>'+build+' · '+escape(stamp(r.build?.publishedAt))+'</p>'+
+  '<p>'+(r.online?'Você está online.':'Você está sem conexão; informações podem estar desatualizadas.')+'</p>'+
+  '<p>Se o código for diferente no celular e no computador, atualize a página dos dois. Os personagens de um aparelho não aparecem automaticamente no outro.</p></div>'+
+  '<details class="nexus-diag-advanced"><summary>Ver informações técnicas (opcional)</summary><dl>'+
   '<dt>Catálogo</dt><dd>'+(r.catalog.ok?'Disponível':'Indisponível')+'</dd>'+
-  '<dt>Service Worker</dt><dd>'+(r.serviceWorker.controlled?'Controlando esta página':'Sem controle ativo nesta página')+'</dd>'+
+  '<dt>Versão da página</dt><dd>'+build+'</dd>'+
+  '<dt>Offline</dt><dd>'+(r.serviceWorker.controlled?'Proteção ativa':'Ainda não ativo')+'</dd>'+
   '<dt>Atualização pendente</dt><dd>'+(r.serviceWorker.waiting?'Sim':'Não detectada')+'</dd>'+
-  '<dt>Caches Nexus</dt><dd>'+escape(r.caches.join(', ')||'nenhum')+'</dd>'+
-  '<dt>Registros locais</dt><dd>'+r.accountStorage.count+' chaves relacionadas ao Nexus (não sincronizadas entre aparelhos)</dd>'+
-  '</dl>';
+  '<dt>Cache</dt><dd>'+escape(r.caches.join(', ')||'nenhum')+'</dd>'+
+  '<dt>Armazenamento local</dt><dd>'+r.accountStorage.count+' chave(s) relacionadas ao Nexus</dd>'+
+  '</dl></details>';
  document.getElementById('nexus-diag-copy').onclick=()=>navigator.clipboard?.writeText(JSON.stringify(r,null,2)).catch(()=>{});
 }
 const LAST_BUILD_KEY='anderus-nexus-seen-build';
@@ -82,17 +84,17 @@ function mount(){
  const btn=document.createElement('button');
  btn.id='nexus-diagnostics-button';btn.type='button';
  btn.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"></circle></svg>';
- btn.setAttribute('aria-label','Diagnóstico do Nexus');btn.title='Diagnóstico do Nexus';
+ btn.setAttribute('aria-label','Versão e proteção dos dados');btn.title='Versão e proteção dos dados';
  btn.setAttribute('aria-haspopup','dialog');
  btn.addEventListener('click',()=>{
   let dialog=document.getElementById('nexus-diagnostics-dialog');
   if(!dialog){
    dialog=document.createElement('dialog');dialog.id='nexus-diagnostics-dialog';
-   dialog.setAttribute('aria-label','Diagnóstico do Nexus');
-   dialog.innerHTML='<div class="nexus-diag-head"><h2>Diagnóstico do Nexus</h2><button type="button" id="nexus-diag-close" aria-label="Fechar diagnóstico">×</button></div>'+
-     '<p>Verifique a versão publicada, o funcionamento offline e os dados locais. Nenhuma informação da sua conta é enviada.</p>'+
+   dialog.setAttribute('aria-label','Versão e proteção dos dados do Nexus');
+   dialog.innerHTML='<div class="nexus-diag-head"><h2>Versão e segurança</h2><button type="button" id="nexus-diag-close" aria-label="Fechar diagnóstico">×</button></div>'+
+     '<p>Confira a versão disponível e salve uma cópia dos seus personagens antes de qualquer mudança. Nada é enviado para outro lugar.</p>'+
      '<div id="nexus-diag-report" aria-live="polite"></div>'+
-     '<div class="nexus-diag-actions"><button type="button" id="nexus-diag-refresh">Verificar novamente</button><button type="button" id="nexus-diag-copy">Copiar relatório</button><button type="button" id="nexus-diag-backup">Transferir conta</button></div>'+
+     '<div class="nexus-diag-actions"><button type="button" id="nexus-diag-refresh">Conferir versão</button><button type="button" id="nexus-diag-copy">Copiar informações</button><button type="button" id="nexus-diag-backup">Salvar ou transferir personagens</button></div>'+
      '<p class="nexus-diag-note">Importante: atualizar o aplicativo não sincroniza personagens entre celular e desktop.</p>';
    document.body.appendChild(dialog);
    dialog.querySelector('#nexus-diag-close').onclick=()=>dialog.close();
