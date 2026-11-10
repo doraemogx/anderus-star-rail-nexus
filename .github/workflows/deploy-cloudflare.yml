@@ -1,0 +1,37 @@
+name: Publicar serviço Cloudflare do Nexus
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'worker/**'
+      - '.github/workflows/deploy-cloudflare.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nexus-cloudflare-production
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar autorização de publicação do Cloudflare
+        if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
+        run: |
+          echo "::warning::A publicação automática do Cloudflare ainda não está autorizada. O código fica no GitHub sem alterar o Worker em produção."
+      - uses: actions/setup-node@v4
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        with:
+          node-version: '22'
+      - name: Instalar Wrangler
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        run: npm install --no-audit --no-fund
+        working-directory: worker
+      - name: Publicar Worker existente e armazenamento criptografado
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        run: npx wrangler deploy
+        working-directory: worker
