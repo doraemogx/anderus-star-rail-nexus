@@ -31,10 +31,41 @@ function exportBackup(){
  saveFile(JSON.stringify(payload,null,2),filename);
  return {filename,characters:Object.keys(account.characters).length};
 }
+function mergeRelicPiece(existing,from){
+ if(!existing||typeof existing!=='object')return structuredClone(from);
+ if(!from||typeof from!=='object')return structuredClone(existing);
+ const switched=Boolean(from.setId&&existing.setId&&String(from.setId)!==String(existing.setId));
+ const before=switched?{}:existing;
+ const mergeStat=(one,two)=>{
+  if(!two?.stat)return structuredClone(one||{stat:'',value:null});
+  return {stat:String(two.stat),value:two.value??(one?.stat===two.stat?one?.value??null:null)};
+ };
+ return {...before,...from,setId:from.setId||before.setId||'',
+  setName:from.setName||before.setName||'',
+  level:from.level??before.level??null,
+  main:mergeStat(before.main,from.main),
+  subs:Array.from({length:4},(_,i)=>mergeStat(before.subs?.[i],from.subs?.[i]))};
+}
 function mergeAccount(current,incoming){
  const output=structuredClone(current);
  for(const [key,value] of Object.entries(incoming)){
-  if(key==='characters'||key==='v06RelicDetails'||key==='v06Relics'||key==='v06Screens'||key==='v06BuildHistory'||key==='v06MaterialInventory'||key==='v06AscensionPlans'){
+  if(key==='characters'&&value&&typeof value==='object'&&!Array.isArray(value)){
+   // An imported ONE-character build must not erase existing character metadata
+   // such as cone level, equipped images, trace notes, or manually added fields.
+   output.characters={...(output.characters||{})};
+   for(const [id,build] of Object.entries(value)){
+    if(build&&typeof build==='object'&&!Array.isArray(build))
+     output.characters[id]={...(output.characters[id]||{}),...build};
+   }
+  }else if(key==='v06RelicDetails'&&value&&typeof value==='object'&&!Array.isArray(value)){
+   output.v06RelicDetails={...(output.v06RelicDetails||{})};
+   for(const [id,pieces] of Object.entries(value)){
+    if(Array.isArray(pieces)){
+     const prev=output.v06RelicDetails[id]||[];
+     output.v06RelicDetails[id]=pieces.map((piece,i)=>mergeRelicPiece(prev[i],piece));
+    }
+   }
+  }else if(key==='v06Relics'||key==='v06Screens'||key==='v06BuildHistory'||key==='v06MaterialInventory'||key==='v06AscensionPlans'){
    if(value&&typeof value==='object'&&!Array.isArray(value)){
     output[key]={...(output[key]||{}),...value};
    }
