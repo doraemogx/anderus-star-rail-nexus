@@ -4,6 +4,7 @@
 // All runtime resources remain on Cloudflare's free quota; no API key in frontend.
 // Updating this GitHub file does not automatically redeploy your Cloudflare Worker.
 export { NexusSyncRoom } from "./sync-room.js";
+export { NexusLoginRoom } from "./login-room.js";
 const ALLOWED_ORIGIN = "https://doraemogx.github.io";
 const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 const DATA_ROOT = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_min/pt/";
@@ -133,6 +134,53 @@ export default {
     const origin = req.headers.get("Origin") || "";
     // Sync is independent of the optional AI binding and never inspects account data.
     const url = new URL(req.url);
+    // Phase 2 login: pass only validated requests to the private owner vault.
+    if(url.pathname.startsWith("/api/login/v1/")){
+      const corsHeaders={
+       "Access-Control-Allow-Origin":origin===ALLOWED_ORIGIN?ALLOWED_ORIGIN:"null",
+       "Access-Control-Allow-Methods":"GET,POST,OPTIONS",
+       "Access-Control-Allow-Headers":"content-type,authorization",
+       "Cache-Control":"no-store","Vary":"Origin"
+      };
+      if(req.method==="OPTIONS")return new Response(null,{status:204,headers:corsHeaders});
+      if(origin!==ALLOWED_ORIGIN)return Response.json({error:"Origem não autorizada"},{status:403,headers:corsHeaders});
+      if(!env.LOGIN_AUTH)return Response.json({error:"Login ainda não ativado"},{status:503,headers:corsHeaders});
+      const action=url.pathname.match(/^\/api\/login\/v1\/(status|setup|login|recover|reset)$/)?.[1];
+      if(!action)return Response.json({error:"Operação desconhecida"},{status:404,headers:corsHeaders});
+      if(action==="status"&&req.method!=="GET"||action!=="status"&&req.method!=="POST")
+       return Response.json({error:"Método inválido"},{status:405,headers:corsHeaders});
+      let bodyText="";
+      if(req.method==="POST"){
+       bodyText=await req.text();
+       if(bodyText.length>11000)return Response.json({error:"Requisição muito grande"},{status:413,headers:corsHeaders});
+      }
+      const sanitized=new Headers({"Content-Type":"application/json",
+       "X-Nexus-Client-Ip":(req.headers.get("CF-Connecting-IP")||"unknown").slice(0,90)});
+      if(action==="setup"||action==="reset"){
+       let body;
+       try{body=JSON.parse(bodyText)}catch(_){return Response.json({error:"Dados inválidos"},{status:400,headers:corsHeaders})}
+       const requiringPair=action==="setup"||body?.mode==="pair";
+       if(requiringPair){
+        const roomId=body.roomId,proof=req.headers.get("Authorization")||"";
+        if(!/^[a-f0-9]{32}$/.test(roomId||"")||!/^Bearer [A-Za-z0-9_-]{43}$/.test(proof))
+         return Response.json({error:"Conta vinculada não identificada"},{status:403,headers:corsHeaders});
+        if(!env.ACCOUNT_SYNC)return Response.json({error:"A conta sincronizada não está disponível"},{status:503,headers:corsHeaders});
+        const room=env.ACCOUNT_SYNC.get(env.ACCOUNT_SYNC.idFromName(roomId));
+        const authorized=await room.fetch(new Request("https://nexus-internal.invalid/api/sync/v1/"+roomId,
+          {method:"GET",headers:{"Authorization":proof}}));
+        if(authorized.status!==200)
+         return Response.json({error:"Abra o Nexus em um aparelho já conectado à sua conta"},{status:403,headers:corsHeaders});
+        sanitized.set("X-Nexus-Verified-Room",roomId);
+       }
+      }
+      const owner=env.LOGIN_AUTH.get(env.LOGIN_AUTH.idFromName("nexus-owner-anderus-v1"));
+      const requestToOwner=new Request(req.url,{method:req.method,headers:sanitized,
+       body:req.method==="POST"?bodyText:undefined});
+      const answer=await owner.fetch(requestToOwner);
+      const headers=new Headers(answer.headers);
+      for(const [name,value] of Object.entries(corsHeaders))headers.set(name,value);
+      return new Response(answer.body,{status:answer.status,headers});
+    }
     if(url.pathname.startsWith("/api/sync/v1/")){
       const corsHeaders={
        "Access-Control-Allow-Origin":origin===ALLOWED_ORIGIN?ALLOWED_ORIGIN:"null",
