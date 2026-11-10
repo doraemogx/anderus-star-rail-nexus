@@ -129,7 +129,8 @@ export function fillRelicSetFields(report,root=document){
         btn.append(img,span);
         btn.title='Selecionar '+span.textContent;
         btn.addEventListener('click',()=>{
-          field.value=candidate.setId;field.style.borderColor='#6ec4ae';
+          field.value=candidate.setId;delete field.dataset.iconSuggestion;
+          field.style.borderColor='#6ec4ae';
           field.title='Conjunto selecionado manualmente após comparar os ícones.';
         });
         suggestions.appendChild(btn);
