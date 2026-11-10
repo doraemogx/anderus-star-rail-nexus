@@ -630,9 +630,9 @@
   window.v06QuickFilter=q=>{const e=document.getElementById('v06-quick-list');if(e)e.innerHTML=quickList(q)};
 
   function uploadPanel(){
-    return '<div class="v06-import"><div class="v06-import-drop"><label for="v06-file">⇧<strong>Escolher print de build</strong><small>PNG, JPG ou WEBP · incluindo o cartão ilustrado 2000×2300</small></label><input id="v06-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="v06ReadPrint(this.files[0])"></div>'+
+    return '<div class="v06-import"><div class="v06-import-drop"><label for="v06-file">⇧<strong>Escolher print de build</strong><small>Prioridade: cartão da HoYoLab 2000 × 2300 · PNG, JPG ou WEBP</small></label><input id="v06-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="v06ReadPrint(this.files[0])"></div>'+
       '<div id="v06-import-preview" class="v06-import-preview"></div>'+
-      '<p class="v06-source-note">O OCR analisa o cabeçalho, atributos totais, cone e as seis relíquias (conjunto, atributo principal e subatributos). Valores incertos ficam editáveis. Confirme personagem, E0–E6, S1–S5 e cada valor antes de salvar; o processamento acontece no navegador.</p></div>';
+      '<p class="v06-source-note">Use o cartão completo de atributos da HoYoLab, como o da Robin • Summeretto. O Nexus lê as seis relíquias e compara os números duas vezes; campos incertos continuam editáveis. O processamento é local, no seu navegador. Confira os dados antes de salvar.</p></div>';
   }
   window.v06StartImport=function(id){
     uploader.hintId=id||'';
@@ -976,9 +976,16 @@
       if(!illustrated&&(ratio<1.02||ratio>1.18))
         throw Error('Layout ainda sem OCR calibrado. Revise os seis equipamentos manualmente; não vamos adivinhar números.');
       const ocr=await getLang();
-      worker=await ocr.createWorker('eng',1,{logger:m=>{
-        if(m.status==='recognizing text')say('Lendo o print: '+Math.round(m.progress*100)+'%');
-      }});
+      const progress={logger:m=>{
+        if(m.status==='recognizing text')say('Lendo o cartão da HoYoLab: '+Math.round(m.progress*100)+'%');
+      }};
+      try{
+        // HoYoLab screenshot labels are PT-BR; proper nouns can be English.
+        worker=await ocr.createWorker(['por','eng'],1,progress);
+      }catch(languageError){
+        console.warn('OCR PT-BR indisponível; usando inglês como fallback',languageError);
+        worker=await ocr.createWorker('eng',1,progress);
+      }
       if(illustrated){
         const module=await import('./illustrated-showcase-import.js?v=1');
         say('Reconhecendo o cartão ilustrado e comparando com o catálogo de personagens…');
