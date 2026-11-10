@@ -1,5 +1,5 @@
-/* Nexus PWA v15: predictable updates, offline account/catalogue support. */
-const CACHE='anderus-shell-v16';
+/* Nexus PWA — release SHA stamp; network-first for scripts and styles, offline fallback. */
+const CACHE='anderus-shell-dev';
 const CORE=[
  './','./v06.css','./v06.js','./nexus-v07.css','./nexus-v07.js',
  './nexus-v09.css','./nexus-v09.js','./nexus-account.css','./nexus-account-engine.js',
@@ -9,16 +9,23 @@ const CORE=[
  './manifest.webmanifest','./assets/pwa/icon-192.png'
 ];
 self.addEventListener('install',event=>{
- event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).catch(e=>{
-  console.warn('Nexus: partes do catálogo offline indisponíveis',e);
- }));
- self.skipWaiting();
+ event.waitUntil((async()=>{
+  const cache=await caches.open(CACHE);
+  const results=await Promise.allSettled(CORE.map(path=>cache.add(path)));
+  const unavailable=results.flatMap((result,index)=>result.status==='rejected'?[CORE[index]]:[]);
+  if(unavailable.length)console.warn('Nexus offline: arquivos não armazenados:',unavailable);
+  for(const path of ['./','./v06.js','./nexus-v07.js','./data/live-game.json']){
+   if(!(await cache.match(path)))throw Error('Shell offline obrigatório ausente: '+path);
+  }
+  await self.skipWaiting();
+ })());
 });
 self.addEventListener('activate',event=>{
- event.waitUntil(caches.keys().then(keys=>Promise.all(
-  keys.filter(k=>k.startsWith('anderus-shell-')&&k!==CACHE).map(k=>caches.delete(k))
- )));
- self.clients.claim();
+ event.waitUntil((async()=>{
+  const all=await caches.keys();
+  await Promise.all(all.filter(key=>key.startsWith('anderus-shell-')&&key!==CACHE).map(key=>caches.delete(key)));
+  await self.clients.claim();
+ })());
 });
 self.addEventListener('fetch',event=>{
  const req=event.request;
@@ -44,6 +51,10 @@ self.addEventListener('fetch',event=>{
   event.respondWith(network().catch(()=>caches.match(req).then(c=>c||caches.match('./'))));
   return;
  }
- // Script and style assets use the freshly versioned shell cache, then revalidate.
- event.respondWith(caches.match(req).then(cached=>cached||network()).catch(()=>network()));
+ // Keep JS and CSS synchronized across devices: online always checks the
+ // deployed asset first, only use an old asset if the network is unavailable.
+ event.respondWith(network().catch(()=>caches.match(req).then(cached=>{
+  if(cached)return cached;
+  throw Error('Recurso indisponível offline: '+url.pathname);
+ })));
 });
