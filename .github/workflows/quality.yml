@@ -21,3 +21,8 @@ jobs:
           node scripts/check-release-stamp.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
         run: node scripts/check-account.mjs
+      - name: Etapa 1 — versão e restauração segura de dados
+        run: |
+          node --check nexus-diagnostics.js
+          node --check nexus-backup.js
+          node scripts/check-backup.mjs
