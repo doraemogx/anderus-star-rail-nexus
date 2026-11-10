@@ -689,7 +689,10 @@
     showModal('Importar build · revisar dados',content);
     const review=document.querySelector('.v06-import-form');
     for(const kind of ['input','change'])review?.addEventListener(kind,event=>{
-      if(event.isTrusted&&event.target?.dataset)delete event.target.dataset.ocrSuggestion;
+      if(event.isTrusted&&event.target?.dataset){
+        delete event.target.dataset.ocrSuggestion;
+        delete event.target.dataset.iconSuggestion;
+      }
     });
     window.__nexusRelicInspectorPromise=import('./relic-inspector.js?v=3').then(mod=>{
       window.__nexusRelicInspector=mod;
