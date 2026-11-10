@@ -43,7 +43,7 @@ for(const symbol of ['v09SetVisualMode','renderVariants','renderEndgame','enhanc
 assert.ok(loader.includes('anderus-aeon-aha-visual-mode'));
 assert.ok(loader.includes('aha-detail.css'));
 assert.ok(loader.includes('enhanceNexusV09();'));
-assert.ok(sw.includes('anderus-shell-v16'));
+assert.ok(/const CACHE='anderus-shell-(?:dev|[a-f0-9]{40})';/.test(sw),'cache key deve ser carimbada pelo SHA de publicação');
 assert.ok(read('v06.js').includes('repairOverviewEidolons'));
 assert.ok(read('v06.js').includes('rankRecord(id,n)'));
 assert.ok(read('v06.js').includes('relic-auto.js?v=3'));
