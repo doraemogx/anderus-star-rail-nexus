@@ -26,3 +26,9 @@ jobs:
           node --check nexus-diagnostics.js
           node --check nexus-backup.js
           node scripts/check-backup.mjs
+
+      - name: Servidor de conta compartilhada
+        run: |
+          node --check worker/index.js
+          node --check worker/sync-room.js
+          node scripts/check-cloud-sync-worker.mjs
