@@ -38,6 +38,23 @@ try{
     console.error('BROWSER_STAGE_DEBUG',JSON.stringify(dom));
     throw error;
   });
+  // Etapa 1: o usuário encontra a versão e consegue salvar a conta, em ambas as telas.
+  await page.locator('#nexus-diagnostics-button').waitFor({timeout:15000});
+  await page.locator('#nexus-diagnostics-button').click();
+  await page.locator('#nexus-diagnostics-dialog[open] .nexus-diag-friendly').waitFor({timeout:15000});
+  assert.match(await page.locator('#nexus-diagnostics-dialog').innerText(),/Versão e segurança/);
+  await page.locator('#nexus-diag-backup').click();
+  await page.locator('#nexus-backup-dialog[open]').waitFor({timeout:15000});
+  const beforeExport=await page.evaluate(()=>localStorage.getItem('anderus_nexus_v03'));
+  const downloadPromise=page.waitForEvent('download',{timeout:10000});
+  await page.locator('[data-backup-export]').click();
+  const download=await downloadPromise;
+  assert.match(download.suggestedFilename(),/^anderus-nexus-backup-.*\.json$/);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('anderus_nexus_v03')),beforeExport,
+    'Saving a backup must not modify the account');
+  await page.screenshot({path:'artifacts/stability-stage1-'+device.width+'.png'});
+  await page.locator('#nexus-backup-dialog [data-backup-close]').click();
+  await page.locator('#nexus-diagnostics-dialog #nexus-diag-close').click();
   // Exercise all top-level routes before opening the imported character.
   for(const view of ['home','library','endgame','farm','radar','themes','nexia','settings']){
     const before=errors.length;
