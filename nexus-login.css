@@ -37,3 +37,5 @@
 html.nexus-theme-aeon #nexus-login-dialog{background:#25172e;border-color:#e2b8bd}
 html.nexus-theme-aeon #nexus-login-dialog :is(.nexus-login-state,.nexus-login-recovery-result){background:#38243e}
 @media(max-width:390px){#nexus-login-dialog .nexus-login-recovery-actions button{width:100%}}
+
+#nexus-login-dialog .nexus-login-signout{width:100%;margin-top:10px;background:#263346;color:#f1d5c3;border-color:#b9a29a}
