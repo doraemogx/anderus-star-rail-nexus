@@ -379,7 +379,18 @@ export function applyShowcaseToForm(report,root=document){
    const field=root.getElementById(statId);
    if(field&&[...field.options].some(o=>o.value===r.stat)){
      if(set(statId,r.stat)&&set(valId,r.value)){
-       stats++;field.dataset.ocrSuggestion='1';field.title='Lido da imagem; confira antes de salvar.';
+       stats++;field.dataset.ocrSuggestion='1';
+       const validation=r.confidence==='verified-level-15'?
+        'Atributo principal calculado pelo nível +15 visível na peça. Confira o rótulo.':
+        r.confidence==='double-read'||r.confidence==='verified'?
+        'Conferido em duas leituras do cartão HoYoLab.':
+        'Leitura automática única; confira o valor no print.';
+       field.title=validation;
+       const amount=root.getElementById(valId);
+       if(amount){
+        amount.title=validation;
+        amount.style.borderColor=r.confidence==='single-read'?'#e7bd74':'#6ec4ae';
+       }
      }
    }
  }
