@@ -260,6 +260,29 @@ function extractHash(){
   dlg.querySelector("#nexus-sync-link").value=hash;
  }
 }
+async function signOut(){
+ if(!pair)return;
+ if(!navigator.onLine)throw Error("Conecte-se à internet antes de sair, para não perder alterações pendentes.");
+ await sync();
+ if(pendingConflict)throw Error("Resolva as alterações pendentes antes de sair.");
+ const snapshot=syncable(localAccount());
+ if(JSON.stringify(snapshot)!==observed)
+  throw Error("A conta ainda está sendo sincronizada. Tente novamente.");
+ const db=await database();
+ await new Promise((resolve,reject)=>{
+  const tx=db.transaction("records","readwrite");
+  tx.objectStore("records").clear();
+  tx.oncomplete=()=>resolve();
+  tx.onerror=()=>reject(tx.error||Error("Não foi possível proteger o encerramento."));
+  tx.onabort=()=>reject(tx.error||Error("Não foi possível proteger o encerramento."));
+ });
+ // Only known Nexus account keys. GitHub Pages may host unrelated sites on the same origin.
+ localStorage.removeItem(ACCOUNT_KEY);
+ localStorage.removeItem(PAIR_KEY);
+ localStorage.removeItem("anderus_nexus_backup_before_restore");
+ pair=null;pendingConflict=null;observed="";
+ location.reload();
+}
 function mount(){
  if(initialized)return;initialized=true;
  try{pair=localStorage.getItem(PAIR_KEY)?validatePair(JSON.parse(localStorage.getItem(PAIR_KEY))):null;}
@@ -287,6 +310,6 @@ function mount(){
   });
  }
 }
-window.NexusCloudSync={open,sync:()=>sync(),connectWithPair:join,status:()=>({connected:!!pair,message:latestStatus}),getPair:()=>pair?.id||null};
+window.NexusCloudSync={open,sync:()=>sync(),connectWithPair:join,signOut,status:()=>({connected:!!pair,message:latestStatus}),getPair:()=>pair?.id||null};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});
 else mount();
