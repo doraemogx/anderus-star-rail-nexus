@@ -10,11 +10,19 @@
       {
         "name": "ACCOUNT_SYNC",
         "class_name": "NexusSyncRoom"
+      },
+      {
+        "name": "LOGIN_AUTH",
+        "class_name": "NexusLoginRoom"
       }
     ]
   },
   "exports": {
     "NexusSyncRoom": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+    "NexusLoginRoom": {
       "type": "durable-object",
       "storage": "sqlite"
     }
