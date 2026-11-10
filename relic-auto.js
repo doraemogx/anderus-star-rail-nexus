@@ -288,7 +288,7 @@ export async function autoDetectRelics(bitmap,worker,progress=()=>{}){
  }catch(e){report.uncertain.push('Leitura dos atributos secundários falhou: '+String(e.message||e));}
  document.querySelectorAll('.v07-rel-option').forEach(btn=>btn.addEventListener('click',()=>{
   const i=btn.dataset.ridx;const el=document.getElementById('v06-r'+i+'-set');
-  if(el){el.value=btn.dataset.setid;el.style.borderColor='#78c5ac';}
+  if(el){el.value=btn.dataset.setid;delete el.dataset.iconSuggestion;el.style.borderColor='#78c5ac';}
  }));
  report.status=report.sets+' / 6 conjuntos sugeridos; '+report.recognized+' / 30 atributos de relíquias preenchidos pelo OCR. '+report.uncertain.length+' campos requerem revisão.';
  return report;
