@@ -7,7 +7,12 @@ on:
       - 'nexus-account-engine.js'
       - 'nexus-account.css'
       - 'scripts/browser-smoke.mjs'
+      - 'scripts/browser-offline.mjs'
+      - 'scripts/stamp-release.mjs'
+      - 'sw.js'
+      - '.github/workflows/pages.yml'
       - '.github/workflows/browser-ux.yml'
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
@@ -31,6 +36,7 @@ jobs:
         run: |
           python3 -m http.server 8787 --bind 127.0.0.1 >/tmp/nexus-browser-server.log 2>&1 &
           node scripts/browser-smoke.mjs
+          node scripts/browser-offline.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4
