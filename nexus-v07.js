@@ -155,6 +155,13 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Sincronização real: a versão local permanece utilizável quando o backend estiver offline.
+ if(!document.getElementById('nexus-cloud-sync-css')){
+  const css=document.createElement('link');css.id='nexus-cloud-sync-css';css.rel='stylesheet';css.href='./nexus-cloud-sync.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-cloud-sync-js')){
+  const js=document.createElement('script');js.id='nexus-cloud-sync-js';js.type='module';js.src='./nexus-cloud-sync.js';document.head.appendChild(js);
+ }
  // Etapa 1: versão do site e proteção da conta, sem modificar registros existentes.
  if(!document.getElementById('nexus-stability-css')){
   for(const name of ['nexus-backup.css','nexus-diagnostics.css']){

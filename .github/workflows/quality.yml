@@ -21,6 +21,17 @@ jobs:
           node scripts/check-release-stamp.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
         run: node scripts/check-account.mjs
+      - name: Verificar se o Cloudflare já publicou o novo serviço
+        continue-on-error: true
+        run: node scripts/check-cloud-sync-deployment.mjs
+      - name: Sincronização real — criptografia, união e conflito
+        run: |
+          node --check nexus-sync-core.js
+          node --check nexus-cloud-sync.js
+          node --check worker/sync-room.js
+          node --check worker/index.js
+          node scripts/check-cloud-sync.mjs
+          node scripts/check-cloud-sync-worker.mjs
       - name: Etapa 1 — versão e restauração segura de dados
         run: |
           node --check nexus-diagnostics.js
