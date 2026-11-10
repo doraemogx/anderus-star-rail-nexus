@@ -104,7 +104,8 @@ export function fillRelicSetFields(report,root=document){
     const field=root.getElementById('v06-r'+i+'-set');
     const suggestions=root.getElementById('v06-relmatch-'+i);
     const chosen=report.selected?.[i]||null;
-    if(field&&chosen&&[...field.options].some(o=>o.value===chosen.setId)){
+    if(field&&chosen&&(field.value===''||field.dataset.iconSuggestion==='1')&&
+      [...field.options].some(o=>o.value===chosen.setId)){
       field.value=chosen.setId;field.style.borderColor='#6ec4ae';
       field.title=chosen.confidence==='high'
         ?'Conjunto reconhecido pelo ícone original. Confira antes de salvar.'
