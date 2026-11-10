@@ -68,7 +68,9 @@ try{
   assert.equal(await page.locator('#ns3-piece-5 [data-field="relicvalue"][data-row="1"]').inputValue(),'33');
   await page.screenshot({path:'artifacts/nexus-scan-v3-'+config.width+'.png'});
   await page.locator('#ns3-confirm').check();
+  const savedReload=page.waitForEvent('load',{timeout:20000});
   await page.locator('[data-action="save"]').click();
+  await savedReload;
   await page.waitForFunction(()=>{
    const a=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}');
    return a.characters?.['1512']?.pv===6284&&a.v06RelicDetails?.['1512']?.[5]?.subs?.[0]?.value===33;
@@ -98,7 +100,9 @@ try{
   await page.evaluate(()=>window.v06StartImport('1512'));
   await page.locator('#nexus-scan-v3[open] .ns3-undo').waitFor({timeout:15000});
   page.once('dialog',dialog=>dialog.accept());
+  const undoneReload=page.waitForEvent('load',{timeout:20000});
   await page.locator('.ns3-undo').click();
+  await undoneReload;
   await page.waitForFunction(()=>{
    const a=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'{}');
    return a.characters?.['1512']?.pv===6150&&a.characters?.['1503']?.e===2;
