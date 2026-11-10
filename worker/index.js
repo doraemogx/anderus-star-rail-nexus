@@ -1,3 +1,4 @@
+// Cloudflare Builds: publicar serviço de sincronização após conectar a pasta /worker (2026-11-10).
 // Cloudflare Builds verification: no functional change (2026-11-08).
 // Nexia v2 — Honkai: Star Rail factual retrieval before LLM answers.
 // All runtime resources remain on Cloudflare's free quota; no API key in frontend.
