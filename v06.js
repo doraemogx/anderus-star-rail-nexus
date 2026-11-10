@@ -229,7 +229,7 @@
     const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):profileTeams(id,b);
     const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
     return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
-    '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
+    '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?(b.level==null?'Nv. não informado':'Nv. '+b.level):'Não registrado')+'</span><span>E'+(b?.e==null?'?':fmt(b.e))+' · S'+(b?.s==null?'?':fmt(b.s))+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
     '<div class="v06-profile-controls"><button class="v06-primary" onclick="'+(b?'editBuild(\''+id+'\')':'addOwned(\''+id+'\')')+'">'+(b?'Editar minha build':'＋ Adicionar à conta')+'</button><button class="v06-secondary" onclick="v06StartImport(\''+id+'\')">⇧ Importar print</button></div>'+
     '<nav class="v06-tabs">'+switches.map(([key,title])=>'<button class="'+(active===key?'active':'')+'" onclick="tab=\''+key+'\';refresh()">'+title+'</button>').join('')+'</nav>'+
     accountStorageNotice()+
@@ -967,11 +967,12 @@
         if(el.value!==''&&el.dataset.ocrSuggestion!=='1')return false;
         el.value=String(value);el.dataset.ocrSuggestion='1';return true;
       };
-      const ocr=await getLang();
       bitmap=await createImageBitmap(uploader.file);
       const ratio=bitmap.width/bitmap.height;
       const illustrated=ratio>=.82&&ratio<=.95;
-      if(!illustrated&&(ratio<1.02||ratio>1.18))throw Error('Formato ainda não reconhecido. Use uma captura de build ilustrada ou o relatório padrão.');
+      if(!illustrated&&(ratio<1.02||ratio>1.18))
+        throw Error('Layout ainda sem OCR calibrado. Revise os seis equipamentos manualmente; não vamos adivinhar números.');
+      const ocr=await getLang();
       worker=await ocr.createWorker('eng',1,{logger:m=>{
         if(m.status==='recognizing text')say('Lendo o print: '+Math.round(m.progress*100)+'%');
       }});
