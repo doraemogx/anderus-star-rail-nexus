@@ -82,3 +82,5 @@
  #nexus-scan-v3 .ns3-relic-row{grid-template-columns:minmax(0,1fr) 78px}
  #nexus-scan-v3 .ns3-suggestions button{min-width:113px}
 }
+
+#nexus-scan-v3 .ns3-undo{margin-top:10px;border:0;background:transparent;color:#e5c7c5;text-decoration:underline;font-size:12px;padding:12px}
