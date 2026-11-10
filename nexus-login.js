@@ -131,8 +131,13 @@ async function click(e){
  if(act==="copy"){try{await copy(shownRecovery);alert("Código copiado.");}catch(err){alert(err.message)}return}
  if(act==="signout"){
   if(!window.confirm("Sair deste dispositivo? Os personagens sincronizados continuarão na nuvem, mas os dados e backups locais do Nexus serão apagados neste aparelho."))return;
+  const dlg=document.getElementById("nexus-login-dialog");
+  if(dlg?.open)dlg.close();
   try{await window.NexusCloudSync?.signOut?.();}
-  catch(error){alert(error.message||"Não foi possível sair com segurança.");}
+  catch(error){
+   if(dlg&&!dlg.open)dlg.showModal();
+   alert(error.message||"Não foi possível sair com segurança.");
+  }
   return;
  }
  if(act==="download"){download(shownRecovery);alert("Arquivo de recuperação salvo.");return}
