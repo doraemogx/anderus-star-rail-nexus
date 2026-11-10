@@ -108,7 +108,8 @@ function initial(){
  '<p>Selecione o cartão completo em que aparecem os atributos, cone de luz, Eidolons e seis relíquias. Aceitamos os dois modelos da HoYoLab que você utiliza.</p>'+
  '<label class="ns3-pick" for="ns3-file">Escolher print da HoYoLab <span>PNG, JPG ou WEBP</span></label>'+
  '<input id="ns3-file" type="file" accept="image/png,image/jpeg,image/webp">'+
- '<p class="ns3-privacy">A imagem é analisada no seu aparelho. Nada será enviado ao ChatGPT. Os personagens atuais não serão apagados.</p></div>';
+ '<p class="ns3-privacy">A imagem é analisada no seu aparelho. Nada será enviado ao ChatGPT. Os personagens atuais não serão apagados.</p>'+
+ '<button type="button" class="ns3-undo" data-action="undo">Desfazer a última importação</button></div>';
  message('');
 }
 function loading(file){
@@ -254,13 +255,65 @@ async function scan(file){
   message('Sua conta não foi alterada.',true);
  }
 }
-function immutableSnapshot(account){
+function backupDB(){
+ return new Promise((resolve,reject)=>{
+  if(!window.indexedDB)return reject(Error('IndexedDB indisponível'));
+  const req=indexedDB.open('anderus-nexus-scan-backups',1);
+  req.onupgradeneeded=()=>req.result.createObjectStore('records');
+  req.onsuccess=()=>resolve(req.result);
+  req.onerror=()=>reject(req.error||Error('Backup não pôde ser aberto.'));
+ });
+}
+async function recordBackup(value){
+ const db=await backupDB();
+ try{
+  await new Promise((resolve,reject)=>{
+   const tx=db.transaction('records','readwrite');
+   tx.objectStore('records').put(value,'last-safe-account');
+   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+   tx.onabort=()=>reject(tx.error);
+  });
+ }finally{db.close();}
+}
+async function readBackup(){
+ try{
+  const db=await backupDB();
+  try{return await new Promise((resolve,reject)=>{
+   const req=db.transaction('records','readonly').objectStore('records').get('last-safe-account');
+   req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);
+  });}finally{db.close();}
+ }catch(_){return localStorage.getItem(BACKUP);}
+}
+async function immutableSnapshot(account){
  const str=JSON.stringify(account);
- if(str.length>11*1024*1024)throw Error('Esta conta está muito grande para um backup seguro. Exporte um JSON antes de importar.');
- // If the browser cannot keep a backup, never touch the active account.
- localStorage.setItem(BACKUP,str);
- if(localStorage.getItem(BACKUP)!==str)throw Error('Backup de proteção não pôde ser confirmado.');
+ // Save large accounts in IndexedDB; another copy in localStorage can exceed
+ // browser quota for users with many character previews.
+ try{
+  await recordBackup(str);
+  if(await readBackup()!==str)throw Error('Backup não verificado');
+ }catch(error){
+  // Fallback for old/private browsers without IndexedDB.
+  try{
+   localStorage.setItem(BACKUP,str);
+   if(localStorage.getItem(BACKUP)!==str)throw Error('Backup incompleto');
+  }catch(_){throw Error('Não foi possível garantir um backup. Exporte sua conta antes de importar.');}
+ }
  return str;
+}
+async function undoLastScan(){
+ const previous=await readBackup();
+ if(!previous)return message('Nenhuma importação anterior encontrada neste aparelho.',true);
+ if(!window.confirm('Restaurar a conta exatamente como estava antes da última importação?'))return;
+ const active=localStorage.getItem(ACCOUNT);
+ try{localStorage.setItem(ACCOUNT,previous);}
+ catch(_){
+  if(active!=null)try{localStorage.setItem(ACCOUNT,active)}catch(_){}
+  return message('Sem espaço para restaurar o backup. Seus dados atuais foram mantidos.',true);
+ }
+ const dlg=dialog();if(dlg.open)dlg.close();
+ requestNumber++;current=null;
+ try{await window.NexusCloudSync?.sync?.()}catch(_){}
+ location.reload();
 }
 async function save(){
  if(!current?.report)return;
@@ -269,7 +322,7 @@ async function save(){
  if(!report.characterId)return message('Escolha o personagem para evitar salvar uma build na ficha errada.',true);
  try{
   const account=readAccount(),id=String(report.characterId);
-  const before=immutableSnapshot(account);
+  const before=await immutableSnapshot(account);
   const previous=account.characters[id]||{};
   const build={...previous};
   for(const [name,value] of Object.entries({
@@ -313,6 +366,7 @@ async function save(){
 }
 async function act(action,element){
  if(action==='close'||action==='cancel'){close();return}
+ if(action==='undo'){await undoLastScan();return}
  if(action==='replace'){initial();return}
  if(action==='suggest'&&current?.report){
   const i=Number(element.dataset.index),setId=element.dataset.set;
@@ -330,4 +384,4 @@ export async function openScanner(hintId=''){
  if(!dlg.open)dlg.showModal();
  initial();
 }
-window.NexusScanV3={open:openScanner};
+window.NexusScanV3={open:openScanner,undo:undoLastScan};
