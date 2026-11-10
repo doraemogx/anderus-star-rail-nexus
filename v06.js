@@ -1104,7 +1104,7 @@
     }
   };
 
-  window.v06SaveImport=function(){
+  window.v06SaveImport=async function(){
     let id=document.getElementById('v06-id')?.value;
     if(!id){showToast('Escolha o personagem correto antes de salvar');return;}
     let newCharacter=null;
@@ -1118,6 +1118,15 @@
       showToast('Confira os números e marque a confirmação antes de salvar');return;
     }
     // A reviewed partial scan may be saved. Missing fields stay pending.
+    // Never persist a scan through a fallback path that would replace all six
+    // previously confirmed relics with unverified empty editor rows.
+    if(!nexusAccount){
+      await readyAccount();
+      if(!nexusAccount){
+        showToast('Não consegui carregar a proteção das relíquias. Tente salvar novamente com conexão.');
+        return;
+      }
+    }
     if(newCharacter){
       state.v06CustomCharacters ||= {};
       state.v06CustomCharacters[id]=newCharacter;
