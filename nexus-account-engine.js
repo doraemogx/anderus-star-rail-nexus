@@ -44,12 +44,57 @@ export function normalizeRelics(details,legacy,sets={}){
    const mainStat=String(detailed?d.main?.stat||old.main?.stat||old.main||'':old.main?.stat||old.main||'');
    const mainValue=numeric(detailed?d.main?.value??old.main?.value??old.value:old.main?.value??old.value);
    const level=numeric(detailed?d.level??old.level:old.level);
-   const corrected=level===15&&Object.hasOwn(MAIN15,mainStat)?MAIN15[mainStat]:mainValue;
+   // A fixed +15 reference is not evidence that a particular OCR value was
+   // read correctly. Keep the observed value and flag discrepancies for review.
+   const corrected=mainValue;
    const subs=(detailed&&Array.isArray(d.subs)?d.subs:legacySubs(old.subs)).slice(0,4)
       .map(x=>({stat:String(x?.stat||''),value:numeric(x?.value)}));
    while(subs.length<4)subs.push({stat:'',value:null});
    return {slot,type:TYPES[i],setId,setName:String(d.setName||old.setName||old.set||''),
       level,main:{stat:mainStat,value:corrected},subs};
+ });
+}
+/** Import preview merge. Blank or unreadable OCR fields do not erase saved
+ * fields. Unlike manual editing, an import has no explicit "clear" command.
+ * A changed set is a different piece: never attach old rolls to its new icon.
+ */
+export function mergeRelicImport(incoming,previous=[],legacy={},sets={}){
+ const before=normalizeRelics(previous,legacy,sets);
+ return SLOTS.map((slot,i)=>{
+  const old=before[i],raw=incoming?.[i]||{};
+  const nextSet=String(raw.setId||'');
+  const differentSet=Boolean(nextSet&&old.setId&&nextSet!==old.setId);
+  const prior=differentSet?
+   {slot,type:TYPES[i],setId:'',setName:'',level:null,main:{stat:'',value:null},
+    subs:Array.from({length:4},()=>({stat:'',value:null}))}:old;
+  const setId=nextSet||prior.setId||'';
+  const suppliedLevel=numeric(raw.level),level=suppliedLevel!==null?suppliedLevel:prior.level;
+  const stat=String(raw.main?.stat||''),value=numeric(raw.main?.value);
+  let main;
+  if(stat){
+   main={stat,value:value!==null?value:(prior.main.stat===stat?prior.main.value:null)};
+  }else main={...prior.main};
+  const subs=Array.from({length:4},(_,j)=>{
+   const row=raw.subs?.[j]||{},before=prior.subs[j]||{stat:'',value:null};
+   const name=String(row.stat||''),amount=numeric(row.value);
+   if(!name)return {...before};
+   return {stat:name,value:amount!==null?amount:(before.stat===name?before.value:null)};
+  });
+  return {slot,type:TYPES[i],setId,
+   setName:nextSet?(sets[setId]?.name||String(raw.setName||'')):prior.setName,
+   level,main,subs};
+ });
+}
+export function pendingRelicFields(records){
+ const pieces=normalizeRelics(records);
+ return pieces.flatMap((p,i)=>{
+  const missing=[];
+  if(!p.setId)missing.push('conjunto');
+  if(!p.main.stat||p.main.value===null)missing.push('principal');
+  const subs=p.subs.filter(x=>!x.stat||x.value===null).length;
+  if(subs)missing.push(subs+' subatributo(s)');
+  if(p.level===null)missing.push('nível');
+  return missing.length?[SLOTS[i]+': '+missing.join(', ')]:[];
  });
 }
 export function toLegacy(records,sets={},existing={}){
@@ -72,6 +117,10 @@ export function examineRelics(records){
    if(p.setId&&p.main.stat&&p.main.value!==null&&!missing)complete++;
    if(!p.setId)flags.push(label+': falta identificar o conjunto');
    if(!p.main.stat||p.main.value===null)flags.push(label+': atributo principal pendente');
+   if(p.level===15&&p.main.value!==null&&Object.hasOwn(MAIN15,p.main.stat)
+      &&Math.abs(p.main.value-MAIN15[p.main.stat])>.16)
+     flags.push(label+': verificar principal '+pretty(p.main.stat,p.main.value)+
+       ' (referência +15: '+pretty(p.main.stat,MAIN15[p.main.stat])+')');
    if(missing)flags.push(label+': '+missing+' subatributo(s) pendente(s)');
    for(const sub of p.subs){
      const v=Number(sub.value);
