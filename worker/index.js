@@ -2,6 +2,7 @@
 // Nexia v2 — Honkai: Star Rail factual retrieval before LLM answers.
 // All runtime resources remain on Cloudflare's free quota; no API key in frontend.
 // Updating this GitHub file does not automatically redeploy your Cloudflare Worker.
+export { NexusSyncRoom } from "./sync-room.js";
 const ALLOWED_ORIGIN = "https://doraemogx.github.io";
 const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 const DATA_ROOT = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/index_min/pt/";
@@ -129,6 +130,30 @@ function verifiedFallback(question) {
 export default {
   async fetch(req, env) {
     const origin = req.headers.get("Origin") || "";
+    // Sync is independent of the optional AI binding and never inspects account data.
+    const url = new URL(req.url);
+    if(url.pathname.startsWith("/api/sync/v1/")){
+      const corsHeaders={
+       "Access-Control-Allow-Origin":origin===ALLOWED_ORIGIN?ALLOWED_ORIGIN:"null",
+       "Access-Control-Allow-Methods":"GET,PUT,OPTIONS",
+       "Access-Control-Allow-Headers":"authorization,content-type,if-match",
+       "Cache-Control":"no-store","Vary":"Origin"
+      };
+      if(req.method==="OPTIONS")return new Response(null,{status:204,headers:corsHeaders});
+      if(origin!==ALLOWED_ORIGIN)return Response.json({error:"Origem não permitida"},{status:403,headers:corsHeaders});
+      if(!env.ACCOUNT_SYNC)return Response.json({error:"Sincronização não ativada neste servidor"},{status:503,headers:corsHeaders});
+      if(url.pathname==="/api/sync/v1/status")
+       return Response.json({available:true,encrypted:true,version:1},{headers:corsHeaders});
+      const room=url.pathname.match(/^\/api\/sync\/v1\/([a-f0-9]{32})$/);
+      if(!room)return Response.json({error:"Conta sincronizada inválida"},{status:404,headers:corsHeaders});
+      if(!["GET","PUT"].includes(req.method))
+       return Response.json({error:"Método não permitido"},{status:405,headers:corsHeaders});
+      const id=env.ACCOUNT_SYNC.idFromName(room[1]);
+      const response=await env.ACCOUNT_SYNC.get(id).fetch(req);
+      const headers=new Headers(response.headers);
+      for(const [key,value] of Object.entries(corsHeaders))headers.set(key,value);
+      return new Response(response.body,{status:response.status,headers});
+    }
     const cors = {
       "Access-Control-Allow-Origin": origin === ALLOWED_ORIGIN ? ALLOWED_ORIGIN : "null",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
