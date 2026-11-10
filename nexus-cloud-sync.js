@@ -270,6 +270,8 @@ function mount(){
  (document.querySelector(".mast-actions")||document.querySelector(".masthead")||document.body).append(btn);
  status(pair?"Conta conectada":"Não conectado");
  extractHash();
+ // A pairing link can also be opened in a tab where the Nexus is already running.
+ window.addEventListener("hashchange",extractHash);
  if(pair){
   observed=JSON.stringify(syncable(localAccount()));
   sync().catch(e=>status(String(e.message||e)));
