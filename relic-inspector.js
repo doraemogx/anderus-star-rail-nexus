@@ -46,7 +46,7 @@ export function collectRelics(){
  return SLOT.map((slot,i)=>{
    const get=id=>document.getElementById('v06-r'+i+'-'+id)?.value||'';
    return {slot,type:SLOT_TYPE[i],setId:get('set'),
-      level:Number(get('lv'))||0,
+      level:get('lv')===''?null:Number(get('lv')),
       main:{stat:get('main'),value:get('mainval')===''?null:Number(get('mainval'))},
       subs:Array.from({length:4},(_,k)=>({
         stat:get('k'+k),value:get('v'+k)===''?null:Number(get('v'+k))
