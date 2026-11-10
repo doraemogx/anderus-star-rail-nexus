@@ -228,17 +228,7 @@ async function relicRows(worker,bitmap,progress){
          if(parsed!==null){stat=revisedStat;amount=retry;value=parsed;break;}
        }
      }
-     // Level +15 fixes main-stat OCR truncations (4.8% vs 64.8%, etc.).
-     // If the label is not recognized, never guess the main stat except
-     // the game-defined fixed HP/ATK slots.
-     if(j===0&&relicLevel===15){
-       if(i===0){stat='PV';value=705;}
-       else if(i===1){stat='ATQ';value=352;}
-       else if(stat){
-         const fixed=verifiedMainAt15(stat,i,relicLevel);
-         if(fixed!==null)value=fixed;
-       }
-     }
+     // Values not independently read stay pending; +15 references only aid review.
      rows.push({stat:stat&&value!==null?stat:'',value:stat&&value!==null?value:null,label:line,raw:amount});
    }
    found.push(rows);
@@ -274,7 +264,8 @@ export async function readIllustratedShowcase(bitmap,worker,{characters=[],coneN
  const nSuper=rawSuper.match(/(?:nv\.?\s*)?([1-5])\s*de\s*Sobrepos/i)||
     rawSuper.match(/sobreposi\D{0,8}([1-5])/i);
  const e=classifyEidolons(bitmap);
- const level=Number((levelText.match(/\b([1-8]\d)\b/)||[])[1])||80;
+ const parsedLevel=levelText.match(/\b([1-8]\d)\b/);
+ const level=parsedLevel?Number(parsedLevel[1]):null;
  let relics=null,relicSets=null,relicSetError='',relicLevels=null;
  if(includeRelics){
    try{
@@ -297,7 +288,9 @@ export function applyShowcaseToForm(report,root=document){
  const set=(id,value)=>{
    const el=root.getElementById(id);
    if(!el||value===null||value===undefined||value==='')return false;
-   el.value=String(value);el.dispatchEvent(new Event('change',{bubbles:true}));return true;
+   if(el.value!==''&&el.dataset.ocrSuggestion!=='1')return false;
+   el.value=String(value);el.dataset.ocrSuggestion='1';
+   el.dispatchEvent(new Event('change',{bubbles:true}));return true;
  };
  if(report.character){
    const select=root.getElementById('v06-id');
