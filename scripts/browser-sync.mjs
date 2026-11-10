@@ -89,10 +89,12 @@ console.log("SYNC_PHONE_STATE",await phone.evaluate(()=>({status:window.NexusClo
  characters:Object.keys(JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters)})));
 console.log("SYNC_REMOTE_REVISIONS",Array.from(remote.values()).map(x=>x.revision));
 await desktop.evaluate(()=>window.NexusCloudSync.sync()).catch(e=>console.log("DESKTOP_SYNC_RELOAD",e.message));
-console.log("SYNC_DESKTOP_STATE",await desktop.evaluate(()=>({status:window.NexusCloudSync?.status(),
- characters:Object.keys(JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters)})));
+await desktop.waitForLoadState("domcontentloaded");
 await desktop.waitForFunction(()=>!!JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters["1001"],
  null,{timeout:25000});
+await desktop.waitForFunction(()=>!!window.NexusCloudSync?.status,{timeout:15000});
+console.log("SYNC_DESKTOP_STATE",await desktop.evaluate(()=>({status:window.NexusCloudSync?.status(),
+ characters:Object.keys(JSON.parse(localStorage.getItem("anderus_nexus_v03")).characters)})));
 assert.equal(errors.length,0,errors.join(" | "));
 console.log("PASS real browser pairing, union of 2+2 rosters, shared source, remote updates and no plaintext cloud");
 for(const ctx of contexts)await ctx.close();
