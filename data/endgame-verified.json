@@ -1,0 +1,69 @@
+{
+  "verifiedAt": "2026-11-09",
+  "source": "HoYoverse Version 4.6 update details",
+  "sourceUrl": "https://hsr.hoyoverse.com/pt-pt/news/166468",
+  "timezone": "server time",
+  "version": "4.6",
+  "upcoming": {
+    "version": "4.7",
+    "date": "2026-11-11",
+    "status": "announced",
+    "sourceUrl": "https://www.gamespress.com/Honkai-Star-Rail-Version-47-Now-Lay-Laughter-to-All-St-wwwhoyoversecom"
+  },
+  "rotations": [
+    {
+      "id": "moc",
+      "name": "Memória do Caos",
+      "phase": "Survival of the Fittest",
+      "start": "2026-11-02",
+      "end": "2026-12-14",
+      "effects": [
+        "Quando um aliado usa a Suprema, recebe 5 Punchlines.",
+        "A cada ciclo, Aha age imediatamente uma vez com 20 Punchlines fixos, sem consumir Punchlines."
+      ],
+      "sourceType": "official",
+      "verification": "confirmed",
+      "sourceUrl": "https://hsr.hoyoverse.com/pt-pt/news/166468"
+    },
+    {
+      "id": "pf",
+      "name": "Pura Ficção",
+      "phase": "Imagined Words",
+      "start": "2026-10-19",
+      "end": "2026-11-30",
+      "effects": [
+        "Ao aplicar um debuff, os aliados acumulam 1 Grit adicional, até 10 vezes por inimigo."
+      ],
+      "sourceType": "official",
+      "verification": "confirmed",
+      "sourceUrl": "https://hsr.hoyoverse.com/pt-pt/news/166468"
+    },
+    {
+      "id": "sa",
+      "name": "Sombra Apocalíptica",
+      "phase": "Dominance of Oblivion",
+      "start": "2026-10-05",
+      "end": "2026-11-16",
+      "effects": [
+        "Quebrar um inimigo com Steadfast Safeguard remove controles dos aliados, avança suas ações e concede um turno adicional a Aha com 10 Punchlines fixos.",
+        "Inimigos recebem 25% mais dano de Suprema e 15% mais dano de Euforia."
+      ],
+      "sourceType": "official",
+      "verification": "confirmed",
+      "sourceUrl": "https://hsr.hoyoverse.com/pt-pt/news/166468"
+    },
+    {
+      "id": "aa",
+      "name": "Arbitragem das Anomalias",
+      "phase": "Versão 4.6",
+      "start": "2026-09-28",
+      "end": "2026-11-11",
+      "effects": [],
+      "note": "Arbitragem das Anomalias não integra os bônus de rotação confirmados na nota oficial 4.6; confira as regras diretamente no jogo.",
+      "sourceUrl": "https://www.icy-veins.com/honkai-star-rail/anomaly-arbitration",
+      "sourceType": "community",
+      "verification": "pending"
+    }
+  ],
+  "verificationNotes": "Memória do Caos, Pura Ficção e Sombra Apocalíptica foram conferidos contra a nota oficial 4.6 da HoYoverse em 09/11/2026. A Arbitragem permanece editorial e não verificada nessa fonte."
+}

@@ -1,0 +1,45 @@
+#nexus-pompom-dialog{width:min(860px,calc(100vw - 16px));max-width:860px;max-height:94dvh;overflow:auto;padding:0;background:#111c30;color:#f3ebdd;border:1px solid #d7bc93;border-radius:14px;box-shadow:0 24px 80px #000c}
+#nexus-pompom-dialog::backdrop{background:#020612e0}
+#nexus-pompom-dialog .nexus-pompom-inner{padding:clamp(15px,3vw,28px);font:14px/1.65 system-ui}
+#nexus-pompom-dialog header{display:flex;gap:14px;align-items:center;margin-bottom:17px}
+#nexus-pompom-dialog header>div:nth-child(2){flex:1;min-width:0}
+#nexus-pompom-dialog .nexus-pompom-avatar{width:60px;height:60px;flex:0 0 60px;border:1px solid #dcbd8c;border-radius:12px;overflow:hidden}
+#nexus-pompom-dialog .nexus-pompom-avatar img{width:100%;height:100%;object-fit:cover}
+#nexus-pompom-dialog h2{font:500 clamp(27px,5vw,40px) Georgia,serif;margin:2px 0}
+#nexus-pompom-dialog header span{font-size:10px;font-weight:700;letter-spacing:.16em;color:#e6cb9c}
+#nexus-pompom-dialog header p{font-size:12px;color:#ced7e4;margin:0}
+#nexus-pompom-dialog button{min-height:44px;border-radius:8px;border:1px solid #a79b89;background:#273850;color:#f3e6cf;padding:10px 13px;font:600 12px system-ui;cursor:pointer}
+#nexus-pompom-dialog [data-pompom-close]{font-size:24px;flex:0 0 44px;width:44px;padding:0}
+#nexus-pompom-dialog :is(button,input,select):focus-visible{outline:3px solid #f4d6a1;outline-offset:3px}
+#nexus-pompom-dialog label{display:block;font-size:12px;color:#e8d0a8;margin:9px 0 5px;font-weight:700}
+#nexus-pompom-dialog :is(input,select){width:100%;min-height:44px;background:#1b2b43;color:#f4e9df;border:1px solid #72839c;border-radius:8px;padding:10px;font:14px system-ui}
+#nexus-pompom-dialog .nexus-pompom-examples{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0}
+#nexus-pompom-dialog .nexus-pompom-examples button{background:#1e3049;border-color:#65768f}
+#nexus-pompom-dialog #nexus-pompom-dialogue{height:min(380px,42dvh);min-height:150px;overflow:auto;border:1px solid #60718b;border-radius:10px;padding:12px;background:#0c1628;display:flex;flex-direction:column;gap:12px}
+#nexus-pompom-dialog .nexus-pompom-welcome{margin:auto 0;color:#ced8e4}
+#nexus-pompom-dialog .nexus-pompom-turn{padding:13px;border:1px solid #596d8b;border-radius:10px;max-width:96%;overflow-wrap:anywhere}
+#nexus-pompom-dialog .nexus-pompom-turn>span{display:block;color:#e7ce9f;font-size:10px;font-weight:700;letter-spacing:.1em}
+#nexus-pompom-dialog .nexus-pompom-turn.question{align-self:flex-end;background:#273b56;max-width:87%}
+#nexus-pompom-dialog .nexus-pompom-turn.reply{align-self:flex-start;background:linear-gradient(125deg,#2b2540,#172840);border-color:#b19886}
+#nexus-pompom-dialog .nexus-pompom-turn.reply h3{font:500 21px Georgia,serif;margin:8px 0}
+#nexus-pompom-dialog .nexus-pompom-turn p{margin:5px 0}
+#nexus-pompom-dialog .nexus-pompom-turn ul{padding-left:19px;margin:9px 0}
+#nexus-pompom-dialog .nexus-pompom-turn li{margin-bottom:8px}
+#nexus-pompom-dialog .nexus-pompom-actions{display:flex;flex-wrap:wrap;gap:8px}
+#nexus-pompom-dialog .nexus-pompom-actions button{background:#e9c995;color:#17253a}
+#nexus-pompom-dialog #nexus-pompom-form{margin-top:15px}
+#nexus-pompom-dialog #nexus-pompom-form>div{display:flex;gap:9px}
+#nexus-pompom-dialog #nexus-pompom-form input{flex:1;min-width:0}
+#nexus-pompom-dialog #nexus-pompom-form button{background:#e9c995;color:#17253a}
+#nexus-pompom-dialog .nexus-pompom-disclaimer{font-size:11px;color:#afc0d3;margin:14px 0 0}
+.v20-pompom-launch{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px;margin:0 0 21px;border:1px solid #d2b18c;border-radius:11px;background:linear-gradient(115deg,#202d45,#2e253b);color:#f5ebdc}
+.v20-pompom-launch strong{font:500 26px Georgia,serif}
+.v20-pompom-launch p{font:13px/1.65 system-ui;margin:5px 0 0;color:#cdd9e9}
+.v20-pompom-launch button{min-height:44px;border:1px solid #f0d3a1;border-radius:8px;padding:10px 17px;background:#ebcfa0;color:#19243a;font-weight:700;cursor:pointer;white-space:nowrap}
+@media(max-width:560px){.v20-pompom-launch{flex-direction:column;align-items:stretch}.v20-pompom-launch button{width:100%}#nexus-pompom-dialog .nexus-pompom-examples button{flex:1 1 46%}}
+html.nexus-theme-aeon #nexus-pompom-dialog{background:#21152b;border-color:#deb3bb}
+html.nexus-theme-aeon #nexus-pompom-dialog .nexus-pompom-turn.reply{background:#371d3b;border-color:#daa8aa}
+html.nexus-theme-aeon .v20-pompom-launch{background:linear-gradient(115deg,#441f3e,#24152d);border-color:#e1b3bd}
+
+#nexus-pompom-dialog .nexus-pompom-source{display:inline-block;margin:10px 0 4px;color:#f2d6ad;font-size:12px;font-weight:700;text-underline-offset:4px;min-height:32px}
+#nexus-pompom-dialog .nexus-pompom-source:focus-visible{outline:3px solid #f0d2a4;outline-offset:3px}

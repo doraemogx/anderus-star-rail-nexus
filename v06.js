@@ -93,6 +93,23 @@
   }
   let nexusStorageWarning=false;
   function verifiedAccountSave(id){
+    // Capture the previously persisted build before replacing it. Snapshots
+    // omit screenshot blobs and are capped, protecting browser storage space.
+    try{
+      const persisted=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'null');
+      const previousBuild=persisted?.characters?.[id]||null;
+      const previousRelics=persisted?.v06RelicDetails?.[id]||null;
+      const latestBuild=state.characters?.[id]||null;
+      const latestRelics=state.v06RelicDetails?.[id]||null;
+      if(previousBuild && latestBuild && JSON.stringify({previousBuild,previousRelics})!==
+        JSON.stringify({previousBuild:latestBuild,previousRelics:latestRelics})){
+        state.v06BuildHistory||={};
+        const entries=state.v06BuildHistory[id]||[];
+        entries.unshift({recordedAt:new Date().toISOString(),build:JSON.parse(JSON.stringify(previousBuild)),
+          relics:previousRelics?JSON.parse(JSON.stringify(previousRelics)):null});
+        state.v06BuildHistory[id]=entries.slice(0,20);
+      }
+    }catch(error){console.warn('Não foi possível registrar o histórico anterior:',error);}
     save();
     try{
       const snapshot=JSON.parse(localStorage.getItem('anderus_nexus_v03')||'null');
@@ -176,7 +193,7 @@
       ['image:'+STR+'icon/path/Harmony.png','Build Lab','Relíquias, cones e ajustes','v06RouteBuild()','build'],
       ['image:'+STR+'icon/path/Destruction.png','Endgame','MOC, PF, AS e Arbitragem',"route('endgame')",'endgame'],
       ['image:'+STR+'icon/path/Abundance.png','Farm Planner','Materiais, rastros e ascensão',"route('farm')",'farm'],
-      ['image:'+STR+'icon/path/Elation.png','Warp Advisor','Banners e prioridades',"route('radar')",'warp'],
+      ['image:'+STR+'icon/path/Elation.png','Warp Advisor','Pity, jades e garantias',"window.NexusWarpAdvisor?.open()",'warp'],
       ['image:'+STR+'icon/path/Nihility.png','Beta & Kits','Novidades e multiplicadores',"v06OpenFuture()",'beta']
     ];
     return '<div class="v06-home">'+
@@ -222,11 +239,108 @@
   window.v06RefreshCards=()=>{const el=document.getElementById('v06-library-grid');if(el)el.innerHTML=v06CardList()};
   library=lib06;
 
+  function profileHistory(id,b){
+    const entries=state.v06BuildHistory?.[id]||[];
+    const columns=['pv','atk','def','spd','crit','cdmg','e','s'];
+    const names={pv:'PV',atk:'ATQ',def:'DEF',spd:'VEL',crit:'Chance CRIT',cdmg:'Dano CRIT',e:'Eidolons',s:'Sobreposição'};
+    const current=b||{};
+    const records=entries.map((snapshot,i)=>{
+      const old=snapshot.build||{},date=new Date(snapshot.recordedAt);
+      const stamp=Number.isFinite(date.getTime())?date.toLocaleString('pt-BR'):'Data não informada';
+      const diffs=columns.filter(key=>old[key]!==current[key]).map(key=>
+        '<li><strong>'+safe(names[key])+'</strong><span>'+safe(old[key]??'—')+' → '+safe(current[key]??'—')+'</span></li>').join('');
+      const oldRelics=(snapshot.relics||[]).filter(r=>r?.setId||r?.main?.stat).length;
+      return '<article class="v11-history-entry"><header><span>Versão anterior · '+safe(stamp)+'</span><button type="button" data-restore-build="'+i+'" data-character="'+safe(id)+'">Restaurar</button></header>'+
+        '<p>Relíquias registradas anteriormente: '+oldRelics+'/6 · Cone: '+safe(old.cone||'não informado')+'</p>'+
+        '<ul>'+(diffs||'<li>Sem diferenças nos atributos gerais; equipamentos ou outros campos podem ter mudado.</li>')+'</ul></article>';
+    }).join('');
+    return '<section class="v11-history"><span class="v06-kicker">BUILD HISTORY · MINHA CONTA</span><h2>Histórico de builds</h2>'+
+      '<p>As últimas 20 alterações importadas ou editadas são preservadas neste navegador, sem incluir imagens grandes. A restauração não modifica a conta do jogo.</p>'+
+      (entries.length?records:'<p>Nenhuma versão anterior registrada. As próximas alterações da build ficarão disponíveis aqui.</p>')+'</section>';
+  }
+  document.addEventListener('click',event=>{
+    const button=event.target.closest('[data-restore-build][data-character]');
+    if(button)window.v11RestoreBuildHistory?.(button.dataset.character,Number(button.dataset.restoreBuild));
+  });
+  window.v11RestoreBuildHistory=function(id,index){
+    const entry=state.v06BuildHistory?.[id]?.[index];if(!entry)return;
+    if(!window.confirm('Restaurar esta build anterior? A build atual será guardada no histórico antes da troca.'))return;
+    state.characters[id]=JSON.parse(JSON.stringify(entry.build||{}));
+    state.v06RelicDetails||={};
+    if(entry.relics)state.v06RelicDetails[id]=JSON.parse(JSON.stringify(entry.relics));
+    else delete state.v06RelicDetails[id];
+    const persisted=verifiedAccountSave(id);
+    tab='history';refresh();
+    showToast(persisted?'Build anterior restaurada; versão substituída preservada no histórico.':'Não foi possível confirmar a gravação. Exporte um backup!');
+  };
+
+  // Persistent Team Lab bridge: all teams travel with the Nexus JSON backup.
+  // Farm planner state shares the Nexus backup and does not invent item stocks.
+  // The planner is an estimate and does not mutate real Warp history.
+  window.NexusWarpBridge={
+    read:()=>JSON.parse(JSON.stringify(state.v06WarpPlan||{})),
+    save:plan=>{
+      state.v06WarpPlan=JSON.parse(JSON.stringify(plan));
+      save();
+      return true;
+    }
+  };
+
+  window.NexusFarmBridge={
+    roster:()=>Object.entries(state.characters||{}).filter(([id,c])=>c&&gameData.chars?.[id])
+      .map(([id,c])=>({id,name:lookup(id)?.name||gameData.chars[id].name,level:Number(c.level||1)})),
+    inventory:()=>JSON.parse(JSON.stringify(state.v06MaterialInventory||{})),
+    ascensionRead:(id)=>JSON.parse(JSON.stringify(state.v06AscensionPlans?.[id]||{})),
+    ascensionWrite:(id,plan)=>{
+      state.v06AscensionPlans||={};
+      state.v06AscensionPlans[id]=JSON.parse(JSON.stringify(plan));
+      save();return true;
+    },
+    allPlans:()=>({
+      ascension:JSON.parse(JSON.stringify(state.v06AscensionPlans||{})),
+      traces:JSON.parse(JSON.stringify(state.v06TracePlans||{}))
+    }),
+    traceRead:(id)=>JSON.parse(JSON.stringify(state.v06TracePlans?.[id]||{})),
+    traceWrite:(id,plan)=>{
+      state.v06TracePlans||={};
+      state.v06TracePlans[id]=JSON.parse(JSON.stringify(plan));
+      save();return true;
+    },
+    put:(id,have)=>{
+      const value=Number(have);
+      if(!Number.isInteger(value)||value<0||value>100000000)throw Error('Estoque inválido.');
+      state.v06MaterialInventory||={};
+      state.v06MaterialInventory[String(id)]=value;save();
+    }
+  };
+
+  window.NexusTeamLabBridge={
+    roster:()=>Object.entries(state.characters||{}).filter(([id,data])=>data&&gameData.chars?.[id])
+      .map(([id,data])=>({id,name:lookup(id)?.name||gameData.chars[id]?.name||id,
+        path:gameData.chars[id]?.path||'',element:gameData.chars[id]?.element||'',
+        icon:gameData.chars[id]?.icon||'',portrait:gameData.chars[id]?.portrait||'',
+        level:Number(data.level||1),e:Number(data.e||0),s:Number(data.s||1)})),
+    list:()=>JSON.parse(JSON.stringify(state.v06SavedTeams||[])),
+    save:(team)=>{
+      const ids=team?.members||[];
+      if(ids.length!==4||new Set(ids).size!==4||!ids.every(id=>state.characters?.[id]))
+        throw Error('A equipe precisa de quatro personagens diferentes cadastrados nesta conta.');
+      state.v06SavedTeams||=[];
+      const entry={id:String(team.id||'team-'+Date.now()),name:String(team.name||'Equipe').slice(0,70),
+        purpose:String(team.purpose||'geral'),members:[...ids],
+        updatedAt:new Date().toISOString()};
+      const i=state.v06SavedTeams.findIndex(x=>x.id===entry.id);
+      if(i<0)state.v06SavedTeams.push(entry);else state.v06SavedTeams[i]=entry;
+      save();return entry;
+    },
+    delete:(id)=>{state.v06SavedTeams=(state.v06SavedTeams||[]).filter(x=>x.id!==id);save();}
+  };
+
   function profile06(){
     const id=state.profile||'1503', c=lookup(id),b=state.characters[id],look=selectLook(id),pic=state.v06Art?.[id]==='preview'?imgSrc(id,'preview'):look.art;
     const active=tab||'overview';
-    const switches=[['overview','Atributos'],['kit','Kit e rastros'],['eidolons','Eidolons'],['cone','Cone de Luz'],['relics','Relíquias'],['teams','Equipes']];
-    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):profileTeams(id,b);
+    const switches=[['overview','Atributos'],['kit','Kit e rastros'],['kitlab','Kit Lab 2.0'],['eidolons','Eidolons'],['cone','Cone de Luz'],['relics','Relíquias'],['teams','Equipes'],['farm','Ascensão'],['history','Histórico']];
+    const body=active==='overview'?profileOverview(id,b):active==='kit'?profileKit(id):active==='kitlab'?'<section class="v11-kitlab-panel"><span class="v06-kicker">KIT LAB · FONTE PT-BR</span><h2>Habilidades completas e explicação do Pom-Pom</h2><p>Consulte multiplicadores por nível, rastros e Eidolons E1–E6. Dados desconhecidos não são inventados.</p><button type="button" class="v06-primary" data-nexus-kit-for="'+safe(id)+'">Abrir Kit Lab completo</button></section>':active==='eidolons'?profileEidolons(id,b):active==='cone'?profileCone(id,b):active==='relics'?profileRelics(id,b):active==='farm'?'<section class="v11-team-lab-entry"><h3>Farm Planner 2.0 · Ascensão</h3><p>Veja quantidades reais para elevar esta personagem até a ascensão desejada, com estoque e materiais faltantes.</p><button type="button" data-nexus-farm-for="'+safe(id)+'">Planejar ascensão</button><button type="button" data-nexus-traces-for="'+safe(id)+'">Planejar rastros e materiais</button></section>':active==='history'?profileHistory(id,b):profileTeams(id,b)+'<section class="v11-team-lab-entry"><h3>Team Lab 2.0</h3><p>Monte e salve equipes com quatro personagens da sua conta; confira os papéis e as restrições.</p><button type="button" data-nexus-team-lab>Montar equipe</button></section>';
     const badge= b?'<span class="v06-ownership">NA SUA CONTA</span>':'<span class="v06-ownership muted">CATÁLOGO</span>';
     return '<div class="v06-profile"><section class="v06-char-hero"><div class="v06-char-hero-art" style="background-image:url(\''+safe(pic)+'\')"></div><div class="v06-hero-shade"></div>'+
     '<button class="v06-back" onclick="route(\'library\')">‹ Arquivo</button><div class="v06-character-info">'+badge+'<h1>'+safe(c.name)+'</h1><div class="v06-tags"><span>'+safe(b?'Nv. '+(b.level||1):'Não registrado')+'</span><span>E'+fmt(b?.e||0)+' · S'+fmt(b?.s||1)+'</span><span>✧ '+safe(look.group.toUpperCase())+'</span></div></div></section>'+
@@ -401,12 +515,32 @@
       skills:(nexusAccountCatalog.chars?.[id]?.skills||[]).map(k=>nexusAccountCatalog.skills?.[k]).filter(Boolean)
     });
     return '<section class="v11-coach" aria-label="Análise individual do Pom-Pom"><div class="v11-coach-head"><img src="'+v06Asset('pompom')+'" alt="Pom-Pom" loading="lazy"><div><span class="v06-kicker">LEITURA DA SUA CONTA</span><h3>Pom-Pom analisa sua build</h3><p>Dados registrados · recomendações e verificações, não uma nota genérica</p></div></div>'+
-      '<div class="v11-coach-list">'+notes.map((item,i)=>'<article class="v11-coach-note '+safe(item.kind)+'"><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><div><strong>'+safe(item.title)+'</strong><p>'+safe(item.body)+'</p></div></article>').join('')+'</div>'+
-      '<div class="v11-coach-actions"><button type="button" onclick="v11ProfileTab(\'relics\')">Conferir relíquias</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>';
+      '<div class="v11-coach-list">'+notes.map((item,i)=>i<3?
+         '<article class="v11-coach-note '+safe(item.kind)+'"><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><div><strong>'+safe(item.title)+'</strong><p>'+safe(item.body)+'</p></div></article>':
+         '<details class="v11-coach-note v11-coach-collapsed '+safe(item.kind)+'"><summary><span class="v11-note-number">'+String(i+1).padStart(2,'0')+'</span><strong>'+safe(item.title)+'</strong><span aria-hidden="true" class="v11-coach-expand">+</span></summary><p>'+safe(item.body)+'</p></details>').join('')+'</div>'+
+      '<div class="v11-coach-actions"><button type="button" data-nexus-pompom-open="'+safe(id)+'">Perguntar ao Pom-Pom sobre a build</button><button type="button" onclick="v11ProfileTab(\'relics\')">Conferir relíquias</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>';
   }
   window.v11ProfileTab=function(key){
     tab=key;refresh();
     requestAnimationFrame(()=>document.querySelector('.v06-tabs')?.scrollIntoView({block:'start',behavior:'smooth'}));
+  };
+  window.v11SaveConeLevel=function(event,id){
+    event.preventDefault();
+    const build=state.characters?.[id];
+    if(!build)return showToast('Cadastre a personagem antes de informar o nível do cone.');
+    const raw=String(new FormData(event.target).get('coneLevel')??'').trim();
+    if(raw===''){
+      delete build.coneLevel;
+    }else{
+      const n=Number(raw);
+      if(!Number.isInteger(n)||n<1||n>80){
+        showToast('O nível do cone deve estar entre 1 e 80.');return;
+      }
+      build.coneLevel=n;
+    }
+    const persisted=verifiedAccountSave(id);
+    tab='cone';refresh();
+    showToast(persisted?'Nível do cone salvo na sua conta.':'Alteração não persistida. Exporte um backup.');
   };
   function profileCone(id,b){
     if(!nexusAccount||!nexusAccountCatalog){
@@ -422,6 +556,9 @@
     return '<section class="v11-cone-panel"><div class="v11-cone-top"><div class="v11-cone-art">'+(src?'<img loading="lazy" src="'+safe(src)+'" alt="Arte do cone '+safe(cone.name)+'" onerror="this.hidden=true;this.parentElement.classList.add(\'no-art\')">':'')+'</div>'+
       '<div class="v11-cone-copy"><span class="v06-kicker">CONE DE LUZ EQUIPADO · S'+Number(b?.s||1)+'</span><h2>'+safe(cone.name)+'</h2><p class="v11-cone-stars">'+star+'</p><p>Caminho: '+safe(nexusAccount.PATHS[cone.path]||cone.path||'Não informado')+'</p><p class="v11-cone-path '+(compatible?'good':'warning')+'">'+(compatible?'✓ Caminho compatível com a personagem':'⚠ Caminho diferente; o efeito passivo pode não ativar')+'</p></div></div>'+
       '<div class="v11-cone-effect"><small>HABILIDADE DO CONE · SOBREPOSIÇÃO S'+Number(b?.s||1)+'</small><h3>'+safe(rank?.skill||'Habilidade de cone')+'</h3><p>'+safe(effect||'A descrição do efeito ainda não está disponível no catálogo sincronizado.')+'</p></div>'+
+      '<form class="v11-cone-level-form" onsubmit="v11SaveConeLevel(event,\''+safe(id)+'\')"><div><small>NÍVEL DO CONE EQUIPADO</small><p>'+(Number.isInteger(b?.coneLevel)?'Nível '+b.coneLevel+' / 80':'Ainda não informado. O nível da personagem não determina o nível do cone.')+'</p></div>'+
+      '<label for="v11-cone-level-'+safe(id)+'">Nível<input id="v11-cone-level-'+safe(id)+'" name="coneLevel" type="number" min="1" max="80" step="1" placeholder="Não informado" value="'+(Number.isInteger(b?.coneLevel)?b.coneLevel:'')+'"></label>'+
+      '<button type="submit">Salvar nível</button></form>'+
       '<div class="v11-cone-foot"><button type="button" onclick="editBuild(\''+id+'\')">Alterar cone ou sobreposição</button><button type="button" onclick="v11ProfileTab(\'overview\')">← Voltar aos atributos</button></div>'+
       '<p class="v11-source">Fonte: catálogo PT-BR sincronizado do jogo. Os valores foram resolvidos para a sobreposição salva; alterações feitas no jogo precisam de nova importação.</p></section>';
   }
@@ -432,7 +569,7 @@
     const src=images?.[index]||'';
     return '<article class="v11-relic-card '+(present?'is-saved':'is-pending')+'"><button type="button" class="v11-relic-open" onclick="v11EditRelic(\''+id+'\','+index+')" aria-label="Ver e editar '+safe(p.slot)+'">'+
       '<span class="v11-relic-image">'+(src?'<img loading="lazy" src="'+safe(src)+'" alt="Recorte da relíquia '+safe(p.slot)+'">':'<span>✦</span>')+'</span>'+
-      '<span class="v11-relic-title"><small>0'+(index+1)+' · '+safe(p.slot)+' '+(p.level!==null?'+'+p.level:'')+'</small><strong>'+safe(p.setId?accountSetName(p):present?'Conjunto não identificado':'Não registrado')+'</strong><em>'+safe(main)+' · '+safe(mainValue)+'</em></span><span class="v11-open-arrow">›</span></button>'+
+      '<span class="v11-relic-title"><small>0'+(index+1)+' · '+safe(p.slot)+' '+(p.level!=null?'+'+p.level:'')+'</small><strong>'+safe(p.setId?accountSetName(p):present?'Conjunto não identificado':'Não registrado')+'</strong><em>'+safe(main)+' · '+safe(mainValue)+'</em></span><span class="v11-open-arrow">›</span></button>'+
       '<div class="v11-relic-subs">'+subs.filter(s=>s.stat&&s.value!==null).map(s=>'<span>'+safe(s.stat)+' <b>'+safe(real.pretty(s.stat,s.value))+'</b></span>').join('')+'</div>'+
       (warnings?'<p class="v11-relic-warning">'+safe(warnings)+'</p>':'')+'</article>';
   }
@@ -444,7 +581,7 @@
     const rows=accountRecords(id),analysis=nexusAccount.examineRelics(rows),images=state.v06Relics?.[id]||[];
     return '<section class="v11-relics"><div class="v11-section-lead"><span class="v06-kicker">EQUIPAMENTO · SUA CONTA</span><h2>Relíquias equipadas</h2><p>'+analysis.registered+'/6 peças registradas · '+analysis.complete+'/6 completas. Toque em uma peça para revisar conjunto, atributo principal e subatributos.</p></div>'+
       '<div class="v11-relic-grid">'+rows.map((piece,i)=>profileRelicCard(id,i,piece,images)).join('')+'</div>'+
-      '<div class="v11-actions"><button type="button" onclick="v06StartImport(\''+id+'\')">⇧ Atualizar equipamentos pelo print</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>'+
+      '<div class="v11-actions"><button type="button" onclick="v06StartImport(\''+id+'\')">⇧ Atualizar equipamentos pelo print</button><button type="button" data-nexus-relic-optimizer="'+safe(id)+'">Analisar relíquias com o Pom-Pom</button><button type="button" onclick="v11ProfileTab(\'cone\')">Ver cone equipado</button></div></section>'+
       renderAccountCoach(id);
   };
   window.v11EditRelic=async function(id,index){
@@ -568,7 +705,7 @@
     if(EIDO_ART[state.theme]?.[5])imgs.push(['eidolon','Fragmento E6',EIDO_ART[state.theme][5]]);
     return '<div class="v06-themes">'+subhead('ATELIÊ DO EXPRESSO','Theme Studio','Transforme o Nexus inteiro — ilustrações, navegação, molduras, ícones, fontes, ornamentos e movimento.')+
       '<div class="v06-theme-stage"><div class="v06-theme-stage-art"><img src="'+safe(art==='eidolon'&&EIDO_ART[state.theme]?.[5]?EIDO_ART[state.theme][5]:art==='preview'?(imgSrc(state.theme,'preview')||look.art):look.art)+'" alt="'+safe(c.name)+'"></div><div class="v06-theme-caption"><span class="v06-kicker">IDENTIDADE ATIVA</span><h2>'+safe(c.name)+'</h2><p>'+look.text+' '+safe(look.group.toUpperCase())+' · '+safe(look.shape)+'</p><span>INTERFACE PERSONALIZADA</span></div></div>'+
-      '<div class="v06-theme-restore"><button onclick="setTheme(\'8001\')">✦ Restaurar tema padrão · Expresso Astral</button></div>'+
+      '<div class="v06-theme-restore"><button onclick="v06PreviewTheme(\'8001\')">✦ Prévia do padrão · Expresso Astral</button><button onclick="v06RestorePreviousTheme()">↶ Restaurar tema anterior</button></div>'+
       '<div class="v06-theme-swatches"><span>TIPOGRAFIA</span><strong style="font-family:'+look.font+'">'+safe(c.name)+'</strong><span>PALETA</span><div class="v06-swatches">'+look.color.map(a=>'<i style="background:'+a+'"></i>').join('')+'</div><span>ÍCONE & MOLDURA</span><strong>'+look.text+' '+safe(look.shape)+'</strong></div>'+
       '<div class="v06-sectionline"><h2>Escolher arte do tema</h2><small>Variações disponíveis</small></div><div class="v06-art-picks">'+imgs.map(([k,label,url])=>'<button class="'+(art===k?'active':'')+'" onclick="v06SetArt(\''+k+'\')"><img src="'+safe(url)+'" loading="lazy" alt=""><span>'+safe(label)+'</span></button>').join('')+'</div>'+
       '<div class="v06-sectionline"><h2>Biblioteca de identidades</h2><small>'+CATALOG.length+' opções</small></div><label class="v06-search">⌕ <input type="search" placeholder="Buscar qualquer personagem…" value="'+safe(themeSearch)+'" oninput="themeSearch=this.value;v06ThemeCards()"></label>'+
@@ -577,9 +714,42 @@
   };
   function v06ThemeItems(){
     const matches=CATALOG.filter(c=>!themeSearch||norm(c.name).includes(norm(themeSearch)));
-    return matches.map(c=>'<button class="'+(c.id===state.theme?'active':'')+'" onclick="setTheme(\''+c.id+'\')"><img src="'+safe(c.id==='future-aha'?ahaOfficial:imgSrc(c.id,'preview'))+'" loading="lazy" alt="'+safe(c.name)+'" onerror="this.style.display=\'none\'"><span>'+safe(c.name)+'</span></button>').join('');
+    return matches.map(c=>'<button class="'+(c.id===state.theme?'active':'')+'" onclick="v06PreviewTheme(\''+c.id+'\')"><img src="'+safe(c.id==='future-aha'?ahaOfficial:imgSrc(c.id,'preview'))+'" loading="lazy" alt="'+safe(c.name)+'" onerror="this.style.display=\'none\'"><span>'+safe(c.name)+'</span><small>Visualizar identidade</small></button>').join('');
   }
   window.v06ThemeCards=()=>{let e=document.getElementById('v06-theme-grid');if(e)e.innerHTML=v06ThemeItems()};
+  // Preview is deliberately independent from state.theme and character inventory.
+  // The current theme is saved as undo history only when the user confirms.
+  window.v06PreviewTheme=function(id){
+    const destination=CATALOG.find(c=>c.id===id);
+    if(!destination)return;
+    const candidate=selectLook(id),previous=selectLook(state.theme);
+    const swatches=look=>'<div class="v06-preview-colors">'+look.color.map(color=>'<i style="background:'+safe(color)+'"></i>').join('')+'</div>';
+    const preview='<section class="v06-theme-preview">'+
+      '<p>Veja a identidade antes de aplicá-la. Suas builds, equipamentos, equipe e progresso não serão alterados.</p>'+
+      '<div class="v06-theme-compare">'+
+       '<article><small>ATUAL</small><img src="'+safe(previous.art)+'" alt="Arte do tema atual" loading="lazy"><h3>'+safe(lookup(state.theme).name)+'</h3>'+swatches(previous)+'</article>'+
+       '<article><small>PRÉVIA · NÃO APLICADA</small><img src="'+safe(candidate.art)+'" alt="Arte da identidade escolhida" loading="lazy"><h3>'+safe(destination.name)+'</h3>'+swatches(candidate)+'</article></div>'+
+      '<p class="v06-theme-preview-notice">A prévia apresenta a arte e os tokens do tema. Layout e efeitos podem depender da seção, e uma identidade de personagem não equivale ao Grand Theatre da Aeon Aha.</p>'+
+      '<div class="v06-theme-preview-actions"><button type="button" class="v06-secondary" onclick="closeModal()">Cancelar</button>'+
+       '<button type="button" class="v06-primary" data-commit-theme="'+safe(id)+'">Aplicar identidade selecionada</button></div></section>';
+    showModal('Prévia de tema · '+destination.name,preview);
+  };
+  window.v06RestorePreviousTheme=function(){
+    const previous=localStorage.getItem('nexus-previous-theme');
+    if(!previous||!CATALOG.some(c=>c.id===previous)){showToast('Ainda não há um tema anterior para restaurar.');return;}
+    const current=state.theme;
+    localStorage.setItem('nexus-previous-theme',current);
+    setTheme(previous);
+  };
+  document.addEventListener('click',event=>{
+    const button=event.target.closest?.('[data-commit-theme]');
+    if(!button)return;
+    const id=button.dataset.commitTheme;
+    if(!CATALOG.some(c=>c.id===id))return;
+    if(state.theme!==id)localStorage.setItem('nexus-previous-theme',state.theme);
+    closeModal();
+    setTheme(id);
+  });
   window.v06SetArt=kind=>{state.v06Art||={};state.v06Art[state.theme]=kind;save();refresh();};
   const originalApply=applyTheme;
   applyTheme=function(){
@@ -636,25 +806,37 @@
     uploader.hintId=id||'';
     if(id)uploader.identifiedId=id;
     else uploader.identifiedId='';
-    uploader.preview='';uploader.file=null;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.sourceValid=false;
+    uploader.preview='';uploader.file=null;uploader.width=0;uploader.height=0;uploader.relImages=[];uploader.ocrText='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.sourceValid=false;
     showModal('Importar build pelo print',uploadPanel());
   };
   window.v06ReadPrint=async function(file){
     if(!file)return;
-    if(file.size>12*1024*1024){showToast('Escolha uma imagem de até 12 MB');return;}
-    uploader.file=file;uploader.busy=true;uploader.identifiedId='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.ocrText='';
+    if(!['image/png','image/jpeg','image/webp'].includes(file.type)){
+      showToast('Formato não suportado. Escolha PNG, JPG ou WEBP.');return;
+    }
+    if(!file.size||file.size>12*1024*1024){showToast('Escolha uma imagem de até 12 MB');return;}
+    uploader.file=file;uploader.width=0;uploader.height=0;uploader.busy=true;uploader.identifiedId='';uploader.eidolon=null;uploader.superimposition=null;uploader.cone='';uploader.ocrText='';
     const reader=new FileReader();
     reader.onload=async()=>{
       const full=String(reader.result);
       const img=new Image();
       await new Promise(done=>{img.onload=done;img.onerror=done;img.src=full;});
       if(img.naturalWidth){
+        uploader.width=img.naturalWidth;uploader.height=img.naturalHeight;
         const w=Math.min(960,img.naturalWidth),h=Math.round(w*img.naturalHeight/img.naturalWidth);
         const c=document.createElement('canvas');c.width=w;c.height=h;
         c.getContext('2d').drawImage(img,0,0,w,h);
         uploader.preview=c.toDataURL('image/webp',.62);
       }else uploader.preview=full;
       uploader.busy=false;await cropRelics();v06ShowImportReview();
+      const indicator=document.getElementById('v06-import-status');
+      if(indicator){
+        const ratio=uploader.width/uploader.height;
+        const supported=(uploader.width>=700&&uploader.height>=900&&ratio>=.82&&ratio<=.95)||(uploader.width>=700&&uploader.height>=600&&ratio>=1.02&&ratio<=1.18);
+        indicator.textContent=supported?
+          'Imagem carregada ('+uploader.width+' × '+uploader.height+'). Iniciando OCR; confira todos os resultados antes de salvar.':
+          'Layout não reconhecido automaticamente ('+uploader.width+' × '+uploader.height+'). As seis relíquias continuam editáveis; nenhum recorte foi presumido.';
+      }
       // Auto-start extraction; retain editable review and explicit save confirmation.
       Promise.resolve().then(()=>window.v06AutoRead()).catch(error=>console.warn('OCR automático:',error));
     };
@@ -669,7 +851,7 @@
       '<div class="v06-action-row"><button class="v06-primary" onclick="v06AutoRead()">✧ Reconhecer dados do print</button><button class="v06-secondary" onclick="document.getElementById(\'v06-file\').click()">Trocar imagem</button></div>'+
       '<div class="v06-fieldgroup"><label>Personagem<select id="v06-id" onchange="document.getElementById(\'v06-custom-name-wrap\').style.display=this.value===\'__custom__\'?\'block\':\'none\'">'+choice+'</select></label>'+
       '<label id="v06-custom-name-wrap" style="display:none;grid-column:1/-1">Nome do personagem ainda não listado<input id="v06-custom-name" maxlength="80" placeholder="Nome como aparece no jogo"></label>'+
-      '<label>Nível<input id="v06-level" type="number" min="1" max="80" value="80"></label>'+
+      '<label>Nível<input id="v06-level" type="number" min="1" max="80" placeholder="Não identificado"></label>'+
       '<label>Eidolons (sugestão visual — confirme E0–E6)<select id="v06-e"><option value="">Selecione E0–E6</option>'+Array.from({length:7},(_,i)=>'<option value="'+i+'" '+(i===uploader.eidolon?'selected':'')+'>E'+i+'</option>').join('')+'</select></label>'+
       '<label>Sobreposição do cone<select id="v06-s"><option value="">Selecione S1–S5</option>'+Array.from({length:5},(_,i)=>'<option value="'+(i+1)+'" '+(i+1===uploader.superimposition?'selected':'')+'>S'+(i+1)+'</option>').join('')+'</select></label>'+
       '<label style="grid-column:1/-1">Nome do cone de luz<input id="v06-cone" value="'+safe(uploader.cone||'')+'" placeholder="Nome do cone de luz"></label>'+
@@ -696,8 +878,10 @@
     await new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;img.src=uploader.preview});
     if(!img.naturalWidth)return;
     const ratio=img.naturalWidth/img.naturalHeight;
-    if(ratio<0.8 || ratio>1.6){uploader.relImages=[];return;}
     const illustrated=ratio>=.82&&ratio<=.95;
+    const battle=ratio>=1.02&&ratio<=1.18;
+    // Never manufacture six cutouts from an unknown image layout.
+    if((!illustrated&&!battle)||uploader.width<700||uploader.height<(illustrated?900:600)){uploader.relImages=[];return;}
     const regions=illustrated?[
       [.369,.591,.195,.157],[.571,.591,.195,.157],[.773,.591,.195,.157],
       [.369,.745,.195,.157],[.571,.745,.195,.157],[.773,.745,.195,.157]
@@ -951,7 +1135,17 @@
     if(!uploader.file)return say('Selecione um print.');
     let worker=null,bitmap=null;
     try{
-      say('Lendo o modelo fixo do registro de batalha...');
+      bitmap=await createImageBitmap(uploader.file);
+      const ratio=bitmap.width/bitmap.height;
+      const illustrated=ratio>=.82&&ratio<=.95&&bitmap.width>=700&&bitmap.height>=900;
+      const standard=ratio>=1.02&&ratio<=1.18&&bitmap.width>=700&&bitmap.height>=600;
+      if(!illustrated&&!standard){
+        say('Formato ainda não suportado pelo reconhecimento automático ('+bitmap.width+' × '+bitmap.height+
+          '). Você pode cadastrar o personagem e preencher as seis relíquias manualmente. Nenhum atributo foi alterado.');
+        return;
+      }
+      say('Layout identificado: '+(illustrated?'cartão ilustrado':'registro de batalha')+
+          ' · '+bitmap.width+' × '+bitmap.height+'. Lendo somente os campos visíveis…');
       // Avoid carrying previously OCR-filled fields over into a new screenshot.
       for(const key of ['pv','atk','def','spd','crit','cdmg','break','energy']){
         const el=document.getElementById('v06-'+key);
@@ -963,10 +1157,6 @@
         if(el)el.value='';
       }
       const ocr=await getLang();
-      bitmap=await createImageBitmap(uploader.file);
-      const ratio=bitmap.width/bitmap.height;
-      const illustrated=ratio>=.82&&ratio<=.95;
-      if(!illustrated&&(ratio<1.02||ratio>1.18))throw Error('Formato ainda não reconhecido. Use uma captura de build ilustrada ou o relatório padrão.');
       worker=await ocr.createWorker('eng',1,{logger:m=>{
         if(m.status==='recognizing text')say('Lendo o print: '+Math.round(m.progress*100)+'%');
       }});
@@ -1108,13 +1298,18 @@
     if(!document.getElementById('v06-confirm')?.checked){
       showToast('Confira os números e marque a confirmação antes de salvar');return;
     }
+    // Nexus 2.0: never block a character because OCR missed a single stat.
+    // A partial record must be saved and completed later. Blank fields do not
+    // overwrite previously confirmed values; missing Eidolon/cone ranks keep
+    // the old values or sensible E0/S1 defaults in the new account record.
     const important=['pv','atk','def','spd','crit','cdmg'];
-    if(important.some(k=>document.getElementById('v06-'+k)?.value==='')){
-      showToast('Complete os seis atributos principais antes de salvar');return;
+    const pendingStats=important.filter(k=>document.getElementById('v06-'+k)?.value==='');
+    const eField=document.getElementById('v06-e'),sField=document.getElementById('v06-s');
+    if(eField?.value!==''&&eField?.value!=null&&!Number.isInteger(Number(eField.value))){
+      showToast('Confira os Eidolons antes de salvar');return;
     }
-    if(!document.getElementById('v06-e')?.value||!document.getElementById('v06-s')?.value){
-      // E0 equivale à string '0', que é truthy.
-      showToast('Selecione os Eidolons e a sobreposição do cone');return;
+    if(sField?.value!==''&&sField?.value!=null&&!Number.isInteger(Number(sField.value))){
+      showToast('Confira a sobreposição do cone antes de salvar');return;
     }
     if(newCharacter){
       state.v06CustomCharacters ||= {};
@@ -1136,8 +1331,10 @@
       state.v06RelicDetails||={};
       // One canonical record for all import paths, with legacy adapter for
       // older character screens and manual edits. Do not erase prior values.
+      const previous=state.v06RelicDetails[id]||[];
+      const incoming=nexusAccount?nexusAccount.mergeRelicImport(relicData,previous):relicData;
       const unified=nexusAccount?nexusAccount.normalizeRelics(
-        relicData,prior.relics||{},nexusAccountCatalog?.relicSets||{}):relicData;
+        incoming,prior.relics||{},nexusAccountCatalog?.relicSets||{}):incoming;
       state.v06RelicDetails[id]=unified;
       if(nexusAccount)prior.relics=nexusAccount.toLegacy(
         unified,nexusAccountCatalog?.relicSets||{},prior.relics||{});
@@ -1148,7 +1345,7 @@
         level:r.level
       }]));
     }
-    state.profile=id;const persisted=verifiedAccountSave(id);closeModal();tab='overview';route('profile');showToast(persisted?'Print e personagem registrados na sua conta':'Build visível nesta sessão, mas não foi salva no dispositivo. Exporte um backup!');
+    state.profile=id;const persisted=verifiedAccountSave(id);closeModal();tab='overview';route('profile');showToast(persisted?(pendingStats.length?'Personagem salvo! '+pendingStats.length+' atributo(s) ficam pendentes para completar depois.':'Print e personagem registrados na sua conta'):'Build visível nesta sessão, mas não foi salva no dispositivo. Exporte um backup!');
   };
 
   // Editorial guidance is contextual and only references characters explicitly in the account.
@@ -1190,6 +1387,7 @@
       blocks=pomCard('Calcule primeiro o que falta','No Farm Planner, desconte o estoque e considere as fusões 3:1 antes de estimar runs. Materiais semanais e créditos devem ser rastreados separadamente.','MATERIAIS');
     }
     return '<div class="v06-diary">'+subhead('GUIA DO CONDUTOR','Pom-Pom · Análise da sua conta','Leitura dos atributos, cones e equipamentos que você cadastrou, com pendências específicas por personagem.')+
+      '<div class="v20-pompom-launch"><div><strong>O Pom-Pom agora responde</strong><p>Pergunte sobre seus personagens, os seis equipamentos, cones, materiais e equipes. As respostas usam o que está registrado na conta.</p></div><button type="button" data-nexus-pompom-open>Conversar com o Pom-Pom</button></div>'+
       '<div class="v06-diary-intro">'+pomCard('O que precisa de atenção primeiro','Na guia Minha conta, abra cada personagem para conferir os alertas da sua build. Não invento notas, metas ou personagens que não constam no seu arquivo.','CONFERÊNCIA POR PERSONAGEM')+'</div>'+
       '<div class="v06-accountfilter">'+groups.map(([k,v])=>'<button class="'+(k===v06TipTab?'active':'')+'" onclick="v06SelectTips(\''+k+'\')">'+v+'</button>').join('')+'</div>'+
       blocks+'<div class="v06-source-note">Kits e Eidolons são sincronizados a partir do catálogo comunitário. Conselhos de Endgame são editoriais e não recebem selo de validação automaticamente.</div></div>';

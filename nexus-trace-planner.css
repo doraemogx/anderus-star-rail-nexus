@@ -1,0 +1,40 @@
+/* Anderus Trace Planner / legible upgrades and resource accounting. */
+#nexus-traces-dialog{width:min(1010px,calc(100vw - 20px));max-width:1010px;max-height:92dvh;overflow:auto;padding:0;background:#0e1b2d;color:#f3eadb;border:1px solid #d5b78f;border-radius:16px;box-shadow:0 24px 95px #000d}
+#nexus-traces-dialog::backdrop{background:#01050fdd}
+#nexus-traces-dialog .nexus-traces-shell{padding:clamp(16px,3vw,32px);font:14px/1.65 system-ui}
+#nexus-traces-dialog header{display:flex;justify-content:space-between;align-items:start;gap:16px}
+#nexus-traces-dialog header>div>span{font-size:10px;letter-spacing:.15em;color:#f2d2a7;font-weight:700}
+#nexus-traces-dialog h2{font:500 clamp(29px,5vw,43px) Georgia,serif;margin:4px 0 7px}
+#nexus-traces-dialog header p{color:#c6d2df;margin:0 0 20px}
+#nexus-traces-dialog button{cursor:pointer;min-height:44px;border:1px solid #b6a283;border-radius:9px;background:#26354d;color:#f5e8d4;padding:10px 13px}
+#nexus-traces-dialog [data-traces-close]{flex:0 0 44px;width:44px;height:44px;font-size:24px;padding:0}
+#nexus-traces-dialog :is(input,select,button):focus-visible{outline:3px solid #f2d298;outline-offset:3px}
+#nexus-traces-dialog label{font-size:12px;color:#e3d2b8;display:block}
+#nexus-traces-dialog :is(input,select){display:block;min-height:44px;width:100%;min-width:0;background:#1a2b44;color:#fff;border:1px solid #7c879b;border-radius:8px;padding:8px 11px;font:13px system-ui}
+#nexus-traces-dialog .nexus-traces-hero-select{max-width:450px;margin:0 0 14px}
+#nexus-traces-dialog .nexus-traces-toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+#nexus-traces-dialog .nexus-traces-toolbar button:first-child{border-color:#ead1a6;color:#f5dba8}
+#nexus-traces-dialog .nexus-traces-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#nexus-traces-dialog .nexus-trace-node{min-width:0;padding:14px;border-radius:11px;border:1px solid #4e627f;background:#18283e;display:flex;justify-content:space-between;gap:16px;align-items:center}
+#nexus-traces-dialog .nexus-trace-name{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+#nexus-traces-dialog .nexus-trace-name>img{width:43px;height:43px;flex:0 0 43px;object-fit:contain;background:#121d30;border:1px solid #59677b;border-radius:9px;padding:4px}
+#nexus-traces-dialog .nexus-trace-name small{display:block;color:#c8ba9d;font-size:10px}
+#nexus-traces-dialog .nexus-trace-node h3{font:600 14px/1.35 system-ui;margin:4px 0;overflow-wrap:anywhere}
+#nexus-traces-dialog .nexus-trace-levels{display:flex;gap:6px;flex:0 0 150px}
+#nexus-traces-dialog .nexus-trace-levels label{flex:1;min-width:0}
+#nexus-traces-dialog .nexus-trace-levels select{padding:8px 5px}
+#nexus-traces-dialog #nexus-traces-report{margin-top:25px;border-top:1px solid #63718a;padding-top:16px}
+#nexus-traces-dialog .nexus-trace-result-head h3{font:500 25px Georgia,serif;margin:4px 0 10px}
+#nexus-traces-dialog .nexus-trace-warning{background:#382938;border-left:3px solid #e8c39a;color:#f1d3bd;padding:13px}
+#nexus-traces-dialog .nexus-trace-ready{background:#1e3b3a;color:#bdebd6;padding:13px}
+#nexus-traces-dialog .nexus-traces-materials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+#nexus-traces-dialog .nexus-trace-material{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #50647e;background:#17263b;border-radius:10px;min-width:0}
+#nexus-traces-dialog .nexus-trace-material>img{width:43px;height:43px;flex:0 0 43px;object-fit:contain}
+#nexus-traces-dialog .nexus-trace-material>div{flex:1;min-width:0}
+#nexus-traces-dialog .nexus-trace-material h4{margin:0 0 4px;font-size:13px;overflow-wrap:anywhere}
+#nexus-traces-dialog .nexus-trace-material p{margin:0;font-size:12px;color:#cddae8}
+#nexus-traces-dialog .nexus-trace-material p strong{color:#f3ce96}
+#nexus-traces-dialog .nexus-trace-material label{flex:0 0 80px}
+#nexus-traces-dialog footer{margin-top:25px;border-top:1px solid #58687d;padding-top:15px;color:#bdc9d8;font-size:12px}
+@media(max-width:750px){#nexus-traces-dialog .nexus-traces-grid,#nexus-traces-dialog .nexus-traces-materials{grid-template-columns:1fr}}
+@media(max-width:430px){#nexus-traces-dialog .nexus-trace-node{flex-direction:column;align-items:stretch;gap:8px}#nexus-traces-dialog .nexus-trace-levels{flex:0 0 auto;width:100%}}

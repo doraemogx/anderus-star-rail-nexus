@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const window={};
+vm.runInNewContext(read('nexus-trace-planner.js'),{window,document:{readyState:'loading',addEventListener(){}},String,Number,Object,Array,Math,Error});
+const calc=window.NexusTracePlanner;
+const data=JSON.parse(read('data/character-traces.json'));
+const nodes=data.trees['1512'],basic=nodes.find(n=>n.id==='1512001');
+assert.ok(basic,'Missing Robin Summeretto basic attack trace');
+assert.equal(calc.maximum(basic),6);
+const pending=calc.calculate([basic],{});
+assert.equal(pending.pending.length,1);
+assert.equal(Object.keys(pending.needed).length,0);
+const start=calc.calculate([basic],{'1512001':{current:0,target:2}});
+assert.equal(start.needed['2'],3500);
+assert.equal(start.needed['110251'],2);
+assert.equal(start.needed['114001'],4);
+const progressed=calc.calculate([basic],{'1512001':{current:1,target:2}});
+assert.equal(progressed.needed['2'],3500);
+const done=calc.calculate([basic],{'1512001':{current:6,target:6}});
+assert.equal(Object.keys(done.needed).length,0);
+assert.throws(()=>calc.calculate([basic],{'1512001':{current:6,target:1}}),/inválidos/);
+console.log('PASS trace levels, missing-level pending state and verified per-node costs');

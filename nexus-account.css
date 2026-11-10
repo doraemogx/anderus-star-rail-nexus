@@ -88,3 +88,40 @@
 .v11-storage-warning strong{font:700 14px/1.45 'DM Sans',sans-serif}
 .v11-storage-warning p{font:12px/1.6 'DM Sans',sans-serif}
 .v11-coach-loading{padding:15px;border:1px solid #bbab9c70;border-radius:9px;background:#182237;color:#eee0d2}
+
+/* 2.0: readable, reversible build history without screenshot blobs. */
+.v11-history{max-width:960px;margin:18px 0 30px;color:#e7e6f0}
+.v11-history>h2{font:500 clamp(27px,6vw,38px)/1.2 var(--v-title-font,Georgia,serif);margin:6px 0 12px;color:#f2d4bb}
+.v11-history>p{font:14px/1.7 'DM Sans',system-ui,sans-serif;color:#ccd6e6}
+.v11-history-entry{padding:18px;margin:12px 0;border:1px solid #c9b09977;border-radius:15px;background:linear-gradient(135deg,#1a293d,#201e33)}
+.v11-history-entry header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.v11-history-entry header span{font-weight:700;color:#edcba9}
+.v11-history-entry header button{min-height:44px;border:1px solid #d8b487;border-radius:9px;background:#394158;color:#f7e7d2;padding:10px 16px;cursor:pointer}
+.v11-history-entry header button:focus-visible{outline:3px solid #f6d597;outline-offset:3px}
+.v11-history-entry p{color:#d2d8e4;font-size:13px}
+.v11-history-entry ul{list-style:none;margin:15px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.v11-history-entry li{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;padding:9px;border:1px solid #5b6479;background:#121b2b;border-radius:7px;font-size:12px}
+.v11-history-entry li strong{color:#f4d7ad}
+@media(max-width:520px){.v11-history-entry ul{grid-template-columns:1fr}.v11-history-entry{padding:13px}}
+
+/* Pom-Pom: a concise priority view with disclosure of all secondary findings. */
+.v11-coach-note.v11-coach-collapsed{display:block;padding:0;min-width:0}
+.v11-coach-collapsed>summary{list-style:none;display:flex;align-items:center;gap:11px;padding:12px 13px;min-height:48px;cursor:pointer}
+.v11-coach-collapsed>summary::-webkit-details-marker{display:none}
+.v11-coach-collapsed>summary strong{flex:1;min-width:0;font-size:13px}
+.v11-coach-collapsed>summary:focus-visible{outline:3px solid #ebcf97;outline-offset:-3px}
+.v11-coach-collapsed .v11-coach-expand{color:#f1d6a1;font-size:20px;line-height:1}
+.v11-coach-collapsed[open] .v11-coach-expand{transform:rotate(45deg)}
+.v11-coach-collapsed>p{padding:0 15px 15px 47px;margin:0!important;font-size:13px!important;line-height:1.7!important}
+@media(max-width:680px){.v11-coach-list{grid-template-columns:1fr!important}.v11-coach-note p{font-size:13px;line-height:1.72}}
+
+/* Cone level belongs to the equipped Light Cone, not character level. */
+.v11-cone-level-form{display:flex;align-items:end;gap:16px;flex-wrap:wrap;margin:18px 0;padding:17px;border:1px solid #8a899b;border-radius:12px;background:#17243b}
+.v11-cone-level-form>div{flex:1;min-width:200px}
+.v11-cone-level-form small{display:block;color:#e5c99e;font-size:10px;letter-spacing:1.2px;font-weight:700}
+.v11-cone-level-form p{font-size:13px;color:#dce3ef;line-height:1.6}
+.v11-cone-level-form label{display:flex;flex-direction:column;gap:4px;color:#e4cfb1;font-size:12px;font-weight:700}
+.v11-cone-level-form input{width:115px;min-height:44px;background:#162239;border:1px solid #8998ad;border-radius:8px;padding:10px;color:#fff;font:15px system-ui}
+.v11-cone-level-form button{min-height:44px;border:1px solid #d7b58b;border-radius:9px;background:#e7caa1;color:#1b283a;padding:10px 16px;cursor:pointer;font-weight:700}
+.v11-cone-level-form :is(input,button):focus-visible{outline:3px solid #ecd29a;outline-offset:3px}
+@media(max-width:430px){.v11-cone-level-form{align-items:stretch}.v11-cone-level-form label{flex:1}.v11-cone-level-form input{width:100%}}

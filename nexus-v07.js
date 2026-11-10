@@ -155,8 +155,112 @@ const observer=new MutationObserver(()=>{
  requestAnimationFrame(()=>{lastPending=false;enhancePage();});
 });
 function start(){
+ // Pom-Pom 2.0: local, explainable conversations grounded in the account.
+ if(!document.getElementById('nexus-pompom-chat-css')){
+  const css=document.createElement('link');css.id='nexus-pompom-chat-css';css.rel='stylesheet';css.href='./nexus-pompom-chat.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-pompom-chat-js')){
+  const js=document.createElement('script');js.id='nexus-pompom-chat-js';js.src='./nexus-pompom-chat.js';js.defer=true;document.head.appendChild(js);
+ }
+
+ // User-provided screenshot handling; default file picker remains available.
+ if(!document.getElementById('nexus-scan-input-css')){
+  const link=document.createElement('link');link.id='nexus-scan-input-css';link.rel='stylesheet';link.href='./nexus-scan-input.css';document.head.appendChild(link);
+ }
+ if(!document.getElementById('nexus-scan-input-js')){
+  const script=document.createElement('script');script.id='nexus-scan-input-js';script.src='./nexus-scan-input.js';script.defer=true;document.head.appendChild(script);
+ }
+
+ // Shared materials budget: one inventory for ascension and all trace goals.
+ if(!document.getElementById('nexus-material-budget-css')){
+  const css=document.createElement('link');css.id='nexus-material-budget-css';css.rel='stylesheet';css.href='./nexus-material-budget.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-material-budget-js')){
+  const js=document.createElement('script');js.id='nexus-material-budget-js';js.src='./nexus-material-budget.js';js.defer=true;document.head.appendChild(js);
+ }
+
+ // Local factual inbox: beta revision and catalogue diff alerts, never fake push.
+ if(!document.getElementById('nexus-notifications-css')){
+  const style=document.createElement('link');style.id='nexus-notifications-css';style.rel='stylesheet';style.href='./nexus-notifications.css';document.head.appendChild(style);
+ }
+ if(!document.getElementById('nexus-notifications-js')){
+  const script=document.createElement('script');script.id='nexus-notifications-js';script.src='./nexus-notifications.js';script.defer=true;document.head.appendChild(script);
+ }
+
+ // Relic Optimizer: source-backed, not a universal score.
+ if(!document.getElementById('nexus-relic-opt-css')){
+  const css=document.createElement('link');css.id='nexus-relic-opt-css';css.rel='stylesheet';css.href='./nexus-relic-optimizer.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-relic-opt-js')){
+  const js=document.createElement('script');js.id='nexus-relic-opt-js';js.src='./nexus-relic-optimizer.js';js.defer=true;document.head.appendChild(js);
+ }
+ // Trace Planner uses shared account material inventory and optional levels.
+ if(!document.getElementById('nexus-trace-plan-css')){
+  const link=document.createElement('link');link.id='nexus-trace-plan-css';link.rel='stylesheet';link.href='./nexus-trace-planner.css';document.head.appendChild(link);
+ }
+ if(!document.getElementById('nexus-trace-plan-js')){
+  const script=document.createElement('script');script.id='nexus-trace-plan-js';script.src='./nexus-trace-planner.js';script.defer=true;document.head.appendChild(script);
+ }
+ // Warp Math loads first; the planner uses the same sourced rules.
+ if(!document.getElementById('nexus-warp-css')){
+  const style=document.createElement('link');style.id='nexus-warp-css';style.rel='stylesheet';style.href='./nexus-warp-advisor.css';document.head.appendChild(style);
+ }
+ if(!document.getElementById('nexus-warp-math-js')){
+  const math=document.createElement('script');math.id='nexus-warp-math-js';math.src='./nexus-warp-math.js';math.async=false;document.head.appendChild(math);
+  const ui=document.createElement('script');ui.id='nexus-warp-advisor-js';ui.src='./nexus-warp-advisor.js';ui.async=false;document.head.appendChild(ui);
+ }
+ // Keep the cinematic Aha variant coherent even inside dialogs attached to body.
+ if(!document.getElementById('nexus-theme-overlays-css')){
+  const css=document.createElement('link');css.id='nexus-theme-overlays-css';css.rel='stylesheet';css.href='./nexus-theme-overlays.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-theme-bridge-js')){
+  const script=document.createElement('script');script.id='nexus-theme-bridge-js';script.src='./nexus-theme-bridge.js';script.defer=true;document.head.appendChild(script);
+ }
+ // Farm Planner 2.0, real PT-BR ascension costs from a verified static snapshot.
+ if(!document.getElementById('nexus-farm-css')){
+  const link=document.createElement('link');link.id='nexus-farm-css';link.rel='stylesheet';link.href='./nexus-farm-lab.css';document.head.appendChild(link);
+ }
+ if(!document.getElementById('nexus-farm-js')){
+  const script=document.createElement('script');script.id='nexus-farm-js';script.src='./nexus-farm-lab.js';script.defer=true;document.head.appendChild(script);
+ }
+ // Portable backup and verified transfer between devices.
+ if(!document.getElementById('nexus-backup-css')){
+  const css=document.createElement('link');css.id='nexus-backup-css';css.rel='stylesheet';css.href='./nexus-backup.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-backup-js')){
+  const script=document.createElement('script');script.id='nexus-backup-js';script.src='./nexus-backup.js';script.defer=true;document.head.appendChild(script);
+ }
+ // Universal search in the existing header, with Ctrl/Cmd+K shortcut.
+ if(!document.getElementById('nexus-search-css')){
+  const css=document.createElement('link');css.id='nexus-search-css';css.rel='stylesheet';css.href='./nexus-search.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-search-js')){
+  const script=document.createElement('script');script.id='nexus-search-js';script.src='./nexus-search.js';script.defer=true;document.head.appendChild(script);
+ }
+ // Team Lab 2.0: accountable four-character team builder.
+ if(!document.getElementById('nexus-team-css')){
+  const link=document.createElement('link');link.id='nexus-team-css';link.rel='stylesheet';link.href='./nexus-team-lab.css';document.head.appendChild(link);
+ }
+ if(!document.getElementById('nexus-team-js')){
+  const script=document.createElement('script');script.id='nexus-team-js';script.src='./nexus-team-lab.js';script.defer=true;document.head.appendChild(script);
+ }
+ // Kit Lab 2.0: isolated data-driven character dossier expansion.
+ if(!document.getElementById('nexus-kit-css')){
+  const css=document.createElement('link');css.id='nexus-kit-css';css.rel='stylesheet';css.href='./nexus-kit-lab.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-kit-js')){
+  const script=document.createElement('script');script.id='nexus-kit-js';script.src='./nexus-kit-lab.js';script.defer=true;document.head.appendChild(script);
+ }
+ // Load independent diagnostics without mutating account state.
+ if(!document.getElementById('nexus-diagnostics-css')){
+  const css=document.createElement('link');css.id='nexus-diagnostics-css';css.rel='stylesheet';css.href='./nexus-diagnostics.css';document.head.appendChild(css);
+ }
+ if(!document.getElementById('nexus-diagnostics-script')){
+  const js=document.createElement('script');js.id='nexus-diagnostics-script';js.src='./nexus-diagnostics.js';js.defer=true;document.head.appendChild(js);
+ }
  enhancePage();observer.observe(document.querySelector('.app')||document.documentElement,{childList:true,subtree:true});
- if('serviceWorker' in navigator&&location.protocol==='https:'){
+ const trustedHost=location.protocol==='https:'||['127.0.0.1','localhost'].includes(location.hostname);
+ if('serviceWorker' in navigator&&trustedHost){
   navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(e=>console.warn('Anderus offline',e));
  }
 }

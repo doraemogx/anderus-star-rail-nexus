@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const read=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url),'utf8'));
+const source=readFileSync(new URL('../nexus-notifications.js',import.meta.url),'utf8');
+const window={};const local=new Map();const localStorage={getItem:k=>local.get(k)||null,setItem:(k,v)=>local.set(k,v)};
+vm.runInNewContext(source,{window,document:{readyState:'loading',addEventListener(){}},localStorage,Date,String,Object,Array,Set,Math});
+const notice=window.NexusNotifications;
+assert.ok(notice?.parse&&notice?.open);
+const beta=read('data/beta-watch.json');
+const list=notice.parse(beta,[]);
+assert.equal(list.length,1);
+assert.match(list[0].id,/^beta:/);
+assert.match(list[0].type,/NÃO CONFIRMADO/);
+assert.ok(list[0].url.startsWith('https://'));
+const history=[{checkedAt:'2026-11-09T15:00:00Z',changes:{chars:{new_or_changed:2,removed:0}}}];
+const combined=notice.parse(beta,history);
+assert.equal(combined.length,2);
+assert.ok(combined.some(n=>n.type==='CATÁLOGO E KITS'));
+assert.equal(notice.parse({},[]).length,0,'No fabricated notifications without source data');
+console.log('PASS source-backed notices, beta disclaimer and catalogue diffs');

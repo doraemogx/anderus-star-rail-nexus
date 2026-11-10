@@ -1,0 +1,42 @@
+/* ANDERUS WARP / dimensional ticket dossier, mobile-first. */
+#nexus-warp-dialog{width:min(980px,calc(100vw - 20px));max-width:980px;max-height:93dvh;overflow:auto;padding:0;border:1px solid #d5b98a;border-radius:16px;background:#101d31;color:#f7ead9;box-shadow:0 25px 85px #000c}
+#nexus-warp-dialog::backdrop{background:#03050de5}
+#nexus-warp-dialog .nexus-warp-body{padding:clamp(15px,3.6vw,34px);font:14px/1.65 system-ui}
+#nexus-warp-dialog header{display:flex;justify-content:space-between;align-items:start;gap:20px}
+#nexus-warp-dialog header>div>span{font-size:10px;letter-spacing:.19em;color:#e5c48d;font-weight:800}
+#nexus-warp-dialog h2{font:500 clamp(30px,5vw,45px)/1.2 Georgia,serif;margin:5px 0 7px}
+#nexus-warp-dialog header p{color:#c5d3e4;margin:0 0 20px}
+#nexus-warp-dialog [data-warp-close]{width:44px;height:44px;flex:0 0 44px;border:1px solid #b5a58e;background:#263750;color:#fff;border-radius:10px;font-size:25px;cursor:pointer}
+#nexus-warp-dialog .nexus-warp-section{padding:17px 0;border-top:1px solid #536681}
+#nexus-warp-dialog .nexus-warp-section h3{font:500 23px Georgia,serif;margin:0 0 15px;color:#f2d3ac}
+#nexus-warp-dialog .nexus-warp-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#nexus-warp-dialog label{font-size:12px;font-weight:600;color:#e7d3b7;display:block}
+#nexus-warp-dialog label small{display:block;font-size:11px;color:#aebed0;font-weight:400}
+#nexus-warp-dialog :is(input[type=number],select){display:block;width:100%;min-width:0;min-height:46px;padding:10px 12px;margin:5px 0;border:1px solid #7b879c;background:#1c2b43;color:#fff;font:15px system-ui;border-radius:9px}
+#nexus-warp-dialog input[type=checkbox]{width:20px;height:20px;accent-color:#ebc897}
+#nexus-warp-dialog .nexus-warp-check{display:flex;align-items:center;gap:10px;min-height:45px;padding:12px 0}
+#nexus-warp-dialog :is(input,select,button):focus-visible{outline:3px solid #e6ce96;outline-offset:3px}
+#nexus-warp-dialog .nexus-warp-allocation{border:1px solid #b19c80;background:#242f47;padding:13px;border-radius:10px;display:flex;flex-direction:column;justify-content:center}
+#nexus-warp-dialog .nexus-warp-allocation strong{font-size:16px;color:#e6c691}
+#nexus-warp-dialog .nexus-warp-allocation span{font-size:12px;color:#e0d8d4}
+#nexus-warp-dialog .nexus-warp-headline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:18px 0}
+#nexus-warp-dialog .nexus-warp-headline>div{padding:17px 14px;background:#1b2c43;border:1px solid #a89982;border-radius:10px;display:flex;flex-direction:column;gap:5px}
+#nexus-warp-dialog .nexus-warp-headline small{font-size:10px;letter-spacing:.11em;color:#c4cfe0}
+#nexus-warp-dialog .nexus-warp-headline strong{font:500 clamp(24px,4vw,38px) Georgia,serif;color:#f6d4a0}
+#nexus-warp-dialog .nexus-warp-headline span{font-size:11px;color:#cbd5e7}
+#nexus-warp-dialog .nexus-warp-outcomes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#nexus-warp-dialog .nexus-warp-outcomes article{padding:20px;border:1px solid #69778b;border-radius:12px;background:#1c283d;display:flex;flex-direction:column;gap:4px}
+#nexus-warp-dialog .nexus-warp-outcomes h4{font-size:16px;color:#f3d3a7;margin:0}
+#nexus-warp-dialog .nexus-warp-outcomes p{color:#d7e0ef;margin:4px 0 12px}
+#nexus-warp-dialog .nexus-warp-outcomes strong{font:500 32px Georgia,serif;color:#eccf9d}
+#nexus-warp-dialog .nexus-warp-outcomes span{font-size:12px;color:#bfcce0}
+#nexus-warp-dialog .nexus-warp-combined{margin:15px 0;border-left:4px solid #e5c48d;background:#25354d;padding:17px}
+#nexus-warp-dialog .nexus-warp-combined>span{font-size:12px;letter-spacing:.04em;color:#d8dfeb}
+#nexus-warp-dialog .nexus-warp-combined strong{display:block;font:500 37px Georgia,serif;color:#f2d8ad}
+#nexus-warp-dialog .nexus-warp-combined p{font-size:12px;color:#c4d0df;line-height:1.7}
+#nexus-warp-dialog .nexus-warp-footnote{font-size:12px;color:#b8c8dc}
+#nexus-warp-dialog footer{border-top:1px solid #7e8290;padding-top:17px;margin-top:20px;font-size:12px;color:#c1cedd}
+#nexus-warp-dialog footer strong{color:#e7c99b}
+#nexus-warp-dialog footer a{color:#f5d8a2}
+@media(max-width:650px){#nexus-warp-dialog .nexus-warp-fields,#nexus-warp-dialog .nexus-warp-outcomes{grid-template-columns:1fr}#nexus-warp-dialog .nexus-warp-headline{grid-template-columns:repeat(2,minmax(0,1fr))}#nexus-warp-dialog .nexus-warp-headline>div:last-child{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){#nexus-warp-dialog *,#nexus-warp-dialog *::before{animation:none!important;transition:none!important}}

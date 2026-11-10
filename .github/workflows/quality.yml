@@ -15,5 +15,62 @@ jobs:
           node-version: '22'
       - name: Sintaxe, temas, OCR e cobertura de modos
         run: node scripts/check-v09.mjs
+      - name: Deploy idêntico ao commit e cache versionado
+        run: node scripts/check-release-stamp.mjs
+      - name: Preservação de atributos observados
+        run: node scripts/check-relic-integrity.mjs
+      - name: Sintaxe de módulos adicionais
+        run: |
+          node --check sw.js
+          node --check nexus-diagnostics.js
+          node --check nexus-v07.js
+          node --check nexus-team-lab.js
+          node --check nexus-kit-lab.js
+          node --check nexus-search.js
+          node --check nexus-backup.js
+          node --check nexus-farm-lab.js
+          node --check nexus-theme-bridge.js
+          node --check nexus-warp-math.js
+          node --check nexus-warp-advisor.js
+          node --check nexus-trace-planner.js
+          node --check nexus-relic-optimizer.js
+          node --check nexus-notifications.js
+          node --check nexus-material-budget.js
+          node --check nexus-scan-layout.js
+          node --check nexus-scan-input.js
+          node --check nexus-pompom-chat.js
+          node --check worker/index.js
+      - name: Validar sincronização de dados e rollback
+        run: python3 scripts/check-sync-game.py
+      - name: Backup e restauração sem perda de dados
+        run: node scripts/check-backup.mjs
+      - name: Materiais de ascensão e faltantes verificáveis
+        run: node scripts/check-farm.mjs
+      - name: Catálogo de rastros e custos verificáveis
+        run: node scripts/check-traces.mjs
+      - name: OCR parcial sem perda ou mistura de equipamentos
+        run: node scripts/check-relic-merge.mjs
+      - name: Warp Advisor — pity e probabilidades conservadoras
+        run: node scripts/check-warp.mjs
+      - name: Metas e custos individuais de rastros
+        run: node scripts/check-trace-plan.mjs
+      - name: Relic Optimizer — escalamentos verificáveis
+        run: node scripts/check-relic-optimizer.mjs
+      - name: Notificações reais de beta e catálogo
+        run: node scripts/check-notifications.mjs
+      - name: Rotações de Endgame e fontes documentadas
+        run: node scripts/check-endgame-official.mjs
+      - name: Orçamento único de materiais entre módulos
+        run: node scripts/check-material-budget.mjs
+      - name: Nexus Scan — formatos e confiança verificáveis
+        run: node scripts/check-scan-layout.mjs
+      - name: Pom-Pom conversacional — respostas baseadas na conta
+        run: node scripts/check-pompom-chat.mjs
+      - name: Pesquisa bilíngue com IDs canônicos
+        run: node scripts/check-search-aliases.mjs
+      - name: Busca de chefes, mecânicas e proveniência editorial
+        run: node scripts/check-boss-search.mjs
+      - name: Kit Lab 2.0 — dados, interpolação e imagens
+        run: node scripts/check-kit-lab.mjs
       - name: Migração de relíquias, cones S1-S5 e análise de conta
         run: node scripts/check-account.mjs

@@ -7,6 +7,9 @@ on:
     branches: [main]
     paths:
       - 'scripts/sync_game.py'
+      - 'scripts/sync_ascension.py'
+      - 'scripts/sync_traces.py'
+      - 'scripts/sync_search_aliases.py'
       - 'scripts/sync_eidolon_art.py'
       - 'scripts/generate_relic_signatures.py'
       - '.github/workflows/sync-content.yml'
@@ -29,6 +32,12 @@ jobs:
         run: python -m pip install --quiet 'Pillow>=10.0'
       - name: Verificar personagens habilidades e Eidolons
         run: python scripts/sync_game.py
+      - name: Sincronizar materiais de ascensão para o Farm Planner
+        run: python scripts/sync_ascension.py
+      - name: Sincronizar rastros e materiais dos personagens
+        run: python scripts/sync_traces.py
+      - name: Atualizar aliases de busca em inglês
+        run: python scripts/sync_search_aliases.py
       - name: Atualizar todas as artes reais dos Eidolons
         run: python scripts/sync_eidolon_art.py
       - name: Sincronizar assinaturas dos novos conjuntos de relíquias
@@ -37,7 +46,7 @@ jobs:
         run: |
           git config user.name "Anderus Catalog Bot"
           git config user.email "catalog-bot@users.noreply.github.com"
-          git add data/live-game.json data/eidolon-art.json data/relic-icon-signatures.json
+          git add -A data/
           if ! git diff --cached --quiet; then
             git commit -m "Atualiza catalogo do Pom-Pom [bot]"
             git push origin HEAD:main

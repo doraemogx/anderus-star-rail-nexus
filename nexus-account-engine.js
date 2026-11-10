@@ -44,12 +44,41 @@ export function normalizeRelics(details,legacy,sets={}){
    const mainStat=String(detailed?d.main?.stat||old.main?.stat||old.main||'':old.main?.stat||old.main||'');
    const mainValue=numeric(detailed?d.main?.value??old.main?.value??old.value:old.main?.value??old.value);
    const level=numeric(detailed?d.level??old.level:old.level);
-   const corrected=level===15&&Object.hasOwn(MAIN15,mainStat)?MAIN15[mainStat]:mainValue;
+   // Preserve observed OCR and manually entered values. Reference level-15 values
+   // are not a substitute for evidence; missing fields remain explicitly null.
+   const corrected=mainValue;
    const subs=(detailed&&Array.isArray(d.subs)?d.subs:legacySubs(old.subs)).slice(0,4)
       .map(x=>({stat:String(x?.stat||''),value:numeric(x?.value)}));
    while(subs.length<4)subs.push({stat:'',value:null});
    return {slot,type:TYPES[i],setId,setName:String(d.setName||old.setName||old.set||''),
       level,main:{stat:mainStat,value:corrected},subs};
+ });
+}
+/**
+ * Reconcile screenshot-import suggestions with the previously saved equipment.
+ * Empty OCR slots never erase verified records. Partial suggestions are merged
+ * only when the set identity is the same; a different/unknown new set must not
+ * inherit unrelated stats from the previous item.
+ */
+export function mergeRelicImport(incoming=[],previous=[]){
+ return SLOTS.map((slot,i)=>{
+   const next=incoming?.[i]||{},old=previous?.[i]||{};
+   const hasNext=Boolean(next.setId||next.main?.stat||
+     (next.subs||[]).some(x=>x?.stat&&x.value!==null&&x.value!==undefined));
+   if(!hasNext)return structuredClone(old);
+   const sameSet=Boolean(next.setId&&old.setId&&String(next.setId)===String(old.setId));
+   if(!sameSet)return structuredClone(next);
+   const merged=structuredClone(next);
+   if(merged.level==null)merged.level=old.level??null;
+   if(!merged.main?.stat)merged.main=structuredClone(old.main||{stat:'',value:null});
+   else if(merged.main.value==null&&old.main?.stat===merged.main.stat)
+     merged.main.value=old.main.value??null;
+   merged.subs=Array.from({length:4},(_,j)=>{
+     const value=merged.subs?.[j]||{};
+     const prior=old.subs?.[j]||{};
+     return value.stat&&value.value!=null?structuredClone(value):structuredClone(prior);
+   });
+   return merged;
  });
 }
 export function toLegacy(records,sets={},existing={}){
@@ -72,6 +101,8 @@ export function examineRelics(records){
    if(p.setId&&p.main.stat&&p.main.value!==null&&!missing)complete++;
    if(!p.setId)flags.push(label+': falta identificar o conjunto');
    if(!p.main.stat||p.main.value===null)flags.push(label+': atributo principal pendente');
+   if(p.level===15&&p.main.stat&&p.main.value!==null&&Object.hasOwn(MAIN15,p.main.stat)&&Math.abs(p.main.value-MAIN15[p.main.stat])>0.06)
+     flags.push(label+': valor principal '+fmt(p.main.value)+' diverge da referência de nível 15 ('+fmt(MAIN15[p.main.stat])+'); confirme no print antes de corrigir');
    if(missing)flags.push(label+': '+missing+' subatributo(s) pendente(s)');
    for(const sub of p.subs){
      const v=Number(sub.value);

@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const game=JSON.parse(read('data/live-game.json'));
+const engine=await import('data:text/javascript;base64,'+Buffer.from(read('nexus-account-engine.js')).toString('base64'));
+const window={};
+vm.runInNewContext(read('nexus-pompom-chat.js'),{window,document:{readyState:'loading',addEventListener(){}},String,Number,Array,Object,Map,Set,Math,Intl,Date});
+const p=window.NexusPomPom;
+assert.equal(typeof p.answer,'function');
+const user={characters:{'1512':{level:80,e:1,s:5,cone:'A Próxima Página da História'}}};
+const empty=p.answer('Quem preciso melhorar primeiro?','',{},game,engine);
+assert.match(empty.body,/Não há personagens registrados/);
+const priorities=p.answer('Quem preciso melhorar primeiro?','',user,game,engine);
+assert.match(priorities.body,/1 personagens cadastrados/);
+assert.ok(priorities.points.some(t=>t.includes('Robin')));
+const cone=p.answer('Qual cone ela usa?','1512',user,game,engine);
+assert.match(cone.title,/Cone/);
+const relics=p.answer('Como melhorar minha build?','1512',user,game,engine);
+assert.match(relics.body,/0\/6 peças identificadas/);
+assert.ok(relics.actions.some(a=>a.action==='relic'));
+const farm=p.answer('Quanto falta de materiais?','1512',user,game,engine);
+assert.ok(farm.actions.some(a=>a.action==='materials'));
+const unsupported=p.answer('Qual o DPS exato em 1 ciclo?','1512',user,game,engine);
+assert.match([unsupported.body,...unsupported.points].join(' '),/não consigo sustentar/i);
+console.log('PASS Pom-Pom factual local answers, source limits and account-specific priorities');

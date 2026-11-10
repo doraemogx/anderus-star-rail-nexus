@@ -17,36 +17,126 @@ const options=(items,chosen='')=>items.map(item=>
 function setupRows(sets,images,previous=[]){
  const target=document.getElementById('v06-relic-editor');
  if(!target)return;
- const cards=images.map((src,i)=>{
+ // Six rows must exist even if no screenshot layout could be recognized.
+ const cards=SLOT.map((slot,i)=>{
+  const src=images?.[i]||'';
   const existing=previous[i]||{};
   const appropriate=sets.filter(s=>i<4?Number(s.id)<300:Number(s.id)>=300);
   const setOptions=appropriate.map(s=>({value:s.id,label:s.name}));
   const statOptions=STATS.map(v=>({value:v,label:v||'Escolha o atributo'}));
   const substats=Array.from({length:4},(_,k)=>'<div class="v06-relstat"><select id="v06-r'+i+'-k'+k+'">'+options(statOptions,existing.subs?.[k]?.stat)+'</select><input id="v06-r'+i+'-v'+k+'" type="number" inputmode="decimal" step="0.1" placeholder="Valor" value="'+safe(existing.subs?.[k]?.value??'')+'"></div>').join('');
-  return '<details class="v06-relcard" '+(i===0?'open':'')+'><summary><img alt="" src="'+src+'"><span>'+SLOT[i]+'</span><small>Selecionar conjunto e atributos</small></summary>'+
+  return '<details class="v06-relcard" '+(i===0?'open':'')+'><summary>'+(src?'<img alt="Recorte do equipamento" src="'+safe(src)+'">':'<span class="v06-relic-no-crop" aria-label="Sem recorte do print">✦</span>')+'<span>'+SLOT[i]+'</span><small>'+(src?'Conferir conjunto e atributos':'Sem recorte — preencha manualmente')+'</small></summary>'+
     '<div class="v07-relmatch" id="v06-relmatch-'+i+'"><small>O comparador visual aparecerá após reconhecer o print.</small></div>'+
+    '<div class="nexus-relic-ocr-proposals" id="nexus-relic-proposals-'+i+'" aria-live="polite"></div>'+
     '<label>Conjunto equipado<select id="v06-r'+i+'-set">'+options([{value:'',label:'Não identificado — escolha o conjunto'},...setOptions],existing.setId)+'</select></label>'+
     '<div class="v06-relstat"><select id="v06-r'+i+'-main">'+options(statOptions,existing.main?.stat)+'</select><input id="v06-r'+i+'-mainval" type="number" step=".1" inputmode="decimal" placeholder="Principal" value="'+safe(existing.main?.value??'')+'"></div>'+
     '<p class="v06-relnote">Quatro subatributos · confira pelo print</p>'+substats+
-    '<label>Nível da peça<input type="number" id="v06-r'+i+'-lv" min="0" max="15" value="'+safe(existing.level??15)+'"></label></details>';
+    '<label>Nível da peça<input type="number" id="v06-r'+i+'-lv" min="0" max="15" placeholder="Não identificado" value="'+safe(existing.level??'')+'"></label>'+
+    '<label class="v06-relic-photo-label">Anexar print desta peça (opcional)<input id="v06-r'+i+'-photo" type="file" accept="image/png,image/jpeg,image/webp" data-relic-photo="'+i+'"></label></details>';
  }).join('');
- target.innerHTML='<div class="v06-relic-review"><h3>Identificação das 6 relíquias</h3><p class="v06-rel-explain">Os ícones do print são preservados. O nome exato do conjunto não está escrito na imagem: escolha o conjunto real pelo ícone, sem adivinhação. A avaliação completa só será ativada após conferir os seis.</p>'+cards+'</div>';
+ target.innerHTML='<div class="v06-relic-review"><h3>Identificação das 6 relíquias</h3><p class="v06-rel-explain">Os recortes são exibidos quando o layout é reconhecido. Você também pode anexar um print individual por slot e preencher os campos não reconhecidos.</p>'+cards+'</div>';
+ target.querySelectorAll('[data-relic-photo]').forEach(input=>input.addEventListener('change',async event=>{
+  const file=event.target.files?.[0],index=Number(event.target.dataset.relicPhoto);
+  if(!file)return;
+  const status=target.querySelector('#v06-relmatch-'+index);
+  const tell=message=>{if(status)status.textContent=message;};
+  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>8*1024*1024||!file.size){
+   tell('Use PNG, JPG ou WEBP até 8 MB.');event.target.value='';return;
+  }
+  try{
+   const bitmap=await createImageBitmap(file);
+   if(bitmap.width*bitmap.height>30000000)throw Error('Imagem muito grande');
+   const scale=Math.min(1,920/bitmap.width,1200/bitmap.height);
+   const canvas=document.createElement('canvas');
+   canvas.width=Math.max(1,Math.round(bitmap.width*scale));
+   canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+   canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);
+   bitmap.close?.();
+   const screenshot=canvas.toDataURL('image/webp',.78);
+   if(!Array.isArray(images))throw Error('Armazenamento indisponível');
+   while(images.length<6)images.push('');
+   images[index]=screenshot;
+   const summary=event.target.closest('details')?.querySelector('summary');
+   let photo=summary?.querySelector('img');
+   if(!photo){
+    summary?.querySelector('.v06-relic-no-crop')?.remove();
+    photo=document.createElement('img');
+    photo.alt='Prévia da relíquia anexada manualmente';
+    summary?.prepend(photo);
+   }
+   if(photo)photo.src=screenshot;
+   const label=summary?.querySelector('small');
+   if(label)label.textContent='Print individual anexado · confira os atributos';
+   tell('Print anexado. Analisando linhas legíveis; sugestões não substituem seus valores.');
+   const suggestions=target.querySelector('#nexus-relic-proposals-'+index);
+   if(suggestions){
+    suggestions.textContent='Lendo a imagem no navegador…';
+    try{
+     const generic=await import('./nexus-relic-ocr-generic.js');
+     const result=await generic.scanRelicPhoto(canvas,progress=>{
+      suggestions.textContent='Reconhecendo atributos: '+progress+'%';
+     });
+     if(!result.candidates.length){
+      suggestions.textContent='Não encontrei atributos legíveis. Os campos continuam disponíveis para preenchimento manual.';
+     }else{
+      const values=[
+       ...(result.main?[{name:'Principal',...result.main}]:[]),
+       ...result.subs.map((v,k)=>({name:'Subatributo '+(k+1),...v}))
+      ];
+      suggestions.innerHTML='<p class="nexus-relic-ocr-notice"><strong>'+result.candidates.length+' atributo(s) lido(s) por OCR.</strong> Confiança não calibrada: confira os valores com o print. Não foram identificados conjuntos por texto.</p>'+
+       (result.level!==null?'<p>Nível sugerido: +'+result.level+'</p>':'')+
+       '<ul>'+values.map(v=>'<li>'+safe(v.name)+': '+safe(v.stat)+' '+safe(v.value)+'</li>').join('')+'</ul>'+
+       (result.warnings.length?'<p>'+result.warnings.map(safe).join(' · ')+'</p>':'')+
+       '<button type="button" class="nexus-relic-apply-ocr">Aplicar somente nos campos vazios</button>';
+      const button=suggestions.querySelector('.nexus-relic-apply-ocr');
+      button?.addEventListener('click',()=>{
+       const field=key=>document.getElementById('v06-r'+index+'-'+key);
+       const apply=(key,value)=>{
+        const input=field(key);
+        if(!input||input.value!==''||value===null||value===undefined)return false;
+        input.value=String(value);input.dispatchEvent(new Event('change',{bubbles:true}));
+        input.classList.add('nexus-relic-ocr-pending');return true;
+       };
+       let filled=0;
+       if(result.main&&STATS.includes(result.main.stat)){
+        filled+=Number(apply('main',result.main.stat));
+        filled+=Number(apply('mainval',result.main.value));
+       }
+       result.subs.forEach((item,k)=>{
+        if(!STATS.includes(item.stat))return;
+        filled+=Number(apply('k'+k,item.stat));
+        filled+=Number(apply('v'+k,item.value));
+       });
+       if(result.level!==null)filled+=Number(apply('lv',result.level));
+       const notice=suggestions.querySelector('.nexus-relic-ocr-notice');
+       if(notice)notice.textContent=filled+' campo(s) vazio(s) preenchido(s) com sugestões não verificadas. Confira cada valor antes de salvar.';
+       button.disabled=true;
+      });
+     }
+    }catch(error){
+     suggestions.textContent='OCR individual indisponível: '+String(error.message||error)+'. O print e os campos manuais foram preservados.';
+    }
+   }
+  }catch(error){tell('Não foi possível ler o print. Edição manual disponível: '+String(error.message||error));}
+ }));
 }
 export async function initializeRelics(images,previous=[]){
  const target=document.getElementById('v06-relic-editor');
- if(!target||!images?.length)return;
+ if(!target)return;
  target.textContent='Carregando catálogo de relíquias…';
  try{
    const j=await data();
-   setupRows(Object.values(j.relicSets||{}).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')),images,previous);
- }catch(e){target.textContent='Não foi possível carregar os nomes de conjuntos. Os seis recortes foram preservados.'}
+   setupRows(Object.values(j.relicSets||{}).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')),images||[],previous);
+ }catch(e){setupRows([],images||[],previous);
+   const warning=target.querySelector('.v06-rel-explain');
+   if(warning)warning.textContent='Catálogo de conjuntos indisponível. Os seis campos permanecem editáveis; volte a conferir os conjuntos quando estiver online.';}
 }
 export function collectRelics(){
  if(!document.getElementById('v06-r0-set'))return null;
  return SLOT.map((slot,i)=>{
    const get=id=>document.getElementById('v06-r'+i+'-'+id)?.value||'';
    return {slot,type:SLOT_TYPE[i],setId:get('set'),
-      level:Number(get('lv'))||0,
+      level:get('lv')===''?null:Number(get('lv')),
       main:{stat:get('main'),value:get('mainval')===''?null:Number(get('mainval'))},
       subs:Array.from({length:4},(_,k)=>({
         stat:get('k'+k),value:get('v'+k)===''?null:Number(get('v'+k))
@@ -60,7 +150,7 @@ export async function renderRelicSummary(records,images){
    const name=sets[piece.setId]?.name||'Conjunto não identificado';
    const main=piece.main?.stat?piece.main.stat+': '+(piece.main.value??'pendente'):'Atributo principal pendente';
    const sub=(piece.subs||[]).filter(s=>s.stat&&s.value!==null).map(s=>s.stat+' '+s.value).join(' · ');
-   return '<article class="v06-relic-summary-item"><img alt="" src="'+safe(images?.[i]||'')+'"><div><b>'+safe(SLOT[i])+' · '+safe(name)+'</b><small>+'+Number(piece.level||0)+' · '+safe(main)+'</small><p>'+safe(sub||'Secundários ainda não registrados')+'</p></div></article>';
+   return '<article class="v06-relic-summary-item">'+(images?.[i]?'<img alt="Relíquia '+(i+1)+'" src="'+safe(images[i])+'">':'<span class="v06-relic-no-crop" aria-label="Imagem não cadastrada">✦</span>')+'<div><b>'+safe(SLOT[i])+' · '+safe(name)+'</b><small>'+(piece.level==null?'Nível pendente':'+'+Number(piece.level))+' · '+safe(main)+'</small><p>'+safe(sub||'Secundários ainda não registrados')+'</p></div></article>';
  }).join('');
 
  const counts={};
@@ -75,7 +165,8 @@ export async function renderRelicSummary(records,images){
  }).join('');
  const pieceRecommendations=(records||[]).map((r,i)=>{
     const problems=[];
-    if(r.level<15)problems.push('peça no nível +'+r.level+' (máximo usual +15)');
+    if(r.level==null)problems.push('nível da peça não informado');
+    else if(r.level<15)problems.push('peça no nível +'+r.level+' (máximo usual +15)');
     if(!r.setId)problems.push('conjunto sem identificação');
     if(!r.main?.stat||r.main.value===null)problems.push('atributo principal não confirmado');
     if((r.subs||[]).filter(s=>s.stat&&s.value!==null).length<4)problems.push('secundários incompletos');
