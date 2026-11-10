@@ -81,7 +81,8 @@ function connectedForm(){
  return '<div class="nexus-login-state"><strong>Sua conta já está conectada</strong>'+
   '<p>O usuário Anderus está ativo neste aparelho. Não é necessário digitar sua senha novamente enquanto o dispositivo permanecer conectado.</p></div>'+
   '<button type="button" data-login-action="change">Alterar minha senha</button>'+
-  '<button type="button" data-login-action="instructions">Como entrar em outro aparelho?</button>';
+  '<button type="button" data-login-action="instructions">Como entrar em outro aparelho?</button>'+
+  '<button type="button" class="nexus-login-signout" data-login-action="signout">Sair deste dispositivo com segurança</button>';
 }
 function recoveryResult(recovery){
  shownRecovery=recovery;
@@ -128,6 +129,12 @@ async function click(e){
  if(act==="recover"||act==="change"){next(act);return}
  if(act==="back"||act==="retry"){await render();return}
  if(act==="copy"){try{await copy(shownRecovery);alert("Código copiado.");}catch(err){alert(err.message)}return}
+ if(act==="signout"){
+  if(!window.confirm("Sair deste dispositivo? Os personagens sincronizados continuarão na nuvem, mas os dados e backups locais do Nexus serão apagados neste aparelho."))return;
+  try{await window.NexusCloudSync?.signOut?.();}
+  catch(error){alert(error.message||"Não foi possível sair com segurança.");}
+  return;
+ }
  if(act==="download"){download(shownRecovery);alert("Arquivo de recuperação salvo.");return}
  if(act==="done"){
   shownRecovery="";
