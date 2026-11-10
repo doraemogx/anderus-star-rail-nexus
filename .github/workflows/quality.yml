@@ -24,6 +24,18 @@ jobs:
       - name: Verificar se o Cloudflare já publicou o novo serviço
         continue-on-error: true
         run: node scripts/check-cloud-sync-deployment.mjs
+      - name: Validar empacotamento do Worker sem publicar
+        run: |
+          npm install --no-audit --no-fund
+          npx wrangler deploy --dry-run --outdir /tmp/nexus-worker-build
+        working-directory: worker
+      - name: Fase 2 — cadastro, login e recuperação segura
+        run: |
+          node --check worker/login-room.js
+          node --check nexus-login-core.js
+          node --check nexus-login.js
+          node scripts/check-login-core.mjs
+          node scripts/check-login-server.mjs
       - name: Sincronização real — criptografia, união e conflito
         run: |
           node --check nexus-sync-core.js

@@ -8,6 +8,7 @@ const CORE=[
  './data/relic-icon-signatures.json','./data/eidolon-art.json',
  './nexus-backup.js','./nexus-backup.css','./nexus-diagnostics.js','./nexus-diagnostics.css',
  './nexus-cloud-sync.js','./nexus-cloud-sync.css','./nexus-sync-core.js',
+ './nexus-login.js','./nexus-login.css','./nexus-login-core.js',
  './manifest.webmanifest','./assets/pwa/icon-192.png'
 ];
 self.addEventListener('install',event=>{
