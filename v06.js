@@ -35,6 +35,19 @@
     script.id='nexus-visual-experience-js';script.src='./nexus-visual-experience.js';
     script.async=true;document.head.appendChild(script);
   }
+  // Theme Studio 3: replaces only the obsolete character-theme picker.
+  // The original illustrated profiles, Eidolons, OCR and account remain intact.
+  for(const [id,type,src] of [
+    ['nexus-theme-studio-v3-css','style','./nexus-theme-studio-v3.css'],
+    ['nexus-theme-studio-v3-js','script','./nexus-theme-studio-v3.js']
+  ]){
+    if(document.getElementById(id))continue;
+    const el=document.createElement(type==='style'?'link':'script');
+    el.id=id;
+    if(type==='style'){el.rel='stylesheet';el.href=src;}
+    else{el.src=src;el.async=true;}
+    document.head.appendChild(el);
+  }
   const base={
     home:home,library:library,profile:profile,profileOverview:profileOverview,
     profileEidolons:profileEidolons,profileKit:profileKit,profileRelics:profileRelics,
