@@ -41,4 +41,5 @@
 - `node scripts/check-theme-studio-v3.mjs`: contratos de tema, integridade E1–E6, segurança, escopo e precache.
 - `node scripts/browser-theme-studio-v3.mjs`: regressão antiga de estúdio.
 - `node scripts/browser-pearl-theme.mjs`: Chromium 320/360/390/430/768/1024/1440/1920; navegação real pelas **10 rotas**, cancelamento/aplicação, 20 capturas de 390 e 1440 px, overflow e dados de conta intactos.
+- Auditoria calculada de contraste da paleta principal: texto/superfície **12,43:1**, texto secundário/superfície **8,17:1**, destaque/fundo **12,07:1**. A aprovação WCAG integral exige auditoria manual de todos os elementos e estados.
 - Os screenshots são disponibilizados pelo artifact do GitHub Actions na PR; teste com viewport móvel não substitui ensaio em Android físico. Revisão visual humana e aprovação técnica precedem qualquer merge/publicação no Pages.
