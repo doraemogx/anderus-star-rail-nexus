@@ -6,12 +6,8 @@
   "entries": [
     {
       "id": "1511",
-      "name": "Aeon ★ Aha",
-      "aliases": [
-        "Nihilux",
-        "Rá",
-        "Aeon Aha"
-      ],
+      "name": "Aha",
+      "aliases": ["Aha"],
       "patch": "4.7",
       "status": "BETA — não é versão final",
       "version": "Gachabase v4.6.54 (BETA)",
