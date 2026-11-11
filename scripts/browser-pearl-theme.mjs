@@ -38,6 +38,7 @@ try{
   await page.locator('.nx3-studio').waitFor({timeout:15000});
   await page.locator('button[data-action="tab"][data-id="library"]').click();
   await page.locator('button[data-action="apply"][data-id="'+id+'"]').waitFor({timeout:20000});
+  const publishedManifest=await page.evaluate(async()=>await (await fetch('./themes/generated/pearl-ocean-atlas/theme.json')).json());
   const before=await page.evaluate(()=>localStorage.getItem('anderus_nexus_v03'));
   const registered=await page.evaluate(()=>NexusThemeStudio3.generated().map(x=>x.id));
   assert.ok(registered.includes(id),'Actual published Pearl identity must load');
@@ -46,6 +47,8 @@ try{
   await page.locator('.nx3-try-cancel').click();
   const restoredCaption=await page.evaluate(()=>document.querySelector('.v06-home .v06-hero-id')?.textContent||'');
   assert.ok(!restoredCaption.includes('IDENTIDADE VISUAL'),'Cancelled preview did not restore original caption');
+  const restoredTitle=await page.evaluate(()=>document.querySelector('.v06-home .v06-hero-copy h1')?.textContent||'');
+  assert.ok(restoredTitle.includes('Seu universo'),'Cancelled preview did not restore original Home title');
   assert.equal(await page.evaluate(()=>localStorage.getItem('anderus_nexus_v03')),before,'Preview mutated account');
   await page.evaluate(()=>window.route('themes'));
   await page.locator('button[data-action="tab"][data-id="library"]').click();
@@ -72,7 +75,9 @@ try{
     heroTop:document.querySelector('.v06-home .v06-hero')?.getBoundingClientRect().top,
     heroBottom:document.querySelector('.v06-home .v06-hero')?.getBoundingClientRect().bottom,
     headlineTop:document.querySelector('.v06-home .v06-hero-copy h1')?.getBoundingClientRect().top,
-    buttonsBottom:document.querySelector('.v06-home .v06-hero-buttons')?.getBoundingClientRect().bottom
+    buttonsBottom:document.querySelector('.v06-home .v06-hero-buttons')?.getBoundingClientRect().bottom,
+    homeTitle:document.querySelector('.v06-home .v06-hero-copy h1')?.textContent||'',
+    sceneTitle:document.querySelector('#stage .nx-scene-chapter strong')?.textContent||''
    }));
    if(r==='home'){
     if(!geom.homeArt||geom.homeArt==='none'||!geom.homeArt.includes('1503'))
@@ -83,6 +88,10 @@ try{
    }
    if(geom.page>geom.viewport+4)issues.push(width+'px/'+r+': horizontal overflow '+JSON.stringify(geom));
    if(geom.applied!==id)issues.push(width+'px/'+r+': theme lost');
+   const expected=publishedManifest.screens[r].headline;
+   if(r==='home'&&geom.homeTitle!==expected)issues.push(width+'px: Home editorial copy not applied');
+   if(r!=='home'&&geom.sceneTitle!==expected)
+    issues.push(width+'px/'+r+': scene headline differs from manifest; got '+geom.sceneTitle);
    if(width===390||width===1440){
     await page.screenshot({path:'artifacts/pearl-'+width+'-'+r+'.png',fullPage:false,animations:'disabled'});
    }
