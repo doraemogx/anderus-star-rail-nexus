@@ -50,6 +50,26 @@ assert.equal(core.chooseReading({stat:'Efeito de Quebra',slot:5,main:false,texts
 assert.equal(core.chooseReading({stat:'VEL',slot:3,main:true,level:null,texts:['25','23']}).value,null);
 assert.equal(core.recognizeCharacter('Robin - Summeretto',entries).id,'1512');
 assert.equal(core.recognizeCharacter('Robin',entries).id,'1309');
+// Numeric icon-brightness measurements from four privately supplied cards.
+// Test vectors exclude screenshots, identifying details, and account IDs.
+const eidolonSamples=[
+ {label:'E0',scores:[.125,.126,.124,.123,.121,.118],expected:0},
+ {label:'E1',scores:[.534,.120,.122,.121,.121,.120],expected:1},
+ {label:'E2',scores:[.497,.448,.121,.119,.125,.123],expected:2},
+ {label:'E6',scores:[.539,.467,.413,.420,.431,.436],expected:6}
+];
+for(const sample of eidolonSamples)
+ assert.equal(core.inferEidolonFromScores(sample.scores).value,sample.expected,
+   'Wrong Eidolon classification for '+sample.label);
+assert.equal(core.inferEidolonFromScores(Array(6).fill(0)).value,null,
+ 'Blank crops must never be labeled E0');
+assert.equal(core.inferEidolonFromScores([.01,.12,.12,.12,.12,.12]).value,null,
+ 'Ambiguous inconsistent icons must remain pending');
+// Bulk OCR sometimes reads 11.6 as 211.6, 12.3 as 172 or 10.8 as 1.
+// Those values must fail the plausibility test instead of being silently saved.
+assert.equal(core.chooseReading({stat:'Taxa de Acerto de Efeito',slot:0,main:false,texts:['211.6%']}).value,null);
+assert.equal(core.chooseReading({stat:'Dano CRIT',slot:3,main:false,texts:['172%']}).value,null);
+assert.equal(core.chooseReading({stat:'PV %',slot:5,main:false,texts:['1']}).value,null);
 const empty=core.blankRelics();
 assert.equal(empty.length,6);
 assert.equal(core.analyzeCompleteness({relics:empty,totals:{},characterId:''}).full,false);

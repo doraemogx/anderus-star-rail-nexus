@@ -4,7 +4,7 @@
  */
 import {detectLayout,scaledBox,relicCrop,relicImageBox,totalBox,normalize,
  numeric,inferStat,reasonable,chooseReading,blankRelics,recognizeCharacter,
- TOTAL_KEYS,analyzeCompleteness} from './nexus-scan-v3-core.js';
+ TOTAL_KEYS,analyzeCompleteness,inferEidolonFromScores} from './nexus-scan-v3-core.js';
 
 const SIGNATURE_URL='./data/relic-icon-signatures.json';
 const GAME_URL='./data/live-game.json';
@@ -182,18 +182,8 @@ function eidolons(bitmap,template){
   for(let i=0;i<box.length;i+=4)if(box[i]>158&&box[i+1]>155&&box[i+2]>155)bright++;
   return bright/(box.length/4);
  });
- // A completely dark crop is not evidence of E0: some layouts/backgrounds
- // make all six icons dark. Never replace a saved Eidolon with a guess.
- if(scores.every(x=>x<.07))return {value:null,confidence:'pending',scores};
- if(scores.every(x=>x>.17))return {value:6,confidence:'review',scores};
- let best=null;
- for(let e=1;e<6;e++){
-  const active=scores.slice(0,e),inactive=scores.slice(e);
-  const gap=Math.min(...active)-Math.max(...inactive);
-  if(gap>.07&&Math.min(...active)>.09&&Math.max(...inactive)<.14 &&
-   (!best||best.gap<gap))best={value:e,gap};
- }
- return {value:best?.value??null,confidence:best?'review':'pending',scores};
+ const verdict=inferEidolonFromScores(scores);
+ return {...verdict,scores};
 }
 function comparePixels(data,pixels){
  let sum=0,weight=0;
