@@ -74,9 +74,11 @@ try{
   const toggle=page.locator('.mast-actions .i-btn[title="Abrir menu"]');
   await toggle.click();
   await page.locator('#floatMenu .floating-panel').waitFor();
+  await page.waitForFunction(()=>document.querySelector('.mast-actions .i-btn[title="Abrir menu"]')?.getAttribute('aria-expanded')==='true');
   assert.equal(await toggle.getAttribute('aria-expanded'),'true');
   await page.keyboard.press('Escape');
   await page.locator('#floatMenu .floating-panel').waitFor({state:'detached'});
+  await page.waitForFunction(()=>document.querySelector('.mast-actions .i-btn[title="Abrir menu"]')?.getAttribute('aria-expanded')==='false');
   assert.equal(await toggle.getAttribute('aria-expanded'),'false');
   await page.keyboard.press('Tab');
   assert.ok(await page.locator('.nx-skip').count());
