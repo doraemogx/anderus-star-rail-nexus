@@ -60,6 +60,15 @@ try{
   assert.match(await page.locator('.aha-leading').innerText(),/Aha, Aeon da Euforia/);
   assert.doesNotMatch(await page.locator('.aha-leading').innerText(),/Nihilux|Nerilux|\bRá\b/i);
   await page.waitForFunction(()=>{const x=document.querySelector('.aha-portrait img');return x?.complete&&x.naturalWidth>0;},null,{timeout:15000});
+  if(width===390){
+   const coords=await page.evaluate(()=>{
+    const portrait=document.querySelector('.aha-portrait')?.getBoundingClientRect();
+    const caption=document.querySelector('.aha-overline')?.getBoundingClientRect();
+    return {portraitBottom:portrait?.bottom,captionTop:caption?.top};
+   });
+   assert.ok(coords.portraitBottom<=coords.captionTop+3,
+     'Aha portrait overlaps the Elation legend on mobile: '+JSON.stringify(coords));
+  }
   const routes=['home','library','endgame','farm','radar','themes','nexia','settings'];
   for(const view of routes){
    const n=errors.length;
