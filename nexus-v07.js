@@ -59,12 +59,12 @@ function isAhaVisual(){
 function ensureAhaDetail(){
  if(!document.getElementById('aha-detail-css')){
   const link=document.createElement('link');link.id='aha-detail-css';link.rel='stylesheet';
-  link.href='./themes/aha-detail.css?v=2';link.onerror=()=>link.remove();
+  link.href='./themes/aha-detail.css';link.onerror=()=>link.remove();
   document.head.appendChild(link);
  }
  if(window.AnderusAhaDetail){window.AnderusAhaDetail.paint();return;}
  if(ahaDetailLoading)return;ahaDetailLoading=true;
- const script=document.createElement('script');script.src='./themes/aha-detail.js?v=2';script.async=true;
+ const script=document.createElement('script');script.src='./themes/aha-detail.js';script.async=true;
  script.onload=()=>{ahaDetailLoading=false;if(isAhaVisual())window.AnderusAhaDetail?.paint?.();};
  script.onerror=()=>{ahaDetailLoading=false;console.warn('Ornamentos de Aha indisponíveis');};
  document.head.appendChild(script);
@@ -81,14 +81,14 @@ function enhanceAhaTheme(){
  }
  if(!existing){
   const link=document.createElement('link');link.id='aha-theme-css';link.rel='stylesheet';
-  link.href='./themes/aha.css?v=2';
+  link.href='./themes/aha.css';
   link.onerror=()=>{link.remove();window.AnderusAha?.cleanup?.();};
   document.head.appendChild(link);
  }
  if(window.AnderusAha){window.AnderusAha.paint();ensureAhaDetail();return;}
  if(ahaModuleLoading)return;
  ahaModuleLoading=true;
- const script=document.createElement('script');script.src='./themes/aha.js?v=2';script.async=true;
+ const script=document.createElement('script');script.src='./themes/aha.js';script.async=true;
  script.onload=()=>{ahaModuleLoading=false;if(isAhaVisual()){window.AnderusAha?.paint?.();ensureAhaDetail();}};
  script.onerror=()=>{ahaModuleLoading=false;document.getElementById('aha-theme-css')?.remove();app.classList.remove('aha-theatre');};
  document.head.appendChild(script);
