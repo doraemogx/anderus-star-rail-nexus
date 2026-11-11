@@ -222,7 +222,7 @@ function enhanceEditorial(){
  }
  const radar=document.querySelector('.v06-radarhead');
  add(radar,'v09-intel-radar','<span class="v09-eyebrow">OFICIAL VS. BETA</span><h3>O que já está confirmado?</h3>'+
-  '<p>A versão 4.7 estreia em 11/11/2026 com Aeon ★ Aha. As mecânicas e números do dossiê beta são pré-lançamento, não valores finais.</p>'+
+  '<p>A versão 4.7 estreia em 11/11/2026 com Aha. As mecânicas e números do dossiê beta são pré-lançamento, não valores finais.</p>'+
   '<button type="button" onclick="v07OpenFuture()">✦ Abrir habilidades e Eidolons</button>'+
   '<a href="https://www.gamespress.com/pt/Honkai-Star-Rail-Version-47-Now-Lay-Laughter-to-All-St-wwwhoyoversecom" target="_blank" rel="noopener noreferrer">Comunicado HoYoverse ↗</a>');
  const diary=document.querySelector('.v06-diary');
