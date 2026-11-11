@@ -23,7 +23,7 @@ try{
    body:'{"error":"Visual test is isolated from the cloud"}'}));
   const page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:8787/',{waitUntil:'domcontentloaded',timeout:45000});
+  await page.goto('http://127.0.0.1:8787/?studio=legacy',{waitUntil:'domcontentloaded',timeout:45000});
   await page.waitForFunction(()=>window.NexusVisualPreview?.version==='5.0'&&
     typeof window.route==='function'&&typeof window.setTheme==='function'&&
     !!document.querySelector('.app.v06-app'),null,{timeout:25000});
