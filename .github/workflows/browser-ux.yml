@@ -82,6 +82,12 @@ jobs:
         run: node scripts/browser-visual-finish.mjs
       - name: Hub inteiro e Theme Studio — experiência em quatro telas
         run: node scripts/browser-hub-theme-studio.mjs
+      - name: Nexus 2.0 — validar nova aplicação, scripts e integração local
+        run: |
+          node --check v2/core.js
+          node --check v2/screens.js
+          node --check v2/modules.js
+          node scripts/browser-nexus2.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4
