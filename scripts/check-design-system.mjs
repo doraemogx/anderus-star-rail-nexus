@@ -30,7 +30,7 @@ assert.ok(test.includes('[320,360,390,430,768,1024,1440,1920]'),'Incomplete scre
 for(const route of ['home','library','endgame','farm','radar','tier','themes','nexia','settings'])
  assert.ok(test.includes("'"+route+"'"),'Missing route coverage: '+route);
 const writes=[...js.matchAll(/localStorage\.setItem\(([^,]+),/g)].map(m=>m[1].trim());
-assert.deepEqual(writes,['lastThemeKey'],
+assert.ok(writes.length>=1&&writes.every(key=>key==='lastThemeKey'),
  'Only a distinct, visual-only previous-theme preference may be persisted');
 assert.ok(!js.includes("'anderus_nexus_v03'"),
  'The design layer cannot read or overwrite the account storage key');
