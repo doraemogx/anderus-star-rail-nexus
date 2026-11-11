@@ -2,7 +2,7 @@
  * Does not intercept or mutate the legacy application. */
 const VERSION='nexus2-20261111-b';
 const BASE=new URL('./',self.location);
-const PRECACHE=['./','./index.html','./app.css','./core.js','./screens.js','./modules.js','./manifest.webmanifest',
+const PRECACHE=['./','./index.html','./app.css','./core.js','./screens.js','./modules.js','./cloud.js','./manifest.webmanifest',
  '../data/live-game.json','../assets/official/pompom-hoyoverse.jpg'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(VERSION).then(async cache=>{
