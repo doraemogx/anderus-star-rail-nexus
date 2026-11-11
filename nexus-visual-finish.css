@@ -1,0 +1,38 @@
+/* Visual finish — unified vector navigation, polished detail surfaces.
+   Decorative icons never replace canonical character or relic artwork. */
+.v06-app{--nx-vicon-color:var(--v-color,#e9c69b)}
+.v06-app .nx-vicon{width:23px;height:23px;flex:0 0 23px;color:var(--nx-vicon-color);vertical-align:middle}
+.v06-app .bottom-nav .nx-has-vicon{position:relative;display:grid;place-items:center}
+.v06-app .bottom-nav .nx-has-vicon .nx-vicon{width:24px;height:24px}
+.v06-app .bottom-nav .nx-has-vicon :is(img,.aha-glyph){display:none}
+.v06-app .bottom-nav button.active .nx-vicon{color:#fff0d5;filter:drop-shadow(0 0 5px var(--nx-vicon-color))}
+.v06-app .nx-sidebar-icon{display:inline-grid;place-items:center;flex:0 0 24px}
+.v06-app #sidebarLinks .nx-sidebar-icon .nx-vicon{width:20px;height:20px}
+.v06-app #sidebarLinks .menu-link.active .nx-vicon{color:#fff0d5}
+.v06-app .v06-tile-deco>.nx-vicon{width:24px;height:24px;opacity:.85}
+.v06-app :is(.v06-char-card,.v11-relic-card,.v09-boss,.v06-theme-grid button):focus-visible{
+ outline:3px solid #9fe9e3!important;outline-offset:3px!important;
+}
+.v06-app :is(.v06-char-card,.v11-relic-card,.v09-boss,.v06-theme-grid button) img{
+ object-position:center;max-width:100%;
+}
+.v06-app .v06-pagehead :is(h1,h2),.v06-app .chapter-head :is(h1,h2){
+ text-wrap:balance;max-width:28ch;
+}
+.v06-app :is(.v09-mechanics article,.v11-relic-card,.v06-char-card) :is(p,small){
+ line-height:1.55;
+}
+.v06-app .v09-boss-info :is(h3,h4),.v06-app .v11-relic-title :is(h3,h4){text-wrap:balance}
+.v06-app :is(.v06-search,.v06-filters,.v06-action-row){min-width:0;max-width:100%}
+.v06-app :is(.v06-search,.v06-filters) :is(input,select){min-width:0;max-width:100%}
+.aha-theatre .nx-vicon{color:#f4b9c6}
+.aha-theatre .bottom-nav button.active .nx-vicon{color:#ffdfbd}
+.aha-theatre #sidebarLinks .nx-sidebar-icon{color:#f2c3c7}
+@media(max-width:430px){
+ .v06-app .bottom-nav .nx-has-vicon .nx-vicon{width:23px;height:23px}
+ .v06-app .v06-pagehead :is(h1,h2),.v06-app .chapter-head :is(h1,h2){max-width:100%}
+ .v06-app .v06-tile-deco>.nx-vicon{width:20px;height:20px}
+}
+@media(prefers-reduced-motion:reduce){
+ .v06-app .bottom-nav button.active .nx-vicon{filter:none}
+}
