@@ -44,6 +44,8 @@ try{
   await page.locator('button[data-action="preview"][data-id="'+id+'"]').click();
   await page.locator('button[data-action="immersive"][data-id="'+id+'"]').click();
   await page.locator('.nx3-try-cancel').click();
+  const restoredCaption=await page.evaluate(()=>document.querySelector('.v06-home .v06-hero-id')?.textContent||'');
+  assert.ok(!restoredCaption.includes('IDENTIDADE VISUAL'),'Cancelled preview did not restore original caption');
   assert.equal(await page.evaluate(()=>localStorage.getItem('anderus_nexus_v03')),before,'Preview mutated account');
   await page.evaluate(()=>window.route('themes'));
   await page.locator('button[data-action="tab"][data-id="library"]').click();
@@ -60,8 +62,19 @@ try{
     app:document.querySelector('.app')?.scrollWidth,
     viewport:innerWidth,
     path:document.querySelector('.app')?.dataset.nxRoute,
-    applied:document.querySelector('.app')?.dataset.nx3Theme
+    applied:document.querySelector('.app')?.dataset.nx3Theme,
+    // The root app intentionally keeps its historic default character,
+    // but the generated Pearl theme must override the legacy Home art.
+    homeArt:document.querySelector('.v06-home .v06-hero-art')
+      ? getComputedStyle(document.querySelector('.v06-home .v06-hero-art')).backgroundImage : '',
+    pearlArt:getComputedStyle(document.querySelector('.app')).getPropertyValue('--nx3-art'),
+    homeCaption:document.querySelector('.v06-home .v06-hero-id')?.textContent||''
    }));
+   if(r==='home'){
+    if(!geom.homeArt||geom.homeArt==='none'||!geom.homeArt.includes('1503'))
+      issues.push(width+'px: Home still displays legacy art: '+geom.homeArt.slice(0,150));
+    if(!geom.homeCaption.includes('PEARL'))issues.push(width+'px: Home caption does not identify Pearl');
+   }
    if(geom.page>geom.viewport+4)issues.push(width+'px/'+r+': horizontal overflow '+JSON.stringify(geom));
    if(geom.applied!==id)issues.push(width+'px/'+r+': theme lost');
    if(width===390||width===1440){
