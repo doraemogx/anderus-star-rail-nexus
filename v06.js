@@ -12,6 +12,17 @@
     nxScript.id='nexus-design-system-js';nxScript.src='./nexus-design-system.js';
     nxScript.async=true;document.head.appendChild(nxScript);
   }
+  // Canonical display name + visual finishing layer; presentation only.
+  if(!document.getElementById('nexus-visual-finish-css')){
+    const sheet=document.createElement('link');
+    sheet.id='nexus-visual-finish-css';sheet.rel='stylesheet';
+    sheet.href='./nexus-visual-finish.css';document.head.appendChild(sheet);
+  }
+  if(!document.getElementById('nexus-visual-finish-js')){
+    const script=document.createElement('script');
+    script.id='nexus-visual-finish-js';script.src='./nexus-visual-finish.js';
+    script.async=true;document.head.appendChild(script);
+  }
   const base={
     home:home,library:library,profile:profile,profileOverview:profileOverview,
     profileEidolons:profileEidolons,profileKit:profileKit,profileRelics:profileRelics,
