@@ -1,0 +1,50 @@
+name: Theme Studio 3 — ateliê GPT mobile
+on:
+  pull_request:
+    paths:
+      - 'nexus-theme-studio-v3.js'
+      - 'nexus-theme-studio-v3.css'
+      - 'themes/generated/**'
+      - 'scripts/browser-theme-studio-v3.mjs'
+      - 'scripts/check-theme-studio-v3.mjs'
+      - 'v06.js'
+      - '.github/workflows/theme-studio-v3.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'nexus-theme-studio-v3.js'
+      - 'nexus-theme-studio-v3.css'
+      - 'themes/generated/**'
+      - 'scripts/browser-theme-studio-v3.mjs'
+      - 'v06.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  studio:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Sintaxe e escopo dos temas
+        run: |
+          node --check nexus-theme-studio-v3.js
+          node scripts/check-theme-studio-v3.mjs
+      - name: Preparar navegador
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.58.2
+          npx playwright install chromium
+      - name: Validar criação, acervo, prévia e Eidolons em 320–1440 px
+        run: |
+          python3 -m http.server 8787 --bind 127.0.0.1 >/tmp/studio-3-http.log 2>&1 &
+          node scripts/browser-theme-studio-v3.mjs
+      - name: Capturas para auditoria
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: theme-studio-3-mobile-desktop
+          path: artifacts/studio3-*.png
+          if-no-files-found: ignore
