@@ -26,6 +26,10 @@ jobs:
           node --check themes/aha-detail.js
           node --check v06.js
           node scripts/check-visual-completion.mjs
+      - name: Visual final — nome oficial Aha e ícones vetoriais
+        run: |
+          node --check nexus-visual-finish.js
+          node scripts/check-visual-finish.mjs
       - name: Fase 4 — Design System e navegação acessível
         run: |
           node --check nexus-design-system.js
