@@ -432,20 +432,34 @@ function immersive(id){
  bar.querySelector('.nx3-try-apply').addEventListener('click',()=>close(true));
  if(typeof route==='function')route('home');
 }
-/* Display the selected visual identity in Home, never altering account state.
- * Deactivation/preview cancellation restores the original caption. */
-function syncHomeIdentity(){
- const app=document.querySelector('.app'),label=app?.querySelector('.v06-home .v06-hero-id');
- if(!label)return;
- const original=label.getAttribute('data-nx3-original-caption');
- const skin=theme(app.dataset.nx3Theme);
- if(skin){
-  if(original===null)label.setAttribute('data-nx3-original-caption',label.textContent);
-  const caption='✦ '+skin.character.toLocaleUpperCase('pt-BR')+' · IDENTIDADE VISUAL';
-  if(label.textContent!==caption)label.textContent=caption;
- }else if(original!==null){
-  label.textContent=original;label.removeAttribute('data-nx3-original-caption');
+/* Theme manifest typography appears on actual scenes, not only lab mocks.
+ * DOM text only, without persisting/mutating account records or executing user HTML.
+ * Cancel/deactivate restores original markup and scene labels. */
+function reversibleCaption(node,value,html=false){
+ if(!node)return;
+ const marker=html?'data-nx3-original-markup':'data-nx3-original-text';
+ if(value){
+  if(!node.hasAttribute(marker))node.setAttribute(marker,html?node.innerHTML:node.textContent);
+  if(node.textContent!==value)node.textContent=value;
+ }else if(node.hasAttribute(marker)){
+  if(html)node.innerHTML=node.getAttribute(marker);
+  else node.textContent=node.getAttribute(marker);
+  node.removeAttribute(marker);
  }
+}
+function syncHomeIdentity(){
+ const app=document.querySelector('.app');
+ if(!app)return;
+ const skin=theme(app.dataset.nx3Theme),routeName=app.dataset.nxRoute||'home';
+ const home=app.querySelector('.v06-home');
+ reversibleCaption(home?.querySelector('.v06-hero-id'),
+  skin?'✦ '+skin.character.toLocaleUpperCase('pt-BR')+' · IDENTIDADE VISUAL':null);
+ reversibleCaption(home?.querySelector('.v06-hero-copy h1'),
+  skin?.screens?.home?.headline||null,true);
+ const scene=app.querySelector('#stage .nx-scene'),copy=skin?.screens?.[routeName];
+ reversibleCaption(scene?.querySelector('.nx-scene-chapter span'),copy?.eyebrow);
+ reversibleCaption(scene?.querySelector('.nx-scene-chapter strong'),copy?.headline);
+ reversibleCaption(scene?.querySelector('.nx-scene-caption'),copy?.accent);
 }
 let previouslyApplied;
 function schedule(){
