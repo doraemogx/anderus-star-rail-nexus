@@ -139,7 +139,7 @@ function renderEidolons(){
  const arts=eidolons(selection);
  if(!arts.length)return '<p class="nx3-hint">Os fragmentos de Eidolon aparecem quando há arquivos individuais verificados disponíveis. Não usamos imagens substitutas inventadas.</p>';
  return '<div class="nx3-fragments">'+arts.map((src,i)=>
-  '<div class="nx3-fragment"><img src="'+esc(src)+'" loading="lazy" alt="Fragmento de Eidolon '+(i+1)+'" onerror="this.closest(\\'.nx3-fragment\\').style.display=\\'none\\'"><span>E'+(i+1)+'</span></div>').join('')+'</div>';
+  '<div class="nx3-fragment"><img src="'+esc(src)+'" loading="lazy" alt="Fragmento de Eidolon '+(i+1)+'" onerror="this.style.opacity=0""><span>E'+(i+1)+'</span></div>').join('')+'</div>';
 }
 function renderCreator(){
  const c=selectedCharacter();
