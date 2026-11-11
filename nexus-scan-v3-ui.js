@@ -81,11 +81,19 @@ function changed(event){
  if(el.id==='ns3-file'&&el.files?.[0])scan(el.files[0]);
  if(!current?.report)return;
  if(el.id==='ns3-character'){
-  current.report.characterId=el.value;
-  current.report.characterName=catalog.chars?.[el.value]?.name||'';
-  current.report.characterConfidence='manual';
-  const meter=dialog().querySelector('#ns3-progress-line');
-  if(meter)meter.textContent=progressText(current.report);
+  // Start from the OCR-only snapshot when changing the selected character.
+  // Otherwise saved values of the originally identified character could be
+  // silently copied into a different person's build.
+  const targetId=el.value;
+  const report=structuredClone(current.rawReport||current.report);
+  report.characterId=targetId;
+  report.characterName=catalog.chars?.[targetId]?.name||'';
+  report.characterConfidence='manual';
+  if(targetId)copySavedIntoReport(report,readAccount());
+  report.completeness=analyzeCompleteness(report);
+  current.report=report;
+  dialog().querySelector('#ns3-body').innerHTML=form(report);
+  message('Personagem alterado: conferi novamente os dados salvos dessa ficha. Edicoes feitas antes da troca devem ser refeitas.');
  }
 }
 function selectedChoice(items,selected,title){
@@ -99,7 +107,11 @@ function statOptions(selected){
 }
 function progressText(report){
  const a=analyzeCompleteness(report);
- return a.totals+'/8 atributos · '+a.sets+'/6 conjuntos · '+a.relicValues+'/30 valores de relíquias';
+ // Display OCR provenance separately from values recovered from an existing
+ // account: 30/30 filled does not mean the image reader found 30/30.
+ const read=current?.rawReport?analyzeCompleteness(current.rawReport):a;
+ return a.totals+'/8 atributos · '+a.sets+'/6 conjuntos · '+
+  a.relicValues+'/30 valores preenchidos ('+read.relicValues+'/30 extraídos do cartão)';
 }
 function initial(){
  const body=dialog().querySelector('#ns3-body');
@@ -237,14 +249,15 @@ async function scan(file){
   const thumbnails=await makeRelicThumbnails(file,dims);
   if(token!==requestNumber)return;
   const before=readAccount();
+  const rawReport=structuredClone(report);
   copySavedIntoReport(report,before);
-  current={hintId,file,report,preview:small,images:thumbnails};
+  current={hintId,file,rawReport,report,preview:small,images:thumbnails};
   report.completeness=analyzeCompleteness(report);
   dialog().querySelector('#ns3-body').innerHTML=form(report);
-  const missing=30-report.completeness.relicValues;
-  message(missing?'O leitor encontrou '+report.completeness.relicValues+
-   '/30 números das relíquias. Abra apenas as peças incompletas para revisar.':
-   'Trinta atributos das seis relíquias preenchidos. Confira antes de salvar.');
+  const extracted=analyzeCompleteness(rawReport).relicValues;
+  message(extracted<30?'O cartão forneceu '+extracted+
+   '/30 atributos das relíquias. Valores restantes, quando preenchidos, vieram da ficha já salva. Confira as seis peças.':
+   'Os 30 atributos das seis relíquias foram extraídos do cartão. Confira antes de salvar.');
  }catch(err){
   if(token!==requestNumber)return;
   console.warn('Nexus Scan 3:',err);
