@@ -38,6 +38,7 @@ try{
  await page.waitForFunction(()=>typeof window.route==='function'&&!!document.querySelector('.app'),null,{timeout:15000});
  assert.equal(await page.evaluate(()=>localStorage.getItem('nexus-offline-qa')),'preserve-local-value',
   'Offline code update must not erase localStorage');
+ await page.waitForFunction(()=>window.NexusDesignSystem?.version==='4.0',null,{timeout:15000});
  assert.equal(await page.evaluate(()=>window.NexusDesignSystem?.version),'4.0',
   'Design System must remain active when PWA reloads offline');
  await page.evaluate(()=>window.route('library'));
