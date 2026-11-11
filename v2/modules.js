@@ -378,7 +378,7 @@ window.Nexus2Boot=()=>{
   a.renderAfter(page);
   history.replaceState(null,'','#'+encodeURIComponent(page));
  };
- document.querySelectorAll('.wb-header,.wb-note').forEach(node=>node.remove());
+ // Keep hidden legacy prototype route selector in DOM for backwards-compatible navigation.
  document.title='Anderus Nexus 2.0 · Minha Jornada';
  const resize=()=>{const desktop=matchMedia('(min-width:920px)').matches;
   const device=document.getElementById('device');if(device)device.className='device '+(desktop?'desktop':'mobile');
