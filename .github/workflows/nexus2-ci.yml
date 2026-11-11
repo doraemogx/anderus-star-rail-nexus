@@ -1,0 +1,45 @@
+name: Nexus 2.0 — qualidade mobile e integridade de dados
+on:
+  pull_request:
+    paths:
+      - 'v2/**'
+      - 'scripts/browser-nexus2.mjs'
+      - '.github/workflows/nexus2-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'v2/**'
+      - 'scripts/browser-nexus2.mjs'
+      - '.github/workflows/nexus2-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rebuild:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validar módulos JavaScript
+        run: |
+          node --check v2/core.js
+          node --check v2/screens.js
+          node --check v2/modules.js
+      - name: Instalar Chromium
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.58.2
+          npx playwright install chromium
+      - name: Validar 14 telas e dados reais locais
+        run: |
+          python3 -m http.server 8787 --bind 127.0.0.1 >/tmp/nexus2-server.log 2>&1 &
+          node scripts/browser-nexus2.mjs
+      - name: Capturas da nova experiência
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus2-mobile-desktop
+          path: artifacts/nexus2-*.png
+          if-no-files-found: ignore
