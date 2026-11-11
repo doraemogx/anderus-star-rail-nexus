@@ -57,7 +57,10 @@ jobs:
       - name: Instalar Playwright e Chromium
         run: |
           npm install --no-save --no-audit --no-fund playwright@1.58.2
-          npx playwright install --with-deps chromium
+          # Ubuntu GitHub runners already include Chromium system libraries.
+          # Avoid apt font packages here: a transient Ubuntu mirror DNS failure
+          # previously blocked the entire visual suite before any tests ran.
+          npx playwright install chromium
       - name: Testar conta, cone, relíquias e persistência em 390px e 1440px
         run: |
           python3 -m http.server 8787 --bind 127.0.0.1 >/tmp/nexus-browser-server.log 2>&1 &
