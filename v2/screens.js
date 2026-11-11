@@ -27,7 +27,7 @@ function nextActions(){
 a.pages={
  home:()=>{
   const chars=owned(),todo=nextActions(),goals=a.data.goals;
-  return '<div class="hero n2-home-hero"><div class="hero-bg-img"></div><div class="hero-copy">'+
+  return '<div class="hero n2-home-hero"><div class="hero-bg-img n2-hero-art" style="background-image:url(\''+esc(a.image(a.selectedId(),'preview'))+'\')"></div><div class="hero-copy">'+
    '<span class="hero-kicker">ARQUIVO DO DESBRAVADOR / NEXUS 2.0</span>'+
    '<h1>Seu universo.<br>Sua próxima jogada.</h1>'+
    '<p>Organize seu elenco, avance seus objetivos e descubra a próxima decisão que faz sentido para a sua conta.</p>'+
