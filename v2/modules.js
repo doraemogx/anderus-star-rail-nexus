@@ -385,6 +385,13 @@ window.Nexus2Boot=()=>{
  };
  resize();window.addEventListener('resize',resize);
  a.applyTheme();a.setReducedMotion(a.data.settings.reduceMotion);
+ const deepLink=decodeURIComponent(location.hash.slice(1));
+ if(deepLink&&document.getElementById('page-'+deepLink)){
+  setTimeout(()=>navigate(deepLink),0);
+ }
  setTimeout(()=>a.start(),0);
+ if('serviceWorker' in navigator&&location.protocol==='https:'){
+  navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});
+ }
 };
 })();
