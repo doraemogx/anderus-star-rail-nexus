@@ -209,7 +209,7 @@ function promptText(){
  '- Inclua estados hover, active, disabled, loading, erro, vazio, alertas, menus, modais, formulários e tabelas.',
  '',
  'COBERTURA COMPLETA: Home, Minha Conta, ficha do personagem, kit, Eidolons, seis relíquias, importação HoYoLAB/OCR, Farm Planner, Endgame e chefes, Radar, Meta, Pom-Pom, Theme Studio e Configurações.',
- 'Crie componentes e composições por tela, NÃO apenas tokens globais. Teste 320, 360, 390, 430, 768, 1024, 1440 e 1920 px.',
+ 'Crie componentes e composições por tela, NÃO apenas tokens globais. Implementação MOBILE FIRST com prioridade à experiência de toque e navegação com uma mão. Teste 320, 360, 390, 430, 768, 1024, 1440 e 1920 px.',
  '',
  'PADRÃO DE ENTREGA PARA O NOVO THEME STUDIO:',
  '1. Crie themes/generated/<slug>/theme.json no schema 3; id slug alfanumérico com hífen; name; characterId; version; description;',
