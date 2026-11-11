@@ -69,8 +69,22 @@ try{
    }
   }
   await page.evaluate(()=>window.route('profile'));
-  const fragments=await page.evaluate(()=>window.EIDO_ART?.['1503']?.length||document.querySelectorAll('.v10-eido-grid img').length);
-  if(fragments<6)issues.push(width+'px: fewer than six Pearl Eidolon references '+fragments);
+  const pearlEidolons=await page.evaluate(async()=>{
+   // The profile defaults to Overview; real E1–E6 cards live in Eidolons.
+   tab='eidolons';refresh();
+   const response=await fetch('./data/eidolon-art.json',{cache:'no-store'});
+   const json=await response.json();
+   return {
+    references:json.characters?.['1503']||[],
+    cards:document.querySelectorAll('.v10-eido-grid button').length,
+    illustrations:document.querySelectorAll('.v10-eido-grid img').length
+   };
+  });
+  if(pearlEidolons.references.length!==6||pearlEidolons.cards<6||pearlEidolons.illustrations<6)
+   issues.push(width+'px: Pearl Eidolons missing '+JSON.stringify({
+    references:pearlEidolons.references.length,
+    cards:pearlEidolons.cards,images:pearlEidolons.illustrations
+   }));
   const records=await page.evaluate(()=>localStorage.getItem('anderus_nexus_v03'));
   assert.equal(records,before,'Applying Pearl theme changed saved character data at '+width);
   assert.equal(pageErrors.length,0,'JS errors at '+width+': '+pageErrors.join('; '));
