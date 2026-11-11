@@ -7,6 +7,11 @@ const shell=read('v06.js'),sw=read('sw.js'),original=read('scripts/browser-visua
 const registry=JSON.parse(read('themes/generated/index.json'));
 const routes=['home','library','profile','endgame','farm','radar','tier','themes','nexia','settings'];
 const hex=x=>typeof x==='string'&&/^#[0-9a-f]{6}$/i.test(x);
+const luminance=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255)
+ .map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4))
+ .reduce((v,x,i)=>v+x*[.2126,.7152,.0722][i],0);
+const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+
 assert.equal(registry.schema,1);
 assert.ok(Array.isArray(registry.themes),'Published gallery must be an array');
 assert.equal(new Set(registry.themes.map(t=>t.id)).size,registry.themes.length,'Duplicate identity');
@@ -21,6 +26,9 @@ for(const item of registry.themes){
  assert.ok(['Cinzel','Marcellus','Georgia','DM Sans','system-ui'].includes(manifest.font));
  assert.ok(!Number.isNaN(Date.parse(manifest.createdAt)),'Invalid ISO createdAt');
  for(const token of ['accent','second','background','surface','text','muted'])assert.ok(hex(manifest.tokens?.[token]),'Bad '+token);
+ assert.ok(contrast(manifest.tokens.text,manifest.tokens.surface)>=4.5,'Text contrast below AA');
+ assert.ok(contrast(manifest.tokens.muted,manifest.tokens.surface)>=4.5,'Muted contrast below AA');
+ assert.ok(contrast(manifest.tokens.accent,manifest.tokens.background)>=4.5,'Accent contrast below AA');
  for(const route of routes){
   assert.ok(manifest.screens?.[route]?.eyebrow&&manifest.screens[route]?.headline&&manifest.screens[route]?.accent,'Missing '+route);
   assert.ok(src.includes(route),'Missing studio route '+route);
