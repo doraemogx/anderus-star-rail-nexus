@@ -182,7 +182,9 @@ function eidolons(bitmap,template){
   for(let i=0;i<box.length;i+=4)if(box[i]>158&&box[i+1]>155&&box[i+2]>155)bright++;
   return bright/(box.length/4);
  });
- if(scores.every(x=>x<.07))return {value:0,confidence:'review',scores};
+ // A completely dark crop is not evidence of E0: some layouts/backgrounds
+ // make all six icons dark. Never replace a saved Eidolon with a guess.
+ if(scores.every(x=>x<.07))return {value:null,confidence:'pending',scores};
  if(scores.every(x=>x>.17))return {value:6,confidence:'review',scores};
  let best=null;
  for(let e=1;e<6;e++){
