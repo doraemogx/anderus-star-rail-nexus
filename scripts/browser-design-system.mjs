@@ -70,6 +70,15 @@ try{
    const boxes=await page.locator('.mast-actions .i-btn').evaluateAll(els=>
     els.map(e=>{const r=e.getBoundingClientRect();return {w:r.width,h:r.height}}));
    assert.ok(boxes.every(b=>b.w>=39&&b.h>=39),'Header controls too small @ '+width+': '+JSON.stringify(boxes));
+   if(width<=430){
+    const branding=await page.locator('.masthead .brand-title').evaluate(el=>({
+     scroll:el.scrollWidth,client:el.clientWidth,visible:getComputedStyle(el).display!=='none',
+     text:el.textContent,header:document.querySelector('.masthead').getBoundingClientRect().height
+    }));
+    assert.ok(branding.visible&&branding.text.includes('ANDERUS')&&
+     branding.scroll<=branding.client+2&&branding.header>=100,
+     'Clipped phone branding @ '+width+': '+JSON.stringify(branding));
+   }
   }
   const toggle=page.locator('.mast-actions .i-btn[title="Abrir menu"]');
   await toggle.click();
