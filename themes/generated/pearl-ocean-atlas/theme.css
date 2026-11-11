@@ -152,9 +152,9 @@
   background-image:
     linear-gradient(100deg,rgba(6,27,41,.99) 0%,rgba(11,51,65,.88) 48%,rgba(6,27,41,.1) 90%),
     radial-gradient(ellipse at 70% 54%,rgba(145,228,236,.18),transparent 60%),
-    var(--nx3-art)!important;
-  background-position:center,center,94% center!important;
-  background-size:cover,cover,auto 100%!important;
+    linear-gradient(110deg,rgba(6,27,41,.42),rgba(14,53,66,.14))!important;
+  background-position:center!important;
+  background-size:cover!important;
   background-repeat:no-repeat!important;
   box-shadow:0 24px 65px rgba(0,6,17,.55)!important;
 }
@@ -168,8 +168,15 @@
   font-size:clamp(36px,5.4vw,74px)!important;line-height:1.05;
   text-shadow:0 6px 30px rgba(0,15,27,.7);
 }
-.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-hero-art,.v06-hero-art img,.v06-hero-art picture img){
-  object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(0 17px 22px #071722ab);
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-home .v06-hero-art{
+  /* Original Home injects Caelus inline. Replace presentation only. */
+  background-image:var(--nx3-art)!important;background-repeat:no-repeat!important;
+  background-size:contain!important;background-position:100% 45%!important;
+  transform:none!important;animation:none!important;opacity:.96!important;
+  filter:drop-shadow(0 17px 22px #071722ab);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-hero-art img,.v06-hero-art picture img){
+  object-fit:contain!important;object-position:center bottom!important;
 }
 .app[data-nx3-theme="pearl-ocean-atlas"] .v06-hero-vignette{
   background:linear-gradient(90deg,#061b2d94,transparent 55%)!important;
@@ -417,9 +424,13 @@
  }
  .app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=home] .v06-hero{
    min-height:420px;border-radius:3px 28px 28px 3px!important;
-   background-image:linear-gradient(180deg,rgba(7,33,48,.45) 0%,rgba(6,28,43,.93) 55%,#081e30 100%),var(--nx3-art)!important;
-   background-position:center,center 4%!important;background-size:cover,auto 69%!important;
+   background-image:linear-gradient(180deg,rgba(7,33,48,.35) 0%,rgba(6,28,43,.84) 72%,#081e30 100%)!important;
+   background-position:center!important;background-size:cover!important;
    background-repeat:no-repeat!important;
+ }
+ .app[data-nx3-theme="pearl-ocean-atlas"] .v06-home .v06-hero-art{
+   background-position:85% top!important;background-size:auto 90%!important;
+   opacity:.78!important;
  }
  .app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=profile] .v06-char-hero{
    border-radius:3px 26px 26px 3px!important;min-height:370px;
