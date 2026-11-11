@@ -199,6 +199,26 @@ export function chooseReading({texts=[],stat='',slot=0,main=false,level=null}){
  if(unique.length===1)return {value:unique[0],confidence:'review'};
  return {value:null,confidence:'pending'};
 }
+/** E0 is six uniformly inactive icons; do not infer it from black/blank crops.
+ * Calibrated against private HoYoLab cards, with only numeric statistics stored.
+ */
+export function inferEidolonFromScores(scores){
+ if(!Array.isArray(scores)||scores.length!==6||
+    scores.some(s=>!Number.isFinite(s)||s<0||s>1))
+  return {value:null,confidence:'pending'};
+ const min=Math.min(...scores),max=Math.max(...scores);
+ if(min>=.085&&max<=.16&&max-min<.045)
+  return {value:0,confidence:'review'};
+ if(scores.every(s=>s>.17))return {value:6,confidence:'review'};
+ let best=null;
+ for(let e=1;e<6;e++){
+  const active=scores.slice(0,e),inactive=scores.slice(e);
+  const gap=Math.min(...active)-Math.max(...inactive);
+  if(gap>.07&&Math.min(...active)>.09&&Math.max(...inactive)<.14&&
+     (!best||best.gap<gap))best={value:e,gap};
+ }
+ return {value:best?.value??null,confidence:best?'review':'pending'};
+}
 export function blankRelics(){
  return SLOTS.map((slot,i)=>({slot,type:TYPES[i],setId:'',
   level:null,main:{stat:'',value:null},
