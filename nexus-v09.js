@@ -165,11 +165,11 @@ function renderVariants(){
  const selected=visualMode();
  const html='<section class="v09-variants" aria-label="Escolha a versão visual do tema">'+
   '<span class="v09-eyebrow">THEME STUDIO · DUAS VERSÕES SALVAS</span><h2>Escolha sua direção de arte</h2>'+
-  '<p>As duas versões usam Aeon ★ Aha. A troca afeta apenas a aparência: sua conta, relíquias e progresso permanecem salvos.</p>'+
+  '<p>As duas versões usam Aha. A troca afeta apenas a aparência: sua conta, relíquias e progresso permanecem salvos.</p>'+
   '<div class="v09-variant-options" role="group" aria-label="Variantes visuais de Aha">'+
    '<button type="button" class="'+(selected==='original'?'selected':'')+'" aria-pressed="'+(selected==='original')+'" onclick="v09SetVisualMode(\'original\')"><span class="v09-variant-art original">✧</span><strong>Original do Nexus</strong><small>Identidade carnaval da versão base, sem a transformação editorial.</small></button>'+
-   '<button type="button" class="'+(selected==='chat'?'selected':'')+'" aria-pressed="'+(selected==='chat')+'" onclick="v09SetVisualMode(\'chat\')"><span class="v09-variant-art custom"><img src="./assets/official/aha-4-7.webp" loading="lazy" alt=""></span><strong>Grand Theatre · ChatGPT</strong><small>Palco cinematográfico e telas estilizadas em toda a plataforma.</small></button>'+
-  '</div><span class="v09-variant-hint">Versão ativa: '+(selected==='chat'?'Grand Theatre · ChatGPT':'Original do Nexus')+'</span></section>';
+   '<button type="button" class="'+(selected==='chat'?'selected':'')+'" aria-pressed="'+(selected==='chat')+'" onclick="v09SetVisualMode(\'chat\')"><span class="v09-variant-art custom"><img src="./assets/official/aha-4-7.webp" loading="lazy" alt=""></span><strong>Aha · Grand Theatre</strong><small>Palco cinematográfico e telas estilizadas em toda a plataforma.</small></button>'+
+  '</div><span class="v09-variant-hint">Versão ativa: '+(selected==='chat'?'Aha · Grand Theatre':'Original do Nexus')+'</span></section>';
  const stage=studio.querySelector('.v06-theme-stage');
  if(stage)stage.insertAdjacentHTML('afterend',html);else studio.insertAdjacentHTML('afterbegin',html);
 }
@@ -222,7 +222,7 @@ function enhanceEditorial(){
  }
  const radar=document.querySelector('.v06-radarhead');
  add(radar,'v09-intel-radar','<span class="v09-eyebrow">OFICIAL VS. BETA</span><h3>O que já está confirmado?</h3>'+
-  '<p>A versão 4.7 estreia em 11/11/2026 com Aeon ★ Aha. As mecânicas e números do dossiê beta são pré-lançamento, não valores finais.</p>'+
+  '<p>A versão 4.7 estreia em 11/11/2026 com Aha. As mecânicas e números do dossiê beta são pré-lançamento, não valores finais.</p>'+
   '<button type="button" onclick="v07OpenFuture()">✦ Abrir habilidades e Eidolons</button>'+
   '<a href="https://www.gamespress.com/pt/Honkai-Star-Rail-Version-47-Now-Lay-Laughter-to-All-St-wwwhoyoversecom" target="_blank" rel="noopener noreferrer">Comunicado HoYoverse ↗</a>');
  const diary=document.querySelector('.v06-diary');

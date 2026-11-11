@@ -59,12 +59,12 @@ function isAhaVisual(){
 function ensureAhaDetail(){
  if(!document.getElementById('aha-detail-css')){
   const link=document.createElement('link');link.id='aha-detail-css';link.rel='stylesheet';
-  link.href='./themes/aha-detail.css?v=2';link.onerror=()=>link.remove();
+  link.href='./themes/aha-detail.css';link.onerror=()=>link.remove();
   document.head.appendChild(link);
  }
  if(window.AnderusAhaDetail){window.AnderusAhaDetail.paint();return;}
  if(ahaDetailLoading)return;ahaDetailLoading=true;
- const script=document.createElement('script');script.src='./themes/aha-detail.js?v=2';script.async=true;
+ const script=document.createElement('script');script.src='./themes/aha-detail.js';script.async=true;
  script.onload=()=>{ahaDetailLoading=false;if(isAhaVisual())window.AnderusAhaDetail?.paint?.();};
  script.onerror=()=>{ahaDetailLoading=false;console.warn('Ornamentos de Aha indisponíveis');};
  document.head.appendChild(script);
@@ -81,14 +81,14 @@ function enhanceAhaTheme(){
  }
  if(!existing){
   const link=document.createElement('link');link.id='aha-theme-css';link.rel='stylesheet';
-  link.href='./themes/aha.css?v=2';
+  link.href='./themes/aha.css';
   link.onerror=()=>{link.remove();window.AnderusAha?.cleanup?.();};
   document.head.appendChild(link);
  }
  if(window.AnderusAha){window.AnderusAha.paint();ensureAhaDetail();return;}
  if(ahaModuleLoading)return;
  ahaModuleLoading=true;
- const script=document.createElement('script');script.src='./themes/aha.js?v=2';script.async=true;
+ const script=document.createElement('script');script.src='./themes/aha.js';script.async=true;
  script.onload=()=>{ahaModuleLoading=false;if(isAhaVisual()){window.AnderusAha?.paint?.();ensureAhaDetail();}};
  script.onerror=()=>{ahaModuleLoading=false;document.getElementById('aha-theme-css')?.remove();app.classList.remove('aha-theatre');};
  document.head.appendChild(script);
@@ -220,7 +220,7 @@ function sectionsHTML(list,cls,format){
 }
 window.v07OpenFuture=async function(){
  const loading='<div class="v07-loading">Lendo o arquivo beta e sua fonte…</div>';
- if(typeof showModal==='function')showModal('Aeon ★ Aha · Arquivo de beta',loading);
+ if(typeof showModal==='function')showModal('Aha · Arquivo de beta',loading);
  const panel=document.querySelector('#overlay .modal');
  try{
  const doc=await betaData(),x=doc.entries[0];
@@ -230,7 +230,7 @@ window.v07OpenFuture=async function(){
  const changes=sectionsHTML(x.changeNotes,'v07-history',o=>'<article><b>'+escapeHTML(o.field)+'</b><div><small>ANTES</small><p>'+escapeHTML(o.before)+'</p></div><div><small>AGORA</small><p>'+escapeHTML(o.after)+'</p></div><em>'+escapeHTML(o.note)+'</em></article>');
  const traces=x.traces.map(o=>'<article><b>'+escapeHTML(o.name)+'</b><p>'+escapeHTML(o.summary)+'</p></article>').join('');
  const html='<div class="v07-beta-detail">'+
-  '<div class="v07-beta-hero"><img src="'+escapeHTML(x.art)+'" alt="Aeon Aha arte do jogo" onerror="this.src=\''+AHA_FALLBACK+'\'"><div><span>BETA · '+escapeHTML(x.version)+'</span><h2>'+escapeHTML(x.name)+'</h2><p>'+escapeHTML(x.path)+' · '+escapeHTML(x.element)+' · 5★</p><div class="v07-base-stats">'+stats+'</div></div></div>'+
+  '<div class="v07-beta-hero"><img src="'+escapeHTML(x.art)+'" alt="Arte oficial de Aha" onerror="this.src=\''+AHA_FALLBACK+'\'"><div><span>BETA · '+escapeHTML(x.version)+'</span><h2>'+escapeHTML(x.name)+'</h2><p>'+escapeHTML(x.path)+' · '+escapeHTML(x.element)+' · 5★</p><div class="v07-base-stats">'+stats+'</div></div></div>'+
   '<p class="v07-caveat">A estreia em 11/11/2026 foi anunciada oficialmente, mas os números abaixo são da versão beta '+escapeHTML(x.version)+', não da versão final.</p>'+
   '<h3>Habilidades e multiplicadores</h3>'+skill+
   '<h3>Rastros e passivas</h3><div class="v07-traces">'+traces+'</div>'+

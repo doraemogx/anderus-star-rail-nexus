@@ -11,6 +11,10 @@ const CORE=[
  './nexus-login.js','./nexus-login.css','./nexus-login-core.js',
  './nexus-scan-v3-core.js','./nexus-scan-v3-reader.js','./nexus-scan-v3-ui.js','./nexus-scan-v3.css',
  './nexus-design-system.css','./nexus-design-system.js',
+ './themes/aha.css','./themes/aha.js','./themes/aha-detail.css','./themes/aha-detail.js',
+ './assets/official/aha-4-7.webp','./assets/official/aha-4-7-promo.jpg',
+ './assets/official/aha-e1.webp','./assets/official/aha-e2.webp','./assets/official/aha-e3.webp',
+ './assets/official/aha-e4.webp','./assets/official/aha-e5.webp','./assets/official/aha-e6.webp',
  './manifest.webmanifest','./assets/pwa/icon-192.png'
 ];
 self.addEventListener('install',event=>{

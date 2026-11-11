@@ -314,3 +314,393 @@ body{max-width:100%;overflow-x:clip}
  .v06-app #floatMenu .floating-panel{top:114px;max-height:calc(100dvh - 120px)}
  .v06-app #floatMenu .drawer-backdrop{inset:108px 0 0}
 }
+
+
+/* ───────────────────────────────────────────────────────────────────────────
+   ANDERUS / Astral Interface — Visual Completion
+   One shared, character-aware visual language. Aha's Grand Theatre uses
+   themes/aha.css + aha-detail.css instead; don't overwrite its stage design.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root{
+  --nx-ink:#eef2f8;
+  --nx-quiet:#c0cedf;
+  --nx-foil:#efc996;
+  --nx-hairline:color-mix(in srgb,var(--v-color,#efc996) 34%,transparent);
+  --nx-paper:#0a1424;
+  --nx-ease:cubic-bezier(.2,.75,.2,1);
+}
+.v06-app:not(.aha-theatre){--nx-astral:color-mix(in srgb,var(--v-color,#e9c59d) 26%,#dce8f7)}
+.v06-app:not(.aha-theatre) #stage{position:relative;isolation:isolate}
+.v06-app:not(.aha-theatre)[data-nx-route]:not([data-nx-route=home]) #stage:before{
+ content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 0 auto;
+ height:420px;
+ background:
+  linear-gradient(180deg,#0a1525bc 0%,#081424eb 60%,#08142400 100%),
+  radial-gradient(ellipse at 85% 12%,color-mix(in srgb,var(--nx-astral) 22%,transparent),transparent 53%),
+  var(--v-cover);
+ background-repeat:no-repeat;
+ background-position:center top,right top,right top;
+ background-size:cover,cover,auto 390px;
+ opacity:.64;
+ mask-image:linear-gradient(#000,transparent 99%);
+}
+.v06-app .nx-scene{
+ display:flex;align-items:center;gap:14px;
+ padding:15px clamp(13px,3vw,23px) 16px;
+ margin:0 0 16px;position:relative;isolation:isolate;
+ border-bottom:1px solid var(--nx-line);
+ color:var(--nx-on-surface);
+}
+.v06-app .nx-scene-star{
+ display:grid;place-items:center;flex:none;width:39px;height:39px;
+ border:1px solid var(--nx-line);border-radius:12px;
+ color:var(--nx-accent);font:24px var(--nx-title);
+ background:radial-gradient(circle at top left,color-mix(in srgb,var(--nx-accent) 22%,transparent),transparent 75%),#0e1d30;
+ box-shadow:inset 0 0 0 3px #ffffff05;
+}
+.v06-app .nx-scene-chapter{display:flex;flex-direction:column;gap:2px;min-width:0}
+.v06-app .nx-scene-chapter>span{
+ font:800 9px/1.2 var(--nx-ui);letter-spacing:2.1px;color:var(--nx-accent);
+}
+.v06-app .nx-scene-chapter strong{
+ font:500 clamp(17px,3vw,23px)/1.1 var(--nx-title);white-space:normal;color:#f9f3ec;
+}
+.v06-app .nx-scene-caption{
+ margin-left:auto;font:500 11px/1.4 var(--nx-ui);color:var(--nx-quiet);text-align:right;
+}
+.v06-app .nx-scene-line{
+ width:26px;height:1px;flex:none;background:var(--nx-accent);opacity:.6;
+}
+.aha-theatre .nx-scene{display:none}
+.v06-app :is(.nx-eyebrow,.v06-kicker,.v07-eyebrow,.v09-eyebrow){
+ font-family:var(--nx-ui);font-size:10px;line-height:1.4;letter-spacing:1.45px;
+ font-weight:800;text-transform:uppercase;color:var(--nx-accent);
+}
+.v06-app:not(.aha-theatre) :is(.v06-pagehead,.chapter-head){
+ position:relative;margin-bottom:17px;padding-bottom:15px;
+}
+.v06-app:not(.aha-theatre) :is(.v06-pagehead,.chapter-head):after{
+ content:"";height:1px;position:absolute;bottom:0;left:0;right:0;
+ background:linear-gradient(90deg,var(--nx-hairline),transparent 80%);
+}
+.v06-app:not(.aha-theatre) :is(.v06-pagehead h1,.chapter-head h1){
+ font:500 clamp(29px,6vw,49px)/1.1 var(--nx-title);color:#f7efe4;
+ letter-spacing:-.025em;margin-bottom:10px;max-width:850px;
+}
+.v06-app:not(.aha-theatre) :is(.v06-pagehead p,.chapter-head p){
+ font:400 clamp(12px,2.4vw,14px)/1.7 var(--nx-ui);color:#c5d1df;
+ max-width:740px;
+}
+/* Genre-specific surfaces: no identical dashboard cards across all sections */
+.v06-app:not(.aha-theatre) .v06-hero{
+ border-radius:0 0 22px 22px;
+ box-shadow:0 26px 55px #02091380;
+}
+.v06-app:not(.aha-theatre) .v06-hero:after{
+ content:"";position:absolute;z-index:3;pointer-events:none;inset:9px;
+ border:1px solid color-mix(in srgb,var(--nx-accent) 32%,transparent);
+ border-radius:0 0 15px 15px;
+ clip-path:polygon(0 0,48% 0,51% 2%,100% 2%,100% 100%,0 100%);
+}
+.v06-app:not(.aha-theatre) .v06-hero-id{
+ font-size:10px;letter-spacing:1.3px;padding:8px 12px;
+ border-radius:10px;background:#081927d9;box-shadow:0 7px 20px #0005;
+}
+.v06-app:not(.aha-theatre) .v06-hero-copy h1{
+ font:500 clamp(34px,8vw,62px)/1.04 var(--nx-title);
+ max-width:600px;
+}
+.v06-app:not(.aha-theatre) .v06-tile-grid{gap:clamp(10px,2vw,16px)}
+.v06-app:not(.aha-theatre) .v06-tile{
+ border-radius:16px 16px 16px 4px;
+ background:linear-gradient(145deg,#192b41ea,#0e1a2eee);
+ box-shadow:inset 0 1px 0 #ffffff12,0 10px 26px #0007;
+}
+.v06-app:not(.aha-theatre) .v06-tile::before{
+ content:"";position:absolute;right:0;top:0;
+ width:70px;height:70px;pointer-events:none;
+ border-top:1px solid color-mix(in srgb,var(--nx-accent) 55%,transparent);
+ background:linear-gradient(225deg,color-mix(in srgb,var(--nx-accent) 13%,transparent),transparent 70%);
+ clip-path:polygon(40% 0,100% 0,100% 70%,95% 70%);
+}
+.v06-app:not(.aha-theatre) .v06-tile:hover{
+ border-color:color-mix(in srgb,var(--nx-accent) 68%,transparent);
+ background:linear-gradient(145deg,#203851ef,#0c1930e8);
+ transform:translateY(-2px);
+}
+.v06-app:not(.aha-theatre) .v06-tile small{max-width:85%;line-height:1.55}
+.v06-app:not(.aha-theatre) .v06-metric{
+ background:radial-gradient(circle at 100% 0,color-mix(in srgb,var(--nx-accent) 12%,transparent),transparent 62%),#0d1e33;
+ border-radius:14px;border-color:var(--nx-hairline);
+}
+.v06-app:not(.aha-theatre) .v06-metric strong{font-family:'Outfit',var(--nx-ui);font-weight:650;color:#fff5e8}
+.v06-app:not(.aha-theatre) .v06-feature-panel{
+ border-radius:20px 20px 20px 5px;
+ border-color:var(--nx-hairline);
+ background:linear-gradient(120deg,#182d40,#111b31);
+}
+.v06-app:not(.aha-theatre) .v06-banner-strip{
+ border:1px solid var(--nx-hairline);border-radius:17px 17px 17px 4px;
+ background:linear-gradient(120deg,#183147,#101c32);
+ overflow:hidden;box-shadow:0 15px 35px #03091373;
+}
+/* Archive: collectible cards and a character-art chapter for the import CTA */
+.v06-app:not(.aha-theatre) .v06-upload-banner{
+ overflow:hidden;isolation:isolate;position:relative;
+ border:1px solid var(--nx-hairline);border-radius:20px 20px 20px 5px;
+ background:
+  radial-gradient(circle at 85% 24%,color-mix(in srgb,var(--nx-accent) 13%,transparent),transparent 50%),
+  linear-gradient(115deg,#1a314a,#0b192d);
+}
+.v06-app:not(.aha-theatre) .v06-upload-banner:after{
+ content:"";position:absolute;z-index:-1;inset:0 0 0 auto;width:45%;
+ background-image:var(--v-cover);background-position:right center;background-repeat:no-repeat;
+ background-size:contain;opacity:.26;pointer-events:none;
+ mask-image:linear-gradient(90deg,transparent,#000 65%);
+}
+.v06-app:not(.aha-theatre) .v06-upload-banner h2{
+ font:500 clamp(23px,6vw,37px)/1.1 var(--nx-title);color:#fff1df;max-width:520px;
+}
+.v06-app:not(.aha-theatre) .v06-upload-banner p{color:#d4e0ea;max-width:560px}
+.v06-app:not(.aha-theatre) .v06-accountfilter{
+ display:flex;gap:8px;padding:5px;border:1px solid var(--nx-line);
+ border-radius:13px;background:#081826d9;overflow-x:auto;scrollbar-width:thin;
+}
+.v06-app:not(.aha-theatre) .v06-accountfilter button{
+ min-height:44px;flex:0 0 auto;border-radius:9px;
+}
+.v06-app:not(.aha-theatre) .v06-char-card{
+ border-radius:14px 14px 14px 4px;
+ background:linear-gradient(120deg,#132840ec,#0b1a2eeb);
+ min-height:98px;border-color:var(--nx-hairline);overflow:hidden;
+}
+.v06-app:not(.aha-theatre) .v06-char-card:hover{
+ background:linear-gradient(120deg,#1d3854,#111e32);
+ border-color:var(--nx-accent);
+}
+.v06-app:not(.aha-theatre) .v06-char-card strong{font:500 clamp(15px,2.5vw,18px)/1.2 var(--nx-title)}
+.v06-app:not(.aha-theatre) .v06-char-card small{font-size:10px;letter-spacing:1.1px}
+.v06-app:not(.aha-theatre) .v06-char-art{
+ width:78px;height:83px;flex-basis:78px;position:relative;
+ border:1px solid var(--nx-line);border-radius:11px;overflow:hidden;
+}
+.v06-app:not(.aha-theatre) .v06-char-art img{width:100%;height:100%;object-fit:contain}
+.v06-app :is(.v06-char-art,.v09-boss-image,.v11-relic-image).nx-art-fallback:after,
+.v06-app .v06-theme-grid button.nx-art-fallback:after{
+ content:"✦";position:absolute;inset:0;display:grid;place-items:center;
+ font:34px var(--nx-title);color:var(--nx-accent);pointer-events:none;
+ background:radial-gradient(circle at center,#354b6180,#09182b);
+}
+/* Character dossier: portrait, E/S badges, grouped stats, confirmed provenance */
+.v06-app:not(.aha-theatre) .v06-char-hero{
+ border-radius:0 0 24px 24px;border-bottom:1px solid var(--nx-hairline);
+ background:#101e31;box-shadow:0 20px 45px #0007;
+}
+.v06-app:not(.aha-theatre) .v06-char-hero::before{
+ content:"";position:absolute;z-index:1;inset:10px;pointer-events:none;
+ border:1px solid #e4cdab28;border-radius:0 0 16px 16px;
+}
+.v06-app:not(.aha-theatre) .v06-character-info h1{
+ font:500 clamp(32px,7vw,54px)/1.02 var(--nx-title);color:#fff0de;
+ text-shadow:0 5px 22px #000b;
+}
+.v06-app:not(.aha-theatre) .v06-tags span{
+ border-radius:8px;background:#0b1e30c9;color:#fff0dc;
+ border:1px solid var(--nx-hairline);
+}
+.v06-app:not(.aha-theatre) .v06-profile-controls{gap:10px;flex-wrap:wrap}
+.v06-app:not(.aha-theatre) .v06-profile-controls>button{min-height:46px}
+.v06-app:not(.aha-theatre) .v06-profile .v06-tabs{
+ border-bottom:1px solid var(--nx-hairline);
+ background:color-mix(in srgb,#0b182a 93%,var(--nx-accent));
+}
+.v06-app:not(.aha-theatre) .v06-profile .v06-tabs button.active{
+ color:#152333;background:linear-gradient(115deg,#f4dab8,var(--nx-accent));
+ box-shadow:inset 0 1px 0 #fffe;
+}
+.v06-app:not(.aha-theatre) .v11-cone-panel,
+.v06-app:not(.aha-theatre) .v11-relic-card{
+ border-radius:18px 18px 18px 5px;
+ background:linear-gradient(135deg,#15283f,#10192d);
+}
+.v06-app:not(.aha-theatre) .v11-relic-card.is-pending{
+ background:linear-gradient(130deg,#19283c,#161d2c);
+}
+.v06-app:not(.aha-theatre) :is(.v07-kit,.v07-eido,.v11-diary-person){
+ border-radius:14px;background:#101d31;border-color:var(--nx-line);
+}
+.v06-app:not(.aha-theatre) :is(.v07-kit,.v07-eido,.v11-diary-person)[open]{
+ background:linear-gradient(145deg,#1b3047,#111d32);
+ border-color:var(--nx-hairline);
+}
+/* Endgame: tactical dossier, not a recycled character card */
+.v06-app:not(.aha-theatre) .v06-endgame-lead .v06-encounter,
+.v06-app:not(.aha-theatre) .v09-guide-title{
+ border-radius:17px 17px 17px 4px;border:1px solid var(--nx-hairline);
+ background:linear-gradient(115deg,#193047,#11182b 86%);
+ padding:clamp(16px,4vw,28px);
+}
+.v06-app:not(.aha-theatre) .v06-endmode{
+ padding:5px;border:1px solid var(--nx-line);background:#0b1a2b;
+ border-radius:13px;overflow-x:auto;
+}
+.v06-app:not(.aha-theatre) .v06-endmode button{min-height:44px;border-radius:9px;white-space:nowrap}
+.v06-app:not(.aha-theatre) .v06-boss-card,
+.v06-app:not(.aha-theatre) .v09-boss{
+ border-radius:16px 16px 16px 4px;overflow:hidden;
+ background:linear-gradient(142deg,#172a40,#0d1627);
+}
+.v06-app:not(.aha-theatre) .v09-boss-image img,
+.v06-app:not(.aha-theatre) .v06-boss-art img{max-width:100%;object-fit:contain}
+.v06-app:not(.aha-theatre) .v09-team-reveal[open]{
+ background:linear-gradient(145deg,#1c2d40,#101b2d);
+}
+.v06-app:not(.aha-theatre) .v09-mechanics article{
+ border-radius:13px 13px 13px 4px;
+ background:linear-gradient(142deg,#172e42,#111d31);
+}
+/* Farm, radar, atelier: distinct chapter frames */
+.v06-app:not(.aha-theatre)[data-nx-route=farm] .v06-pagehead,
+.v06-app:not(.aha-theatre)[data-nx-route=farm] .chapter-head{
+ border-left:3px solid var(--nx-accent);padding-left:16px;
+}
+.v06-app:not(.aha-theatre)[data-nx-route=radar] .v06-radar-banner{
+ border-radius:19px 19px 19px 5px;border:1px solid var(--nx-hairline);
+ background:
+  radial-gradient(circle at 85% 35%,color-mix(in srgb,var(--nx-accent) 17%,transparent),transparent 45%),#121e32;
+}
+.v06-app:not(.aha-theatre) .v06-theme-stage{
+ border:1px solid var(--nx-hairline);
+ border-radius:24px 24px 24px 5px;
+ background:
+  radial-gradient(ellipse at 76% 14%,color-mix(in srgb,var(--nx-accent) 28%,transparent),transparent 48%),
+  linear-gradient(132deg,#182d44,#10192e);
+ overflow:hidden;
+}
+.v06-app:not(.aha-theatre) .v06-theme-stage-art img{
+ max-height:100%;width:100%;object-fit:contain;object-position:right bottom;
+}
+.v06-app:not(.aha-theatre) .v06-theme-caption h2{
+ font:500 clamp(29px,5vw,44px)/1.1 var(--nx-title);color:#fff1e3;
+}
+.v06-app:not(.aha-theatre) .v06-theme-grid{
+ gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(108px,100%),1fr));
+}
+.v06-app:not(.aha-theatre) .v06-theme-grid button{
+ border-radius:13px 13px 13px 4px;cursor:zoom-in;
+ border:1px solid var(--nx-line);
+ background:#12243a;position:relative;
+ min-height:134px;transition:transform .15s var(--nx-ease);
+}
+.v06-app:not(.aha-theatre) .v06-theme-grid button:hover{transform:translateY(-2px);border-color:var(--nx-accent)}
+.v06-app:not(.aha-theatre) .v06-theme-grid button.active{
+ border:2px solid var(--nx-accent);
+ box-shadow:0 0 0 3px color-mix(in srgb,var(--nx-accent) 13%,transparent);
+}
+.v06-app:not(.aha-theatre) .v06-theme-grid img{width:100%;height:110px;object-fit:contain}
+.v06-app:not(.aha-theatre) .v06-art-picks button{
+ border-radius:12px 12px 12px 4px;border-color:var(--nx-hairline);
+}
+.v06-app:not(.aha-theatre) .v06-art-picks img{object-fit:contain}
+.v06-app:not(.aha-theatre) .v06-pom-tip{
+ border-radius:18px 18px 18px 5px;
+ border:1px solid var(--nx-hairline);
+ background:linear-gradient(123deg,#1b3046,#0d1d2f);
+}
+.v06-app:not(.aha-theatre) .v06-pom-tip>img{object-fit:contain}
+/* Unified dialogue pattern, source annotations, placeholders and keyboard focus */
+.v06-app .nx-error{background:linear-gradient(110deg,#39242f,#151f31);border-left:3px solid #edaa9c}
+.v06-app .nx-empty{text-align:center;background:#112238;border-color:var(--nx-hairline);padding:clamp(22px,4vw,38px)}
+.v06-app .v06-source-note,.v06-app .v11-source,.v06-app .v09-source{
+ border-left:2px solid var(--nx-accent);padding-left:12px;font:11px/1.7 var(--nx-ui);color:#c9d7e2;
+}
+.v06-app :is(.v06-fieldgroup,.v11-edit-row) :is(input,select),#nexus-scan-v3 :is(input,select){
+ font-size:16px;min-height:44px;border-radius:9px;
+}
+.v06-app :is(.v06-primary,.v06-secondary,.v06-save-import,.v11-actions button){
+ min-height:44px;font-weight:750;letter-spacing:.1px;
+}
+.v06-app .modal{border-color:var(--nx-hairline);border-radius:19px 19px 0 0;box-shadow:0 30px 90px #000d}
+.v06-app .modal-head h2{font:500 clamp(19px,4vw,27px)/1.2 var(--nx-title)}
+#nexus-scan-v3 .ns3-piece{border-radius:12px}
+#nexus-scan-v3 .ns3-piece[open]{border-color:var(--nx-accent,#e4bf97)}
+/* Theme Studio comparison: native modal, truly non-mutating until Confirm */
+.nx-theme-preview{
+ --nx-accent:var(--v-color,#efd0a0);
+ box-sizing:border-box;width:min(760px,calc(100vw - 18px));
+ max-height:min(91dvh,920px);overflow-y:auto;
+ padding:0;border:1px solid #c5ad9177;border-radius:21px;
+ background:linear-gradient(160deg,#13243a,#0c172a 80%);
+ color:#f6f0ec;box-shadow:0 34px 90px #000e;
+ font-family:'DM Sans',system-ui,sans-serif;
+}
+.nx-theme-preview::backdrop{background:rgba(2,7,17,.84);backdrop-filter:blur(7px)}
+.nx-theme-compare{padding:clamp(17px,4vw,30px);margin:0}
+.nx-theme-compare header{display:flex;align-items:start;justify-content:space-between;gap:16px}
+.nx-theme-compare header h2{font:500 clamp(24px,5.5vw,36px)/1.12 'Marcellus',Georgia,serif;margin:8px 0}
+.nx-theme-compare header p,.nx-theme-compare .nx-preview-note{font:12px/1.6 'DM Sans',sans-serif;color:#cbd5e2;margin:8px 0 15px}
+.nx-theme-compare button{cursor:pointer;min-height:44px;border-radius:10px;font:750 12px/1.3 'DM Sans',sans-serif}
+.nx-theme-compare button:focus-visible{outline:3px solid #a7f2ea;outline-offset:3px}
+.nx-preview-close{width:44px;flex:0 0 44px;font-size:24px!important;border:1px solid #e9d3b15d;background:#182b40;color:#fff2df}
+.nx-theme-preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.nx-theme-preview-card{
+ display:flex;flex-direction:column;min-width:0;overflow:hidden;
+ padding:12px;border:1px solid #c5b9a448;border-radius:13px;
+ background:linear-gradient(140deg,#203851,#111d32);
+}
+.nx-theme-preview-card.is-selected{border-color:#d0b68b9d}
+.nx-theme-preview-card>span{font:800 9px 'DM Sans',sans-serif;letter-spacing:1.5px;color:#dcc59f}
+.nx-theme-preview-art{
+ height:clamp(170px,39vw,285px);
+ display:grid;place-items:center;overflow:hidden;
+ background:radial-gradient(ellipse,#354b6870,transparent 80%);border-radius:9px;margin:8px 0 12px;
+}
+.nx-theme-preview-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 7px 22px #030910a3)}
+.nx-theme-preview-card strong{font:500 clamp(16px,3vw,21px)/1.24 'Marcellus',serif;overflow-wrap:anywhere}
+.nx-theme-compare footer{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.nx-theme-compare footer button{flex:1 1 190px;padding:11px 15px}
+.nx-preview-cancel{background:#182b40;color:#f1e4d6;border:1px solid #aabcc85d}
+.nx-preview-apply{background:linear-gradient(120deg,#ffe2b6,#d9a7bc);color:#1e2436;border:1px solid #ffe2bd}
+@media(max-width:429px){
+ .v06-app .nx-scene{gap:9px;padding-inline:9px}
+ .v06-app .nx-scene-star{width:34px;height:34px;font-size:20px}
+ .v06-app .nx-scene-caption,.v06-app .nx-scene-line{display:none}
+ .v06-app:not(.aha-theatre) .v06-upload-banner:after{opacity:.13;width:70%}
+ .v06-app:not(.aha-theatre) .v06-char-card strong{font-size:16px}
+ .nx-theme-preview-grid{gap:8px}
+ .nx-theme-preview-card{padding:8px}
+ .nx-theme-preview-art{height:155px}
+ .nx-theme-compare footer button{flex:1 1 100%;width:100%}
+}
+@media(min-width:768px){
+ .v06-app .nx-scene{margin:0 0 24px;padding:17px 22px}
+ .v06-app:not(.aha-theatre) .v06-hero:after{border-radius:21px}
+ .v06-app:not(.aha-theatre) .v06-tile:nth-child(1){grid-column:span 2}
+ .v06-app:not(.aha-theatre) .v06-tile:nth-child(1) strong{font-size:clamp(23px,2.4vw,31px)}
+ .v06-app:not(.aha-theatre) .v06-tile:nth-child(1) .v06-tile-art{background-position:right center}
+ .v06-app:not(.aha-theatre) .v06-theme-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+ .v06-app:not(.aha-theatre) .v06-char-hero{border-radius:22px}
+}
+@media(min-width:1024px){
+ .v06-app:not(.aha-theatre) .v06-upload-banner{padding:32px 36px}
+ .v06-app:not(.aha-theatre) .v06-char-hero{min-height:380px}
+ .v06-app:not(.aha-theatre) .v09-bosses{gap:18px}
+ .v06-app:not(.aha-theatre)[data-nx-route=endgame] .v09-mechanics{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ .v06-app:not(.aha-theatre) .v06-tile:hover,.v06-app:not(.aha-theatre) .v06-theme-grid button:hover{transform:none}
+ .nx-theme-preview *{animation:none!important;transition:none!important}
+}
+
+
+/* The previous character theme is reversible without visiting settings. */
+.v06-app .nx-theme-undo{
+ display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;
+ min-height:44px;padding:10px 15px;max-width:100%;
+ border:1px solid var(--nx-line);border-radius:10px;
+ background:color-mix(in srgb,var(--nx-accent,#d3bd9e) 12%,#122439);
+ color:#f2e8d8;font:700 12px/1.4 'DM Sans',sans-serif;
+ text-align:left;white-space:normal;
+}
+.v06-app .nx-theme-undo:hover{border-color:var(--nx-accent);background:#233347}
+.v06-app.aha-theatre .nx-theme-undo{border-radius:4px;background:#3c1c38;color:#ffe3d6}

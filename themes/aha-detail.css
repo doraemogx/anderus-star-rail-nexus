@@ -106,3 +106,191 @@ html[data-aha-grande="1"] #overlay :is(button,a):focus-visible{outline:2px solid
 @media(prefers-reduced-motion:reduce){
  .aha-theatre .aha-view-ribbon,.aha-theatre .v06-tile,.aha-theatre .v06-char-card{animation:none!important;transition:none!important;transform:none!important}
 }
+
+/* Grand Theatre — finishing pass. Only active with Aha's chosen variant.
+ * A thematic scene is not a purple filter: mask geometry, ribbon ledger,
+ * brass trims, layered stage lighting and accessible data typography. */
+.aha-theatre{
+ --aha-velvet:#210e24;
+ --aha-velvet-dark:#120b1b;
+ --aha-silk:#fff0e5;
+ --aha-flame:#e9b78b;
+ --aha-ink:#f9e6e7;
+ --aha-mute:#e4c6d1;
+ --aha-stage-line:color-mix(in srgb,var(--aha-flame) 46%,transparent);
+ --aha-cut:polygon(0 0,calc(100% - 13px) 0,100% 13px,100% 100%,0 100%);
+}
+.aha-theatre #stage{background:transparent;min-width:0}
+.aha-theatre #stage::after{
+ content:"";pointer-events:none;position:absolute;z-index:-1;
+ inset:140px 0 auto;height:720px;
+ background:
+  repeating-conic-gradient(from 9deg at 72% 33%,#f2cca508 0 3deg,transparent 4deg 20deg),
+  radial-gradient(ellipse at 79% 19%,#d55a8640,transparent 54%);
+ mask-image:linear-gradient(#000,transparent 92%);
+}
+.aha-theatre .aha-view-ribbon{
+ isolation:isolate;position:relative;overflow:hidden;
+ border:1px solid var(--aha-stage-line);
+ border-radius:4px;clip-path:var(--aha-cut);
+ background:radial-gradient(ellipse at 86% 18%,#e59f9a25,transparent 49%),linear-gradient(120deg,#3a1d31,#191123);
+ box-shadow:inset 0 0 0 3px #0002,0 15px 36px #0804114d;
+}
+.aha-theatre .aha-view-ribbon:before{
+ content:"";pointer-events:none;position:absolute;right:4%;top:50%;
+ width:160px;aspect-ratio:1;transform:translateY(-50%) rotate(-14deg);
+ border:1px solid #efc9ae24;border-radius:50%;
+ box-shadow:0 0 0 18px #edb7b410,0 0 0 40px #ecbcad08;
+}
+.aha-theatre .aha-view-ribbon :is(b,small,em){position:relative}
+.aha-theatre .v06-profile .v06-char-hero{
+ border:1px solid var(--aha-stage-line);
+ background:
+  linear-gradient(180deg,#2b14312a,#110919cc),
+  radial-gradient(ellipse at 76% 44%,#c249784c,transparent 60%),#1c0e23;
+ border-radius:6px;clip-path:var(--aha-cut);
+ box-shadow:0 18px 45px #080510a8;
+}
+.aha-theatre .v06-character-info h1{
+ font-size:clamp(30px,6vw,62px);color:var(--aha-silk)!important;
+}
+.aha-theatre .v06-character-info :is(.v06-ownership,.v06-tags span){
+ border-color:var(--aha-stage-line);color:#ffdfc8;
+}
+.aha-theatre :is(.v06-library-grid,.v11-relic-grid,.v09-bosses){gap:clamp(11px,2vw,18px)}
+.aha-theatre :is(.v06-char-card,.v11-relic-card,.v09-boss){
+ border:1px solid var(--aha-stage-line)!important;
+ background:linear-gradient(132deg,#35192f,#171026)!important;
+ border-radius:5px!important;clip-path:var(--aha-cut);
+ box-shadow:0 16px 38px #09061571;
+}
+.aha-theatre .v06-char-card:hover,
+.aha-theatre .v11-relic-card:hover,
+.aha-theatre .v09-boss:hover{border-color:#ffd8ae!important}
+.aha-theatre .v06-char-card strong{
+ font:500 clamp(16px,2.6vw,21px)/1.1 'Cinzel','Marcellus',serif;
+ color:var(--aha-silk);
+}
+.aha-theatre .v06-char-card small{font-size:10px;letter-spacing:1.2px;color:#e6c8cf}
+.aha-theatre .v06-metric strong,.aha-theatre .v11-relic-subs b{
+ color:#fff1e2!important;font-variant-numeric:tabular-nums;
+}
+.aha-theatre .v06-metric small,.aha-theatre .v11-relic-title small{
+ font-size:11px!important;line-height:1.45;color:#e3cbd7!important;
+}
+.aha-theatre :is(.v07-kit,.v07-eido,.v11-diary-person,.v09-mechanics article){
+ border:1px solid var(--aha-stage-line)!important;
+ border-radius:5px!important;
+ background:linear-gradient(125deg,#30172e,#171025)!important;
+}
+.aha-theatre :is(.v07-kit,.v07-eido,.v11-diary-person)[open]{
+ background:linear-gradient(120deg,#42213c,#211328)!important;
+ border-color:#e8b98b!important;
+}
+.aha-theatre :is(.v07-kit,.v07-eido,.v09-guide-title) :is(p,small,span){
+ color:var(--aha-mute);line-height:1.6;
+}
+.aha-theatre :is(.v06-pagehead,.chapter-head) h1{
+ color:var(--aha-silk)!important;
+ text-shadow:0 4px 22px #0005;
+}
+.aha-theatre .v09-guide-title,
+.aha-theatre .v06-endgame-lead .v06-encounter{
+ background:linear-gradient(125deg,#45213c,#1a1026)!important;
+ border:1px solid var(--aha-stage-line)!important;
+ border-radius:5px!important;
+ clip-path:var(--aha-cut);padding:clamp(18px,3vw,28px)!important;
+}
+.aha-theatre .v06-endmode{
+ border:1px solid var(--aha-stage-line);border-radius:5px;
+ background:#26132a;display:flex;overflow-x:auto;gap:5px;padding:5px;
+}
+.aha-theatre .v06-endmode button{border-radius:3px!important;min-height:44px;flex:0 0 auto}
+.aha-theatre .v06-endmode button.active{
+ background:#e8b997!important;color:#261326!important;border-color:#ffe5be!important;
+}
+.aha-theatre .v09-boss-image img{max-width:100%;height:100%;object-fit:contain}
+.aha-theatre :is(.v06-upload-banner,.v06-radar-banner,.v06-banner-strip){
+ border:1px solid var(--aha-stage-line)!important;
+ border-radius:5px!important;clip-path:var(--aha-cut);
+ background:radial-gradient(circle at 90% 14%,#d45e8649,transparent 48%),linear-gradient(135deg,#3a1b34,#171026)!important;
+}
+.aha-theatre .v06-upload-banner h2{font:500 clamp(23px,5vw,37px)/1.1 'Cinzel',serif;color:var(--aha-silk)}
+.aha-theatre .v06-upload-banner p{font-size:13px;line-height:1.65;color:#e8cfda}
+.aha-theatre .v06-theme-grid button,.aha-theatre .v06-art-picks button{
+ border-radius:5px!important;
+ border:1px solid var(--aha-stage-line)!important;
+ background:#25162e!important;overflow:hidden;
+}
+.aha-theatre .v06-theme-grid button.active,
+.aha-theatre .v06-art-picks button.active{
+ outline:2px solid #efbd96!important;outline-offset:2px;
+}
+.aha-theatre .v06-theme-grid img{object-fit:contain}
+.aha-theatre .v06-theme-grid span{font-size:11px;line-height:1.3}
+.aha-theatre .v06-theme-stage{
+ background:radial-gradient(ellipse at 72% 30%,#af44766b,transparent 51%),linear-gradient(110deg,#3d1c35,#140d21)!important;
+ border:1px solid var(--aha-stage-line)!important;
+}
+.aha-theatre .v06-theme-caption h2{font-size:clamp(28px,6vw,43px)!important}
+.aha-theatre .v06-pom-tip,
+.aha-theatre .v11-coach,.aha-theatre .v11-cone-panel{
+ border:1px solid var(--aha-stage-line)!important;
+ background:linear-gradient(130deg,#3b1b37,#171027)!important;
+ border-radius:5px!important;
+}
+.aha-theatre .v11-cone-effect p,.aha-theatre .v11-coach-note p{font-size:12px;line-height:1.7}
+.aha-theatre :is(.v06-action-row button,.v11-actions button,.v11-coach-actions button,
+ .v11-cone-foot button,.v09-team-reveal summary){
+ min-height:44px;
+}
+.aha-theatre :is(.v06-search input,.v11-edit-form input,.v11-edit-form select){
+ background:#140f22;border-color:var(--aha-stage-line);color:#f5e5e7;
+ min-height:44px;
+}
+.aha-theatre .v06-source-note,.aha-theatre .v09-source,.aha-theatre .v11-source{
+ color:#dbc5d0;font-size:11px;line-height:1.6;
+ border-left:2px solid var(--aha-flame);padding-left:12px;
+}
+.aha-theatre .nx-error,.aha-theatre .nx-empty{
+ background:#2b192e;border-color:var(--aha-stage-line);
+}
+.aha-theatre .bottom-nav button[aria-current=page],
+.aha-theatre #sidebarLinks [aria-current=page]{
+ background:#d285a52b!important;color:#fff0dd!important;
+ border-color:var(--aha-stage-line)!important;
+}
+.aha-theatre .modal{border-color:var(--aha-stage-line);background:linear-gradient(135deg,#321830,#191024)}
+.aha-theatre #nexus-scan-v3{border-color:var(--aha-stage-line)}
+@media(max-width:740px){
+ .aha-theatre .aha-view-ribbon{padding:14px!important}
+ .aha-theatre .v06-profile .v06-tabs{scroll-padding-inline:12px}
+ .aha-theatre .v06-char-hero-art{background-size:contain}
+ .aha-theatre .v06-theme-stage{min-height:300px}
+ .aha-theatre .v06-char-card{min-height:92px}
+ .aha-theatre .v09-bosses{grid-template-columns:minmax(0,1fr)}
+}
+@media(min-width:1024px){
+ .aha-theatre .v06-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .aha-theatre .v11-relic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .aha-theatre .v09-bosses{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .aha-theatre .v06-theme-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ .aha-theatre .aha-view-ribbon *,.aha-theatre .v06-char-card{animation:none!important;transition:none!important}
+}
+
+
+/* Final visual QA: keep the canonical portrait clear of the Elation caption.
+ * In 390px Chromium the original 340px portrait overlapped the hero eyebrow. */
+@media(max-width:719px){
+ .aha-theatre .aha-portrait{inset:41px 0 auto;height:235px}
+ .aha-theatre .aha-portrait img{height:233px;width:min(90%,350px);object-fit:contain}
+ .aha-theatre .aha-overline{font-size:10px;line-height:1.4;color:#ffe8cf;text-shadow:0 2px 8px #0a0615}
+ .aha-theatre .aha-leading{font-size:13px;line-height:1.6}
+}
+/* The scene ribbon should be the first page landmark, not appear beneath
+ * a later-injected dashboard card. Only the Aha variant uses this layout. */
+.aha-theatre #stage{display:flex;flex-direction:column;align-items:stretch}
+.aha-theatre #stage>.aha-view-ribbon{order:-100;width:100%;max-width:100%}
+.aha-theatre #stage>*{min-width:0}

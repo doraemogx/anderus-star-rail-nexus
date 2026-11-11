@@ -29,5 +29,9 @@ for(const ref of ['nexus-design-system.css','nexus-design-system.js']){
 assert.ok(test.includes('[320,360,390,430,768,1024,1440,1920]'),'Incomplete screen width test');
 for(const route of ['home','library','endgame','farm','radar','tier','themes','nexia','settings'])
  assert.ok(test.includes("'"+route+"'"),'Missing route coverage: '+route);
-assert.ok(!js.includes('localStorage.setItem('),'UX layer must not write the account');
+const writes=[...js.matchAll(/localStorage\.setItem\(([^,]+),/g)].map(m=>m[1].trim());
+assert.ok(writes.length>=1&&writes.every(key=>key==='lastThemeKey'),
+ 'Only a distinct, visual-only previous-theme preference may be persisted');
+assert.ok(!js.includes("'anderus_nexus_v03'"),
+ 'The design layer cannot read or overwrite the account storage key');
 console.log('PASS Phase 4: design tokens, 8 widths, 9 routes, accessibility, PWA and no storage writes');
