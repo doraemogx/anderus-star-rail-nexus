@@ -165,11 +165,11 @@ function renderVariants(){
  const selected=visualMode();
  const html='<section class="v09-variants" aria-label="Escolha a versão visual do tema">'+
   '<span class="v09-eyebrow">THEME STUDIO · DUAS VERSÕES SALVAS</span><h2>Escolha sua direção de arte</h2>'+
-  '<p>As duas versões usam Aeon ★ Aha. A troca afeta apenas a aparência: sua conta, relíquias e progresso permanecem salvos.</p>'+
+  '<p>As duas versões usam Aha. A troca afeta apenas a aparência: sua conta, relíquias e progresso permanecem salvos.</p>'+
   '<div class="v09-variant-options" role="group" aria-label="Variantes visuais de Aha">'+
    '<button type="button" class="'+(selected==='original'?'selected':'')+'" aria-pressed="'+(selected==='original')+'" onclick="v09SetVisualMode(\'original\')"><span class="v09-variant-art original">✧</span><strong>Original do Nexus</strong><small>Identidade carnaval da versão base, sem a transformação editorial.</small></button>'+
-   '<button type="button" class="'+(selected==='chat'?'selected':'')+'" aria-pressed="'+(selected==='chat')+'" onclick="v09SetVisualMode(\'chat\')"><span class="v09-variant-art custom"><img src="./assets/official/aha-4-7.webp" loading="lazy" alt=""></span><strong>Grand Theatre · ChatGPT</strong><small>Palco cinematográfico e telas estilizadas em toda a plataforma.</small></button>'+
-  '</div><span class="v09-variant-hint">Versão ativa: '+(selected==='chat'?'Grand Theatre · ChatGPT':'Original do Nexus')+'</span></section>';
+   '<button type="button" class="'+(selected==='chat'?'selected':'')+'" aria-pressed="'+(selected==='chat')+'" onclick="v09SetVisualMode(\'chat\')"><span class="v09-variant-art custom"><img src="./assets/official/aha-4-7.webp" loading="lazy" alt=""></span><strong>Aha · Grand Theatre</strong><small>Palco cinematográfico e telas estilizadas em toda a plataforma.</small></button>'+
+  '</div><span class="v09-variant-hint">Versão ativa: '+(selected==='chat'?'Aha · Grand Theatre':'Original do Nexus')+'</span></section>';
  const stage=studio.querySelector('.v06-theme-stage');
  if(stage)stage.insertAdjacentHTML('afterend',html);else studio.insertAdjacentHTML('afterbegin',html);
 }
