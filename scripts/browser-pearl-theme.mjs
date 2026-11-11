@@ -113,6 +113,16 @@ try{
     references:pearlEidolons.references.length,
     cards:pearlEidolons.cards,images:pearlEidolons.illustrations
    }));
+  if(width===390||width===1440){
+   await page.screenshot({path:'artifacts/pearl-'+width+'-eidolons.png',fullPage:false,animations:'disabled'});
+  }
+  await page.evaluate(()=>{tab='relics';refresh();});
+  await page.locator('.v11-relic-grid .v11-relic-card').first().waitFor({timeout:15000});
+  const relicCards=await page.locator('.v11-relic-grid .v11-relic-card').count();
+  if(relicCards!==6)issues.push(width+'px: Expected 6 relic cards, got '+relicCards);
+  if(width===390||width===1440){
+   await page.screenshot({path:'artifacts/pearl-'+width+'-relics.png',fullPage:false,animations:'disabled'});
+  }
   const records=await page.evaluate(()=>localStorage.getItem('anderus_nexus_v03'));
   assert.equal(records,before,'Applying Pearl theme changed saved character data at '+width);
   assert.equal(pageErrors.length,0,'JS errors at '+width+': '+pageErrors.join('; '));
