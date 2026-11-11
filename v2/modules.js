@@ -133,8 +133,8 @@ a.modules={
    '<div class="card"><span class="sect-label">DADOS E SEGURANÇA</span><h3>Seus dados pertencem a você</h3>'+
    '<div class="setting"><div><strong>Dados do Nexus anterior</strong><small>Somente leitura; permanecem preservados.</small></div>'+tag(a.owned().length+' fichas')+'</div>'+
    '<div class="setting"><div><strong>Alterações no Nexus 2.0</strong><small>Gravadas apenas no armazenamento deste navegador.</small></div>'+tag('Local')+'</div>'+
-   '<div class="setting"><div><strong>Cloud e login</strong><small>Ainda não conectados à nova arquitetura.</small></div>'+tag('Pendente')+'</div>'+
-   '<div class="n2-actions"><button class="btn gold" onclick="N2.export()">Exportar backup completo</button>'+
+   '<div class="setting"><div><strong>Cloud do Nexus antigo</strong><small>Importação criptografada somente leitura, sem enviar alterações à nuvem.</small></div>'+tag('Por aparelho vinculado')+'</div>'+
+   '<button class="btn ghost" onclick="N2.cloudPull?.()">Importar cópia da nuvem antiga</button>'+'<div class="n2-actions"><button class="btn gold" onclick="N2.export()">Exportar backup completo</button>'+
    '<label class="btn ghost n2-file-label">Restaurar backup<input type="file" accept=".json" hidden onchange="N2.importFile(this)"></label></div></div>'+
    '<div class="card"><span class="sect-label">EXPERIÊNCIA</span><h3>Conforto visual</h3>'+
    '<div class="setting"><div><strong>Reduzir animações</strong><small>Desativa movimentos decorativos adicionais.</small></div>'+
