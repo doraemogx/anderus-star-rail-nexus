@@ -291,7 +291,7 @@ body{max-width:100%;overflow-x:clip}
 
 /* The original masthead has five utility controls. On narrow phones, a
  * deliberately two-row header keeps ANDERUS legible instead of ellipsizing it. */
-@media(max-width:429px){
+@media(max-width:430px){
  html{scroll-padding-top:119px}
  .v06-app .masthead{
    height:108px;min-height:108px;
