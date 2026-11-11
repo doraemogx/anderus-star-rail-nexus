@@ -1,0 +1,495 @@
+/* ANDERUS · Visual Experience 2.0 — whole-hub editorial direction.
+ * Complements existing Design System and Aha Grand Theatre. Never overrides
+ * account storage or PWA runtime: strictly presentation, themes and layout.
+ */
+:root{
+ --vex-blue:#a8cbe5;--vex-gold:#efd6b0;--vex-rose:#e5a4c0;
+ --vex-panel:#111e31;--vex-soft:#c6d7e9;--vex-border:#dcc5a559;
+ --vex-ease:cubic-bezier(.2,.7,.25,1);
+}
+.v06-app{
+ --vex-accent:var(--v-color,#d3bc9b);
+ --vex-deep:color-mix(in srgb,var(--v-deep,#15233a) 70%,#0d192a);
+}
+.v06-app #stage{isolation:isolate}
+.v06-app .nx-vex-surface{
+ transition:border-color .22s var(--vex-ease),box-shadow .22s var(--vex-ease);
+}
+.v06-app .nx-vex-surface:focus-within{border-color:var(--vex-accent)}
+.v06-app .nx-vex-section-header{position:relative;padding-bottom:10px}
+.v06-app .nx-vex-section-header:after{
+ content:"";position:absolute;bottom:0;left:0;
+ width:min(92px,22%);height:1px;
+ background:linear-gradient(90deg,var(--vex-accent),transparent);
+}
+.v06-app .nx-vex-section-header h2{font:500 clamp(20px,4.4vw,29px)/1.12 var(--v-title-font,'Marcellus',Georgia,serif)}
+.v06-app .nx-vex-section-header small{letter-spacing:.08em}
+.v06-app :is(.v06-pagehead,.chapter-head) h1{text-wrap:balance}
+.v06-app :is(.v06-feature-panel,.v11-cone-panel,.v09-boss,.v09-guide-title){
+ box-shadow:0 16px 38px #0108196e,inset 0 1px 0 #ffffff09;
+}
+.v06-app .v06-char-card img{object-fit:contain;object-position:center}
+.v06-app .v06-tile strong{max-width:90%;text-wrap:balance}
+.v06-app .v06-tile small{max-width:85%}
+.v06-app .v06-feature-panel :is(p,small),.v06-app .v09-guide-title p{line-height:1.68}
+
+/* Chapter hero strips differentiate the functional areas instead of repeating
+   the same purple dashboard card on every page. */
+.v06-app .nx-scene{
+ --vex-scene-primary:#1c324b;
+ --vex-scene-secondary:#0d182a;
+ --vex-scene-light:#c2d9ef;
+ position:relative;min-height:86px;overflow:hidden;
+ border:1px solid color-mix(in srgb,var(--vex-accent) 32%,#ffffff27);
+ background:
+   radial-gradient(ellipse at 84% 7%,color-mix(in srgb,var(--vex-scene-light) 22%,transparent),transparent 42%),
+   linear-gradient(112deg,var(--vex-scene-primary),var(--vex-scene-secondary) 85%)!important;
+ box-shadow:0 15px 35px #01091878,inset 0 1px 0 #fff1;
+ border-radius:5px 17px 17px 5px!important;
+}
+.v06-app .nx-scene:before{
+ content:"";position:absolute;inset:6px;pointer-events:none;
+ border:1px solid #dfc9a024;
+ border-radius:2px 12px 12px 2px;
+}
+.v06-app .nx-scene:after{
+ content:"";position:absolute;left:0;top:13%;bottom:13%;width:3px;
+ background:linear-gradient(0deg,transparent,var(--vex-accent),transparent);
+}
+.v06-app .nx-scene>*:not(.nx-vex-scene-ornament){position:relative;z-index:2}
+.v06-app .nx-scene-chapter strong{font:500 clamp(19px,4.2vw,27px)/1.15 var(--v-title-font,'Marcellus',Georgia,serif)}
+.v06-app .nx-scene-caption{font-size:12px;line-height:1.5}
+.v06-app .nx-vex-scene-ornament{
+ position:absolute;right:2%;top:50%;width:110px;height:110px;
+ transform:translateY(-50%);opacity:.32;z-index:0;
+ display:grid;place-items:center;pointer-events:none;
+}
+.v06-app .nx-vex-scene-ornament i{
+ position:absolute;inset:10px;display:block;
+ border:1px solid var(--vex-scene-light);border-radius:50%;
+ transform:rotate(-25deg);
+}
+.v06-app .nx-vex-scene-ornament i:nth-child(2){
+ inset:23px;transform:rotate(39deg);
+}
+.v06-app .nx-vex-scene-ornament i:nth-child(3){
+ inset:37px;background:var(--vex-scene-light);border-radius:3px;
+ transform:rotate(45deg);opacity:.14;
+}
+.v06-app[data-vex-scene=library] .nx-scene{
+ --vex-scene-primary:#234159;--vex-scene-secondary:#0d2438;
+ --vex-scene-light:#aad9e7;
+}
+.v06-app[data-vex-scene=library] .nx-vex-scene-ornament i{
+ border-radius:4px;transform:rotate(-12deg);
+}
+.v06-app[data-vex-scene=profile] .nx-scene{
+ --vex-scene-primary:#2b354b;--vex-scene-secondary:#141928;
+ --vex-scene-light:#dcd2ed;
+}
+.v06-app[data-vex-scene=profile] .nx-vex-scene-ornament i{
+ border-radius:3px;transform:rotate(45deg);
+}
+.v06-app[data-vex-scene=endgame] .nx-scene{
+ --vex-scene-primary:#473244;--vex-scene-secondary:#1c1b30;
+ --vex-scene-light:#f1bcae;
+}
+.v06-app[data-vex-scene=endgame] .nx-vex-scene-ornament i{
+ border-radius:0;transform:rotate(45deg);
+}
+.v06-app[data-vex-scene=farm] .nx-scene{
+ --vex-scene-primary:#233f3e;--vex-scene-secondary:#101e29;
+ --vex-scene-light:#a6dbc9;
+}
+.v06-app[data-vex-scene=farm] .nx-vex-scene-ornament i{
+ border-radius:8px;transform:rotate(-16deg);
+}
+.v06-app[data-vex-scene=radar] .nx-scene{
+ --vex-scene-primary:#243d55;--vex-scene-secondary:#10182e;
+ --vex-scene-light:#abd7ef;
+}
+.v06-app[data-vex-scene=radar] .nx-vex-scene-ornament i{
+ border-style:dashed;transform:rotate(13deg);
+}
+.v06-app[data-vex-scene=tier] .nx-scene{
+ --vex-scene-primary:#3f3949;--vex-scene-secondary:#171e30;
+ --vex-scene-light:#f2dab2;
+}
+.v06-app[data-vex-scene=themes] .nx-scene{
+ --vex-scene-primary:#342d47;--vex-scene-secondary:#141d2e;
+ --vex-scene-light:#edc3d9;
+}
+.v06-app[data-vex-scene=themes] .nx-vex-scene-ornament i{
+ border-radius:3px 50% 50% 3px;transform:rotate(17deg);
+}
+.v06-app[data-vex-scene=nexia] .nx-scene{
+ --vex-scene-primary:#443d39;--vex-scene-secondary:#1b2431;
+ --vex-scene-light:#ebd9b0;
+}
+.v06-app[data-vex-scene=settings] .nx-scene{
+ --vex-scene-primary:#263548;--vex-scene-secondary:#101e30;
+ --vex-scene-light:#b8c8de;
+}
+
+/* Route-specific composition. The page content remains the same; card forms,
+   hero hierarchy and imagery receive chapter-appropriate presentation. */
+.v06-app[data-vex-scene=library] .v06-char-card{
+ border-radius:4px 15px 15px 4px;
+ background:linear-gradient(105deg,#1a2e43,#111c30);
+ min-height:90px;
+}
+.v06-app[data-vex-scene=library] .v06-char-card:after{
+ content:"";position:absolute;right:0;top:18%;bottom:18%;
+ width:2px;background:linear-gradient(transparent,var(--vex-accent),transparent);
+ opacity:.55;
+}
+.v06-app[data-vex-scene=profile] .v06-char-hero{
+ border-radius:5px 5px 19px 19px;
+ border-color:color-mix(in srgb,var(--vex-accent) 48%,transparent);
+}
+.v06-app[data-vex-scene=profile] .v06-metric{
+ background:linear-gradient(145deg,#1e3045,#101e30);
+ border-radius:4px 12px 12px 4px;
+}
+.v06-app[data-vex-scene=profile] .v11-relic-card{
+ border-radius:5px 15px 15px 5px;
+ background:linear-gradient(145deg,#1a293c,#0e1b2c);
+}
+.v06-app[data-vex-scene=endgame] .v09-guide-title{
+ border-radius:5px 21px 21px 5px;
+ background:radial-gradient(ellipse at 87% 14%,#d78b9c36,transparent 51%),
+ linear-gradient(117deg,#3b293d,#151d31)!important;
+}
+.v06-app[data-vex-scene=endgame] .v09-mechanics article{
+ border-left:3px solid #cfa08a;box-shadow:0 12px 22px #0004;
+}
+.v06-app[data-vex-scene=endgame] .v09-boss{
+ border-radius:5px 20px 20px 5px;
+ background:linear-gradient(143deg,#2c2738,#111c30);
+}
+.v06-app[data-vex-scene=farm] :is(.v06-feature-panel,.v06-farm-panel,.v06-farm-card){
+ border-left:3px solid #9bc7ae;
+}
+.v06-app[data-vex-scene=radar] .v06-radar-banner{
+ border-radius:4px 19px 19px 4px;
+ background:radial-gradient(circle at 90% 15%,#a7d9e526,transparent 45%),#14293d;
+}
+.v06-app[data-vex-scene=nexia] :is(.v06-pom-tip,.v11-diary-person){
+ border-radius:18px 18px 18px 4px;
+ background:linear-gradient(135deg,#26394a,#111e31);
+}
+.v06-app[data-vex-scene=settings] :is(.card,.v06-feature-panel){
+ border-radius:5px 15px 15px 5px;
+}
+
+/* Theme Studio — striking, usable art direction with real preview, not
+   just a tiny character grid. Applies to original and all selected themes. */
+.v06-app .v06-themes{--vex-accent:var(--v-color,#e2c39e)}
+.v06-app .nx-vex-intro{
+ position:relative;isolation:isolate;overflow:hidden;
+ border:1px solid color-mix(in srgb,var(--vex-accent) 44%,#fff2);
+ background:
+  radial-gradient(circle at 83% 19%,color-mix(in srgb,var(--vex-accent) 20%,transparent),transparent 36%),
+  linear-gradient(112deg,#172c42,#101a2f 67%,#1f1832);
+ min-height:235px;border-radius:5px 23px 23px 5px;
+ box-shadow:0 22px 45px #02091770,inset 0 0 0 4px #ffffff06;
+ margin:12px 0 23px;padding:clamp(20px,4.5vw,34px);
+ display:flex;align-items:center;
+}
+.v06-app .nx-vex-intro:after{
+ content:"";position:absolute;inset:10px;z-index:0;
+ pointer-events:none;border:1px solid #e7c7a225;border-radius:2px 17px 17px 2px;
+}
+.v06-app .nx-vex-intro-copy{position:relative;z-index:2;max-width:70%;min-width:0}
+.v06-app .nx-vex-intro-copy>span{
+ font:800 10px/1.35 'DM Sans',sans-serif;letter-spacing:2.1px;
+ color:var(--vex-accent);
+}
+.v06-app .nx-vex-intro h2{
+ font:500 clamp(29px,5.5vw,49px)/1.07 var(--v-title-font,'Marcellus',Georgia,serif);
+ margin:13px 0;letter-spacing:-.015em;
+ color:#fdf2e5;text-wrap:balance;
+}
+.v06-app .nx-vex-intro p{
+ font:13px/1.72 'DM Sans',sans-serif;color:#d8e2e8;
+ max-width:540px;margin:0 0 15px;
+}
+.v06-app .nx-vex-intro-points{display:flex;gap:10px;flex-wrap:wrap}
+.v06-app .nx-vex-intro-points span{
+ padding:7px 10px;border:1px solid #f9d8b34b;border-radius:4px;
+ background:#111d2c8c;color:#f1ddcb;font:700 10px/1.4 'DM Sans',sans-serif;
+}
+.v06-app .nx-vex-intro-orbit{
+ position:absolute;right:-34px;top:50%;transform:translateY(-50%);
+ width:clamp(210px,37vw,405px);aspect-ratio:1;
+ display:grid;place-items:center;opacity:.68;
+}
+.v06-app .nx-vex-intro-orbit:before,
+.v06-app .nx-vex-intro-orbit:after,
+.v06-app .nx-vex-intro-orbit i{
+ content:"";position:absolute;inset:12%;border-radius:50%;
+ border:1px solid color-mix(in srgb,var(--vex-accent) 54%,transparent);
+ box-shadow:inset 0 0 70px #ffffff08;
+}
+.v06-app .nx-vex-intro-orbit:after{inset:27%;border-style:dashed;transform:rotate(24deg)}
+.v06-app .nx-vex-intro-orbit i:nth-child(1){inset:2%;border-color:#ffffff25}
+.v06-app .nx-vex-intro-orbit i:nth-child(2){inset:34%;border-radius:3px;transform:rotate(45deg);background:#d1bfb010}
+.v06-app .nx-vex-intro-orbit i:nth-child(3){inset:19%;border-color:#e7bca037}
+.v06-app .nx-vex-intro-orbit b{font:clamp(55px,12vw,110px) 'Marcellus',Georgia,serif;color:#f7d8b7}
+.v06-app .nx-vex-showcase{
+ margin:24px 0 28px;padding:clamp(16px,3vw,24px);
+ background:linear-gradient(128deg,#0e1e31,#17192e);
+ border:1px solid color-mix(in srgb,var(--vex-accent) 30%,transparent);
+ border-radius:17px;
+}
+.v06-app .nx-vex-label{margin-bottom:18px}
+.v06-app .nx-vex-label>span{
+ color:var(--vex-accent);font:800 10px 'DM Sans',sans-serif;letter-spacing:2px;
+}
+.v06-app .nx-vex-label h2{
+ color:#f8f0e5;font:500 clamp(23px,4.3vw,33px)/1.15 var(--v-title-font,'Marcellus',Georgia,serif);
+ margin:7px 0;
+}
+.v06-app .nx-vex-label p{color:#bfcbd8;font:12px/1.55 'DM Sans',sans-serif;margin:0}
+.v06-app .nx-vex-feature-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:clamp(10px,2vw,18px);
+}
+.v06-app .nx-vex-feature{
+ --vex-accent:#e8ccaa;
+ position:relative;display:flex;align-items:stretch;justify-content:space-between;
+ flex-direction:column;
+ min-width:0;min-height:clamp(210px,28vw,325px);padding:15px;
+ overflow:hidden;isolation:isolate;cursor:pointer;text-align:left;
+ border:1px solid color-mix(in srgb,var(--vex-accent) 50%,#fff2);
+ border-radius:5px 19px 19px 5px;
+ background:linear-gradient(125deg,#1a3146,#10192d);
+ box-shadow:inset 0 1px 0 #ffffff12,0 13px 28px #0006;
+ transition:transform .22s var(--vex-ease),border-color .2s;
+}
+.v06-app .nx-vex-feature:hover{transform:translateY(-3px);border-color:var(--vex-accent)}
+.v06-app .nx-vex-feature:focus-visible{
+ outline:3px solid #9ff2e8!important;outline-offset:3px!important;
+}
+.v06-app .nx-vex-feature.is-active:after{
+ content:"";position:absolute;inset:5px;pointer-events:none;z-index:6;
+ border:1px solid var(--vex-accent);border-radius:2px 14px 14px 2px;opacity:.7;
+}
+.v06-app .nx-vex-feature[data-vex-kind=aha]{
+ background:linear-gradient(120deg,#351531,#160d23);
+ border-color:#e59db59c;
+}
+.v06-app .nx-vex-feature[data-vex-kind=memory]{
+ background:linear-gradient(120deg,#352846,#12192d);
+}
+.v06-app .nx-vex-feature[data-vex-kind=night]{
+ background:linear-gradient(120deg,#27304a,#0b182c);
+}
+.v06-app .nx-vex-feature-backdrop{
+ position:absolute;inset:0;z-index:-1;
+ background:
+  radial-gradient(ellipse at 80% 18%,color-mix(in srgb,var(--vex-accent) 24%,transparent),transparent 51%),
+  repeating-radial-gradient(circle at 80% 40%,transparent 0 45px,#f6d9b80d 46px 47px);
+}
+.v06-app .nx-vex-feature img{
+ position:absolute;z-index:-1;top:0;right:-10px;bottom:0;
+ width:79%;height:100%;object-fit:contain;object-position:right center;
+ filter:drop-shadow(0 11px 20px #0009);
+ opacity:.94;
+}
+.v06-app .nx-vex-feature:before{
+ content:"";position:absolute;inset:0;z-index:0;
+ background:linear-gradient(0deg,#08121ded 0,#08121dc9 28%,transparent 68%),
+ linear-gradient(90deg,#08131e9e,transparent 75%);pointer-events:none;
+}
+.v06-app .nx-vex-feature-meta{
+ position:relative;z-index:1;width:fit-content;
+ padding:6px 8px;border:1px solid color-mix(in srgb,var(--vex-accent) 60%,transparent);
+ border-radius:3px;color:#ffe8cf;
+ font:800 9px 'DM Sans',sans-serif;letter-spacing:1.4px;
+ background:#090f1e91;
+}
+.v06-app .nx-vex-feature-copy{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px}
+.v06-app .nx-vex-feature-copy strong{
+ font:500 clamp(20px,4.4vw,35px)/1.1 var(--v-title-font,'Marcellus',Georgia,serif);
+ color:#fff2e6;text-wrap:balance;text-shadow:0 3px 11px #000c;
+}
+.v06-app .nx-vex-feature-copy small{
+ font:12px/1.5 'DM Sans',sans-serif;color:#d9deea;max-width:290px;
+}
+.v06-app .nx-vex-feature-copy>span{
+ margin-top:9px;width:fit-content;
+ color:#fde4c5;font:800 10px 'DM Sans',sans-serif;letter-spacing:.8px;
+ display:flex;align-items:center;gap:9px;
+}
+.v06-app .nx-vex-feature.is-active .nx-vex-feature-copy>span{color:#b6edd7}
+.v06-app .nx-vex-controls{
+ display:flex;align-items:center;justify-content:space-between;
+ flex-wrap:wrap;gap:12px;margin:16px 0;
+}
+.v06-app .nx-vex-filters{display:flex;gap:7px;flex-wrap:wrap}
+.v06-app .nx-vex-filter{
+ min-height:44px;padding:10px 14px;cursor:pointer;
+ background:#12263b;border:1px solid color-mix(in srgb,var(--vex-accent) 25%,transparent);
+ color:#e2e7ed;border-radius:10px;font:700 12px 'DM Sans',sans-serif;
+}
+.v06-app .nx-vex-filter[aria-pressed=true]{
+ background:color-mix(in srgb,var(--vex-accent) 22%,#142235);
+ border-color:var(--vex-accent);color:#fff3df;
+ box-shadow:inset 0 1px 0 #ffffff15;
+}
+.v06-app .nx-vex-result{color:#bdccdc;font:11px 'DM Sans',sans-serif}
+.v06-app #v06-theme-grid button[hidden]{display:none!important}
+.v06-app .v06-theme-grid button.active{box-shadow:0 0 0 2px color-mix(in srgb,var(--vex-accent) 33%,transparent)}
+.v06-app .v06-theme-grid button{cursor:zoom-in}
+.v06-app .v06-theme-stage{
+ box-shadow:0 20px 45px #02071888;
+}
+.v06-app .v06-theme-swatches{border-radius:12px}
+.v06-app .v06-art-picks{gap:12px}
+.v06-app .v06-art-picks button{
+ border-radius:6px 14px 14px 6px;
+ transition:border-color .2s;
+}
+.v06-app .v06-art-picks button.active{border-color:var(--vex-accent)}
+.v06-app .v06-theme-restore button{
+ min-height:44px;border-radius:8px;
+}
+
+/* A genuine UI-style comparison: the existing dialog already previews
+   the artwork and requests explicit confirmation. Augment its cards with
+   a miniature but representative header, metrics and navigation. */
+.nx-theme-preview{width:min(880px,calc(100vw - 16px))!important}
+.nx-theme-preview-grid{gap:clamp(10px,2vw,19px)!important}
+.nx-theme-preview-card{
+ background:linear-gradient(130deg,#21354d,#111b2d);
+ border-color:#dfd2b34e;
+}
+.nx-theme-preview-card[data-vex-style=aha]{
+ background:#231128;border-color:#e7afbd7c;
+}
+.nx-theme-preview-card[data-vex-style=memory]{
+ background:#211c33;border-color:#c3a9df7c;
+}
+.nx-theme-preview-card[data-vex-style=night]{background:#141c30;border-color:#adc9ed7a}
+.nx-vex-mock{
+ --vex-accent:#c8d8ec;
+ margin-top:13px;border:1px solid color-mix(in srgb,var(--vex-accent) 48%,transparent);
+ border-radius:4px 12px 12px 4px;background:#0c1928;
+ box-shadow:0 9px 26px #0007;overflow:hidden;
+}
+.nx-vex-mock[data-vex-style=aha]{
+ background:#160d22;border-radius:3px;
+ border-color:#e4afc0;
+}
+.nx-vex-mock[data-vex-style=memory]{background:#17152b;border-color:#c6b1dd}
+.nx-vex-mock[data-vex-style=night]{background:#0c1729;border-color:#a9bfe5}
+.nx-vex-mock-head{
+ display:flex;align-items:center;gap:8px;padding:9px 12px;
+ background:linear-gradient(110deg,color-mix(in srgb,var(--vex-accent) 25%,#14263c),#0c1628);
+ border-bottom:1px solid color-mix(in srgb,var(--vex-accent) 34%,transparent);
+ color:#ffefdf;font:800 12px 'DM Sans',sans-serif;letter-spacing:1px;
+}
+.nx-vex-mock[data-vex-style=aha] .nx-vex-mock-head{
+ background:linear-gradient(100deg,#4c203d,#21142d);
+ font-family:'Cinzel',Georgia,serif;
+}
+.nx-vex-mock-head>span:nth-child(2){flex:1}
+.nx-vex-mock-head small{display:block;font:650 6px 'DM Sans',sans-serif;letter-spacing:1.4px;margin-top:2px}
+.nx-vex-mock-sigil{color:var(--vex-accent);font-size:18px}
+.nx-vex-mock-dot{width:8px;height:8px;border-radius:50%;background:var(--vex-accent)}
+.nx-vex-mock-main{padding:12px;display:grid;gap:10px}
+.nx-vex-mock-intro{display:grid;gap:4px}
+.nx-vex-mock-intro span{color:var(--vex-accent);font:800 8px 'DM Sans',sans-serif;letter-spacing:1px}
+.nx-vex-mock-intro strong{font:500 clamp(17px,3.5vw,22px) Georgia,serif;color:#fff2e6}
+.nx-vex-mock-intro small{font:10px 'DM Sans',sans-serif;color:#bfc8d8}
+.nx-vex-mock-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.nx-vex-mock-metrics>div{
+ min-width:0;padding:9px;border-radius:3px 9px 9px 3px;
+ border:1px solid color-mix(in srgb,var(--vex-accent) 30%,transparent);
+ background:color-mix(in srgb,var(--vex-accent) 9%,#121e2f);
+}
+.nx-vex-mock[data-vex-style=aha] .nx-vex-mock-metrics>div{border-radius:3px;background:#31172e}
+.nx-vex-mock-metrics small{display:block;font:750 7px 'DM Sans',sans-serif;letter-spacing:1px;color:#cad3de}
+.nx-vex-mock-metrics b{display:block;font:600 22px Georgia,serif;color:#fff5e8;margin-top:5px}
+.nx-vex-mock-modules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.nx-vex-mock-modules span{
+ border:1px solid color-mix(in srgb,var(--vex-accent) 27%,transparent);
+ padding:9px 3px;border-radius:4px;text-align:center;
+ color:#ecdecc;font:650 9px 'DM Sans',sans-serif;
+ overflow-wrap:anywhere;
+}
+.nx-vex-mock[data-vex-style=aha] .nx-vex-mock-modules span{border-radius:2px}
+.aha-theatre .nx-vex-intro{
+ background:radial-gradient(ellipse at 81% 18%,#ef98b640,transparent 44%),
+ linear-gradient(112deg,#3d1c37,#160d23);
+ border-color:#e7b9b593;
+ border-radius:3px 17px 17px 3px;
+}
+.aha-theatre .nx-vex-feature[data-vex-kind=aha]{
+ box-shadow:0 0 0 2px #e9bdab33,0 12px 30px #0008;
+}
+.aha-theatre .nx-vex-showcase{background:#1b1025;border-color:#e5b5a573}
+.aha-theatre .nx-vex-filter{background:#2a1831;border-color:#e5b5a573;color:#fce2d7}
+.aha-theatre .nx-vex-filter[aria-pressed=true]{background:#653047;border-color:#ffe2bf;color:#fff8ea}
+
+/* Responsive composition */
+@media(max-width:359px){
+ .v06-app .nx-vex-intro{padding:16px;min-height:235px}
+ .v06-app .nx-vex-intro-copy{max-width:100%}
+ .v06-app .nx-vex-intro-orbit{right:-105px;opacity:.18}
+ .v06-app .nx-vex-feature-grid{grid-template-columns:1fr}
+ .v06-app .nx-vex-feature{min-height:230px}
+ .v06-app .nx-vex-feature img{width:67%}
+ .v06-app .nx-vex-showcase{padding:13px}
+ .v06-app .nx-vex-filter{font-size:11px;padding-inline:10px}
+ .v06-app .nx-vex-intro h2{font-size:28px}
+ .v06-app .nx-vex-intro-points{gap:6px}
+}
+@media(min-width:360px) and (max-width:599px){
+ .v06-app .nx-vex-intro-copy{max-width:90%}
+ .v06-app .nx-vex-intro-orbit{right:-125px;opacity:.23}
+ .v06-app .nx-vex-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .v06-app .nx-vex-feature{min-height:244px;padding:11px}
+ .v06-app .nx-vex-feature img{width:115%;right:-28%;opacity:.8}
+ .v06-app .nx-vex-feature-copy strong{font-size:clamp(18px,4.6vw,24px)}
+ .v06-app .nx-vex-feature-copy small{font-size:10px;line-height:1.4}
+ .v06-app .nx-vex-feature-copy>span{font-size:9px}
+ .v06-app .nx-vex-feature-meta{font-size:8px;letter-spacing:.8px}
+ .v06-app .nx-vex-showcase{padding:13px}
+}
+@media(max-width:599px){
+ .v06-app .nx-scene{min-height:75px;padding-right:12px!important}
+ .v06-app .nx-vex-scene-ornament{width:75px;height:75px;right:-8px;opacity:.13}
+ .v06-app .nx-vex-intro{min-height:265px}
+ .v06-app .nx-vex-intro h2{font-size:clamp(29px,8vw,39px)}
+ .v06-app .nx-vex-intro p{font-size:12px;line-height:1.55}
+ .v06-app .nx-vex-intro-points span{font-size:9px;padding:6px 8px}
+ .v06-app .nx-vex-label h2{font-size:25px}
+ .v06-app .nx-vex-controls{align-items:start}
+ .v06-app .nx-vex-result{width:100%}
+ .nx-theme-preview-grid{grid-template-columns:1fr!important}
+ .nx-theme-preview-art{height:195px!important}
+ .nx-theme-preview-card{padding:12px}
+ .nx-vex-mock-modules span{font-size:10px}
+}
+@media(min-width:600px) and (max-width:1023px){
+ .v06-app .nx-vex-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v06-app .nx-vex-intro-copy{max-width:75%}
+ .nx-theme-preview-art{height:230px}
+}
+@media(min-width:1024px){
+ .v06-app .nx-vex-intro{min-height:270px}
+ .v06-app .nx-vex-feature-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .v06-app .nx-vex-feature{min-height:285px}
+ .v06-app .nx-vex-feature img{width:115%;right:-27%}
+ .v06-app .nx-vex-feature-copy strong{font-size:clamp(23px,2.2vw,32px)}
+ .v06-app .nx-vex-feature-copy small{font-size:12px}
+ .v06-app .v06-theme-grid{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+ .v06-app .v06-themes{max-width:1350px}
+ .nx-theme-preview-art{height:240px}
+}
+@media(prefers-reduced-motion:reduce){
+ .v06-app .nx-vex-feature{transition:none}
+ .v06-app .nx-vex-feature:hover{transform:none}
+}

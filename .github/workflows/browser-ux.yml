@@ -12,6 +12,9 @@ on:
       - 'nexus-design-system.css'
       - 'nexus-visual-finish.css'
       - 'nexus-visual-finish.js'
+      - 'nexus-visual-experience.css'
+      - 'nexus-visual-experience.js'
+      - 'scripts/browser-hub-theme-studio.mjs'
       - 'scripts/browser-visual-finish.mjs'
       - 'index.html'
       - 'nexus-v07.js'
@@ -77,6 +80,8 @@ jobs:
         run: node scripts/browser-visual-completion.mjs
       - name: Nome oficial Aha e navegação vetorial
         run: node scripts/browser-visual-finish.mjs
+      - name: Hub inteiro e Theme Studio — experiência em quatro telas
+        run: node scripts/browser-hub-theme-studio.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4

@@ -23,6 +23,18 @@
     script.id='nexus-visual-finish-js';script.src='./nexus-visual-finish.js';
     script.async=true;document.head.appendChild(script);
   }
+  // Whole-hub visual experience: route-specific layouts and Theme Studio.
+  // Independent from account records and character builds.
+  if(!document.getElementById('nexus-visual-experience-css')){
+    const sheet=document.createElement('link');
+    sheet.id='nexus-visual-experience-css';sheet.rel='stylesheet';
+    sheet.href='./nexus-visual-experience.css';document.head.appendChild(sheet);
+  }
+  if(!document.getElementById('nexus-visual-experience-js')){
+    const script=document.createElement('script');
+    script.id='nexus-visual-experience-js';script.src='./nexus-visual-experience.js';
+    script.async=true;document.head.appendChild(script);
+  }
   const base={
     home:home,library:library,profile:profile,profileOverview:profileOverview,
     profileEidolons:profileEidolons,profileKit:profileKit,profileRelics:profileRelics,
