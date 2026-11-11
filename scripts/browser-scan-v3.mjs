@@ -16,7 +16,7 @@ const initial={
  v06TracePlans:{'1512':{'1512001':{current:10,target:10}}},
  v06SavedTeams:[{id:'duo',members:['1512','1503']}],
  v06RelicDetails:{'1512':[
-  {setId:'127',level:15,main:{stat:'PV',value:705},subs:[]},
+  {setId:'127',level:15,main:{stat:'PV',value:705},subs:[{stat:'PV %',value:8.2}]},
   {setId:'127',level:15,main:{stat:'ATQ',value:352},subs:[]},
   {setId:'127',level:15,main:{stat:'Dano CRIT',value:64.8},subs:[]},
   {setId:'127',level:15,main:{stat:'VEL',value:25},subs:[]},
@@ -61,6 +61,18 @@ try{
   assert.equal(await page.locator('#ns3-character').inputValue(),'1512');
   assert.equal(await page.locator('.ns3-piece').count(),6);
   assert.match(await page.locator('#ns3-progress-line').innerText(),/6\/6 conjuntos/);
+  assert.match(await page.locator('#ns3-progress-line').innerText(),/10\/30 extraídos do cartão/,
+   'OCR fields must not be inflated by previously saved data');
+  // A saved substat on Robin must not appear on Pearl when the user corrects
+  // the character picker. Changing back must restore Robin's original record.
+  await page.locator('#ns3-piece-0 summary').click();
+  assert.equal(await page.locator('#ns3-piece-0 [data-field="relicvalue"][data-row="1"]').inputValue(),'8.2');
+  await page.locator('#ns3-character').selectOption('1503');
+  await page.locator('#ns3-piece-0 summary').click();
+  assert.equal(await page.locator('#ns3-piece-0 [data-field="relicvalue"][data-row="1"]').inputValue(),'');
+  await page.locator('#ns3-character').selectOption('1512');
+  await page.locator('#ns3-piece-0 summary').click();
+  assert.equal(await page.locator('#ns3-piece-0 [data-field="relicvalue"][data-row="1"]').inputValue(),'8.2');
   const untouched=await page.evaluate(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')));
   assert.equal(untouched.characters['1512'].pv,6150);
   await page.locator('#ns3-piece-5 summary').click();
