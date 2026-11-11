@@ -287,3 +287,30 @@ body{max-width:100%;overflow-x:clip}
  .v06-app :where(button,a,summary):focus-visible{outline:3px solid Highlight!important}
  .v06-app .bottom-nav button.active,.v06-app #sidebarLinks .active{border:2px solid Highlight}
 }
+
+
+/* The original masthead has five utility controls. On narrow phones, a
+ * deliberately two-row header keeps ANDERUS legible instead of ellipsizing it. */
+@media(max-width:429px){
+ html{scroll-padding-top:119px}
+ .v06-app .masthead{
+   height:108px;min-height:108px;
+   display:flex;flex-direction:column;align-items:stretch;justify-content:center;
+   padding:7px max(12px,env(safe-area-inset-right)) 7px max(12px,env(safe-area-inset-left));
+   gap:5px;
+ }
+ .v06-app .masthead .brand{flex:0 0 auto;min-height:32px;width:100%;max-width:100%;gap:8px}
+ .v06-app .brand-symbol{font-size:28px;line-height:1}
+ .v06-app .brand-title{
+   font-size:20px;line-height:1.05;letter-spacing:1.3px;
+   max-width:none;overflow:visible;text-overflow:clip;white-space:nowrap;
+ }
+ .v06-app .brand-title small{font-size:8px;letter-spacing:1.8px}
+ .v06-app .mast-actions{width:100%;gap:6px;justify-content:space-between}
+ .v06-app .mast-actions .i-btn{
+   flex:1 1 0;min-width:44px;width:auto;max-width:none;height:43px;
+ }
+ .v06-app .v06-profile .v06-tabs{top:108px}
+ .v06-app #floatMenu .floating-panel{top:114px;max-height:calc(100dvh - 120px)}
+ .v06-app #floatMenu .drawer-backdrop{inset:108px 0 0}
+}
