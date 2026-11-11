@@ -126,6 +126,25 @@
    if(!el.hasAttribute('aria-label'))el.setAttribute('aria-label','Visualizar tema '+(el.textContent||'').trim());
    el.setAttribute('aria-haspopup','dialog');
   }
+  if(current==='themes'&&typeof CATALOG!=='undefined'){
+   const restore=stage.querySelector('.v06-theme-restore');
+   if(restore&&!stage.querySelector('.nx-theme-undo')){
+    let previous=null;
+    try{previous=localStorage.getItem(lastThemeKey)}catch(_){}
+    const target=CATALOG.find(c=>c.id===previous);
+    if(target&&previous!==state.theme){
+     const button=document.createElement('button');button.type='button';
+     button.className='nx-theme-undo';
+     button.textContent='↶ Voltar ao tema anterior: '+target.name;
+     button.addEventListener('click',()=>{
+      const active=state.theme;
+      try{localStorage.setItem(lastThemeKey,active)}catch(_){}
+      if(typeof setTheme==='function')setTheme(target.id);
+     });
+     restore.insertAdjacentElement('afterend',button);
+    }
+   }
+  }
  }
  function decoratePictures(){
   for(const img of document.querySelectorAll(
@@ -224,6 +243,19 @@
   document.addEventListener('DOMContentLoaded',start,{once:true});
  }else start();
  function start(){
+  // The app's legacy scroll-behavior:smooth could leave mobile routes halfway
+  // down the previous section after theme changes. Route changes must reset
+  // immediately, without changing state or the URL.
+  if(!window.NexusRouteScroll&&typeof window.route==='function'){
+   const originalRoute=window.route;
+   window.route=function(...args){
+    const result=originalRoute.apply(this,args);
+    try{window.scrollTo({top:0,left:0,behavior:'instant'});}
+    catch(_){window.scrollTo(0,0);}
+    return result;
+   };
+   window.NexusRouteScroll=true;
+  }
   const root=document.querySelector('.app')||document.body;
   const observer=new MutationObserver(schedule);
   observer.observe(root,{subtree:true,childList:true});
