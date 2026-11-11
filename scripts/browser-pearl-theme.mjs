@@ -68,12 +68,18 @@ try{
     homeArt:document.querySelector('.v06-home .v06-hero-art')
       ? getComputedStyle(document.querySelector('.v06-home .v06-hero-art')).backgroundImage : '',
     pearlArt:getComputedStyle(document.querySelector('.app')).getPropertyValue('--nx3-art'),
-    homeCaption:document.querySelector('.v06-home .v06-hero-id')?.textContent||''
+    homeCaption:document.querySelector('.v06-home .v06-hero-id')?.textContent||'',
+    heroTop:document.querySelector('.v06-home .v06-hero')?.getBoundingClientRect().top,
+    heroBottom:document.querySelector('.v06-home .v06-hero')?.getBoundingClientRect().bottom,
+    headlineTop:document.querySelector('.v06-home .v06-hero-copy h1')?.getBoundingClientRect().top,
+    buttonsBottom:document.querySelector('.v06-home .v06-hero-buttons')?.getBoundingClientRect().bottom
    }));
    if(r==='home'){
     if(!geom.homeArt||geom.homeArt==='none'||!geom.homeArt.includes('1503'))
       issues.push(width+'px: Home still displays legacy art: '+geom.homeArt.slice(0,150));
     if(!geom.homeCaption.includes('PEARL'))issues.push(width+'px: Home caption does not identify Pearl');
+    if(geom.headlineTop<geom.heroTop-4||geom.buttonsBottom>geom.heroBottom+4)
+      issues.push(width+'px: Home headline or actions clipped '+JSON.stringify(geom));
    }
    if(geom.page>geom.viewport+4)issues.push(width+'px/'+r+': horizontal overflow '+JSON.stringify(geom));
    if(geom.applied!==id)issues.push(width+'px/'+r+': theme lost');
