@@ -7,6 +7,8 @@ on:
       - 'themes/generated/**'
       - 'scripts/browser-theme-studio-v3.mjs'
       - 'scripts/check-theme-studio-v3.mjs'
+      - 'scripts/browser-pearl-theme.mjs'
+      - 'sw.js'
       - 'v06.js'
       - '.github/workflows/theme-studio-v3.yml'
   push:
@@ -41,10 +43,13 @@ jobs:
         run: |
           python3 -m http.server 8787 --bind 127.0.0.1 >/tmp/studio-3-http.log 2>&1 &
           node scripts/browser-theme-studio-v3.mjs
+          node scripts/browser-pearl-theme.mjs
       - name: Capturas para auditoria
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: theme-studio-3-mobile-desktop
-          path: artifacts/studio3-*.png
+          path: |
+            artifacts/studio3-*.png
+            artifacts/pearl-*.png
           if-no-files-found: ignore
