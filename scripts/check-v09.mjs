@@ -88,7 +88,11 @@ assert.ok(eidoSrc.includes('v10-eido-art'),'Eidolon detail artwork missing');
 assert.ok(read('.github/workflows/sync-content.yml').includes('python scripts/sync_eidolon_art.py'),'Future Eidolon updates not automated');
 console.log('PASS '+artCount+'/'+(present.length*6)+' verified original Eidolon art URLs across overview, detail and future sync');
 
-assert.ok(!sw.includes("'./themes/aha.css'"));
+// The optional Aha CSS is now precached for PWA offline use but only
+// applied by the runtime when Aha/Grand Theatre is selected.
+assert.ok(sw.includes("'./themes/aha.css'"));
+assert.ok(loader.includes("state.theme!=='future-aha'"));
+assert.ok(loader.includes("'anderus-aeon-aha-visual-mode'"));
 const illustrated=read('illustrated-showcase-import.js').replaceAll('export ','');
 new Function(illustrated);
 const screenshot=new Function(illustrated+';return {isIllustratedShowcase,clean,matchCharacter,parseNumber,inferStat};')();
