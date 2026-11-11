@@ -10,6 +10,9 @@ on:
       - 'nexus-scan-v3-ui.js'
       - 'nexus-scan-v3.css'
       - 'nexus-design-system.css'
+      - 'nexus-visual-finish.css'
+      - 'nexus-visual-finish.js'
+      - 'scripts/browser-visual-finish.mjs'
       - 'index.html'
       - 'nexus-v07.js'
       - 'nexus-v09.js'
@@ -69,6 +72,8 @@ jobs:
         run: node scripts/browser-design-system.mjs
       - name: Visual completo — Aha, prévia e todas as seções
         run: node scripts/browser-visual-completion.mjs
+      - name: Nome oficial Aha e navegação vetorial
+        run: node scripts/browser-visual-finish.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4
