@@ -19,6 +19,13 @@ jobs:
         run: |
           node --check sw.js
           node scripts/check-release-stamp.mjs
+      - name: Design visual completo — Aha oficial e componentes
+        run: |
+          node --check nexus-design-system.js
+          node --check themes/aha.js
+          node --check themes/aha-detail.js
+          node --check v06.js
+          node scripts/check-visual-completion.mjs
       - name: Fase 4 — Design System e navegação acessível
         run: |
           node --check nexus-design-system.js
