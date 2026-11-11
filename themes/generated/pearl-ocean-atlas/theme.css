@@ -1,0 +1,470 @@
+/* Pearl · Atlas do Oceano | ANDERUS Theme Studio 3
+   Base factual: Pearl #1503, Ice / Elation — HoYoLAB 4.6 Phase II.
+   Referências de arte: pintura fluida, pergaminho, ondas, adornos de pérola
+   e roupa branca/azul. A arte oficial é entregue pelo imgSrc() do Nexus;
+   os seis fragmentos continuam no data/eidolon-art.json.
+   Camada APENAS de apresentação, sem mutação de conta ou scripts executáveis. */
+.app[data-nx3-theme="pearl-ocean-atlas"]{
+  --po-abyss:#071b2c;--po-ink:#0b2937;--po-deep:#102f40;
+  --po-lagoon:#145064;--po-aqua:#91e4ec;--po-frost:#d7f9f7;
+  --po-shell:#f4dfc0;--po-ivory:#f3faf8;--po-haze:#b3d1d8;
+  --po-stroke:rgba(145,228,236,.31);--po-stroke-strong:rgba(145,228,236,.65);
+  --po-soft:rgba(145,228,236,.09);--po-raised:rgba(13,48,62,.95);
+  --po-shadow:0 18px 45px rgba(0,7,17,.45);
+  --po-scroll:linear-gradient(115deg,transparent 0 6%,rgba(145,228,236,.08) 7%,transparent 10% 95%,rgba(244,223,192,.12) 98%);
+  --v-color:#91e4ec!important;--v-color2:#f4dfc0!important;
+  --v-deep:#071b2c!important;--v-title-font:'Marcellus',Georgia,serif!important;
+  --nx-canvas:#071b2c;--nx-surface:#102e3d;--nx-surface-raised:#163f4c;
+  --nx-on-surface:#f3faf8;--nx-secondary:#b3d1d8;--nx-focus:#f4dfc0;
+  --nx-line:rgba(145,228,236,.29);--nx-radius-sm:8px;--nx-radius-md:14px;
+  --nx-radius-lg:24px;--nx-radius-hero:30px;--nx-title:'Marcellus',Georgia,serif;
+  color:var(--po-ivory)!important;
+  background:
+    radial-gradient(ellipse at 83% 0%,rgba(79,188,207,.22),transparent 38%),
+    radial-gradient(ellipse at 0% 65%,rgba(8,96,118,.19),transparent 49%),
+    linear-gradient(155deg,#092537,#071b2c 45%,#061522)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"]::before{
+  background:
+    radial-gradient(circle at 20% 13%,rgba(244,223,192,.5) 0 1px,transparent 2px),
+    radial-gradient(circle at 64% 31%,rgba(145,228,236,.48) 0 1px,transparent 2px),
+    repeating-linear-gradient(118deg,transparent 0 110px,rgba(145,228,236,.025) 111px 112px)!important;
+  background-size:113px 151px,201px 233px,auto!important;opacity:.45!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] #stage{
+  position:relative;isolation:isolate;min-width:0;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] #stage::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 89% 14%,rgba(145,228,236,.08),transparent 31%),
+    repeating-radial-gradient(ellipse at 105% -18%,transparent 0 82px,rgba(145,228,236,.044) 83px 84px,transparent 85px 127px);
+  mask-image:linear-gradient(#000 0 88%,transparent);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] #stage > *{min-width:0}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(h1,h2,h3,.v06-subtitle,.nx-scene-chapter strong){
+  font-family:'Marcellus',Georgia,serif!important;letter-spacing:.012em;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(p,small,.v06-source-note,.v09-source,.v11-source){color:var(--po-haze)}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-kicker,.v07-eyebrow,.v09-eyebrow,.nx3-eyebrow,.nx-scene-chapter span){
+  color:var(--po-aqua)!important;font-weight:750;letter-spacing:.14em;text-transform:uppercase;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-sectionline,.v11-section-lead,.nx-vex-section-header){
+  border-color:var(--po-stroke);position:relative;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-sectionline,.v11-section-lead)::after{
+  content:"";display:block;width:48px;height:2px;margin-top:9px;
+  background:linear-gradient(90deg,var(--po-aqua),transparent);pointer-events:none;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-pagehead,.nx-scene,.chapter-head,.v09-guide-title){
+  background:
+    radial-gradient(ellipse at 95% 0%,rgba(145,228,236,.13),transparent 47%),
+    linear-gradient(116deg,rgba(14,53,69,.91),rgba(9,28,43,.95))!important;
+  border:1px solid var(--po-stroke)!important;
+  border-radius:4px 28px 28px 4px!important;box-shadow:var(--po-shadow);
+  position:relative;overflow:hidden;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-pagehead,.nx-scene,.chapter-head,.v09-guide-title)::before{
+  content:"";position:absolute;right:-28px;top:-62px;width:168px;aspect-ratio:1;
+  border:1px solid rgba(244,223,192,.22);border-radius:50%;pointer-events:none;
+  box-shadow:0 0 0 18px rgba(145,228,236,.025),0 0 0 39px rgba(145,228,236,.02);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx-scene-chapter strong,.v06-pagehead h1,.chapter-head h1){
+  color:var(--po-ivory)!important;text-wrap:balance;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx-scene-star{
+  color:var(--po-shell)!important;border-color:var(--po-stroke)!important;
+  background:radial-gradient(circle,rgba(244,223,192,.18),transparent 72%);
+}
+/* NAVIGATION — translucent ink + compact one-handed dock. */
+.app[data-nx3-theme="pearl-ocean-atlas"] .masthead{
+  background:linear-gradient(100deg,rgba(6,30,44,.98),rgba(11,53,66,.96))!important;
+  border-bottom:1px solid var(--po-stroke)!important;
+  box-shadow:0 8px 28px rgba(1,13,25,.45)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.brand-title,.sidebar-brand strong){color:var(--po-ivory)!important}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.brand-symbol,.sidebar-brand svg){color:var(--po-aqua)!important}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.desktop-sidebar,.bottom-nav,.v06-bottom){
+  background:linear-gradient(155deg,rgba(8,36,48,.98),rgba(8,27,42,.98))!important;
+  border-color:var(--po-stroke)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(#sidebarLinks button,.bottom-nav button,.v06-bottom button){
+  color:var(--po-haze)!important;border-radius:5px 15px 15px 5px;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(#sidebarLinks button.active,.bottom-nav button.active,.v06-bottom button.active){
+  color:var(--po-frost)!important;
+  background:linear-gradient(110deg,rgba(48,123,139,.32),rgba(8,43,59,.45))!important;
+  box-shadow:inset 3px 0 0 var(--po-aqua);border-color:var(--po-stroke)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .bottom-nav button.active{box-shadow:inset 0 3px 0 var(--po-aqua)}
+/* Every interaction is legible and keyboard-visible. */
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(button,a,[role=button],input,select,textarea,summary):focus-visible{
+  outline:3px solid var(--po-shell)!important;outline-offset:3px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(button,input,select,textarea,summary){accent-color:var(--po-aqua)}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(button,.v06-tile,.v06-char-card,.v11-relic-card,.v09-boss,.nx3-library-card){
+  transition:background-color .24s ease,border-color .24s ease,box-shadow .24s ease,transform .24s cubic-bezier(.2,.7,.25,1);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(button,a,[role=button]):hover{
+  border-color:var(--po-stroke-strong);text-decoration-color:var(--po-aqua);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(button,a,[role=button]):active{transform:scale(.985)}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(button,input,select,textarea):disabled,
+.app[data-nx3-theme="pearl-ocean-atlas"] [aria-disabled=true]{opacity:.5!important;cursor:not-allowed!important;filter:grayscale(.35)}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-primary,.v06-save-import,.nx3-primary,.nx3-upload){
+  color:#082734!important;background:linear-gradient(110deg,#a6eff0,#f1e6ce)!important;
+  border:1px solid #d2fbfa!important;border-radius:4px 16px 16px 4px!important;
+  box-shadow:0 4px 18px rgba(66,190,203,.18);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-secondary,.v06-back,.nx3-library-actions button,.nx3-nav button){
+  color:var(--po-ivory)!important;background:rgba(17,63,78,.8)!important;
+  border-color:var(--po-stroke)!important;border-radius:4px 14px 14px 4px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-primary,.v06-secondary,.nx3-primary):hover{
+  filter:brightness(1.08);box-shadow:0 0 0 2px rgba(145,228,236,.16),0 12px 25px rgba(0,15,30,.35);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(input,select,textarea,.v11-edit-form input,.nx3-search-label input){
+  color:var(--po-ivory)!important;background:rgba(6,33,47,.95)!important;
+  border:1px solid var(--po-stroke)!important;border-radius:10px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(input,textarea)::placeholder{color:#9bbbc4!important}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx-error,.v07-caveat,[role=alert]){
+  color:#ffe8df;border-color:#d89884!important;background:rgba(92,43,47,.26)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx-empty,.v06-empty,.v09-team-empty,.nx3-empty){
+  background:linear-gradient(145deg,#102f3d,#092332)!important;
+  border:1px dashed var(--po-stroke-strong)!important;
+  border-radius:5px 20px 20px 5px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx-skeleton,.v07-loading){
+  background:linear-gradient(100deg,rgba(145,228,236,.04) 20%,rgba(145,228,236,.17) 45%,rgba(145,228,236,.04) 70%);
+  background-size:220% 100%;animation:po-shimmer 1.8s linear infinite;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(dialog,.floating-panel,.v06-add-modal,.nx-theme-compare,.nx-theme-preview){
+  color:var(--po-ivory)!important;background:linear-gradient(145deg,#153d4e,#091f30)!important;
+  border:1px solid var(--po-stroke-strong)!important;box-shadow:0 35px 95px #020d1de0;
+}
+/* HOME — open scroll of painted tides; official character art at right. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=home] .v06-hero{
+  position:relative;isolation:isolate;min-height:clamp(350px,42vw,600px);
+  border:1px solid var(--po-stroke-strong)!important;
+  border-radius:4px 45px 45px 4px!important;overflow:hidden;
+  background-image:
+    linear-gradient(100deg,rgba(6,27,41,.99) 0%,rgba(11,51,65,.88) 48%,rgba(6,27,41,.1) 90%),
+    radial-gradient(ellipse at 70% 54%,rgba(145,228,236,.18),transparent 60%),
+    var(--nx3-art)!important;
+  background-position:center,center,94% center!important;
+  background-size:cover,cover,auto 100%!important;
+  background-repeat:no-repeat!important;
+  box-shadow:0 24px 65px rgba(0,6,17,.55)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-hero::after{
+  content:"";position:absolute;inset:10px;z-index:1;pointer-events:none;
+  border:1px solid rgba(244,223,192,.27);border-radius:2px 35px 35px 2px;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-hero-copy,.v06-hero-buttons){position:relative;z-index:3}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-hero-copy h1{
+  max-width:700px;color:var(--po-ivory)!important;
+  font-size:clamp(36px,5.4vw,74px)!important;line-height:1.05;
+  text-shadow:0 6px 30px rgba(0,15,27,.7);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-hero-art,.v06-hero-art img,.v06-hero-art picture img){
+  object-fit:contain!important;object-position:center bottom!important;filter:drop-shadow(0 17px 22px #071722ab);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-hero-vignette{
+  background:linear-gradient(90deg,#061b2d94,transparent 55%)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-tile-grid{gap:clamp(10px,1.4vw,20px)}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-tile,.v06-metric,.v06-feature-panel,.v06-brief,.v06-snapshot,.v06-future){
+  position:relative;min-width:0;
+  border:1px solid var(--po-stroke)!important;
+  background:linear-gradient(152deg,#164152ed,#0b2839f5 75%)!important;
+  border-radius:4px 23px 23px 4px!important;
+  box-shadow:var(--po-shadow);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-tile::after{
+  content:"";position:absolute;right:14px;bottom:13px;width:38px;height:18px;
+  border-top:1px solid rgba(244,223,192,.48);border-radius:50%;transform:rotate(-18deg);pointer-events:none;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-tile,.v06-char-card,.v09-boss,.v11-relic-card):hover{
+  transform:translateY(-3px);border-color:var(--po-stroke-strong)!important;
+  box-shadow:0 22px 40px rgba(0,9,25,.55);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-banner-strip{
+  background-image:linear-gradient(110deg,rgba(7,36,49,.91),rgba(8,35,51,.54)),var(--nx3-art)!important;
+  background-size:cover,auto 130%!important;background-position:center,right center!important;background-repeat:no-repeat!important;
+  border-color:var(--po-stroke)!important;
+}
+/* LIBRARY — exhibition index, collections and saved account items. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=library] :is(.v06-upload-banner,.v06-accountbar){
+  background:linear-gradient(117deg,#1a5362,#0b283b 80%)!important;
+  border:1px solid var(--po-stroke-strong)!important;border-radius:3px 25px 25px 3px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-library-grid,.v06-char-card){min-width:0}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-char-card{
+  overflow:hidden;border:1px solid var(--po-stroke)!important;
+  background:linear-gradient(160deg,rgba(22,68,83,.94),#071e2f)!important;
+  border-radius:4px 22px 22px 4px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-char-art{
+  background:radial-gradient(ellipse at 50% 32%,rgba(145,228,236,.21),transparent 64%),#0d2c40!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-char-art img{
+  object-fit:contain!important;object-position:center bottom!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-accountfilter button.active{
+  border-color:var(--po-stroke-strong)!important;background:rgba(145,228,236,.18)!important;color:var(--po-frost)!important;
+}
+/* CHARACTER — personal gallery: hero, kit, E1–E6 and six relics. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=profile] .v06-char-hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:clamp(320px,37vw,520px);
+  border:1px solid var(--po-stroke-strong)!important;border-radius:3px 40px 40px 3px!important;
+  background-image:
+    radial-gradient(ellipse at 69% 35%,rgba(145,228,236,.18),transparent 50%),
+    linear-gradient(95deg,rgba(6,29,44,.97),rgba(12,56,71,.68) 66%,rgba(7,32,49,.28)),
+    var(--nx3-art)!important;
+  background-position:center,center,95% center!important;
+  background-size:cover,cover,auto 100%!important;background-repeat:no-repeat!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-char-hero::after{
+  content:"";position:absolute;pointer-events:none;inset:12px;
+  border:1px solid rgba(244,223,192,.23);border-radius:2px 31px 31px 2px;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-char-hero-art,.v06-char-hero-art img){
+  object-fit:contain!important;object-position:center bottom!important;max-width:100%;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-character-info,.v06-ownership,.v06-profile-controls){position:relative;z-index:2}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v06-character-info h1{
+  color:var(--po-ivory)!important;font-size:clamp(33px,5vw,64px)!important;
+  text-shadow:0 8px 28px #071722b8;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-tabs,.v06-profile-controls,.v06-tags){
+  border-color:var(--po-stroke)!important;gap:7px;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-tabs button.active,.v06-profile-controls button.active){
+  background:linear-gradient(110deg,#265767,#144459)!important;
+  border-color:var(--po-stroke-strong)!important;color:var(--po-frost)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v07-kit,.v07-traces,.v07-eido,.v07-eido-full,.v07-multipliers,.v11-cone-panel,.v11-coach,.v06-relic-summary,.v06-relic-review){
+  border:1px solid var(--po-stroke)!important;
+  border-radius:4px 22px 22px 4px!important;
+  background:linear-gradient(149deg,rgba(22,61,78,.95),rgba(9,29,44,.96))!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v07-kit,.v07-traces,.v07-eido) h3{
+  border-bottom:1px solid var(--po-stroke);padding-bottom:9px;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v10-eido-grid,.v06-eidolon-grid){
+  gap:clamp(7px,1.2vw,15px)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v10-eido-grid,.v06-eidolon-grid) button{
+  overflow:hidden;min-width:0;border:1px solid var(--po-stroke)!important;
+  border-radius:5px 23px 23px 5px!important;
+  background:radial-gradient(ellipse at 55% 35%,rgba(145,228,236,.13),transparent 72%),#0a2b3e!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v10-eido-grid,.v06-eidolon-grid) img{
+  width:100%;height:auto;object-fit:contain!important;object-position:center center!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v10-eido-grid,.v06-eidolon-grid) button:hover{
+  border-color:var(--po-shell)!important;box-shadow:0 0 0 2px rgba(244,223,192,.12);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v11-relic-grid{gap:clamp(10px,1.4vw,20px)!important}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v11-relic-card{
+  min-width:0;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,#1c5160,#0a2a3b 72%)!important;
+  border:1px solid var(--po-stroke)!important;border-radius:4px 20px 20px 4px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v11-relic-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;pointer-events:none;
+  background:linear-gradient(90deg,var(--po-aqua),rgba(244,223,192,.4),transparent);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v11-relic-image img{
+  width:100%;height:100%;object-fit:contain!important;object-position:center!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v11-relic-title,.v11-relic-subs,.v11-cone-effect,.v11-cone-foot){overflow-wrap:anywhere}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v11-edit-form,.v11-relic-open,.v11-actions button){
+  border-color:var(--po-stroke)!important;
+}
+/* OCR / HoYoLAB import — luminous capture frame, keeping form/function intact. */
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-import-drop,.v06-upload-reference,.v09-import-info,.v06-import-preview,.nx-scan-v3,.v06-import-form){
+  min-width:0;background:linear-gradient(145deg,#123d4e,#0a293a)!important;
+  border:1px dashed rgba(145,228,236,.55)!important;
+  border-radius:4px 22px 22px 4px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-import-image,.v06-relic-shots,.v09-variant-art) img{
+  object-fit:contain!important;max-width:100%;
+}
+/* ENDGAME — tide charts, encounter panels and enemy imagery. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=endgame] :is(.v09-endgame,.v09-guide-title,.v06-endgame-lead){
+  min-width:0;position:relative;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=endgame] .v09-guide-title{
+  background:radial-gradient(ellipse at 90% 30%,rgba(244,223,192,.13),transparent 41%),
+  linear-gradient(116deg,#0b394b,#071e30)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v09-boss,.v09-mechanics,.v09-team,.v06-boss-card,.v06-encounter){
+  min-width:0;background:linear-gradient(148deg,#174354,#0c293b 76%)!important;
+  border:1px solid var(--po-stroke)!important;border-radius:4px 25px 25px 4px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v09-boss-image,.v06-boss-art){
+  border-radius:3px 19px 19px 3px;overflow:hidden;
+  background:radial-gradient(circle at 50%,rgba(145,228,236,.18),transparent 65%),#071d2c!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v09-boss-image,.v06-boss-art) img{
+  width:100%;height:100%;object-fit:contain!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v09-team-head,.v09-team-members,.v09-team-reveal){
+  border-color:var(--po-stroke)!important;
+}
+/* FARM — research atlas and consumable material ledger. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=farm] :is(.v06-pagehead,.chapter-head){
+  background:radial-gradient(ellipse at right,rgba(145,228,236,.17),transparent 51%),
+    linear-gradient(115deg,#113f4d,#071e30)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-farm-panel,.v06-farm-card,.v07-relmatch,.v07-relic-advice,.v07-piece-advice,.v06-relic-summary-item){
+  min-width:0;background:linear-gradient(135deg,#174252,#0a293a)!important;
+  border:1px solid var(--po-stroke)!important;border-radius:3px 20px 20px 3px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-progress,progress){
+  accent-color:var(--po-aqua);border-color:var(--po-stroke)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-progress span,progress::-webkit-progress-value){
+  background:linear-gradient(90deg,#50b8c9,#c9eff0)!important;
+}
+/* RADAR — panoramic observable horizon and version notes. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=radar] :is(.v06-radarhead,.v06-radar-banner){
+  border:1px solid var(--po-stroke-strong)!important;border-radius:3px 30px 30px 3px!important;
+  background-image:linear-gradient(95deg,rgba(7,28,45,.97),rgba(10,54,69,.82) 60%,rgba(10,35,49,.2)),
+   var(--nx3-art)!important;
+  background-size:cover,auto 100%!important;background-position:center,right center!important;
+  background-repeat:no-repeat!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=radar] :is(.v07-beta-intro,.v07-exclusive-card,.v06-feature-panel){
+  border-left:3px solid var(--po-aqua)!important;
+}
+/* META / Pom-Pom — editorial annotations, no changing actual recommendation data. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=tier] :is(.v06-feature-panel,.v07-exclusive-card,.v06-metric){
+  background:linear-gradient(158deg,#143a4d,#0a2435)!important;
+  border-left:3px solid var(--po-shell)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=nexia] :is(.v06-diary,.v06-diary-intro,.v11-diary-person,.v06-pom-tip){
+  min-width:0;background:linear-gradient(140deg,#174453,#092536)!important;
+  border:1px solid var(--po-stroke)!important;border-radius:4px 21px 21px 4px!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v11-diary-person summary{min-height:48px;cursor:pointer;color:var(--po-ivory)!important}
+.app[data-nx3-theme="pearl-ocean-atlas"] .v11-diary-notes article{border-color:var(--po-stroke)!important}
+/* THEME STUDIO — becomes an underwater art gallery with its own showcase. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=themes] .nx3-heading{
+  border-radius:3px 35px 35px 3px!important;border:1px solid var(--po-stroke-strong)!important;
+  background:radial-gradient(ellipse at 85% 20%,rgba(145,228,236,.22),transparent 49%),
+    linear-gradient(115deg,#0e4355,#081f32)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx3-heading::before{
+  background:linear-gradient(transparent,var(--po-aqua),transparent)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx3-heading::after{
+  border-color:rgba(244,223,192,.3)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx3-hero-copy h1 em,.nx3-orbit,.nx3-kicker){
+  color:var(--po-shell)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx3-orbit{
+  border-color:rgba(244,223,192,.5)!important;
+  box-shadow:0 0 0 26px rgba(145,228,236,.05),0 0 0 48px rgba(145,228,236,.025)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx3-studio .nx3-step,.nx3-studio .nx3-identity,.nx3-studio .nx3-library-card,.nx3-studio .nx3-lab-stage){
+  border:1px solid var(--po-stroke)!important;border-radius:3px 24px 24px 3px!important;
+  background:linear-gradient(153deg,#154455,#09273a)!important;box-shadow:var(--po-shadow);
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx3-library-art{
+  background:radial-gradient(ellipse at center,rgba(145,228,236,.21),transparent 70%),#0d3445!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx3-library-art img{
+  object-fit:contain!important;object-position:center center!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx3-studio .nx3-character,.nx3-studio .nx3-portrait,.nx3-studio .nx3-fragment){
+  border-color:var(--po-stroke)!important;background:#0a3041!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx3-studio .nx3-fragment img{object-fit:contain!important}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx3-studio .nx3-mock{
+  --nx3-mock-accent:var(--po-aqua)!important;--nx3-mock-bg:var(--po-abyss)!important;
+  --nx3-mock-surface:var(--po-deep)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx3-nav button[aria-current=page],.nx3-studio button[aria-pressed=true]){
+  background:rgba(145,228,236,.18)!important;color:var(--po-frost)!important;
+  border-color:var(--po-stroke-strong)!important;
+}
+/* SETTINGS — a navigational command console, not a theatrical stage. */
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=settings] :is(.v06-pagehead,.chapter-head){
+  border-left:4px solid var(--po-shell)!important;
+}
+.app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=settings] :is(form,fieldset,.v06-feature-panel,.v11-edit-form,.v06-save-import){
+  border-color:var(--po-stroke)!important;
+}
+/* Decorative movement: tidal glint and pigment wash; never animate layouts. */
+@keyframes po-shimmer{to{background-position-x:-220%}}
+@keyframes po-tide{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:.6;transform:translateY(-9px)}}
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx-scene-star,
+.app[data-nx3-theme="pearl-ocean-atlas"] .nx3-orbit{animation:po-tide 7s ease-in-out infinite}
+.app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-tile,.v06-char-card,.v11-relic-card){
+  will-change:auto;
+}
+/* MOBILE-FIRST / widths in audit: 320,360,390,430,768,1024,1440,1920. */
+@media(max-width:430px){
+ .app[data-nx3-theme="pearl-ocean-atlas"]{--nx-radius-lg:18px}
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-pagehead,.nx-scene,.chapter-head,.v09-guide-title){
+   border-radius:3px 21px 21px 3px!important;
+ }
+ .app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=home] .v06-hero{
+   min-height:420px;border-radius:3px 28px 28px 3px!important;
+   background-image:linear-gradient(180deg,rgba(7,33,48,.45) 0%,rgba(6,28,43,.93) 55%,#081e30 100%),var(--nx3-art)!important;
+   background-position:center,center 4%!important;background-size:cover,auto 69%!important;
+   background-repeat:no-repeat!important;
+ }
+ .app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=profile] .v06-char-hero{
+   border-radius:3px 26px 26px 3px!important;min-height:370px;
+   background-image:linear-gradient(180deg,rgba(7,28,43,.35) 0%,rgba(6,27,43,.88) 75%),var(--nx3-art)!important;
+   background-position:center,center top!important;background-size:cover,auto 73%!important;
+ }
+ .app[data-nx3-theme="pearl-ocean-atlas"] .v06-hero-copy h1{font-size:clamp(29px,9vw,39px)!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] .v06-character-info h1{font-size:clamp(29px,8.5vw,40px)!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-hero::after,.v06-char-hero::after){inset:6px}
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-tile,.v06-char-card,.v11-relic-card){border-radius:3px 16px 16px 3px!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.nx3-step,.nx3-identity,.nx3-heading){border-radius:3px 20px 20px 3px!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] .nx3-studio .nx3-fragments{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-primary,.v06-secondary,.nx3-primary,.nx3-nav button,.v06-tabs button){min-height:44px}
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-tabs,.v06-accountfilter,.nx3-scene-tabs){max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+}
+@media(max-width:360px){
+ .app[data-nx3-theme="pearl-ocean-atlas"] .v06-hero-copy h1{font-size:30px!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] .nx3-studio .nx3-fragments{gap:5px!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v11-relic-title,.v06-character-info,.nx3-step){min-width:0;overflow-wrap:anywhere}
+ .app[data-nx3-theme="pearl-ocean-atlas"] .nx3-nav button{padding-inline:4px!important;font-size:10px}
+}
+@media(min-width:431px) and (max-width:767px){
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-hero,.v06-char-hero){background-size:cover,contain!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-primary,.v06-secondary,.v06-tabs button){min-height:44px}
+}
+@media(min-width:768px) and (max-width:1023px){
+ .app[data-nx3-theme="pearl-ocean-atlas"][data-nx-route=home] .v06-hero{background-size:cover,cover,auto 94%!important}
+ .app[data-nx3-theme="pearl-ocean-atlas"] .v06-char-hero{background-size:cover,cover,auto 88%!important}
+}
+@media(min-width:1024px){
+ .app[data-nx3-theme="pearl-ocean-atlas"] :is(.v06-tile-grid,.v06-library-grid,.v11-relic-grid){align-items:stretch}
+ .app[data-nx3-theme="pearl-ocean-atlas"] .v06-hero-copy{max-width:64%}
+}
+@media(min-width:1440px){
+ .app[data-nx3-theme="pearl-ocean-atlas"] .v06-hero{min-height:530px}
+ .app[data-nx3-theme="pearl-ocean-atlas"] .v06-char-hero{min-height:480px}
+}
+@media(min-width:1920px){
+ .app[data-nx3-theme="pearl-ocean-atlas"] #stage{max-width:1500px;margin-inline:auto}
+}
+/* Preference wins even over prior cinematic/theatrical rules. */
+@media(prefers-reduced-motion:reduce){
+ .app[data-nx3-theme="pearl-ocean-atlas"] *,
+ .app[data-nx3-theme="pearl-ocean-atlas"] *::before,
+ .app[data-nx3-theme="pearl-ocean-atlas"] *::after{
+   animation:none!important;transition:none!important;scroll-behavior:auto!important;
+ }
+}
