@@ -1,6 +1,6 @@
 /* Standalone PWA scope: /anderus-star-rail-nexus/v2/ only.
  * Does not intercept or mutate the legacy application. */
-const VERSION='nexus2-20261111-a';
+const VERSION='nexus2-20261111-b';
 const BASE=new URL('./',self.location);
 const PRECACHE=['./','./index.html','./app.css','./core.js','./screens.js','./modules.js','./manifest.webmanifest',
  '../data/live-game.json','../assets/official/pompom-hoyoverse.jpg'];
@@ -18,12 +18,9 @@ self.addEventListener('fetch',event=>{
  const page=url.pathname.endsWith('/v2/')||url.pathname.endsWith('/v2/index.html');
  if(page){event.respondWith(fetch(request).then(response=>{const c=response.clone();caches.open(VERSION).then(cache=>cache.put(request,c)).catch(()=>{});return response}).catch(()=>caches.match(new URL('./index.html',BASE))));return;}
  if(/\.(?:js|css|webmanifest|json|png|jpg|webp)$/.test(url.pathname)){
-  event.respondWith(caches.match(request).then(hit=>{
-   const network=fetch(request).then(response=>{
+  event.respondWith(fetch(request).then(response=>{
     if(response.ok){const copy=response.clone();caches.open(VERSION).then(c=>c.put(request,copy)).catch(()=>{});}
     return response;
-   }).catch(()=>hit);
-   return hit||network;
-  }));
+   }).catch(()=>caches.match(request)));
  }
 });
