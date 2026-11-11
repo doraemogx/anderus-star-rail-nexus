@@ -405,7 +405,7 @@ function applyTheme(id){
  app.removeAttribute('data-nx3-theme');app.removeAttribute('data-nx3-shape');app.classList.remove('nx3-skin');
  for(const k of Object.keys(palette))app.style.removeProperty('--nx3-'+k);
  app.style.removeProperty('--nx3-art');app.style.removeProperty('--nx3-font');
- if(!skin)return;
+ if(!skin){syncHomeIdentity();return;}
  app.dataset.nx3Theme=skin.id;app.dataset.nx3Shape=skin.shape;app.classList.add('nx3-skin');
  for(const [k,v]of Object.entries(skin.tokens))app.style.setProperty('--nx3-'+k,v);
  const src=characterArt(skin.characterId);
@@ -415,6 +415,7 @@ function applyTheme(id){
   const link=document.createElement('link');link.id='nx3-generated-theme-css';link.rel='stylesheet';
   link.href='./themes/generated/'+skin.id+'/theme.css';document.head.appendChild(link);
  }
+ syncHomeIdentity();
 }
 function immersive(id){
  if(!theme(id))return;
@@ -431,6 +432,21 @@ function immersive(id){
  bar.querySelector('.nx3-try-apply').addEventListener('click',()=>close(true));
  if(typeof route==='function')route('home');
 }
+/* Display the selected visual identity in Home, never altering account state.
+ * Deactivation/preview cancellation restores the original caption. */
+function syncHomeIdentity(){
+ const app=document.querySelector('.app'),label=app?.querySelector('.v06-home .v06-hero-id');
+ if(!label)return;
+ const original=label.getAttribute('data-nx3-original-caption');
+ const skin=theme(app.dataset.nx3Theme);
+ if(skin){
+  if(original===null)label.setAttribute('data-nx3-original-caption',label.textContent);
+  const caption='✦ '+skin.character.toLocaleUpperCase('pt-BR')+' · IDENTIDADE VISUAL';
+  if(label.textContent!==caption)label.textContent=caption;
+ }else if(original!==null){
+  label.textContent=original;label.removeAttribute('data-nx3-original-caption');
+ }
+}
 let previouslyApplied;
 function schedule(){
  if(scheduled)return;scheduled=true;
@@ -439,6 +455,7 @@ function schedule(){
   if(studio&&(!root||!root.isConnected))refresh();
   const current=document.querySelector('.app');
   if(current&&saved.active!==previouslyApplied){previouslyApplied=saved.active;applyTheme(saved.active);}
+  syncHomeIdentity();
  });
 }
 function boot(){
