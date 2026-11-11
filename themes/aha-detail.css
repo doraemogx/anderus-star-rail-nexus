@@ -279,3 +279,18 @@ html[data-aha-grande="1"] #overlay :is(button,a):focus-visible{outline:2px solid
 @media(prefers-reduced-motion:reduce){
  .aha-theatre .aha-view-ribbon *,.aha-theatre .v06-char-card{animation:none!important;transition:none!important}
 }
+
+
+/* Final visual QA: keep the canonical portrait clear of the Elation caption.
+ * In 390px Chromium the original 340px portrait overlapped the hero eyebrow. */
+@media(max-width:719px){
+ .aha-theatre .aha-portrait{inset:41px 0 auto;height:278px}
+ .aha-theatre .aha-portrait img{height:275px;width:min(90%,350px);object-fit:contain}
+ .aha-theatre .aha-overline{font-size:10px;line-height:1.4;color:#ffe8cf;text-shadow:0 2px 8px #0a0615}
+ .aha-theatre .aha-leading{font-size:13px;line-height:1.6}
+}
+/* The scene ribbon should be the first page landmark, not appear beneath
+ * a later-injected dashboard card. Only the Aha variant uses this layout. */
+.aha-theatre #stage{display:flex;flex-direction:column;align-items:stretch}
+.aha-theatre #stage>.aha-view-ribbon{order:-100;width:100%;max-width:100%}
+.aha-theatre #stage>*{min-width:0}
