@@ -691,3 +691,16 @@ body{max-width:100%;overflow-x:clip}
  .v06-app:not(.aha-theatre) .v06-tile:hover,.v06-app:not(.aha-theatre) .v06-theme-grid button:hover{transform:none}
  .nx-theme-preview *{animation:none!important;transition:none!important}
 }
+
+
+/* The previous character theme is reversible without visiting settings. */
+.v06-app .nx-theme-undo{
+ display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;
+ min-height:44px;padding:10px 15px;max-width:100%;
+ border:1px solid var(--nx-line);border-radius:10px;
+ background:color-mix(in srgb,var(--nx-accent,#d3bd9e) 12%,#122439);
+ color:#f2e8d8;font:700 12px/1.4 'DM Sans',sans-serif;
+ text-align:left;white-space:normal;
+}
+.v06-app .nx-theme-undo:hover{border-color:var(--nx-accent);background:#233347}
+.v06-app.aha-theatre .nx-theme-undo{border-radius:4px;background:#3c1c38;color:#ffe3d6}
