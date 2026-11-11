@@ -1,31 +1,62 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const src=read('nexus-theme-studio-v3.js'),css=read('nexus-theme-studio-v3.css');
 const shell=read('v06.js'),sw=read('sw.js'),original=read('scripts/browser-visual-completion.mjs');
-assert.ok(existsSync(new URL('../themes/generated/index.json',import.meta.url)));
 const registry=JSON.parse(read('themes/generated/index.json'));
+const routes=['home','library','profile','endgame','farm','radar','tier','themes','nexia','settings'];
+const hex=x=>typeof x==='string'&&/^#[0-9a-f]{6}$/i.test(x);
+const luminance=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255)
+ .map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4))
+ .reduce((v,x,i)=>v+x*[.2126,.7152,.0722][i],0);
+const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+
 assert.equal(registry.schema,1);
-assert.deepEqual(registry.themes,[],'Never pre-register a fake generated theme');
+assert.ok(Array.isArray(registry.themes),'Published gallery must be an array');
+assert.equal(new Set(registry.themes.map(t=>t.id)).size,registry.themes.length,'Duplicate identity');
+for(const item of registry.themes){
+ assert.match(item.id,/^[a-z0-9][a-z0-9-]{2,62}$/,'Slug unsafe');
+ assert.equal(item.manifest,'./themes/generated/'+item.id+'/theme.json');
+ const path='themes/generated/'+item.id+'/',manifest=JSON.parse(read(path+'theme.json')),skin=read(path+'theme.css');
+ assert.equal(manifest.schema,3);assert.equal(manifest.id,item.id);
+ assert.ok(manifest.name&&manifest.characterId&&manifest.version&&manifest.description);
+ assert.equal(manifest.hasStyles,true,'Published themes must include audited CSS');
+ assert.ok(['arc','petal','blade','sigil','crystal','theatre'].includes(manifest.shape));
+ assert.ok(['Cinzel','Marcellus','Georgia','DM Sans','system-ui'].includes(manifest.font));
+ assert.ok(!Number.isNaN(Date.parse(manifest.createdAt)),'Invalid ISO createdAt');
+ for(const token of ['accent','second','background','surface','text','muted'])assert.ok(hex(manifest.tokens?.[token]),'Bad '+token);
+ assert.ok(contrast(manifest.tokens.text,manifest.tokens.surface)>=4.5,'Text contrast below AA');
+ assert.ok(contrast(manifest.tokens.muted,manifest.tokens.surface)>=4.5,'Muted contrast below AA');
+ assert.ok(contrast(manifest.tokens.accent,manifest.tokens.background)>=4.5,'Accent contrast below AA');
+ for(const route of routes){
+  assert.ok(manifest.screens?.[route]?.eyebrow&&manifest.screens[route]?.headline&&manifest.screens[route]?.accent,'Missing '+route);
+  assert.ok(src.includes(route),'Missing studio route '+route);
+ }
+ assert.ok(skin.includes('.app[data-nx3-theme="'+item.id+'"]'),'Unscoped generated CSS');
+ assert.ok(skin.includes('prefers-reduced-motion'),'Reduced motion absent');
+ assert.ok(!/javascript:/i.test(skin),'Disallow JavaScript URLs in CSS');
+ assert.ok(sw.includes(path+'theme.json')&&sw.includes(path+'theme.css'),'Offline theme assets missing');
+}
+const pearl=JSON.parse(read('themes/generated/pearl-ocean-atlas/theme.json'));
+assert.equal(pearl.characterId,'1503');
+const eidolons=JSON.parse(read('data/eidolon-art.json')).characters?.['1503'];
+assert.equal(eidolons?.length,6,'Never invent or replace Pearl E1–E6 artwork');
+for(const url of eidolons)assert.match(url,/Character_Pearl_Eidolon_[1-6]\.png/);
 for(const p of ['nexus-theme-studio-v3.js','nexus-theme-studio-v3.css','themes/generated/index.json']){
- assert.ok(shell.includes(p)||p==='themes/generated/index.json','Missing entrypoint: '+p);
+ assert.ok(shell.includes(p)||p==='themes/generated/index.json','Missing entrypoint '+p);
  assert.ok(sw.includes(p),'Missing PWA precache '+p);
 }
-for(const route of ['home','library','profile','endgame','farm','radar','tier','themes','nexia','settings']){
- assert.ok(src.includes(route),'Missing route '+route);
-}
 for(const label of ['theme.json','theme.css','schema:3','characterId','Eidolons','mobile',
- 'Criar este tema no ChatGPT','Manifesto','Prévia','persist','previewMock']){
+ 'Criar este tema no ChatGPT','Manifesto','Prévia','persist','previewMock'])
  assert.ok(src.toLowerCase().includes(label.toLowerCase()),'Creative Studio missing '+label);
-}
 assert.ok(src.includes('themes/generated/index.json'));
-assert.ok(src.includes('nexus_theme_studio_generated_v3')||src.includes('anderus_theme_studio_generated_v3'));
-assert.ok(!src.includes("localStorage.setItem('anderus_nexus_v03'"),'Must never overwrite the main account');
-assert.ok(!src.includes('state.characters='),'Must not mutate owned character records');
+assert.ok(src.includes('anderus_theme_studio_generated_v3'));
+assert.ok(!src.includes("localStorage.setItem('anderus_nexus_v03'"),'Never overwrite the main account');
+assert.ok(!src.includes('state.characters='),'Never mutate character records');
 assert.ok(!src.includes('eval('),'No dynamic eval');
 assert.ok(css.includes('.nx3-studio~.v06-themes'));
-assert.ok(css.includes('v10-eido-grid')&&css.includes('v11-relic-card'),'Original character artwork/relics must remain');
+assert.ok(css.includes('v10-eido-grid')&&css.includes('v11-relic-card'));
 assert.ok(css.includes('prefers-reduced-motion'));
-assert.ok(original.includes('aha-eidolon-grid'),'Previous six Eidolon image regression must remain');
-console.log('PASS Theme Studio 3: generated-only workflow, full-route prompt, scoped skins, original artwork preserved');
+assert.ok(original.includes('aha-eidolon-grid'),'Previous Eidolon regression must remain');
+console.log('PASS: reviewed Theme Studio 3 manifests, Pearl E1–E6, scoped CSS and data safety');

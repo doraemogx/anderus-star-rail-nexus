@@ -1,0 +1,72 @@
+{
+  "schema": 3,
+  "id": "pearl-ocean-atlas",
+  "name": "Pearl · Atlas do Oceano",
+  "characterId": "1503",
+  "version": "1.0.0",
+  "description": "Um atlas oceânico de arte viva: pergaminhos de maré, pérolas, gelo translúcido e pinceladas etéreas inspiradas na Pearl de Gelo / Euforia. Identidade exclusiva para todas as telas do Nexus original.",
+  "shape": "petal",
+  "font": "Marcellus",
+  "hasStyles": true,
+  "createdAt": "2026-11-11T22:55:00.000Z",
+  "tokens": {
+    "accent": "#91E4EC",
+    "second": "#F4DFC0",
+    "background": "#071B2C",
+    "surface": "#123442",
+    "text": "#F3FAF8",
+    "muted": "#B3D1D8"
+  },
+  "screens": {
+    "home": {
+      "eyebrow": "ATLAS DO OCEANO · 00",
+      "headline": "A arte de continuar",
+      "accent": "Seu universo atravessa as marés."
+    },
+    "library": {
+      "eyebrow": "COLEÇÃO · 01",
+      "headline": "Galeria de constelações",
+      "accent": "Cada personagem é uma obra em evolução."
+    },
+    "profile": {
+      "eyebrow": "ESTUDO DE PERSONAGEM · 02",
+      "headline": "Retrato em movimento",
+      "accent": "Kits, Eidolons e equipamentos em detalhes."
+    },
+    "endgame": {
+      "eyebrow": "GRANDES MARÉS · 03",
+      "headline": "Cartografia de desafios",
+      "accent": "Chefes, mecânicas e equipes sob a mesma luz."
+    },
+    "farm": {
+      "eyebrow": "ATELIÊ DE RECURSOS · 04",
+      "headline": "O mapa da evolução",
+      "accent": "Transforme cada material em progresso."
+    },
+    "radar": {
+      "eyebrow": "OBSERVATÓRIO · 05",
+      "headline": "O horizonte adiante",
+      "accent": "Notícias verificadas e informações contextualizadas."
+    },
+    "tier": {
+      "eyebrow": "CADERNO DE ANÁLISE · 06",
+      "headline": "Estudos de meta",
+      "accent": "A composição importa tanto quanto o personagem."
+    },
+    "themes": {
+      "eyebrow": "GALERIA DE IDENTIDADES · 07",
+      "headline": "O ateliê do Nexus",
+      "accent": "Uma criação verdadeira para cada universo."
+    },
+    "nexia": {
+      "eyebrow": "CADERNO DO EXPRESSO · 08",
+      "headline": "Notas do Pom-Pom",
+      "accent": "Orientações construídas sobre a sua conta."
+    },
+    "settings": {
+      "eyebrow": "ARQUIVO DE NAVEGAÇÃO · 09",
+      "headline": "Comandos do atlas",
+      "accent": "Controle sua experiência sem perder seu progresso."
+    }
+  }
+}
