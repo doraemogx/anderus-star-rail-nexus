@@ -30,6 +30,8 @@
 | Theme Studio | Galeria de identidade + laboratório com prévia reversível |
 | Configurações | Console de preferências com foco e contraste de formulários |
 
+O manifesto também alimenta os títulos, sobretítulos e chamadas editoriais das cenas reais por rota. Texto renderizado com `textContent`, restaurável em cancelar/desativar, sem interpretar markup do manifesto. A Home troca apenas o título editorial; a orientação funcional e os controles permanecem.
+
 ## Proteção e reversibilidade
 - A camada Pearl contém apenas **manifesto + CSS estático**; não executa CSS/JS vindo de manifesto de usuário.
 - O estúdio valida schema 3, IDs, cores e nome de fonte/forma contra listas fechadas. CSS tem escopo `.app[data-nx3-theme="pearl-ocean-atlas"]`.
