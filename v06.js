@@ -35,6 +35,22 @@
     script.id='nexus-visual-experience-js';script.src='./nexus-visual-experience.js';
     script.async=true;document.head.appendChild(script);
   }
+  // Theme Studio 3 defaults to the new GPT experience.
+  // ?studio=legacy is a strictly visual recovery/debug mode for regression QA.
+  // It never changes saved characters, account files or theme records.
+  if(new URLSearchParams(location.search).get('studio')!=='legacy'){
+    for(const [id,type,src] of [
+      ['nexus-theme-studio-v3-css','style','./nexus-theme-studio-v3.css'],
+      ['nexus-theme-studio-v3-js','script','./nexus-theme-studio-v3.js']
+    ]){
+      if(document.getElementById(id))continue;
+      const el=document.createElement(type==='style'?'link':'script');
+      el.id=id;
+      if(type==='style'){el.rel='stylesheet';el.href=src;}
+      else{el.src=src;el.async=true;}
+      document.head.appendChild(el);
+    }
+  }
   const base={
     home:home,library:library,profile:profile,profileOverview:profileOverview,
     profileEidolons:profileEidolons,profileKit:profileKit,profileRelics:profileRelics,

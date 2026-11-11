@@ -24,7 +24,7 @@ try{
   await ctx.route('https://nexia-ai-nexus.andrediascrm.workers.dev/**',route=>
    route.fulfill({status:503,body:'{"error":"Isolated UI test"}'}));
   const page=await ctx.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('http://127.0.0.1:8787/',{waitUntil:'domcontentloaded',timeout:60000});
+  await page.goto('http://127.0.0.1:8787/?studio=legacy',{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForFunction(()=>window.NexusVisualExperience?.version==='2.0'&&
    window.NexusVisualPreview?.version==='5.0'&&typeof window.route==='function',null,{timeout:30000});
   const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')));

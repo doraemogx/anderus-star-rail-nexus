@@ -14,6 +14,10 @@ on:
       - 'nexus-visual-finish.js'
       - 'nexus-visual-experience.css'
       - 'nexus-visual-experience.js'
+      - 'nexus-theme-studio-v3.css'
+      - 'nexus-theme-studio-v3.js'
+      - 'themes/generated/**'
+      - 'scripts/browser-theme-studio-v3.mjs'
       - 'scripts/browser-hub-theme-studio.mjs'
       - 'scripts/browser-visual-finish.mjs'
       - 'index.html'
@@ -88,6 +92,8 @@ jobs:
           node --check v2/screens.js
           node --check v2/modules.js
           node scripts/browser-nexus2.mjs
+      - name: Theme Studio 3 — testar criação, galeria, prévia e Eidolons do original
+        run: node scripts/browser-theme-studio-v3.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4
