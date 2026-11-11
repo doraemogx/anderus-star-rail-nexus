@@ -62,7 +62,7 @@
   return '<div class="nx-vex-mock" data-vex-style="'+variant+'" style="--vex-accent:'+accent+'" aria-label="Exemplo visual da interface">'+
    '<div class="nx-vex-mock-head"><span class="nx-vex-mock-sigil">✦</span><span>ANDERUS<small>STAR RAIL NEXUS</small></span><span class="nx-vex-mock-dot"></span></div>'+
    '<div class="nx-vex-mock-main"><div class="nx-vex-mock-intro"><span>'+(variant==='aha'?'ATO I · EUFORIA':variant==='memory'?'MEMÓRIA · ARQUIVO':'EXPRESSO ASTRAL · ARQUIVO')+'</span><strong>Meu universo</strong><small>Personagens e progresso</small></div>'+
-   '<div class="nx-vex-mock-metrics"><div><small>PERSONAGENS</small><b>24</b></div><div><small>BUILDS</small><b>18</b></div></div>'+
+   '<div class="nx-vex-mock-metrics"><div><small>PERSONAGENS SALVOS</small><b>'+ownedIds().size+'</b></div><div><small>SEÇÕES</small><b>09</b></div></div>'+
    '<div class="nx-vex-mock-modules"><span>✧ Personagens</span><span>◈ Endgame</span><span>✦ Farm</span></div></div></div>';
  }
  function decoratePreview(){
