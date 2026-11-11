@@ -111,7 +111,7 @@
    btn.setAttribute('aria-pressed',String(btn.dataset.filter===currentFilter));
   }
   const result=studio.querySelector('.nx-vex-result');
-  if(result)result.textContent=visible+' tema'+(visible===1?'':'s')+' · '+categoryText(currentFilter);
+  if(result){const msg=visible+' tema'+(visible===1?'':'s')+' · '+categoryText(currentFilter);if(result.textContent!==msg)result.textContent=msg;}
  }
  function previewCard(c,item){
   const selected=String(c.id)===activeId(),src=source(c),variant=themeStyle(c);
@@ -168,7 +168,7 @@
     const selected=button.dataset.vexTheme===activeId();
     button.classList.toggle('is-active',selected);
     const span=button.querySelector('.nx-vex-feature-copy>span');
-    if(span)span.innerHTML=(selected?'TEMA ATIVO':'VISUALIZAR TEMA')+' <span aria-hidden="true">↗</span>';
+    if(span&&span.dataset.vexState!==(selected?'active':'preview')){span.dataset.vexState=selected?'active':'preview';span.innerHTML=(selected?'TEMA ATIVO':'VISUALIZAR TEMA')+' <span aria-hidden="true">↗</span>';}
    }
   }
   updateFilter();
