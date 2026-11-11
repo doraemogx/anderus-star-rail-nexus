@@ -499,3 +499,7 @@
  .nx3-studio .nx3-mock{max-width:100%!important;min-width:0}
  .nx3-studio .nx3-mock.wide{width:100%}
 }
+
+/* Keep one coherent icon per desktop navigation item. Older SVGs remain as
+   fallback when the vector enhancement is absent; never render them twice. */
+.v06-app #sidebarLinks .menu-link>.nx-sidebar-icon~svg.svg-icon{display:none!important}
