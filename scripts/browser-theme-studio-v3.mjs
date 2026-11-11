@@ -85,6 +85,8 @@ try{
   if(width<=390)assert.ok(geom.rootLeft>=-4&&geom.rootRight<=geom.width+4,
    'Mobile preview moved outside viewport: '+JSON.stringify(geom));
   await page.locator('button[data-action="screen"][data-id="profile"]').click();
+  await page.waitForFunction(()=>{const img=document.querySelector('.nx3-mock-hero img');
+   return img?.complete&&img.naturalWidth>0;},null,{timeout:15000});
   assert.equal(await page.locator('.nx3-mock-eido span').count(),6);
   if(width===390||width===1440)
    await page.screenshot({path:'artifacts/studio3-preview-'+width+'.png',fullPage:false});
