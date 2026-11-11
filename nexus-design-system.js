@@ -21,7 +21,7 @@
    link.className='nx-skip';link.href='#stage';link.textContent='Ir para o conteúdo';
    link.addEventListener('click',event=>{
     event.preventDefault();stage.focus({preventScroll:true});
-    stage.scrollIntoView({behavior:'instant',block:'start'});
+    stage.scrollIntoView({behavior:'auto',block:'start'});
    });
    document.body.insertBefore(link,document.body.firstChild);
   }
@@ -126,7 +126,7 @@
   observer.observe(root,{subtree:true,childList:true});
   document.addEventListener('focusin',event=>{
    if(event.target?.matches?.('.v06-profile .v06-tabs button'))
-    event.target.scrollIntoView({behavior:'instant',inline:'nearest',block:'nearest'});
+    event.target.scrollIntoView({behavior:'auto',inline:'nearest',block:'nearest'});
   });
   decorate();
  }
