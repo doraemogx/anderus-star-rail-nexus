@@ -4,12 +4,12 @@
   if(!document.getElementById('nexus-design-system-css')){
     const nxCss=document.createElement('link');
     nxCss.id='nexus-design-system-css';nxCss.rel='stylesheet';
-    nxCss.href='./nexus-design-system.css?v=4.0';
+    nxCss.href='./nexus-design-system.css';
     document.head.appendChild(nxCss);
   }
   if(!document.getElementById('nexus-design-system-js')){
     const nxScript=document.createElement('script');
-    nxScript.id='nexus-design-system-js';nxScript.src='./nexus-design-system.js?v=4.0';
+    nxScript.id='nexus-design-system-js';nxScript.src='./nexus-design-system.js';
     nxScript.async=true;document.head.appendChild(nxScript);
   }
   const base={
