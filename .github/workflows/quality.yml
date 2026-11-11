@@ -30,6 +30,10 @@ jobs:
         run: |
           node --check nexus-visual-finish.js
           node scripts/check-visual-finish.mjs
+      - name: Hub visual e Theme Studio — componentes e proteção da conta
+        run: |
+          node --check nexus-visual-experience.js
+          node scripts/check-hub-theme-studio.mjs
       - name: Fase 4 — Design System e navegação acessível
         run: |
           node --check nexus-design-system.js
