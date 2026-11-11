@@ -85,6 +85,7 @@ try{
   await page.evaluate(()=>window.openProfile('1512'));
   await page.locator('.v06-profile').waitFor();
   await readWidths();
+  await page.locator('.v06-profile .v06-tabs[aria-label]').waitFor({timeout:10000});
   assert.ok(await page.locator('.v06-profile .v06-tabs[aria-label]').count()>0,
    'Profile tabs missing accessibility label');
   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('anderus_nexus_v03')).characters['1512'].pv),6284,
