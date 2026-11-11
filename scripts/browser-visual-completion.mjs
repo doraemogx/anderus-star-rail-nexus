@@ -50,6 +50,8 @@ try{
   await page.waitForFunction(()=>state.theme==='future-aha'&&
     document.querySelector('.app')?.classList.contains('aha-theatre'),null,{timeout:18000});
   await page.locator('.aha-gallery').waitFor({timeout:18000});
+  await page.locator('.nx-theme-undo').waitFor({timeout:10000});
+  assert.match(await page.locator('.nx-theme-undo').innerText(),/Voltar ao tema anterior/);
   assert.equal(await page.locator('.aha-gallery .aha-eidolon-grid a').count(),6,
     'Aha must have six official Eidolon art links in Grand Theatre');
   assert.equal(await page.evaluate(()=>localStorage.getItem('anderus_nexus_last_theme_v1')),'8001');
@@ -63,12 +65,13 @@ try{
    const n=errors.length;
    await page.evaluate(v=>window.route(v),view);
    await page.waitForTimeout(60);
+   const position=await page.evaluate(()=>Math.round(window.scrollY));
+   assert.equal(position,0,'Route must start at top on mobile and desktop: '+view+' at '+width);
    assert.ok(await page.locator('#stage').evaluate(el=>!!el.firstElementChild),'Empty '+view);
    const sz=await page.evaluate(()=>({viewport:innerWidth,scroll:document.documentElement.scrollWidth}));
    assert.ok(sz.scroll<=sz.viewport+4,'Overflow Aha @'+width+' in '+view+': '+JSON.stringify(sz));
    assert.equal(errors.length,n,'Page error on '+view+': '+errors.slice(n).join(' | '));
-   if(['home','themes','endgame','library'].includes(view))
-    await page.screenshot({path:'artifacts/visual-aha-'+view+'-'+width+'.png',fullPage:false});
+   await page.screenshot({path:'artifacts/visual-aha-'+view+'-'+width+'.png',fullPage:false});
   }
   await page.evaluate(()=>window.openProfile('1512'));
   await page.locator('.v06-profile').waitFor();
@@ -82,6 +85,10 @@ try{
   await page.waitForFunction(()=>!document.querySelector('.app')?.classList.contains('aha-theatre'),null,{timeout:15000});
   await page.evaluate(()=>window.v09SetVisualMode('chat'));
   await page.waitForFunction(()=>document.querySelector('.app')?.classList.contains('aha-theatre'),null,{timeout:15000});
+  await page.locator('.nx-theme-undo').click();
+  await page.waitForFunction(()=>state.theme==='8001'&&
+   !document.querySelector('.app')?.classList.contains('aha-theatre'),null,{timeout:15000});
+  assert.equal(await page.evaluate(()=>state.theme),'8001','Undo should restore the previous character theme');
   console.log('PASS Visual Completion '+width+'px: Aha name, preview/cancel/apply, 6 Eidolons, 8 sections, images, themes and account safety');
   await context.close();
  }
