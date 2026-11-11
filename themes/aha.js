@@ -1,4 +1,4 @@
-/* ANDERUS / Grand Theatre for Aeon Aha (Nihilux, Ra). No local data changes. */
+/* ANDERUS / Grand Theatre for Aha. No local data changes. */
 (function(){
 'use strict';
 if(window.AnderusAha)return;
@@ -17,14 +17,14 @@ function renderHome(){
    '<div class="aha-show-inner">'+
     '<div class="aha-stage-label"><span class="aha-stage-seal" aria-hidden="true">✶</span><span>ANDERUS PRESENTS</span><i></i><span>ATO 01 · A GRANDE EUFORIA</span></div>'+
     '<div class="aha-portrait"><span class="aha-portrait-halo" aria-hidden="true"></span>'+
-      '<img src="'+ART+'" alt="Aeon ★ Aha — arte da personagem de Honkai: Star Rail" decoding="async" fetchpriority="high">'+
+      '<img src="'+ART+'" alt="Aha — arte oficial de Honkai: Star Rail" decoding="async" fetchpriority="high">'+
       '<span class="aha-portrait-serial" aria-hidden="true">THE GRAND THEATRE / 4.7</span></div>'+
     '<div class="aha-intro">'+
       '<div class="aha-overline"><span class="aha-diamond" aria-hidden="true">◆</span> QUÂNTICO <span class="aha-sep"></span>'+
        '<img src="'+PATH_ICON+'" alt="" loading="lazy"> CAMINHO DA EUFORIA</div>'+
       '<p class="aha-chapter">O ÚLTIMO ATO DE PLANARCADIA</p>'+
       '<h1><span>O universo</span><em>é o palco.</em></h1>'+
-      '<p class="aha-leading">Nihilux. Rá. Aeon ★ Aha.<br>O espetáculo pode mudar. Sua jornada continua sendo sua.</p>'+
+      '<p class="aha-leading">Aha, Aeon da Euforia.<br>O espetáculo pode mudar. Sua jornada continua sendo sua.</p>'+
       '<div class="aha-hero-actions">'+
        '<button type="button" class="aha-main-action" onclick="v06StartImport()">✦ Importar meu print</button>'+
        '<button type="button" class="aha-quiet-action" onclick="route(\'library\')">Minha conta ↗</button>'+
@@ -40,8 +40,8 @@ function renderHome(){
  }
  if(!document.querySelector('.v06-home .aha-marquee')){
   hero.insertAdjacentElement('afterend',el('div','aha-marquee',
-   '<span aria-hidden="true">✦</span><b>AEON ★ AHA</b><span>UMA JORNADA EM SEIS ATOS</span>'+
-   '<span aria-hidden="true">◇</span><b>NIHILUX / RÁ</b><span>O PRÓXIMO SALTO É SEU</span><span aria-hidden="true">✦</span>'));
+   '<span aria-hidden="true">✦</span><b>AHA</b><span>UMA JORNADA EM SEIS ATOS</span>'+
+   '<span aria-hidden="true">◇</span><b>AEON DA EUFORIA</b><span>O PRÓXIMO SALTO É SEU</span><span aria-hidden="true">✦</span>'));
  }
  const grid=document.querySelector('.v06-home .v06-tile-grid');
  if(grid&&!document.querySelector('.v06-home .aha-actline')){
@@ -66,7 +66,7 @@ function renderStudio(){
  for(let n=1;n<=6;n++){
   const src='./assets/official/aha-e'+n+'.webp';
   items+='<a href="'+src+'" target="_blank" rel="noopener noreferrer" aria-label="Abrir a imagem do Eidolon E'+n+'">'+
-   '<span class="aha-eidolon-mark">E'+n+'</span><img src="'+src+'" loading="lazy" decoding="async" alt="Imagem do Eidolon E'+n+' de Aeon Aha">'+
+   '<span class="aha-eidolon-mark">E'+n+'</span><img src="'+src+'" loading="lazy" decoding="async" alt="Imagem do Eidolon E'+n+' de Aha">'+
    '<span class="aha-eidolon-open">VER ARTE ↗</span></a>';
  }
  const gallery=el('section','aha-gallery',
