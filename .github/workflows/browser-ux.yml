@@ -9,6 +9,9 @@ on:
       - 'nexus-scan-v3-reader.js'
       - 'nexus-scan-v3-ui.js'
       - 'nexus-scan-v3.css'
+      - 'nexus-design-system.css'
+      - 'nexus-design-system.js'
+      - 'scripts/browser-design-system.mjs'
       - 'scripts/browser-scan-v3.mjs'
       - 'relic-inspector.js'
       - 'illustrated-showcase-import.js'
@@ -53,6 +56,8 @@ jobs:
 
       - name: Nexus Scan 3 — testar importação real no navegador com dados simulados
         run: node scripts/browser-scan-v3.mjs
+      - name: Fase 4 — validar 320 a 1920 px e navegação acessível
+        run: node scripts/browser-design-system.mjs
       - name: Guardar capturas para auditoria visual
         if: always()
         uses: actions/upload-artifact@v4
