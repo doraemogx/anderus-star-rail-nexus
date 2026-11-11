@@ -475,3 +475,27 @@
 .app.nx3-skin[data-nx3-shape=blade] :is(.v06-card,.v06-tile,.v11-relic-card){border-radius:2px 16px 2px 16px}
 .app.nx3-skin[data-nx3-shape=petal] :is(.v06-card,.v06-tile,.v11-relic-card){border-radius:3px 23px 23px 3px}
 .app.nx3-skin[data-nx3-shape=crystal] :is(.v06-card,.v06-tile,.v11-relic-card){border-radius:15px 2px 15px 2px}
+
+/* Reviewed real Chromium screenshots: art-first mobile composition, no cropped
+   selected portrait and no sideways page drift in desktop-mode previews. */
+.nx3-studio :is(.nx3-lab-top,.nx3-lab-toolbar,.nx3-lab-stage,.nx3-lab-footer){min-width:0;max-width:100%}
+.nx3-studio .nx3-scene-tabs{min-width:0}
+.nx3-studio .nx3-lab-top>div{min-width:0}
+@media(min-width:376px) and (max-width:767px){
+ .nx3-studio .nx3-identity{grid-template-columns:minmax(0,1fr)}
+ .nx3-studio .nx3-identity-art{height:258px;min-height:258px}
+ .nx3-studio .nx3-identity-art img{height:100%;width:100%;object-fit:contain;object-position:center}
+ .nx3-studio .nx3-identity-body{padding:19px}
+ .nx3-studio .nx3-identity-body>p{font-size:12px}
+ .nx3-studio .nx3-fragments{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+ .nx3-studio .nx3-fragment{aspect-ratio:1.12}
+}
+@media(max-width:767px){
+ .nx3-studio .nx3-lab-toolbar{display:grid;grid-template-columns:minmax(0,1fr);width:100%}
+ .nx3-studio .nx3-scene-tabs{width:100%;max-width:100%;overflow-x:auto}
+ .nx3-studio .nx3-device-switch{justify-self:end}
+ .nx3-studio .nx3-lab-top select{width:100%;max-width:100%;min-width:0}
+ .nx3-studio .nx3-lab-stage{overflow-x:hidden;max-width:100%}
+ .nx3-studio .nx3-mock{max-width:100%!important;min-width:0}
+ .nx3-studio .nx3-mock.wide{width:100%}
+}
