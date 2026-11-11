@@ -36,14 +36,14 @@
   if(/config|ajuste/.test(x))return 'settings';
   return 'profile';
  };
- const legacyAha=/(?:\b(?:Nihilux|Nerilux)\b(?:\s*\/\s*R[aá])?|\bR[aá]\s*\(\s*(?:Nihilux|Nerilux)\s*\))/gi;
+ const legacyAha=/(?:\b(?:Nihilux|Nerilux)\b(?:\s*\/\s*R[aá])?|(?<![\p{L}\p{N}])R[aá](?![\p{L}\p{N}])(?:\s*\(\s*(?:Nihilux|Nerilux)\s*\))?)/giu;
  const compounds=[
   /\bAha\s*\(\s*(?:Nihilux|Nerilux|R[aá])(?:\s*\/\s*(?:Nihilux|Nerilux|R[aá]))?\s*\)/gi,
   /\bAha\s*[\-–—/]\s*(?:Nihilux|Nerilux|R[aá])\b/gi,
   /\b(?:Nihilux|Nerilux|R[aá])\s*[\-–—/]\s*Aha\b/gi
  ];
  function canonicalize(s){
-  if(!s||!/(?:nihilux|nerilux|\br[aá]\b)/i.test(s))return s;
+  if(!s||!/(?:nihilux|nerilux|(?<![\p{L}\p{N}])r[aá](?![\p{L}\p{N}]))/iu.test(s))return s;
   let v=s;
   for(const regex of compounds)v=v.replace(regex,CANONICAL);
   return v.replace(legacyAha,CANONICAL);
@@ -54,7 +54,7 @@
    acceptNode(node){
     const p=node.parentElement;
     if(!p||p.closest('script,style,textarea,pre,code,[contenteditable],input,select,option'))return NodeFilter.FILTER_REJECT;
-    return /(?:nihilux|nerilux|\br[aá]\b)/i.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;
+    return /(?:nihilux|nerilux|(?<![\p{L}\p{N}])r[aá](?![\p{L}\p{N}]))/iu.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;
    }
   });
   const nodes=[];while(walk.nextNode())nodes.push(walk.currentNode);
