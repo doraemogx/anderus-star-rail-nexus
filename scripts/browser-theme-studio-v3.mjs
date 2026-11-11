@@ -52,6 +52,10 @@ try{
   await page.locator('button[data-action="filter"][data-id="featured"]').click();
   await page.locator('button[data-action="choose"][data-id="future-aha"]').click();
   assert.match(await page.locator('.nx3-identity-body h2').innerText(),/Aha/);
+  await page.waitForFunction(()=>{const images=[...document.querySelectorAll('.nx3-fragment img')];
+   return images.length===6&&images.every(img=>img.complete&&img.naturalWidth>0);},null,{timeout:15000});
+  assert.equal(await page.locator('.nx3-fragment img').count(),6,
+    'Six local Aha Eidolon fragment illustrations must load');
   const prompt=await page.evaluate(()=>NexusThemeStudio3.getPrompt());
   assert.match(prompt,/themes\/generated/);
   assert.match(prompt,/E1–E6/);
@@ -69,6 +73,17 @@ try{
   await page.locator('.nx3-mock').waitFor();
   await page.locator('button[data-action="device"][data-id="desktop"]').click();
   assert.equal(await page.locator('.nx3-mock.wide').count(),1);
+  await page.waitForTimeout(100);
+  const geom=await page.evaluate(()=>{
+   const root=document.querySelector('.nx3-studio')?.getBoundingClientRect();
+   return {width:innerWidth,scroll:document.documentElement.scrollWidth,
+    horizontal:document.scrollingElement?.scrollLeft||0,
+    rootLeft:root?.left,rootRight:root?.right};
+  });
+  assert.ok(geom.scroll<=geom.width+4,
+   'Theme Studio must never cause horizontal overflow: '+JSON.stringify(geom));
+  if(width<=390)assert.ok(geom.rootLeft>=-4&&geom.rootRight<=geom.width+4,
+   'Mobile preview moved outside viewport: '+JSON.stringify(geom));
   await page.locator('button[data-action="screen"][data-id="profile"]').click();
   assert.equal(await page.locator('.nx3-mock-eido span').count(),6);
   if(width===390||width===1440)
