@@ -19,6 +19,7 @@ const defaults={active:null,previous:null,custom:[]};
 const parsed=(()=>{try{return JSON.parse(localStorage.getItem(STORE)||'null');}catch{return null}})();
 const saved=Object.assign({},defaults,parsed?.schema===3?parsed:{});
 saved.custom=Array.isArray(saved.custom)?saved.custom.slice(0,25):[];
+let verifiedEidolons={};
 let registry=[],tab='create',filter='owned',search='',selection='',direction='cinematic',motion='balanced',detail='complete',intent='',previewId=null,previewScreen='home',previewDevice='mobile',toastTimer=0,loading=false,root=null,scheduled=false,initialized=false;
 const catalog=()=>{try{return typeof CATALOG!=='undefined'?CATALOG:[]}catch{return []}};
 const character=id=>catalog().find(c=>String(c.id)===String(id))||null;
@@ -38,10 +39,11 @@ const characterArt=(id,kind='preview')=>{
 const eidolons=id=>{
  try{
   const arts=EIDO_ART[id];
-  if(Array.isArray(arts))return arts.filter(Boolean).slice(0,6);
+  if(Array.isArray(arts)&&arts.some(Boolean))return arts.filter(Boolean).slice(0,6);
   if(arts&&typeof arts==='object')return Object.values(arts).filter(Boolean).slice(0,6);
  }catch{}
- return [];
+ const key=id==='future-aha'?'1511':String(id);
+ return Array.isArray(verifiedEidolons[key])?verifiedEidolons[key].filter(Boolean).slice(0,6):[];
 };
 function readableMetadata(c){
  const item=(()=>{try{return gameData?.chars?.[c.id]}catch{return null}})();
@@ -433,7 +435,11 @@ function boot(){
  const observe=new MutationObserver(schedule);
  const app=document.querySelector('.app')||document.body;
  observe.observe(app,{childList:true,subtree:true});
- schedule();loadRegistry().then(()=>{applyTheme(saved.active);schedule();if(root?.isConnected)refresh()});
+ schedule();
+ fetch('./data/eidolon-art.json',{cache:'force-cache'}).then(r=>r.ok?r.json():null)
+  .then(data=>{if(data?.characters&&typeof data.characters==='object'){verifiedEidolons=data.characters;if(root?.isConnected&&tab==='create')refresh();}})
+  .catch(()=>{});
+ loadRegistry().then(()=>{applyTheme(saved.active);schedule();if(root?.isConnected)refresh()});
 }
 window.NexusThemeStudio3={version:'3.0',refresh:schedule,generated:themes,
  getPrompt:promptText,active:()=>saved.active,preview:immersive,apply:id=>activate(id,true)};
