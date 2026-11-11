@@ -37,6 +37,8 @@ const characterArt=(id,kind='preview')=>{
  try{const p=imgSrc(id,kind);return typeof p==='string'?p:''}catch{return ''}
 };
 const eidolons=id=>{
+ // Aha's six verified in-repository fragments are reliable even offline.
+ if(id==='future-aha'||id==='1511')return Array.from({length:6},(_,i)=>'./assets/official/aha-e'+(i+1)+'.webp');
  try{
   const arts=EIDO_ART[id];
   if(Array.isArray(arts)&&arts.some(Boolean))return arts.filter(Boolean).slice(0,6);
@@ -46,8 +48,10 @@ const eidolons=id=>{
  return Array.isArray(verifiedEidolons[key])?verifiedEidolons[key].filter(Boolean).slice(0,6):[];
 };
 function readableMetadata(c){
- const item=(()=>{try{return gameData?.chars?.[c.id]}catch{return null}})();
- return {name:c.name,id:String(c.id),path:item?.path||c.path||'A verificar',element:item?.element||c.element||'A verificar'};
+ const item=(()=>{try{return gameData?.chars?.[c.id==='future-aha'?'1511':c.id]}catch{return null}})();
+ const aha=c.id==='future-aha';
+ return {name:c.name,id:String(c.id),path:item?.path||c.path||(aha?'Euforia':'A verificar'),
+  element:item?.element||c.element||(aha?'Quântico':'A verificar')};
 }
 function normalizeTheme(v,source='custom'){
  if(!v||typeof v!=='object')return null;
@@ -293,8 +297,16 @@ function refresh(){
  root.innerHTML=render();
  const pre=root.querySelector('#nx3-brief');if(pre)pre.textContent=promptText();
 }
+function resetHorizontal(){
+ requestAnimationFrame(()=>{
+  const scrollers=[document.scrollingElement,document.getElementById('stage'),root?.parentElement,
+   root?.parentElement?.parentElement];
+  for(const el of scrollers)if(el?.scrollLeft)el.scrollLeft=0;
+ });
+}
 function update(){
  if(root?.isConnected)refresh();
+ resetHorizontal();
 }
 function onInput(event){
  if(event.target.id==='nx3-search'){
