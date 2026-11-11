@@ -9,6 +9,10 @@ try{
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8787/',{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>window.NexusVisualFinish?.version==='5.1',null,{timeout:30000});
+  await page.waitForFunction(()=>{
+   const buttons=[...document.querySelectorAll('#bottomNav button')];
+   return buttons.length>=5&&buttons.every(b=>b.querySelector('.nx-vicon'));
+  },null,{timeout:12000});
   const result=await page.evaluate(()=>{
    const canonical=window.NexusVisualFinish.canonicalize;
    const values=[
