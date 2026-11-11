@@ -1,0 +1,316 @@
+/* ANDERUS Nexus — Phase 4 / reusable layout and interaction foundation.
+ * All accent surfaces inherit the chosen character theme. No account/schema changes.
+ * Load LAST through v06.js; stay independent of Theme Studio presets.
+ */
+:root{
+  --nx-space-1:4px;--nx-space-2:8px;--nx-space-3:12px;--nx-space-4:16px;
+  --nx-space-5:20px;--nx-space-6:24px;--nx-space-8:32px;
+  --nx-radius-sm:10px;--nx-radius-md:14px;--nx-radius-lg:20px;--nx-radius-hero:26px;
+  --nx-title:'Marcellus',Georgia,serif;
+  --nx-ui:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --nx-focus:#9fe9e3;--nx-on-surface:#f8f2e9;--nx-secondary:#d5dce8;
+  --nx-canvas:#081421;--nx-surface:#101d2d;--nx-surface-raised:#1a293e;
+  --nx-line:rgba(228,215,192,.24);--nx-shadow:0 16px 40px rgba(1,8,18,.32);
+  --nx-control-min:44px;--nx-content:1240px;--nx-nav-height:76px;
+}
+html{scroll-padding-top:90px;overflow-x:clip}
+body{max-width:100%;overflow-x:clip}
+.app.v06-app{
+  --nx-accent:var(--v-color,#e9c69b);
+  --nx-line:color-mix(in srgb,var(--nx-accent) 26%,rgba(240,242,248,.15));
+  --nx-surface-raised:color-mix(in srgb,var(--nx-accent) 8%,#15243a);
+  font-family:var(--nx-ui);
+  color:var(--nx-on-surface);
+  min-width:0;overflow-x:clip;
+}
+.v06-app .layout,.v06-app .workspace,.v06-app .stage,.v06-app #stage,
+.v06-app .v06-home,.v06-app .v06-profile,.v06-app .v09-endgame,
+.v06-app .v06-page,.v06-app .v06-library,.v06-app .v06-themes{min-width:0;max-width:100%}
+.v06-app .stage>:where(section,article,div){min-width:0}
+.v06-app :where(h1,h2,h3,h4,p,strong,small,span){overflow-wrap:break-word}
+.v06-app :where(img,video,canvas){max-width:100%}
+.v06-app :where(button,input,select,textarea){font-family:var(--nx-ui);touch-action:manipulation}
+.v06-app :where(button,a,input,select,textarea,summary,[role=button]):focus-visible,
+#nexus-scan-v3 :where(button,input,select,summary):focus-visible{
+  outline:3px solid var(--nx-focus)!important;outline-offset:3px!important;
+}
+.v06-app :where(button,a,summary){-webkit-tap-highlight-color:transparent}
+.v06-app button:disabled{opacity:.58;cursor:not-allowed;transform:none}
+.v06-app :where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){
+  max-width:100%;min-width:0;accent-color:var(--nx-accent);
+}
+.v06-app :where(.card,.v06-tile,.v06-char-card,.v11-relic-card,.v09-boss,
+ .v09-mechanics article,.v06-feature-panel,.v07-exclusive-card){
+  box-sizing:border-box;
+  border-color:var(--nx-line);
+  box-shadow:var(--nx-shadow);
+}
+.v06-app :where(.v06-hero,.v06-char-hero,.v06-theme-stage,
+ .v07-beta-hero,.v09-boss-image) img{object-fit:contain;max-width:100%}
+.v06-app :where(.v06-sectionline h2,.v11-section-lead h2,
+ .v09-guide-title h2,.v06-pagehead h1){line-height:1.15;letter-spacing:-.015em}
+.v06-app :where(.v06-sectionline,.section-title){gap:12px;min-width:0}
+.v06-app :where(.v06-sectionline button,.v11-actions button,.v11-coach-actions button,
+ .v11-cone-foot button,.v07-exclusive-card button,.v09-team-empty button){
+  min-height:var(--nx-control-min);
+}
+.v06-app :where(.v06-pagehead p,.v09-guide-title p,.v11-section-lead p,
+ .v06-feature-text p,.v06-char-card small){line-height:1.6;color:var(--nx-secondary)}
+/* Consistent shell, route state and accessible hit areas */
+.v06-app .masthead{
+  min-height:72px;height:72px;
+  padding-left:max(14px,env(safe-area-inset-left));
+  padding-right:max(14px,env(safe-area-inset-right));
+  gap:10px;box-shadow:0 12px 30px #0003;
+}
+.v06-app .masthead .brand{min-width:0;flex:1}
+.v06-app .brand-title{overflow:hidden;text-overflow:ellipsis;font-size:clamp(18px,5.5vw,25px)}
+.v06-app .brand-title small{font-size:9px;line-height:1.2;letter-spacing:2px}
+.v06-app .mast-actions{gap:8px}
+.v06-app .mast-actions .i-btn{
+  width:var(--nx-control-min);min-width:var(--nx-control-min);
+  height:var(--nx-control-min);border-radius:12px;
+}
+.v06-app .bottom-nav{
+  height:calc(var(--nx-nav-height) + env(safe-area-inset-bottom));
+  padding:4px max(5px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-bottom));
+  gap:3px;z-index:90;
+  border-radius:16px 16px 0 0;
+  background:color-mix(in srgb,#071421 94%,var(--nx-accent));
+  box-shadow:0 -13px 35px #0008;
+}
+.v06-app .bottom-nav button{
+  min-width:0;min-height:64px;display:flex;gap:5px;
+  padding:7px 2px 6px;flex:1 1 20%;white-space:nowrap;
+  border-radius:11px;font:700 clamp(10px,2.5vw,12px)/1.2 var(--nx-ui);
+}
+.v06-app .bottom-nav button.active{color:var(--nx-on-surface);position:relative}
+.v06-app .bottom-nav button.active:after{
+  left:28%;right:28%;bottom:3px;height:2px;border-radius:3px;background:var(--nx-accent);
+}
+.v06-app .bottom-nav .game-nav-icon,.v06-app .bottom-nav .game-nav-icon img{
+  width:25px;height:25px;max-width:100%;object-fit:contain;
+}
+.v06-app .bottom-nav button[aria-current=page] .game-nav-icon img{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--nx-accent) 60%,transparent))}
+.v06-app .desktop-sidebar{min-width:0}
+.v06-app #sidebarLinks{min-width:0}
+.v06-app #sidebarLinks .menu-link{
+  min-height:var(--nx-control-min);display:flex;align-items:center;
+  gap:12px;border:1px solid transparent;
+  font:600 13px/1.4 var(--nx-ui);
+}
+.v06-app #sidebarLinks .menu-link.active{
+  border-color:var(--nx-line);color:var(--nx-on-surface);
+  background:color-mix(in srgb,var(--nx-accent) 12%,#0d2235);
+}
+.v06-app #sidebarLinks .menu-link:hover{background:color-mix(in srgb,var(--nx-accent) 9%,#14273c)}
+.v06-app #floatMenu .floating-panel{
+  max-height:calc(100dvh - 90px);overflow-y:auto;overscroll-behavior:contain;
+  width:min(360px,calc(100vw - 24px));border:1px solid var(--nx-line);
+  box-shadow:0 24px 65px #000b;
+}
+.v06-app #floatMenu .menu-link{min-height:48px;font-size:13px}
+/* Home: editorial hero + compact, legible quick navigation */
+.v06-app .v06-hero{border-color:var(--nx-line)}
+.v06-app .v06-hero-vignette{
+  background:linear-gradient(0deg,rgba(3,13,25,.98),rgba(3,13,25,.67) 40%,transparent 88%),
+    linear-gradient(90deg,rgba(3,13,25,.38),transparent 80%);
+}
+.v06-app .v06-hero-copy{max-width:min(520px,calc(100% - 24px))}
+.v06-app .v06-hero-copy h1{line-height:1.04;text-shadow:0 3px 16px #030b19e0}
+.v06-app .v06-hero-copy p{color:#e4e9ef;line-height:1.55;font-size:clamp(13px,2.8vw,16px)}
+.v06-app .v06-hero-buttons{display:flex;flex-wrap:wrap;gap:8px;max-width:100%}
+.v06-app .v06-hero-buttons button{min-height:44px;max-width:100%}
+.v06-app .v06-tile-grid,.v06-app .v06-stats,.v06-app .v06-library-grid,
+.v06-app .v06-theme-grid,.v06-app .v09-bosses{min-width:0}
+.v06-app .v06-tile{border-color:var(--nx-line);isolation:isolate}
+.v06-app .v06-tile:focus-visible{outline-offset:-4px!important}
+.v06-app .v06-tile strong{line-height:1.15;overflow-wrap:anywhere}
+.v06-app .v06-tile small{line-height:1.45;color:#d4dfeb}
+.v06-app .v06-char-card{min-height:86px}
+.v06-app .v06-char-card:focus-visible{outline-offset:-3px!important}
+/* Character profile: sticky section tabs, stat ledger and six-piece inspector */
+.v06-app .v06-profile .v06-tabs{
+  top:72px;scrollbar-width:thin;scroll-padding-inline:12px;
+  overscroll-behavior-x:contain;gap:8px;
+  padding:10px 2px 10px;backdrop-filter:blur(18px);
+}
+.v06-app .v06-profile .v06-tabs button{
+  min-height:46px;padding:11px 15px;font-size:12px;
+  border-radius:10px;flex:0 0 auto;
+}
+.v06-app .v06-metric{min-width:0;border-color:var(--nx-line);gap:7px;padding:14px 6px}
+.v06-app .v06-metric strong{font-variant-numeric:tabular-nums;font-size:clamp(18px,4.6vw,25px)}
+.v06-app .v06-metric small{font-size:clamp(10px,2.4vw,12px);line-height:1.35}
+.v06-app .v11-relic-card{border-color:var(--nx-line)}
+.v06-app .v11-relic-open{min-height:92px}
+.v06-app .v11-relic-subs{min-width:0}
+.v06-app .v11-relic-subs :where(span,b){overflow-wrap:anywhere}
+/* Domain panels: more readable dossiers without changing verified kit content */
+.v06-app .v09-mechanics{gap:12px}
+.v06-app .v09-mechanics article{border-color:var(--nx-line);padding:clamp(14px,2vw,20px)}
+.v06-app .v09-mechanics p,.v06-app .v09-team p{font-size:13px;line-height:1.65;color:var(--nx-secondary)}
+.v06-app .v09-boss{border-color:var(--nx-line)}
+.v06-app .v09-boss-info{min-width:0}
+.v06-app .v09-boss-info p{line-height:1.55}
+.v06-app .v09-team-reveal>summary{min-height:var(--nx-control-min)}
+.v06-app .v09-team-members{min-width:0}
+.v06-app :where(.v07-kit,.v07-eido) > summary{min-height:var(--nx-control-min)}
+.v06-app :where(.v07-kit,.v07-eido) :where(p,span){overflow-wrap:break-word}
+.v06-app :where(.v07-history article,.v07-traces article){min-width:0}
+/* Import wizard & dialogs: fixed max-height, readable edits and 44 px touch controls */
+#nexus-scan-v3{
+  border-color:var(--nx-line);color:var(--nx-on-surface);
+  overscroll-behavior:contain;max-height:min(95dvh,980px);
+}
+#nexus-scan-v3 .ns3-shell{padding-bottom:max(18px,env(safe-area-inset-bottom))}
+#nexus-scan-v3 :where(button,select,input:not([type=checkbox])){min-height:44px}
+#nexus-scan-v3 :where(.ns3-fields,.ns3-relic-row,.ns3-piece-detail,.ns3-piece){min-width:0}
+#nexus-scan-v3 .ns3-relic-row :where(input,select){width:100%;min-width:0}
+.v06-app .modal-shade{max-width:100vw}
+.v06-app .modal{max-width:calc(100vw - 24px);min-width:0;overscroll-behavior:contain}
+.v06-app .modal-head{gap:8px}
+.v06-app .modal-head button{min-height:44px;min-width:44px}
+/* Shared accessible system primitives */
+.nx-skip{
+  position:fixed;z-index:9999;top:-85px;left:max(12px,env(safe-area-inset-left));
+  padding:12px 18px;background:#eef7f6;color:#071b24;
+  border:2px solid #071b24;border-radius:11px;font:800 13px var(--nx-ui);
+}
+.nx-skip:focus{top:12px}
+.v06-app .nx-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;
+  overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important}
+.v06-app .nx-empty,.v06-app .nx-error,.v06-app .nx-skeleton{
+  border-radius:var(--nx-radius-md);border:1px solid var(--nx-line);
+  background:var(--nx-surface);padding:20px;line-height:1.65;
+}
+.v06-app .nx-error{border-left:3px solid #f2a39d}
+.v06-app .nx-skeleton{background:linear-gradient(90deg,#17243a 0%,#22334a 50%,#17243a 100%);background-size:200% 100%}
+@media(prefers-reduced-motion:no-preference){.v06-app .nx-skeleton{animation:nx-shimmer 1.7s linear infinite}}
+@keyframes nx-shimmer{to{background-position:-200% 0}}
+@media(max-width:359px){
+  :root{--nx-nav-height:72px}
+  .v06-app .masthead{padding-inline:8px;gap:5px}
+  .v06-app .mast-actions{gap:4px}
+  .v06-app .mast-actions .i-btn{width:40px;min-width:40px;height:42px}
+  .v06-app .brand-title{font-size:18px;letter-spacing:1px}
+  .v06-app .brand-title small{font-size:8px;letter-spacing:1.25px}
+  .v06-app .bottom-nav{gap:0;padding-inline:2px}
+  .v06-app .bottom-nav button{min-height:59px;font-size:10px;letter-spacing:-.15px}
+  .v06-app .bottom-nav .game-nav-icon,.v06-app .bottom-nav .game-nav-icon img{width:23px;height:23px}
+  .v06-app .v06-hero-copy{left:14px;right:14px;bottom:17px}
+  .v06-app .v06-hero-copy h1{font-size:clamp(29px,9vw,35px)}
+  .v06-app .v06-hero-buttons button{font-size:12px;padding-inline:11px}
+  .v06-app .v06-tile{padding:10px;min-height:155px}
+  .v06-app .v06-tile strong{font-size:14px}
+  .v06-app .v06-tile small{font-size:11px}
+  .v06-app .v06-stats{gap:5px}
+  .v06-app .v06-metric{padding:10px 3px}
+  .v06-app .v06-profile .v06-tabs button{padding-inline:11px}
+  #nexus-scan-v3 .ns3-fields{grid-template-columns:minmax(0,1fr)}
+}
+@media(min-width:360px) and (max-width:429px){
+ .v06-app .v06-hero-copy{bottom:23px}
+ .v06-app .v06-tile{min-height:168px}
+ .v06-app .v06-tile strong{font-size:clamp(15px,4vw,19px)}
+ .v06-app .v06-tile small{font-size:11px}
+}
+@media(min-width:430px) and (max-width:767px){
+ .v06-app .v06-tile-grid{gap:12px}
+ .v06-app .v06-tile{height:182px;padding:16px}
+ .v06-app .v06-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v06-app .v06-metric strong{font-size:24px}
+}
+@media(max-width:767px){
+ .v06-app .stage.v06-stage{padding-bottom:calc(var(--nx-nav-height) + env(safe-area-inset-bottom) + 55px)}
+ .v06-app.v06-on-home .stage.v06-stage{padding-bottom:calc(var(--nx-nav-height) + env(safe-area-inset-bottom) + 55px)}
+ .v06-app .v06-brief,.v06-app .v06-snapshot,.v06-app .v06-future{padding-inline:clamp(14px,4vw,24px)}
+ .v06-app .v06-hero{height:clamp(450px,115vw,565px)}
+ .v06-app .v06-hero-art{background-size:cover;background-position:56% center}
+ .v06-app .v06-hero-copy h1{font-size:clamp(30px,8vw,46px)}
+ .v06-app .v06-sectionline{align-items:start}
+ .v06-app .v06-sectionline>button{white-space:normal;text-align:right}
+ .v06-app .v06-feature-panel{margin-inline:clamp(14px,4vw,24px)}
+ .v06-app .v06-banner-strip{min-width:0}
+ .v06-app .v06-banner-strip :where(h3,p){overflow-wrap:anywhere}
+ .v06-app .v06-theme-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .v06-app .v11-cone-top{min-width:0}
+ .v06-app .v09-team-members{display:flex;flex-wrap:wrap}
+ .v06-app .v09-bosses{grid-template-columns:minmax(0,1fr)}
+ #nexus-scan-v3{width:100vw;max-width:100vw;border-radius:18px 18px 0 0;margin:auto 0 0}
+}
+@media(min-width:768px) and (max-width:1023px){
+ .v06-app .stage.v06-stage,.v06-app.v06-on-home .stage.v06-stage{padding-inline:clamp(22px,4vw,36px)}
+ .v06-app .v06-tile-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .v06-app .v06-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v06-app .v06-hero{height:530px}
+ .v06-app .v06-brief,.v06-app .v06-snapshot,.v06-app .v06-future{padding-inline:0}
+ .v06-app .bottom-nav{max-width:720px}
+}
+@media(min-width:1024px){
+ .v07-shell .layout{grid-template-columns:248px minmax(0,1fr)}
+ .v07-shell .desktop-sidebar{min-height:100dvh;padding:28px 18px}
+ .v07-shell #sidebarLinks{gap:5px}
+ .v07-shell .workspace{max-width:100%}
+ .v07-shell .stage.v06-stage,.v07-shell.v06-on-home .stage.v06-stage{
+   max-width:1500px;width:100%;padding:30px clamp(26px,4vw,66px) 96px;
+ }
+ .v07-shell .v06-home{max-width:none}
+ .v07-shell .v06-hero{height:clamp(495px,43vw,640px)}
+ .v07-shell .v06-hero-copy{left:clamp(32px,4vw,66px);bottom:clamp(35px,5vw,72px)}
+ .v07-shell .v06-hero-copy h1{font-size:clamp(49px,4.5vw,76px)}
+ .v07-shell .v06-hero-copy p{font-size:16px}
+ .v07-shell .v06-tile-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+ .v07-shell .v06-tile{height:clamp(205px,19vw,255px);padding:21px}
+ .v07-shell .v06-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v07-shell .v11-relic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v07-shell .v09-bosses{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .v07-shell .v06-theme-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .v07-shell .bottom-nav{display:none}
+}
+@media(min-width:1440px){
+ .v07-shell .layout{grid-template-columns:268px minmax(0,1fr)}
+ .v07-shell .v06-library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .v07-shell .v06-theme-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .v07-shell .v09-mechanics{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:1920px){
+ .v07-shell .stage.v06-stage,.v07-shell.v06-on-home .stage.v06-stage{max-width:1550px}
+ .v07-shell .v06-tile-grid{gap:20px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .v06-app *,.v06-app *::before,.v06-app *::after,
+ #nexus-scan-v3 *{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+@media(forced-colors:active){
+ .v06-app :where(button,a,summary):focus-visible{outline:3px solid Highlight!important}
+ .v06-app .bottom-nav button.active,.v06-app #sidebarLinks .active{border:2px solid Highlight}
+}
+
+
+/* The original masthead has five utility controls. On narrow phones, a
+ * deliberately two-row header keeps ANDERUS legible instead of ellipsizing it. */
+@media(max-width:430px){
+ html{scroll-padding-top:119px}
+ .v06-app .masthead{
+   height:108px;min-height:108px;
+   display:flex;flex-direction:column;align-items:stretch;justify-content:center;
+   padding:7px max(12px,env(safe-area-inset-right)) 7px max(12px,env(safe-area-inset-left));
+   gap:5px;
+ }
+ .v06-app .masthead .brand{flex:0 0 auto;min-height:32px;width:100%;max-width:100%;gap:8px}
+ .v06-app .brand-symbol{font-size:28px;line-height:1}
+ .v06-app .brand-title{
+   font-size:20px;line-height:1.05;letter-spacing:1.3px;
+   max-width:none;overflow:visible;text-overflow:clip;white-space:nowrap;
+ }
+ .v06-app .brand-title small{font-size:8px;letter-spacing:1.8px}
+ .v06-app .mast-actions{width:100%;gap:6px;justify-content:space-between}
+ .v06-app .mast-actions .i-btn{
+   flex:1 1 0;min-width:44px;width:auto;max-width:none;height:43px;
+ }
+ .v06-app .v06-profile .v06-tabs{top:108px}
+ .v06-app #floatMenu .floating-panel{top:114px;max-height:calc(100dvh - 120px)}
+ .v06-app #floatMenu .drawer-backdrop{inset:108px 0 0}
+}

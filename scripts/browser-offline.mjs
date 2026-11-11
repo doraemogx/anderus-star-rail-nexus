@@ -28,7 +28,7 @@ try{
  const precache=await page.evaluate(async()=>{
   const keys=await caches.keys();
   const cache=await caches.open(keys.find(x=>x.startsWith('anderus-shell-')));
-  return Promise.all(['./','./v06.js','./nexus-v07.js','./data/live-game.json'].map(async path=>
+  return Promise.all(['./','./v06.js','./nexus-v07.js','./nexus-design-system.css','./nexus-design-system.js','./data/live-game.json'].map(async path=>
     Boolean(await cache.match(path))));
  });
  assert.ok(precache.every(Boolean),'Core offline assets missing: '+JSON.stringify(precache));
@@ -38,6 +38,9 @@ try{
  await page.waitForFunction(()=>typeof window.route==='function'&&!!document.querySelector('.app'),null,{timeout:15000});
  assert.equal(await page.evaluate(()=>localStorage.getItem('nexus-offline-qa')),'preserve-local-value',
   'Offline code update must not erase localStorage');
+ await page.waitForFunction(()=>window.NexusDesignSystem?.version==='4.0',null,{timeout:15000});
+ assert.equal(await page.evaluate(()=>window.NexusDesignSystem?.version),'4.0',
+  'Design System must remain active when PWA reloads offline');
  await page.evaluate(()=>window.route('library'));
  assert.ok(await page.locator('#stage').first().evaluate(el=>Boolean(el.firstElementChild)),'Offline navigation failed');
  const catalog=await page.evaluate(async()=>{

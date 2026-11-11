@@ -1,4 +1,17 @@
 (function installNexusV06(){
+  // Phase 4: load the shared design system after the historical stylesheets.
+  // The enhancement changes only presentation/accessibility, not account data.
+  if(!document.getElementById('nexus-design-system-css')){
+    const nxCss=document.createElement('link');
+    nxCss.id='nexus-design-system-css';nxCss.rel='stylesheet';
+    nxCss.href='./nexus-design-system.css';
+    document.head.appendChild(nxCss);
+  }
+  if(!document.getElementById('nexus-design-system-js')){
+    const nxScript=document.createElement('script');
+    nxScript.id='nexus-design-system-js';nxScript.src='./nexus-design-system.js';
+    nxScript.async=true;document.head.appendChild(nxScript);
+  }
   const base={
     home:home,library:library,profile:profile,profileOverview:profileOverview,
     profileEidolons:profileEidolons,profileKit:profileKit,profileRelics:profileRelics,
