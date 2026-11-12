@@ -1,11 +1,27 @@
 {
-  "version": "v4.6.54",
-  "revision": "16932918",
+  "version": "v4.7.51",
+  "revision": "17128507",
   "source": "https://hsr.gachabase.net/changelog/beta?lang=en",
-  "checkedAt": "2026-11-09T10:17:55.168785+00:00",
+  "checkedAt": "2026-11-12T11:19:43.041649+00:00",
   "status": "MONITOR — changes indicate a new revision, not confirmed final kit",
   "changes": {
     "Characters": [
+      {
+        "type": "NEW",
+        "name": "Astra Yao"
+      },
+      {
+        "type": "NEW",
+        "name": "Ellen"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Stelle"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Caelus"
+      },
       {
         "type": "UPDATED",
         "name": "Aventurine • Waveflair"
@@ -24,11 +40,19 @@
       },
       {
         "type": "UPDATED",
+        "name": "Ashveil"
+      },
+      {
+        "type": "UPDATED",
         "name": "Pearl"
       },
       {
         "type": "UPDATED",
         "name": "Yao Guang"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Sparxie"
       },
       {
         "type": "UPDATED",
@@ -43,12 +67,172 @@
         "name": "Jing Yuan"
       }
     ],
+    "Light Cones": [
+      {
+        "type": "NEW",
+        "name": "Shine Bright Like Her"
+      },
+      {
+        "type": "NEW",
+        "name": "No Shifts on Rainy Days"
+      },
+      {
+        "type": "UPDATED",
+        "name": "Upon the First Echo of \"Aha\""
+      },
+      {
+        "type": "UPDATED",
+        "name": "Colors for Tomorrow"
+      }
+    ],
     "Planar Ornaments": [
       {
         "type": "UPDATED",
-        "name": "Subspace ASC Center"
+        "name": "God's Moment of Joy"
       }
     ]
   },
-  "history": []
+  "history": [
+    {
+      "from": "v4.6.54",
+      "to": "v4.7.51",
+      "fromRevision": "16932918",
+      "toRevision": "17128507",
+      "at": "2026-11-12T11:19:43.041649+00:00",
+      "previous": {
+        "Characters": [
+          {
+            "type": "UPDATED",
+            "name": "Aventurine • Waveflair"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Aeon ★ Aha"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Silver Wolf LV.999"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Evanescia"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Pearl"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Yao Guang"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Acheron"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Dan Heng • Imbibitor Lunae"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Jing Yuan"
+          }
+        ],
+        "Planar Ornaments": [
+          {
+            "type": "UPDATED",
+            "name": "Subspace ASC Center"
+          }
+        ]
+      },
+      "current": {
+        "Characters": [
+          {
+            "type": "NEW",
+            "name": "Astra Yao"
+          },
+          {
+            "type": "NEW",
+            "name": "Ellen"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Stelle"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Caelus"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Aventurine • Waveflair"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Aeon ★ Aha"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Silver Wolf LV.999"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Evanescia"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Ashveil"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Pearl"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Yao Guang"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Sparxie"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Acheron"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Dan Heng • Imbibitor Lunae"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Jing Yuan"
+          }
+        ],
+        "Light Cones": [
+          {
+            "type": "NEW",
+            "name": "Shine Bright Like Her"
+          },
+          {
+            "type": "NEW",
+            "name": "No Shifts on Rainy Days"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Upon the First Echo of \"Aha\""
+          },
+          {
+            "type": "UPDATED",
+            "name": "Colors for Tomorrow"
+          }
+        ],
+        "Planar Ornaments": [
+          {
+            "type": "UPDATED",
+            "name": "God's Moment of Joy"
+          }
+        ]
+      }
+    }
+  ]
 }
