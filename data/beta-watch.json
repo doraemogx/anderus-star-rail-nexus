@@ -1,98 +1,133 @@
 {
-  "version": "v4.7.51",
-  "revision": "17128507",
+  "version": "v4.7.52",
+  "revision": "17181460",
   "source": "https://hsr.gachabase.net/changelog/beta?lang=en",
-  "checkedAt": "2026-11-12T11:19:43.041649+00:00",
+  "checkedAt": "2026-11-17T03:56:09.544858+00:00",
   "status": "MONITOR — changes indicate a new revision, not confirmed final kit",
   "changes": {
     "Characters": [
       {
-        "type": "NEW",
-        "name": "Astra Yao"
-      },
-      {
-        "type": "NEW",
+        "type": "UPDATED",
         "name": "Ellen"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Stelle"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Caelus"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Aventurine • Waveflair"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Aeon ★ Aha"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Silver Wolf LV.999"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Evanescia"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Ashveil"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Pearl"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Yao Guang"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Sparxie"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Acheron"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Dan Heng • Imbibitor Lunae"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Jing Yuan"
       }
     ],
     "Light Cones": [
       {
-        "type": "NEW",
+        "type": "UPDATED",
         "name": "Shine Bright Like Her"
-      },
-      {
-        "type": "NEW",
-        "name": "No Shifts on Rainy Days"
-      },
-      {
-        "type": "UPDATED",
-        "name": "Upon the First Echo of \"Aha\""
-      },
-      {
-        "type": "UPDATED",
-        "name": "Colors for Tomorrow"
-      }
-    ],
-    "Planar Ornaments": [
-      {
-        "type": "UPDATED",
-        "name": "God's Moment of Joy"
       }
     ]
   },
   "history": [
+    {
+      "from": "v4.7.51",
+      "to": "v4.7.52",
+      "fromRevision": "17128507",
+      "toRevision": "17181460",
+      "at": "2026-11-17T03:56:09.544858+00:00",
+      "previous": {
+        "Characters": [
+          {
+            "type": "NEW",
+            "name": "Astra Yao"
+          },
+          {
+            "type": "NEW",
+            "name": "Ellen"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Stelle"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Caelus"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Aventurine • Waveflair"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Aeon ★ Aha"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Silver Wolf LV.999"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Evanescia"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Ashveil"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Pearl"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Yao Guang"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Sparxie"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Acheron"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Dan Heng • Imbibitor Lunae"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Jing Yuan"
+          }
+        ],
+        "Light Cones": [
+          {
+            "type": "NEW",
+            "name": "Shine Bright Like Her"
+          },
+          {
+            "type": "NEW",
+            "name": "No Shifts on Rainy Days"
+          },
+          {
+            "type": "UPDATED",
+            "name": "Upon the First Echo of \"Aha\""
+          },
+          {
+            "type": "UPDATED",
+            "name": "Colors for Tomorrow"
+          }
+        ],
+        "Planar Ornaments": [
+          {
+            "type": "UPDATED",
+            "name": "God's Moment of Joy"
+          }
+        ]
+      },
+      "current": {
+        "Characters": [
+          {
+            "type": "UPDATED",
+            "name": "Ellen"
+          }
+        ],
+        "Light Cones": [
+          {
+            "type": "UPDATED",
+            "name": "Shine Bright Like Her"
+          }
+        ]
+      }
+    },
     {
       "from": "v4.6.54",
       "to": "v4.7.51",
